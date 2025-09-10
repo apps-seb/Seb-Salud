@@ -60,8 +60,19 @@
         .novedades-badge.hidden { transform: scale(0); }
         .health-plan-card { border: 2px solid #e2e8f0; transition: border-color 0.2s, box-shadow 0.2s; }
         .health-plan-card:has(input:checked) { border-color: rgb(var(--color-primary-600)); box-shadow: 0 0 0 2px rgb(var(--color-primary-600) / 0.5); }
-        .auth-form { animation: fadeInForm 0.6s ease-in-out; }
-        @keyframes fadeInForm { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* --- NUEVAS ANIMACIONES DE INICIO DE SESIÓN --- */
+        .auth-banner { animation: fadeInBanner 0.5s ease-out; }
+        @keyframes fadeInBanner {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-form { animation: fadeInForm 0.6s ease-in-out 0.1s; animation-fill-mode: backwards; }
+        @keyframes fadeInForm {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
@@ -80,9 +91,9 @@
     <div id="auth-container" style="display: none;" class="min-h-screen bg-slate-100 flex items-center justify-center p-4">
         <div class="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden grid md:grid-cols-2">
             
-            <div class="p-8 lg:p-12 text-white bg-gradient-to-br from-indigo-600 to-sky-500 hidden md:flex flex-col justify-center items-center text-center">
-                <i data-lucide="shield-check" class="h-20 w-20 text-white/80 mb-6"></i>
-                <h2 class="text-3xl font-bold mb-4">Bienvenido a Seb Salud</h2>
+            <div class="auth-banner p-6 md:p-8 lg:p-12 text-white bg-gradient-to-br from-indigo-600 to-sky-500 flex flex-col justify-center items-center text-center">
+                <i data-lucide="shield-check" class="h-16 w-16 md:h-20 md:w-20 text-white/80 mb-6"></i>
+                <h2 class="text-2xl md:text-3xl font-bold mb-4">Bienvenido a Seb Salud</h2>
                 <p class="text-indigo-100 max-w-sm">Tu plataforma de gestión de salud todo en uno. Administra afiliados, asesores y finanzas de forma eficiente y segura.</p>
             </div>
 
@@ -164,7 +175,7 @@
             <div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-30 opacity-0 pointer-events-none md:hidden"></div>
 
             <aside id="sidebar" class="sidebar bg-slate-900 text-slate-200 w-64 fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 z-40 flex flex-col">
-                <div class="flex items-center justify-center h-20 border-b border-slate-700 flex-shrink-0">
+                <div class="flex items-center justify-center h-16 border-b border-slate-700 flex-shrink-0">
                     <i data-lucide="shield-check" class="h-8 w-8 text-primary-500"></i>
                     <span class="ml-3 text-xl font-bold">Seb Salud</span>
                 </div>
@@ -189,8 +200,8 @@
                 </div>
             </aside>
 
-            <div class="flex-1 flex flex-col md:ml-64">
-                <header class="bg-white/60 backdrop-blur-sm shadow-sm flex items-center justify-between p-4 flex-shrink-0 sticky top-0 z-20">
+            <div class="flex-1 flex flex-col md:ml-64 relative">
+                <header class="fixed top-0 inset-x-0 md:left-64 bg-white/80 backdrop-blur-md shadow-sm h-16 flex items-center justify-between px-4 z-20 border-b border-slate-200/75">
                     <div class="flex items-center">
                         <h1 id="header-title" class="text-xl font-semibold text-slate-700 hidden md:block">Dashboard</h1>
                         <div class="flex items-center md:hidden">
@@ -199,30 +210,48 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button id="menu-toggle" class="text-slate-600 focus:outline-none md:hidden p-2 rounded-full hover:bg-slate-200"><i data-lucide="menu" class="h-6 w-6"></i></button>
+                        <button id="profile-toggle-btn" class="relative text-slate-600 focus:outline-none p-2 rounded-full hover:bg-slate-200">
+                            <i data-lucide="user-circle-2" class="h-6 w-6 pointer-events-none"></i>
+                        </button>
+                        <button id="menu-toggle" class="text-slate-600 focus:outline-none md:hidden p-2 rounded-full hover:bg-slate-200">
+                            <i data-lucide="menu" class="h-6 w-6 pointer-events-none"></i>
+                        </button>
                     </div>
                 </header>
+
+                <div id="profile-modal" class="absolute top-[68px] right-4 z-30 w-64 bg-white rounded-xl shadow-2xl border border-slate-200/50 p-1.5 origin-top-right transition-transform duration-200 ease-out transform scale-95 opacity-0 pointer-events-none">
+                    <div class="p-2">
+                        <p id="profile-modal-name" class="font-semibold text-slate-800 text-sm truncate" title="email del usuario">email@usuario.com</p>
+                        <p class="text-xs text-slate-500 mb-2">Administrador</p>
+                        <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Licencia Activa</span>
+                    </div>
+                    <div class="border-t border-slate-200/80 my-1"></div>
+                    <button id="profile-modal-logout-btn" class="w-full text-left flex items-center gap-2 p-2 text-sm text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                        <span>Cerrar Sesión</span>
+                    </button>
+                </div>
                 
-                <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8">
+                <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8 pt-20">
                     <section id="dashboard" class="content-section active">
                          <h1 class="text-2xl font-bold text-slate-800 mb-6">Resumen General y Métricas Clave</h1>
                          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                                 <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                     <div><h3 class="text-sm font-medium text-slate-500 uppercase">Ingresos del Mes</h3><p id="kpi-monthly-income" class="text-3xl font-bold text-slate-800 mt-2">$0</p></div>
-                                     <div class="bg-emerald-100 text-emerald-600 p-2 rounded-full"><i data-lucide="trending-up" class="h-6 w-6"></i></div>
-                                 </div>
-                                 <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                     <div><h3 class="text-sm font-medium text-slate-500 uppercase">Cartera Vencida</h3><p id="kpi-overdue-payments" class="text-3xl font-bold text-rose-500 mt-2">$0</p></div>
-                                     <div class="bg-rose-100 text-rose-600 p-2 rounded-full"><i data-lucide="clock" class="h-6 w-6"></i></div>
-                                 </div>
-                                 <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                     <div><h3 class="text-sm font-medium text-slate-500 uppercase">Nuevos Afiliados (Mes)</h3><p id="kpi-new-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
-                                     <div class="bg-sky-100 text-sky-600 p-2 rounded-full"><i data-lucide="user-plus" class="h-6 w-6"></i></div>
-                                 </div>
-                                 <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                     <div><h3 class="text-sm font-medium text-slate-500 uppercase">Afiliados Activos</h3><p id="kpi-active-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
-                                     <div class="bg-slate-100 text-slate-600 p-2 rounded-full"><i data-lucide="check-circle-2" class="h-6 w-6"></i></div>
-                                 </div>
+                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
+                                      <div><h3 class="text-sm font-medium text-slate-500 uppercase">Ingresos del Mes</h3><p id="kpi-monthly-income" class="text-3xl font-bold text-slate-800 mt-2">$0</p></div>
+                                      <div class="bg-emerald-100 text-emerald-600 p-2 rounded-full"><i data-lucide="trending-up" class="h-6 w-6"></i></div>
+                                </div>
+                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
+                                      <div><h3 class="text-sm font-medium text-slate-500 uppercase">Cartera Vencida</h3><p id="kpi-overdue-payments" class="text-3xl font-bold text-rose-500 mt-2">$0</p></div>
+                                      <div class="bg-rose-100 text-rose-600 p-2 rounded-full"><i data-lucide="clock" class="h-6 w-6"></i></div>
+                                </div>
+                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
+                                      <div><h3 class="text-sm font-medium text-slate-500 uppercase">Nuevos Afiliados (Mes)</h3><p id="kpi-new-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
+                                      <div class="bg-sky-100 text-sky-600 p-2 rounded-full"><i data-lucide="user-plus" class="h-6 w-6"></i></div>
+                                </div>
+                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
+                                      <div><h3 class="text-sm font-medium text-slate-500 uppercase">Afiliados Activos</h3><p id="kpi-active-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
+                                      <div class="bg-slate-100 text-slate-600 p-2 rounded-full"><i data-lucide="check-circle-2" class="h-6 w-6"></i></div>
+                                </div>
                          </div>
                     </section>
                     
@@ -535,9 +564,9 @@
                 initializeAppForUser();
                 showView(appContainer);
             } else {
-                showView(authContainer); 
-                document.getElementById('login-view').style.display = 'none';
-                document.getElementById('register-view').style.display = 'none';
+                loader.style.display = 'none';
+                appContainer.style.display = 'none';
+                authContainer.style.display = 'none';
                 modalManager.open('license-modal');
             }
         } else {
@@ -644,6 +673,7 @@
     
     function initializeAppForUser() {
         document.getElementById('user-email-display').textContent = currentUser.email;
+        document.getElementById('profile-modal-name').textContent = currentUser.email;
         setupRealtimeListeners();
         renderContent('dashboard');
     }
@@ -681,6 +711,14 @@
             const target = e.target;
             const button = target.closest('button');
             const navLink = target.closest('[data-target]');
+            
+            // Lógica para cerrar el modal de perfil si se hace clic afuera
+            const profileModal = document.getElementById('profile-modal');
+            const profileToggleBtn = document.getElementById('profile-toggle-btn');
+            if (profileModal && !profileModal.contains(target) && profileToggleBtn && !profileToggleBtn.contains(target)) {
+                 profileModal.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
+            }
+
             if (navLink) {
                 e.preventDefault();
                 const targetId = navLink.dataset.target;
@@ -692,19 +730,21 @@
                 if (window.innerWidth < 768) { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('sidebar-overlay').classList.add('opacity-0', 'pointer-events-none'); }
                 return;
             }
+
             if (!button) return;
+
             const id = button.dataset.id;
             switch (button.id) {
-                case 'show-register':
-                    document.getElementById('login-view').style.display = 'none';
-                    document.getElementById('register-view').style.display = 'block';
-                    return;
-                case 'show-login':
-                    document.getElementById('register-view').style.display = 'none';
-                    document.getElementById('login-view').style.display = 'block';
-                    return;
-                case 'logout-btn': window.firebase.signOut(auth); return;
+                case 'show-register': document.getElementById('login-view').style.display = 'none'; document.getElementById('register-view').style.display = 'block'; return;
+                case 'show-login': document.getElementById('register-view').style.display = 'none'; document.getElementById('login-view').style.display = 'block'; return;
+                case 'logout-btn': case 'profile-modal-logout-btn': window.firebase.signOut(auth); return;
                 case 'menu-toggle': document.getElementById('sidebar').classList.toggle('-translate-x-full'); const overlay = document.getElementById('sidebar-overlay'); overlay.classList.toggle('opacity-0'); overlay.classList.toggle('pointer-events-none'); return;
+                case 'profile-toggle-btn':
+                    const modal = document.getElementById('profile-modal');
+                    modal.classList.toggle('scale-95');
+                    modal.classList.toggle('opacity-0');
+                    modal.classList.toggle('pointer-events-none');
+                    return;
                 case 'sidebar-overlay': document.getElementById('menu-toggle').click(); return;
                 case 'add-affiliate-btn': modalManager.open('affiliate-modal'); return;
                 case 'add-advisor-btn': modalManager.open('advisor-modal'); return;
