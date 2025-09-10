@@ -11,10 +11,13 @@
     
     <script type="module">
         import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        // MODIFICADO: Se importan las funciones de persistencia
+        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        
         window.firebase = {
-            initializeApp, deleteApp, getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut,
+            initializeApp, deleteApp, 
+            getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, setPersistence, browserLocalPersistence,
             getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, updateDoc, query, where
         };
     </script>
@@ -667,6 +670,37 @@
     };
 
     // --- LÓGICA DE AUTENTICACIÓN ---
+    async function initializeAuth() {
+        try {
+            // NUEVO: Se establece la persistencia de la sesión de forma explícita.
+            // Esto asegura que la sesión se guarde en el almacenamiento local del navegador
+            // y persista entre recargas y cierre de pestañas.
+            await window.firebase.setPersistence(auth, window.firebase.browserLocalPersistence);
+            
+            window.firebase.onAuthStateChanged(auth, async (user) => {
+                cleanupListeners();
+                if (user) {
+                    currentUser = user;
+                    const userProfile = await loadUserProfile(user.uid);
+                    if(userProfile) {
+                        currentUserData = userProfile;
+                        initializeAppForUser();
+                    } else {
+                         showToast('Perfil de usuario no encontrado. Contacte al soporte.', 'error');
+                         window.firebase.signOut(auth);
+                    }
+                } else {
+                    currentUser = null;
+                    currentUserData = null;
+                    showView(authContainer);
+                }
+            });
+        } catch (error) {
+            console.error("Error setting auth persistence: ", error);
+            showToast(`Error de autenticación: ${error.message}`, 'error');
+        }
+    }
+    
     document.getElementById('login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         loader.style.display = 'flex';
@@ -697,25 +731,8 @@
     document.getElementById('show-register').addEventListener('click', () => { document.getElementById('login-view').classList.add('hidden'); document.getElementById('register-view').classList.remove('hidden'); });
     document.getElementById('show-login').addEventListener('click', () => { document.getElementById('register-view').classList.add('hidden'); document.getElementById('login-view').classList.remove('hidden'); });
 
-    // --- PUNTO DE ENTRADA PRINCIPAL: OBSERVA CAMBIOS DE AUTENTICACIÓN ---
-    window.firebase.onAuthStateChanged(auth, async (user) => {
-        cleanupListeners();
-        if (user) {
-            currentUser = user;
-            const userProfile = await loadUserProfile(user.uid);
-            if(userProfile) {
-                currentUserData = userProfile;
-                initializeAppForUser();
-            } else {
-                 showToast('Perfil de usuario no encontrado. Contacte al soporte.', 'error');
-                 window.firebase.signOut(auth);
-            }
-        } else {
-            currentUser = null;
-            currentUserData = null;
-            showView(authContainer);
-        }
-    });
+    // --- PUNTO DE ENTRADA PRINCIPAL ---
+    initializeAuth();
 
     async function loadUserProfile(uid) {
         const userDocRef = window.firebase.doc(db, "platform_users", uid);
@@ -775,6 +792,9 @@
                 const data = snapshot.docs.map(doc => doc.data());
                 setter(data);
                 updateUIOnDataChange();
+            }, (error) => {
+                console.error(`Error escuchando la colección ${name}:`, error);
+                showToast(`Error al cargar datos de ${name}.`, 'error');
             });
             unsubscribeListeners.push(unsubscribe);
         }
@@ -808,7 +828,9 @@
 
     // --- INICIALIZACIÓN DE LA APP PARA USUARIO LOGUEADO ---
     function initializeAppForUser() {
-        setupEventListeners();
+        if (!eventListenersSetup) {
+            setupEventListeners();
+        }
         switch (currentUserData.role) {
             case 'administrador':
                 setupAdminView();
@@ -906,17 +928,19 @@
     function renderAfiliadoPortal() {
         const myData = affiliates.find(a => a.id === currentUserData.docId);
         if (!myData) {
-            afiliadoView.innerHTML = `<p class="text-center text-red-500">No se pudo cargar tu información.</p>`;
+            afiliadoView.innerHTML = `<div class="text-center"><p class="text-red-500 font-semibold">No se pudo cargar tu información de afiliado.</p><p class="text-slate-600 mt-2">Por favor, contacta a tu administrador.</p></div>`;
             return;
         }
 
         const plan = healthPlans.find(p => p.id === myData.healthPlan);
         const statusStyles = { 'Activo': 'text-green-600', 'Pendiente': 'text-yellow-600', 'Inactivo': 'text-red-600' };
         
-        // Calcular fecha de corte (ej. el mismo día del mes siguiente)
         const startDate = new Date(myData.startDate + 'T00:00:00');
-        const nextCutoffDate = new Date(startDate);
-        nextCutoffDate.setMonth(nextCutoffDate.getMonth() + 1);
+        const nextCutoffDate = new Date();
+        nextCutoffDate.setDate(startDate.getDate());
+        if (nextCutoffDate < new Date()) {
+            nextCutoffDate.setMonth(nextCutoffDate.getMonth() + 1);
+        }
         
         document.getElementById('afiliado-welcome-name').textContent = myData.name.split(' ')[0];
         document.getElementById('afiliado-info-name').textContent = myData.name;
@@ -942,42 +966,8 @@
     }
     
     // --- LÓGICA DE RENDERIZADO (SECCIONES DEL ADMIN) ---
-    function renderGestionarUsuariosSection() {
-        const tableBody = document.getElementById('platform-users-table-body');
-        if(!tableBody) return;
-
-        const usersToList = platformUsers.filter(u => u.role !== 'administrador');
-
-        if(usersToList.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="4" class="text-center p-4 text-slate-500">No hay usuarios de tipo asesor o afiliado creados.</td></tr>`;
-            return;
-        }
-
-        const roleNames = { 'asesor': 'Asesor', 'afiliado': 'Afiliado' };
-        tableBody.innerHTML = usersToList.map(user => {
-            let linkedEntityName = 'N/A';
-            if (user.role === 'asesor') {
-                const advisor = advisors.find(a => a.id === user.docId);
-                if (advisor) linkedEntityName = advisor.name;
-            } else if (user.role === 'afiliado') {
-                const affiliate = affiliates.find(a => a.id === user.docId);
-                if (affiliate) linkedEntityName = affiliate.name;
-            }
-
-            return `
-                 <tr class="hover:bg-slate-50">
-                    <td class="p-3 font-mono text-slate-700">${user.email}</td>
-                    <td class="p-3"><span class="text-xs font-semibold px-2 py-1 rounded-full ${user.role === 'asesor' ? 'bg-sky-100 text-sky-800' : 'bg-indigo-100 text-indigo-800'}">${roleNames[user.role]}</span></td>
-                    <td class="p-3 text-slate-600">${linkedEntityName}</td>
-                    <td class="p-3 text-center">
-                        <button class="delete-user-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-uid="${user.uid}" title="Eliminar Usuario (acción irreversible)"><i data-lucide="trash-2" class="h-4 w-4 pointer-events-none"></i></button>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-        lucide.createIcons();
-    }
-    // ... [El resto de las funciones de renderizado del admin permanecen iguales]
+    // [Se omiten las funciones de renderizado del admin que no cambiaron para brevedad, pero están en el código completo]
+    function renderGestionarUsuariosSection() { const tableBody = document.getElementById('platform-users-table-body'); if(!tableBody) return; const usersToList = platformUsers.filter(u => u.role !== 'administrador'); if(usersToList.length === 0) { tableBody.innerHTML = `<tr><td colspan="4" class="text-center p-4 text-slate-500">No hay usuarios de tipo asesor o afiliado creados.</td></tr>`; return; } const roleNames = { 'asesor': 'Asesor', 'afiliado': 'Afiliado' }; tableBody.innerHTML = usersToList.map(user => { let linkedEntityName = 'N/A'; if (user.role === 'asesor') { const advisor = advisors.find(a => a.id === user.docId); if (advisor) linkedEntityName = advisor.name; } else if (user.role === 'afiliado') { const affiliate = affiliates.find(a => a.id === user.docId); if (affiliate) linkedEntityName = affiliate.name; } return ` <tr class="hover:bg-slate-50"> <td class="p-3 font-mono text-slate-700">${user.email}</td> <td class="p-3"><span class="text-xs font-semibold px-2 py-1 rounded-full ${user.role === 'asesor' ? 'bg-sky-100 text-sky-800' : 'bg-indigo-100 text-indigo-800'}">${roleNames[user.role]}</span></td> <td class="p-3 text-slate-600">${linkedEntityName}</td> <td class="p-3 text-center"> <button class="delete-user-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-uid="${user.uid}" title="Eliminar Usuario (acción irreversible)"><i data-lucide="trash-2" class="h-4 w-4 pointer-events-none"></i></button> </td> </tr>`; }).join(''); lucide.createIcons(); }
     function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme); const themeSelector = document.querySelector(`#theme-selector input[value="${theme}"]`); if (themeSelector) { themeSelector.checked = true; } } 
     async function createNovedad(affiliateId, affiliateName, type, description) { if (!currentUserData) return; const adminUid = currentUserData.adminUid; const novedad = { affiliateId, affiliateName, type, description, timestamp: window.firebase.serverTimestamp() }; const collectionRef = window.firebase.collection(db, `users/${adminUid}/novedades`); await window.firebase.addDoc(collectionRef, novedad); } 
     function getAffiliateCommissionBase(affiliate) { if (affiliate.manualCosts && Object.values(affiliate.manualCosts).some(cost => cost > 0)) { return Object.values(affiliate.manualCosts).reduce((sum, cost) => sum + (Number(cost) || 0), 0); } const plan = healthPlans.find(p => p.id === affiliate.healthPlan); return plan ? plan.price : 0; } 
@@ -998,7 +988,7 @@
     function renderNovedadesSection(){const e=document.getElementById("novedades-feed");if(!e)return;const t=[...novedades].sort((e,t)=>t.timestamp-e.timestamp);if(0===t.length){e.innerHTML='<p class="text-center text-slate-500">No hay actividad reciente.</p>';return}e.innerHTML=t.map(e=>`<div class="flex items-start gap-4"><div class="flex-shrink-0 w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">${getNovedadIcon(e.type)}</div><div> <p class="text-sm text-slate-800">${e.description}</p> <p class="text-xs text-slate-500"> Para el afiliado: <strong class="font-medium">${e.affiliateName}</strong> - ${formatTimeAgo(e.timestamp)} </p> </div></div>`).join(""); lucide.createIcons(); } 
     function renderEmpresaSection(){document.getElementById("company-name").value=companyProfile.name,document.getElementById("company-nit").value=companyProfile.nit,document.getElementById("company-address").value=companyProfile.address,document.getElementById("company-phone").value=companyProfile.phone,document.getElementById("company-email").value=companyProfile.email;const e=document.querySelector(`#theme-selector input[value="${companyProfile.theme||"default"}"]`);e&&(e.checked=!0)} 
     function renderFlujoCajaSection(){const e=new Date,t=new Date(e.getFullYear(),e.getMonth(),1);document.getElementById("report-start-date").value=t.toISOString().split("T")[0],document.getElementById("report-end-date").value=e.toISOString().split("T")[0];const a=getAllTransactions(),n=a.filter(t=>{const a=new Date(t.date);return a.getMonth()===e.getMonth()&&a.getFullYear()===e.getFullYear()}),o=n.filter(e=>"ingreso"===e.type).reduce((e,t)=>e+t.amount,0),s=n.filter(e=>"egreso"===e.type).reduce((e,t)=>e+t.amount,0);document.getElementById("cashflow-income").textContent=formatCurrency(o),document.getElementById("cashflow-expenses").textContent=formatCurrency(s),document.getElementById("cashflow-profit").textContent=formatCurrency(o-s),renderTransactionsTable(a)} 
-    function getAllTransactions(){const e=[];return affiliates.forEach(t=>{if("Activo"===t.status){const a=getAffiliateCommissionBase(t);e.push({id:`auto-i-${t.id}`,type:"ingreso",concept:`Pago afiliado: ${t.name}`,amount:a,date:t.startDate});const n=getAdvisorCommissionForAffiliate(t);if(0<n){const o=advisors.find(e=>e.id===t.advisorId);e.push({id:`auto-e-${t.id}`,type:"egreso",concept:`Comisión ${o?.name||"N/A"} (Afiliado: ${t.name})`,amount:n,date:t.startDate})}}}),[...e,...manualTransactions].sort((e,t)=>new Date(t.date)-new Date(e.date))} 
+    function getAllTransactions(){const e=[];return affiliates.forEach(t=>{if("Activo"===t.status){const a=getAffiliateCommissionBase(t);e.push({id:`auto-i-${t.id}`,type:"ingreso",concept:`Pago afiliado: ${t.name}`,amount:a,date:t.startDate});const n=getAdvisorCommissionForAffiliate(t);if(0<n){const o=advisors.find(e=>e.id===t.advisorId);e.push({id:`auto-e-${t.id}`,type:"egreso",concept:`Comisión ${o?.name||"N/A"} (Afiliado: ${t.name})`,amount:n,date:t.startDate})}}}),[...e,...manualTransactions].sort((e,t)=>new Date(t.date)-new Date(t.date))} 
     function renderTransactionsTable(e){const t=document.getElementById("transactions-table-body");if(!t)return;if(0===e.length){t.innerHTML='<tr><td colspan="3" class="text-center p-4 text-slate-500">No hay transacciones registradas.</td></tr>';return}t.innerHTML=e.map(e=>{const t="ingreso"===e.type;return`<tr class="border-b"><td class="p-3">${new Date(e.date).toLocaleDateString("es-CO")}</td><td class="p-3 text-slate-700">${e.concept}</td><td class="p-3 text-right font-semibold ${t?"text-emerald-600":"text-rose-600"}">${t?"+":"-"}${formatCurrency(e.amount)}</td></tr>`}).join("")} 
     function generatePDFReport(){const{jsPDF:e}=window.jspdf,t=new e,a=new Date(document.getElementById("report-start-date").value+"T00:00:00"),n=new Date(document.getElementById("report-end-date").value+"T23:59:59");if(isNaN(a)||isNaN(n))return void showToast("Por favor, selecciona un rango de fechas válido.","error");const o=getAllTransactions().filter(e=>new Date(e.date)>=a&&new Date(e.date)<=n),s=o.filter(e=>"ingreso"===e.type).reduce((e,t)=>e+t.amount,0),i=o.filter(e=>"egreso"===e.type).reduce((e,t)=>e+t.amount,0),l=getComputedStyle(document.documentElement).getPropertyValue("--color-primary-600").trim().split(" ").map(Number);t.setFontSize(18),t.text(companyProfile.name,14,22),t.setFontSize(11),t.text(`NIT: ${companyProfile.nit}`,14,30),t.text(companyProfile.address,14,36),t.text("Reporte de Flujo de Caja",120,22),t.setFontSize(10),t.text(`Periodo: ${a.toLocaleDateString("es-CO")} - ${n.toLocaleDateString("es-CO")}`,120,30),t.autoTable({startY:45,head:[["Concepto","Total"]],body:[["Ingresos Totales",formatCurrency(s)],["Egresos Totales",formatCurrency(i)],[{content:"Balance del Periodo",styles:{fontStyle:"bold"}},{content:formatCurrency(s-i),styles:{fontStyle:"bold"}}]],theme:"grid",headStyles:{fillColor:l}}),t.autoTable({startY:t.lastAutoTable.finalY+10,head:[["Fecha","Concepto","Tipo","Monto"]],body:o.map(e=>[new Date(e.date).toLocaleDateString("es-CO"),e.concept,"ingreso"===e.type?"Ingreso":"Egreso",formatCurrency(e.amount)]),theme:"striped",headStyles:{fillColor:[45,55,72]}}),t.save(`Reporte_Flujo_Caja_${a.toLocaleDateString("es-CO").replace(/\//g,"-")}.pdf`),showToast("Generando reporte PDF.")} 
     function updateNovedadesBadge(){const e=novedades.filter(e=>(new Date).getTime()-(e.timestamp?.getTime() || 0)<864e5).length,t=document.getElementById("novedades-badge-sidebar"),a=document.getElementById("novedades-badge-mobile");if(!t || !a) return; 0<e?(t.textContent=e,a.textContent=e,t.classList.remove("hidden"),a.classList.remove("hidden")):(t.classList.add("hidden"),a.classList.add("hidden"))} 
@@ -1103,26 +1093,7 @@
     };
     
     // --- LÓGICA DE MANEJO DE FORMULARIOS ---
-    async function handleAffiliateFormSubmit(e) {
-        e.preventDefault(); 
-        const form = e.target; 
-        const selectedPlan = form.querySelector('input[name="health-plan"]:checked'); 
-        if (!selectedPlan && healthPlans.length > 0) return showToast('Debe seleccionar un plan de salud.', 'error');
-        
-        const adminUid = currentUserData.adminUid || currentUser.uid; // Funciona para admin y asesor
-        const affiliateData = { name: form['affiliate-name'].value.trim(), documentId: form['affiliate-id'].value.trim(), email: form['affiliate-email'].value.trim(), phone: form['affiliate-phone'].value.trim(), address: form['affiliate-address'].value.trim(), healthPlan: selectedPlan ? selectedPlan.value : null, pensionPlan: form['pension-plan'].value, arlPlan: form['arl-plan'].value, ccfPlan: form['ccf-plan'].value, advisorId: form['advisor-select-list'].value, startDate: form['affiliate-start-date'].value, status: form['affiliate-status'].value, notes: form['affiliate-notes'].value.trim(), manualCosts: null, manualCommission: null }; 
-        if (form['manual-override-checkbox'].checked) { affiliateData.manualCosts = { health: Number(form['manual-cost-health'].value) || 0, pension: Number(form['manual-cost-pension'].value) || 0, arl: Number(form['manual-cost-arl'].value) || 0, ccf: Number(form['manual-cost-ccf'].value) || 0 }; affiliateData.manualCommission = Number(form['manual-commission'].value) || null; } 
-        const existingId = form['affiliate-doc-id'].value; 
-        if (existingId) { 
-            affiliateData.id = existingId; await saveDataToFirestore('affiliates', affiliateData, adminUid); 
-        } else { 
-            const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUid}/affiliates`)); 
-            affiliateData.id = docRef.id; affiliateData.createdAt = window.firebase.serverTimestamp(); 
-            await saveDataToFirestore('affiliates', affiliateData, adminUid); 
-            await createNovedad(affiliateData.id, affiliateData.name, 'creation', `Se registró al nuevo afiliado ${affiliateData.name}.`); 
-        } 
-        modalManager.close('affiliate-modal'); showToast('Afiliado guardado.'); 
-    }
+    async function handleAffiliateFormSubmit(e) { e.preventDefault(); const form = e.target; const selectedPlan = form.querySelector('input[name="health-plan"]:checked'); if (!selectedPlan && healthPlans.length > 0) return showToast('Debe seleccionar un plan de salud.', 'error'); const adminUid = currentUserData.adminUid || currentUser.uid; const affiliateData = { name: form['affiliate-name'].value.trim(), documentId: form['affiliate-id'].value.trim(), email: form['affiliate-email'].value.trim(), phone: form['affiliate-phone'].value.trim(), address: form['affiliate-address'].value.trim(), healthPlan: selectedPlan ? selectedPlan.value : null, pensionPlan: form['pension-plan'].value, arlPlan: form['arl-plan'].value, ccfPlan: form['ccf-plan'].value, advisorId: form['advisor-select-list'].value, startDate: form['affiliate-start-date'].value, status: form['affiliate-status'].value, notes: form['affiliate-notes'].value.trim(), manualCosts: null, manualCommission: null }; if (form['manual-override-checkbox'].checked) { affiliateData.manualCosts = { health: Number(form['manual-cost-health'].value) || 0, pension: Number(form['manual-cost-pension'].value) || 0, arl: Number(form['manual-cost-arl'].value) || 0, ccf: Number(form['manual-cost-ccf'].value) || 0 }; affiliateData.manualCommission = Number(form['manual-commission'].value) || null; } const existingId = form['affiliate-doc-id'].value; if (existingId) { affiliateData.id = existingId; await saveDataToFirestore('affiliates', affiliateData, adminUid); } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUid}/affiliates`)); affiliateData.id = docRef.id; affiliateData.createdAt = window.firebase.serverTimestamp(); await saveDataToFirestore('affiliates', affiliateData, adminUid); await createNovedad(affiliateData.id, affiliateData.name, 'creation', `Se registró al nuevo afiliado ${affiliateData.name}.`); } modalManager.close('affiliate-modal'); showToast('Afiliado guardado.'); }
 
     async function handleUserFormSubmit(e) {
         e.preventDefault();
@@ -1137,70 +1108,58 @@
         }
 
         loader.style.display = 'flex';
+        let secondaryApp = null;
         try {
             // Técnica profesional para crear un usuario sin desloguear al admin.
-            // Se inicializa una segunda app de Firebase temporalmente.
-            const secondaryApp = window.firebase.initializeApp(firebaseConfig, 'secondaryApp');
+            secondaryApp = window.firebase.initializeApp(firebaseConfig, 'secondaryApp-' + Date.now());
             const secondaryAuth = window.firebase.getAuth(secondaryApp);
             
             const userCredential = await window.firebase.createUserWithEmailAndPassword(secondaryAuth, email, password);
             const newUserUid = userCredential.user.uid;
 
-            // Ahora guardamos los datos del usuario en Firestore.
             const platformUserDocRef = window.firebase.doc(db, "platform_users", newUserUid);
             await window.firebase.setDoc(platformUserDocRef, {
-                uid: newUserUid,
-                email: email,
-                role: role,
-                docId: linkedDocId,
+                uid: newUserUid, email, role, docId: linkedDocId,
                 adminUid: currentUser.uid,
                 createdAt: window.firebase.serverTimestamp()
             });
 
             await window.firebase.signOut(secondaryAuth);
-            await window.firebase.deleteApp(secondaryApp);
-            
             modalManager.close('user-modal');
             showToast('Usuario creado exitosamente.', 'success');
         } catch (error) {
             showToast(getFirebaseAuthErrorMessage(error), 'error');
         } finally {
+            if (secondaryApp) {
+                await window.firebase.deleteApp(secondaryApp);
+            }
             loader.style.display = 'none';
         }
     }
 
-    function handleUserRoleChange(e) {
-        const role = e.target.value;
-        const linkContainer = document.getElementById('user-link-container');
-        const linkLabel = document.getElementById('user-link-label');
-        const linkSelect = document.getElementById('user-link-select');
-        
-        linkSelect.innerHTML = '';
-        if (!role) {
-            linkContainer.classList.add('hidden');
-            return;
-        }
-
-        if (role === 'asesor') {
-            linkLabel.textContent = 'Vincular a Asesor Existente';
-            linkSelect.innerHTML = advisors.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
-        } else if (role === 'afiliado') {
-            linkLabel.textContent = 'Vincular a Afiliado Existente';
-            linkSelect.innerHTML = affiliates.map(a => `<option value="${a.id}">${a.name} - ${a.documentId}</option>`).join('');
-        }
-        
-        linkContainer.classList.remove('hidden');
-    }
+    function handleUserRoleChange(e) { const role = e.target.value; const linkContainer = document.getElementById('user-link-container'); const linkLabel = document.getElementById('user-link-label'); const linkSelect = document.getElementById('user-link-select'); linkSelect.innerHTML = ''; if (!role) { linkContainer.classList.add('hidden'); return; } if (role === 'asesor') { linkLabel.textContent = 'Vincular a Asesor Existente'; linkSelect.innerHTML = advisors.map(a => `<option value="${a.id}">${a.name}</option>`).join(''); } else if (role === 'afiliado') { linkLabel.textContent = 'Vincular a Afiliado Existente'; linkSelect.innerHTML = affiliates.map(a => `<option value="${a.id}">${a.name} - ${a.documentId}</option>`).join(''); } linkContainer.classList.remove('hidden'); }
 
     // --- FUNCIONES AUXILIARES ---
     async function saveDataToFirestore(collection, data, adminUid) { const docRef = window.firebase.doc(db, `users/${adminUid}/${collection}/${data.id}`); await window.firebase.setDoc(docRef, data, { merge: true }); }
     async function deleteDataFromFirestore(collection, docId, adminUid = currentUser.uid) { const docRef = window.firebase.doc(db, `users/${adminUid}/${collection}/${docId}`); await window.firebase.deleteDoc(docRef); }
-    function showToast(message, type = 'success') { const toast = document.getElementById('toast'); if (!toast) return; toast.textContent = message; toast.className = `fixed top-5 right-5 z-[100] text-white py-2 px-4 rounded-lg shadow-xl transition-all duration-300 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`; toast.classList.remove('opacity-0', 'translate-y-2'); setTimeout(() => toast.classList.add('opacity-0', 'translate-y-2'), 3000); } 
+    function showToast(message, type = 'success') { const toast = document.getElementById('toast'); if (!toast) return; toast.textContent = message; toast.className = `fixed top-5 right-5 z-[100] text-white py-2 px-4 rounded-lg shadow-xl transition-all duration-300 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`; toast.classList.remove('opacity-0', 'translate-y-2'); setTimeout(() => toast.classList.add('opacity-0', 'translate-y-2'), 4000); } 
     function formatCurrency(value, minimumFractionDigits = 0) { return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits }).format(value || 0); } 
     function exportToCSV(headers, data, filename) { const csvRows = [headers.join(',')]; for (const row of data) { const values = headers.map(header => `"${('' + row[header]).replace(/"/g, '\\"')}"`); csvRows.push(values.join(',')); } const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); window.URL.revokeObjectURL(url); } 
     function handleExportAffiliates() { const headers = ['Nombre', 'Documento', 'Email', 'Telefono', 'Direccion', 'Asesor', 'Estado', 'Fecha de Inicio', 'Plan de Salud', 'Fondo Pension', 'ARL', 'Caja Comp.']; const dataToExport = affiliates.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const plan = healthPlans.find(p=> p.id === aff.healthPlan); return { 'Nombre': aff.name, 'Documento': aff.documentId, 'Email': aff.email, 'Telefono': aff.phone, 'Direccion': aff.address, 'Asesor': advisor ? advisor.name : 'N/A', 'Estado': aff.status, 'Fecha de Inicio': aff.startDate, 'Plan de Salud': plan ? plan.name : 'N/A', 'Fondo Pension': aff.pensionPlan, 'ARL': aff.arlPlan, 'Caja Comp.': aff.ccfPlan }; }); exportToCSV(headers, dataToExport, 'afiliados_seb_salud.csv'); showToast('Exportando afiliados a CSV.'); } 
     function handleExportAdvisors() { const headers = ['Nombre', 'Comision (%)', 'Total Afiliados', 'Comision Total Generada']; const dataToExport = advisors.map(advisor => { const advisorAffiliates = affiliates.filter(a => a.advisorId === advisor.id); const totalCommission = advisorAffiliates.reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0); return { 'Nombre': advisor.name, 'Comision (%)': advisor.commissionRate, 'Total Afiliados': advisorAffiliates.length, 'Comision Total Generada': totalCommission }; }); exportToCSV(headers, dataToExport, 'asesores_seb_salud.csv'); showToast('Exportando asesores a CSV.'); } 
-    function getFirebaseAuthErrorMessage(error) { switch (error.code) { case 'auth/invalid-email': return 'El correo es inválido.'; case 'auth/user-not-found': return 'Usuario no encontrado.'; case 'auth/wrong-password': return 'Contraseña incorrecta.'; case 'auth/email-already-in-use': return 'El correo ya está en uso.'; case 'auth/weak-password': return 'La contraseña es muy débil (mínimo 6 caracteres).'; default: console.error(error); return 'Ocurrió un error inesperado. Intenta de nuevo.'; } }
+    // MODIFICADO: Mejoramos la función de errores para dar más detalles.
+    function getFirebaseAuthErrorMessage(error) { 
+        console.error("Firebase Auth Error:", error); // Loguea el error completo en la consola para depuración
+        switch (error.code) { 
+            case 'auth/invalid-email': return 'El correo es inválido.'; 
+            case 'auth/user-not-found': return 'Usuario no encontrado.'; 
+            case 'auth/wrong-password': return 'Contraseña incorrecta.'; 
+            case 'auth/email-already-in-use': return 'El correo ya está en uso.'; 
+            case 'auth/weak-password': return 'La contraseña es muy débil (mínimo 6 caracteres).'; 
+            case 'auth/network-request-failed': return 'Error de red. Revisa tu conexión a internet.';
+            default: return `Error inesperado: ${error.message}`; // Muestra el mensaje real del error
+        } 
+    }
 </script>
 </body>
 </html>
