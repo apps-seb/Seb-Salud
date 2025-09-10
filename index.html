@@ -111,7 +111,7 @@
                         </p>
                     </div>
 
-                    <div id="register-view" class="auth-form hidden">
+                    <div id="register-view" class="auth-form" style="display: none;">
                         <h2 class="text-3xl font-bold text-slate-800 mb-2">Crear Cuenta</h2>
                         <p class="text-slate-500 mb-8">Únete a nuestra plataforma.</p>
                         <form id="register-form">
@@ -207,22 +207,22 @@
                     <section id="dashboard" class="content-section active">
                          <h1 class="text-2xl font-bold text-slate-800 mb-6">Resumen General y Métricas Clave</h1>
                          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                    <div><h3 class="text-sm font-medium text-slate-500 uppercase">Ingresos del Mes</h3><p id="kpi-monthly-income" class="text-3xl font-bold text-slate-800 mt-2">$0</p></div>
-                                    <div class="bg-emerald-100 text-emerald-600 p-2 rounded-full"><i data-lucide="trending-up" class="h-6 w-6"></i></div>
-                                </div>
-                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                    <div><h3 class="text-sm font-medium text-slate-500 uppercase">Cartera Vencida</h3><p id="kpi-overdue-payments" class="text-3xl font-bold text-rose-500 mt-2">$0</p></div>
-                                    <div class="bg-rose-100 text-rose-600 p-2 rounded-full"><i data-lucide="clock" class="h-6 w-6"></i></div>
-                                </div>
-                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                    <div><h3 class="text-sm font-medium text-slate-500 uppercase">Nuevos Afiliados (Mes)</h3><p id="kpi-new-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
-                                    <div class="bg-sky-100 text-sky-600 p-2 rounded-full"><i data-lucide="user-plus" class="h-6 w-6"></i></div>
-                                </div>
-                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                    <div><h3 class="text-sm font-medium text-slate-500 uppercase">Afiliados Activos</h3><p id="kpi-active-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
-                                    <div class="bg-slate-100 text-slate-600 p-2 rounded-full"><i data-lucide="check-circle-2" class="h-6 w-6"></i></div>
-                                </div>
+                                 <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
+                                     <div><h3 class="text-sm font-medium text-slate-500 uppercase">Ingresos del Mes</h3><p id="kpi-monthly-income" class="text-3xl font-bold text-slate-800 mt-2">$0</p></div>
+                                     <div class="bg-emerald-100 text-emerald-600 p-2 rounded-full"><i data-lucide="trending-up" class="h-6 w-6"></i></div>
+                                 </div>
+                                 <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
+                                     <div><h3 class="text-sm font-medium text-slate-500 uppercase">Cartera Vencida</h3><p id="kpi-overdue-payments" class="text-3xl font-bold text-rose-500 mt-2">$0</p></div>
+                                     <div class="bg-rose-100 text-rose-600 p-2 rounded-full"><i data-lucide="clock" class="h-6 w-6"></i></div>
+                                 </div>
+                                 <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
+                                     <div><h3 class="text-sm font-medium text-slate-500 uppercase">Nuevos Afiliados (Mes)</h3><p id="kpi-new-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
+                                     <div class="bg-sky-100 text-sky-600 p-2 rounded-full"><i data-lucide="user-plus" class="h-6 w-6"></i></div>
+                                 </div>
+                                 <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
+                                     <div><h3 class="text-sm font-medium text-slate-500 uppercase">Afiliados Activos</h3><p id="kpi-active-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
+                                     <div class="bg-slate-100 text-slate-600 p-2 rounded-full"><i data-lucide="check-circle-2" class="h-6 w-6"></i></div>
+                                 </div>
                          </div>
                     </section>
                     
@@ -391,91 +391,91 @@
         </div>
         
         <div id="affiliate-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50">
-         <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col transform scale-95">
-             <div class="flex justify-between items-center p-5 border-b sticky top-0 bg-white z-10 flex-shrink-0">
-                 <h2 id="affiliate-modal-title" class="text-2xl font-bold">Nuevo Afiliado</h2>
-                 <button data-close-modal="affiliate-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
-             </div>
-             <div class="flex-grow overflow-y-auto">
-                 <form id="affiliate-form" class="p-6">
-                     <input type="hidden" id="affiliate-doc-id">
-                     <div class="space-y-10">
-                         <div>
-                             <h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">1. Información Personal</h3>
-                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                 <input type="text" id="affiliate-name" placeholder="Nombre Completo" class="w-full px-4 py-2 border rounded-lg" required>
-                                 <input type="text" id="affiliate-id" placeholder="Documento" class="w-full px-4 py-2 border rounded-lg" required>
-                                 <input type="email" id="affiliate-email" placeholder="Correo Electrónico" class="w-full px-4 py-2 border rounded-lg" required>
-                                 <input type="tel" id="affiliate-phone" placeholder="Teléfono" class="w-full px-4 py-2 border rounded-lg">
-                                 <input type="text" id="affiliate-address" placeholder="Dirección" class="md:col-span-2 w-full px-4 py-2 border rounded-lg">
-                             </div>
-                         </div>
-                         <div>
-                             <h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">2. Plan de Salud Complementario / Prepagada</h3>
-                             <div id="health-plan-selector" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"></div>
-                         </div>
-                         <div>
-                             <h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">3. Otras Afiliaciones</h3>
-                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                 <div><label for="pension-plan" class="block text-sm font-medium text-slate-600 mb-1">Fondo de Pensión</label><select id="pension-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione un fondo</option><option value="Colpensiones">Colpensiones (Público)</option><option value="Porvenir">Porvenir</option><option value="Protección">Protección</option><option value="Colfondos">Colfondos</option><option value="Skandia">Skandia</option></select></div>
-                                 <div><label for="arl-plan" class="block text-sm font-medium text-slate-600 mb-1">ARL</label><select id="arl-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una ARL</option><option value="ARL Sura">ARL Sura</option><option value="ARL Positiva">ARL Positiva</option><option value="ARL Colmena">ARL Colmena</option><option value="Seguros Bolívar ARL">Seguros Bolívar ARL</option><option value="AXA Colpatria ARL">AXA Colpatria ARL</option></select></div>
-                                 <div><label for="ccf-plan" class="block text-sm font-medium text-slate-600 mb-1">Caja de Compensación</label><select id="ccf-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una caja</option><option value="Compensar">Compensar</option><option value="Colsubsidio">Colsubsidio</option><option value="Cafam">Cafam</option><option value="Comfama">Comfama (Antioquia)</option><option value="Comfandi">Comfandi (Valle)</option><option value="Otra">Otra / Ninguna</option></select></div>
-                             </div>
-                         </div>
-                         <div>
-                             <h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">4. Detalles de Venta y Administrativos</h3>
-                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                 <div><label for="advisor-select-list" class="block text-sm font-medium text-slate-600 mb-1">Asesor Asignado</label><select id="advisor-select-list" class="w-full px-4 py-2 border rounded-lg" required></select></div>
-                                 <div><label for="affiliate-start-date" class="block text-sm font-medium text-slate-600 mb-1">Fecha de Inicio</label><input type="date" id="affiliate-start-date" class="w-full px-4 py-2 border rounded-lg" required></div>
-                                 <div><label for="affiliate-status" class="block text-sm font-medium text-slate-600 mb-1">Estado del Afiliado</label><select id="affiliate-status" class="w-full px-4 py-2 border rounded-lg" required><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div>
-                             </div>
-                              <div class="mt-6"><label class="flex items-center space-x-2"><input type="checkbox" id="manual-override-checkbox" class="h-4 w-4 text-primary-600 rounded"><span>Usar costos y comisiones manuales</span></label></div>
-                             
-                             <div id="manual-override-container" class="hidden mt-4 space-y-6 p-4 border rounded-lg bg-slate-50">
-                                 <div>
-                                     <h4 class="text-md font-semibold text-slate-600 mb-3">Costos de Afiliación</h4>
-                                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                         <div><label class="text-sm font-medium">Salud ($)</label><input type="number" id="manual-cost-health" class="w-full p-2 border rounded-lg mt-1" placeholder="Ej: 95000"></div>
-                                         <div><label class="text-sm font-medium">Pensión ($)</label><input type="number" id="manual-cost-pension" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div>
-                                         <div><label class="text-sm font-medium">ARL ($)</label><input type="number" id="manual-cost-arl" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div>
-                                         <div><label class="text-sm font-medium">Caja Comp. ($)</label><input type="number" id="manual-cost-ccf" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div>
-                                     </div>
-                                 </div>
-                                 <div class="pt-4 border-t">
-                                     <h4 class="text-md font-semibold text-slate-600 mb-3">Comisiones</h4>
-                                     <div class="max-w-xs">
-                                         <label class="text-sm font-medium">Comisión Asesor ($)</label>
-                                         <input type="number" id="manual-commission" class="w-full p-2 border rounded-lg mt-1" placeholder="Ej: 20000">
-                                     </div>
-                                 </div>
-                             </div>
+           <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col transform scale-95">
+               <div class="flex justify-between items-center p-5 border-b sticky top-0 bg-white z-10 flex-shrink-0">
+                   <h2 id="affiliate-modal-title" class="text-2xl font-bold">Nuevo Afiliado</h2>
+                   <button data-close-modal="affiliate-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+               </div>
+               <div class="flex-grow overflow-y-auto">
+                   <form id="affiliate-form" class="p-6">
+                       <input type="hidden" id="affiliate-doc-id">
+                       <div class="space-y-10">
+                           <div>
+                               <h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">1. Información Personal</h3>
+                               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                   <input type="text" id="affiliate-name" placeholder="Nombre Completo" class="w-full px-4 py-2 border rounded-lg" required>
+                                   <input type="text" id="affiliate-id" placeholder="Documento" class="w-full px-4 py-2 border rounded-lg" required>
+                                   <input type="email" id="affiliate-email" placeholder="Correo Electrónico" class="w-full px-4 py-2 border rounded-lg" required>
+                                   <input type="tel" id="affiliate-phone" placeholder="Teléfono" class="w-full px-4 py-2 border rounded-lg">
+                                   <input type="text" id="affiliate-address" placeholder="Dirección" class="md:col-span-2 w-full px-4 py-2 border rounded-lg">
+                               </div>
+                           </div>
+                           <div>
+                               <h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">2. Plan de Salud Complementario / Prepagada</h3>
+                               <div id="health-plan-selector" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"></div>
+                           </div>
+                           <div>
+                               <h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">3. Otras Afiliaciones</h3>
+                               <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                   <div><label for="pension-plan" class="block text-sm font-medium text-slate-600 mb-1">Fondo de Pensión</label><select id="pension-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione un fondo</option><option value="Colpensiones">Colpensiones (Público)</option><option value="Porvenir">Porvenir</option><option value="Protección">Protección</option><option value="Colfondos">Colfondos</option><option value="Skandia">Skandia</option></select></div>
+                                   <div><label for="arl-plan" class="block text-sm font-medium text-slate-600 mb-1">ARL</label><select id="arl-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una ARL</option><option value="ARL Sura">ARL Sura</option><option value="ARL Positiva">ARL Positiva</option><option value="ARL Colmena">ARL Colmena</option><option value="Seguros Bolívar ARL">Seguros Bolívar ARL</option><option value="AXA Colpatria ARL">AXA Colpatria ARL</option></select></div>
+                                   <div><label for="ccf-plan" class="block text-sm font-medium text-slate-600 mb-1">Caja de Compensación</label><select id="ccf-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una caja</option><option value="Compensar">Compensar</option><option value="Colsubsidio">Colsubsidio</option><option value="Cafam">Cafam</option><option value="Comfama">Comfama (Antioquia)</option><option value="Comfandi">Comfandi (Valle)</option><option value="Otra">Otra / Ninguna</option></select></div>
+                               </div>
+                           </div>
+                           <div>
+                               <h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">4. Detalles de Venta y Administrativos</h3>
+                               <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                   <div><label for="advisor-select-list" class="block text-sm font-medium text-slate-600 mb-1">Asesor Asignado</label><select id="advisor-select-list" class="w-full px-4 py-2 border rounded-lg" required></select></div>
+                                   <div><label for="affiliate-start-date" class="block text-sm font-medium text-slate-600 mb-1">Fecha de Inicio</label><input type="date" id="affiliate-start-date" class="w-full px-4 py-2 border rounded-lg" required></div>
+                                   <div><label for="affiliate-status" class="block text-sm font-medium text-slate-600 mb-1">Estado del Afiliado</label><select id="affiliate-status" class="w-full px-4 py-2 border rounded-lg" required><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div>
+                               </div>
+                                <div class="mt-6"><label class="flex items-center space-x-2"><input type="checkbox" id="manual-override-checkbox" class="h-4 w-4 text-primary-600 rounded"><span>Usar costos y comisiones manuales</span></label></div>
+                               
+                               <div id="manual-override-container" class="hidden mt-4 space-y-6 p-4 border rounded-lg bg-slate-50">
+                                   <div>
+                                       <h4 class="text-md font-semibold text-slate-600 mb-3">Costos de Afiliación</h4>
+                                       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                           <div><label class="text-sm font-medium">Salud ($)</label><input type="number" id="manual-cost-health" class="w-full p-2 border rounded-lg mt-1" placeholder="Ej: 95000"></div>
+                                           <div><label class="text-sm font-medium">Pensión ($)</label><input type="number" id="manual-cost-pension" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div>
+                                           <div><label class="text-sm font-medium">ARL ($)</label><input type="number" id="manual-cost-arl" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div>
+                                           <div><label class="text-sm font-medium">Caja Comp. ($)</label><input type="number" id="manual-cost-ccf" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div>
+                                       </div>
+                                   </div>
+                                   <div class="pt-4 border-t">
+                                       <h4 class="text-md font-semibold text-slate-600 mb-3">Comisiones</h4>
+                                       <div class="max-w-xs">
+                                           <label class="text-sm font-medium">Comisión Asesor ($)</label>
+                                           <input type="number" id="manual-commission" class="w-full p-2 border rounded-lg mt-1" placeholder="Ej: 20000">
+                                       </div>
+                                   </div>
+                               </div>
 
-                              <div class="mt-6"><textarea id="affiliate-notes" placeholder="Notas adicionales..." class="w-full px-4 py-2 border rounded-lg h-24"></textarea></div>
-                         </div>
-                     </div>
-                     <div class="pt-6 border-t mt-8 flex justify-end">
-                         <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-lg">Guardar Afiliado</button>
-                     </div>
-                 </form>
-             </div>
-         </div>
+                                <div class="mt-6"><textarea id="affiliate-notes" placeholder="Notas adicionales..." class="w-full px-4 py-2 border rounded-lg h-24"></textarea></div>
+                           </div>
+                       </div>
+                       <div class="pt-6 border-t mt-8 flex justify-end">
+                           <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-lg">Guardar Afiliado</button>
+                       </div>
+                   </form>
+               </div>
+           </div>
         </div>
 
         <div id="plan-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50">
-         <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-full overflow-y-auto transform scale-95">
-             <div class="flex justify-between items-center p-6 border-b"><h2 id="plan-modal-title" class="text-2xl font-bold">Nuevo Plan de Salud</h2><button data-close-modal="plan-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div>
-             <form id="plan-form" class="p-6">
-                 <input type="hidden" id="plan-doc-id">
-                 <div class="space-y-4">
-                     <div><label for="plan-name" class="block text-sm font-medium text-slate-600">Nombre del Plan</label><input type="text" id="plan-name" placeholder="Ej: Plan Integral" class="w-full mt-1 p-2 border rounded-lg" required></div>
-                     <div><label for="plan-price" class="block text-sm font-medium text-slate-600">Precio Mensual ($)</label><input type="number" id="plan-price" placeholder="Ej: 180000" class="w-full mt-1 p-2 border rounded-lg" required></div>
-                     <div><label for="plan-features" class="block text-sm font-medium text-slate-600">Características (una por línea)</label><textarea id="plan-features" placeholder="Acceso directo a 5 especialidades&#10;Atención domiciliaria" class="w-full mt-1 p-2 border rounded-lg h-32" required></textarea></div>
-                 </div>
-                 <div class="pt-6 border-t mt-6 flex justify-end">
-                     <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Plan</button>
-                 </div>
-             </form>
-         </div>
+           <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-full overflow-y-auto transform scale-95">
+               <div class="flex justify-between items-center p-6 border-b"><h2 id="plan-modal-title" class="text-2xl font-bold">Nuevo Plan de Salud</h2><button data-close-modal="plan-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div>
+               <form id="plan-form" class="p-6">
+                   <input type="hidden" id="plan-doc-id">
+                   <div class="space-y-4">
+                       <div><label for="plan-name" class="block text-sm font-medium text-slate-600">Nombre del Plan</label><input type="text" id="plan-name" placeholder="Ej: Plan Integral" class="w-full mt-1 p-2 border rounded-lg" required></div>
+                       <div><label for="plan-price" class="block text-sm font-medium text-slate-600">Precio Mensual ($)</label><input type="number" id="plan-price" placeholder="Ej: 180000" class="w-full mt-1 p-2 border rounded-lg" required></div>
+                       <div><label for="plan-features" class="block text-sm font-medium text-slate-600">Características (una por línea)</label><textarea id="plan-features" placeholder="Acceso directo a 5 especialidades&#10;Atención domiciliaria" class="w-full mt-1 p-2 border rounded-lg h-32" required></textarea></div>
+                   </div>
+                   <div class="pt-6 border-t mt-6 flex justify-end">
+                       <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Plan</button>
+                   </div>
+               </form>
+           </div>
         </div>
 
         <div id="advisor-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="advisor-modal-title" class="text-2xl font-bold">Nuevo Asesor</h2><button data-close-modal="advisor-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="advisor-form" class="p-6"><input type="hidden" id="advisor-doc-id"><div class="space-y-4"><input type="text" id="advisor-name" placeholder="Nombre Completo" class="w-full px-4 py-2 border rounded-lg" required><input type="number" id="advisor-commission" placeholder="Comisión (%)" min="0" max="100" class="w-full px-4 py-2 border rounded-lg" required></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Asesor</button></div></form></div></div>
@@ -546,7 +546,7 @@
             resetLocalData();
             showView(authContainer);
             document.getElementById('login-view').style.display = 'block';
-            document.getElementById('register-view').classList.add('hidden');
+            document.getElementById('register-view').style.display = 'none';
         }
     });
     
@@ -695,8 +695,14 @@
             if (!button) return;
             const id = button.dataset.id;
             switch (button.id) {
-                case 'show-register': document.getElementById('login-view').classList.add('hidden'); document.getElementById('register-view').classList.remove('hidden'); return;
-                case 'show-login': document.getElementById('register-view').classList.add('hidden'); document.getElementById('login-view').classList.remove('hidden'); return;
+                case 'show-register':
+                    document.getElementById('login-view').style.display = 'none';
+                    document.getElementById('register-view').style.display = 'block';
+                    return;
+                case 'show-login':
+                    document.getElementById('register-view').style.display = 'none';
+                    document.getElementById('login-view').style.display = 'block';
+                    return;
                 case 'logout-btn': window.firebase.signOut(auth); return;
                 case 'menu-toggle': document.getElementById('sidebar').classList.toggle('-translate-x-full'); const overlay = document.getElementById('sidebar-overlay'); overlay.classList.toggle('opacity-0'); overlay.classList.toggle('pointer-events-none'); return;
                 case 'sidebar-overlay': document.getElementById('menu-toggle').click(); return;
