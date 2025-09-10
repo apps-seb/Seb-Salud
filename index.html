@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Seb Salud - Plataforma de Gestión (Firebase)</title>
+  <title>Seb Salud - Plataforma de Gestión (Firebase conectado)</title>
 
   <!-- Tailwind + Iconos -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- (Opcional) jsPDF si lo usabas para reportes -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
@@ -38,6 +37,13 @@
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
+
+<!-- ====== Banner de ayuda despliegue ====== -->
+<div id="deploy-hint" class="hidden bg-amber-50 text-amber-900 border border-amber-200 px-4 py-3 text-sm">
+  <b>Nota:</b> Si publicaste en <code>github.io</code> y no pasa del login:
+  habilita <b>Email/Password</b> en Firebase Auth, agrega tu dominio en <b>Authorized domains</b>,
+  y pega tus credenciales en <code>window.__FIREBASE_CONFIG__</code>. Si falla, entrarás en <b>modo demo (anónimo)</b>.
+</div>
 
 <!-- ====== Auth ====== -->
 <div id="auth-container" class="min-h-screen flex items-center justify-center p-4">
@@ -84,6 +90,7 @@
     </form>
 
     <div id="auth-error" class="text-center text-sm text-red-600 font-medium"></div>
+    <div id="auth-info" class="text-center text-xs text-slate-500"></div>
   </div>
 </div>
 
@@ -122,7 +129,6 @@
       </header>
 
       <main id="main-content" class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8">
-        <!-- Secciones -->
         <section id="dashboard" class="content-section"></section>
         <section id="afiliados" class="content-section"></section>
         <section id="asesores" class="content-section"></section>
@@ -136,7 +142,7 @@
 
 <!-- ====== Modales mínimos (CRUD) ====== -->
 <!-- Afiliado -->
-<div id="affiliate-modal" class="modal fixed inset-0 bg-black/70 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60]">
+<div id="affiliate-modal" class="modal fixed inset-0 bg-black/70 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60] hidden">
   <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-3xl transform scale-95">
     <div class="flex justify-between items-center p-5 border-b sticky top-0 bg-white z-10">
       <h2 id="affiliate-modal-title" class="text-2xl font-bold">Nuevo Afiliado</h2>
@@ -172,7 +178,7 @@
 </div>
 
 <!-- Asesor -->
-<div id="advisor-modal" class="modal fixed inset-0 bg-black/70 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60]">
+<div id="advisor-modal" class="modal fixed inset-0 bg-black/70 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60] hidden">
   <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md transform scale-95">
     <div class="flex justify-between items-center p-5 border-b">
       <h2 id="advisor-modal-title" class="text-2xl font-bold">Nuevo Asesor</h2>
@@ -190,7 +196,7 @@
 </div>
 
 <!-- Plan -->
-<div id="plan-modal" class="modal fixed inset-0 bg-black/70 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60]">
+<div id="plan-modal" class="modal fixed inset-0 bg-black/70 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60] hidden">
   <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md transform scale-95">
     <div class="flex justify-between items-center p-5 border-b">
       <h2 id="plan-modal-title" class="text-2xl font-bold">Nuevo Plan</h2>
@@ -209,7 +215,7 @@
 </div>
 
 <!-- Usuario App -->
-<div id="user-modal" class="modal fixed inset-0 bg-black/70 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60]">
+<div id="user-modal" class="modal fixed inset-0 bg-black/70 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60] hidden">
   <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md transform scale-95">
     <div class="flex justify-between items-center p-5 border-b">
       <h2 id="user-modal-title" class="text-2xl font-bold">Nuevo Usuario (App)</h2>
@@ -229,9 +235,7 @@
       </div>
       <div>
         <label class="text-sm font-medium">Vincular a</label>
-        <select id="user-link" class="w-full p-2 border rounded-lg">
-          <!-- Dinámico: asesores o afiliados -->
-        </select>
+        <select id="user-link" class="w-full p-2 border rounded-lg"></select>
       </div>
       <div class="pt-4 border-t flex justify-end">
         <button class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar</button>
@@ -260,7 +264,8 @@
   import {
     getAuth, onAuthStateChanged, signInWithEmailAndPassword,
     createUserWithEmailAndPassword, signOut, updatePassword,
-    connectAuthEmulator
+    setPersistence, browserLocalPersistence, connectAuthEmulator,
+    signInAnonymously
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import {
     getFirestore, collection, doc, getDoc, getDocs,
@@ -268,12 +273,16 @@
     query, orderBy, where, connectFirestoreEmulator
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+  // ===== Flags =====
+  const AUTO_FALLBACK_ANON = true;      // entra sí o sí con anónimo si falla login/registro
+  const PROMOTE_FIRST_ADMIN = true;     // si no hay admin, el primero autenticado será admin
+
   // ===== Utilidades UI =====
   const $ = (sel) => document.querySelector(sel);
   const $$ = (sel) => document.querySelectorAll(sel);
-  const show = (el) => el.classList.remove('hidden','opacity-0','pointer-events-none');
-  const hide = (el) => el.classList.add('hidden');
-  const openModal = (id)=>{ const m=$(`#${id}`); m&& (m.classList.remove('opacity-0','pointer-events-none'), m.querySelector('.modal-content')?.classList.remove('scale-95')); }
+  const show = (el) => el && el.classList.remove('hidden','opacity-0','pointer-events-none');
+  const hide = (el) => el && el.classList.add('hidden');
+  const openModal = (id)=>{ const m=$(`#${id}`); if(!m) return; show(m); m.classList.remove('opacity-0','pointer-events-none'); m.querySelector('.modal-content')?.classList.remove('scale-95'); }
   const closeModal = (id)=>{ const m=$(`#${id}`); if(!m) return; m.classList.add('opacity-0'); m.querySelector('.modal-content')?.classList.add('scale-95'); setTimeout(()=>m.classList.add('pointer-events-none','hidden'),200); }
   const toast = (msg, ok=true)=>{
     const t=$("#toast"), span=$("#toast-message");
@@ -281,7 +290,7 @@
     t.classList.remove('opacity-0','translate-y-2');
     t.classList.toggle('bg-slate-900', ok);
     t.classList.toggle('bg-red-600', !ok);
-    setTimeout(()=>t.classList.add('opacity-0','translate-y-2'),2200);
+    setTimeout(()=>t.classList.add('opacity-0','translate-y-2'),2400);
   };
 
   // ===== Firebase Init + Emulators =====
@@ -290,6 +299,7 @@
   const app = initializeApp(CONFIG);
   const auth = getAuth(app);
   const db = getFirestore(app);
+  await setPersistence(auth, browserLocalPersistence);
 
   if(useEmu){
     try{
@@ -299,20 +309,21 @@
     }catch(e){ console.warn("Emulators no disponibles:", e); }
   }
 
-  // ===== Data Layer (colecciones) =====
-  const colUsersApp   = () => collection(db, "usersApp");      // {uid,email,role,appDataId}
-  const colAffiliates = () => collection(db, "affiliates");    // {name,document,email,phone,address,planId,advisorId,status,notes,createdAt}
-  const colAdvisors   = () => collection(db, "advisors");      // {name,commissionRate,createdAt}
-  const colPlans      = () => collection(db, "healthPlans");    // {name,price,features,createdAt}
-  const colSettings   = () => collection(db, "settings");       // {key:value} doc único opcional
+  // Hints para GitHub Pages
+  const host = location.hostname || "";
+  if(host.endsWith("github.io")) show($("#deploy-hint"));
 
-  // Estado en memoria (para rendering rápido)
-  let currentUser = null;          // auth.currentUser + role
-  let usersApp = [];               // usuarios de la app (roles)
-  let affiliates = [];
-  let advisors = [];
-  let plans = [];
-  let settings = {};
+  // ===== Colecciones =====
+  const colUsersApp   = () => collection(db, "usersApp");
+  const colAffiliates = () => collection(db, "affiliates");
+  const colAdvisors   = () => collection(db, "advisors");
+  const colPlans      = () => collection(db, "healthPlans");
+  const colSettings   = () => collection(db, "settings");
+
+  // Estado
+  let currentUser = null;
+  let usersApp = [], affiliates = [], advisors = [], plans = [], settings = {};
+  let anonTried = false;
 
   // ===== Auth UI =====
   const authContainer = $("#auth-container");
@@ -322,6 +333,7 @@
   const loginForm     = $("#login-form");
   const registerForm  = $("#register-form");
   const authError     = $("#auth-error");
+  const authInfo      = $("#auth-info");
 
   gotoRegister?.addEventListener("click", e=>{
     e.preventDefault();
@@ -338,51 +350,101 @@
   });
 
   loginForm?.addEventListener("submit", async (e)=>{
-    e.preventDefault(); authError.textContent="";
+    e.preventDefault(); authError.textContent=""; authInfo.textContent="";
     const email = $("#login-email").value.trim();
     const pass  = $("#login-password").value.trim();
     try{
       await signInWithEmailAndPassword(auth, email, pass);
       toast("Bienvenido 👋");
     }catch(err){
-      console.error(err); authError.textContent = mapAuthErr(err);
+      handleAuthError(err, "login");
     }
   });
 
   registerForm?.addEventListener("submit", async (e)=>{
-    e.preventDefault(); authError.textContent="";
+    e.preventDefault(); authError.textContent=""; authInfo.textContent="";
     const email = $("#register-email").value.trim();
     const pass  = $("#register-password").value.trim();
     try{
       const { user } = await createUserWithEmailAndPassword(auth, email, pass);
-      // Por defecto, primer usuario => admin (si no hay ninguno)
       const hasAdmins = (await getDocs(query(colUsersApp(), where("role","==","admin")))).size > 0;
       await setDoc(doc(colUsersApp(), user.uid), { uid:user.uid, email, role: hasAdmins ? "afiliado" : "admin", appDataId: null });
       toast("Cuenta creada ✅");
     }catch(err){
-      console.error(err); authError.textContent = mapAuthErr(err);
+      handleAuthError(err, "register");
     }
   });
+
+  function hintFor(errorCode){
+    if(errorCode.includes("operation-not-allowed")) return "Habilita Email/Password en Firebase Console → Authentication → Sign-in method.";
+    if(errorCode.includes("invalid-api-key")) return "Revisa tu firebaseConfig (API key/domains).";
+    if(errorCode.includes("network-request-failed")) return "Problema de red/CORS. Verifica dominio autorizado y conexión.";
+    if(errorCode.includes("unauthorized-domain")) return "Agrega este dominio en Authorized domains (Firebase Auth).";
+    return "";
+  }
+
+  async function fallBackAnon(){
+    if(!AUTO_FALLBACK_ANON) return false;
+    if(anonTried) return false;
+    anonTried = true;
+    try{
+      await signInAnonymously(auth);
+      authInfo.textContent = "Entraste en modo demo (anónimo). Configura Auth para login real.";
+      toast("Modo demo activo (sesión anónima)");
+      return true;
+    }catch(e){
+      console.warn("Anon sign-in failed:", e);
+      return false;
+    }
+  }
+
+  function handleAuthError(err, ctx){
+    console.error(`[${ctx}]`, err);
+    const code = err?.code || "auth/unknown";
+    const msgMap = {
+      "auth/invalid-credential": "Credenciales inválidas.",
+      "auth/user-not-found": "Usuario no encontrado.",
+      "auth/wrong-password": "Contraseña incorrecta.",
+      "auth/email-already-in-use": "El correo ya está registrado.",
+      "auth/weak-password": "La contraseña es muy débil.",
+    };
+    const msg = msgMap[code] || `Error de autenticación (${code}).`;
+    authError.textContent = msg + " " + hintFor(code);
+
+    // Fallback automático
+    fallBackAnon();
+  }
 
   $("#logout-btn")?.addEventListener("click", ()=> signOut(auth));
 
   onAuthStateChanged(auth, async (user)=>{
     if(user){
-      // Cargar perfil de rol
       let snap = await getDoc(doc(colUsersApp(), user.uid));
       if(!snap.exists()){
-        // Si no existe en usersApp, crear afiliado por defecto
-        await setDoc(doc(colUsersApp(), user.uid), { uid:user.uid, email:user.email, role:"afiliado", appDataId:null });
+        await setDoc(doc(colUsersApp(), user.uid), {
+          uid:user.uid, email:user.email || null, role:"afiliado", appDataId:null, createdAt: serverTimestamp()
+        });
         snap = await getDoc(doc(colUsersApp(), user.uid));
       }
       currentUser = { ...snap.data(), authUser:user };
-      await bootstrapData(); // cargar colecciones base
+
+      // Seed admin si no existe
+      if(PROMOTE_FIRST_ADMIN){
+        const adminsCount = (await getDocs(query(colUsersApp(), where("role","==","admin")))).size;
+        if(adminsCount === 0){
+          await updateDoc(doc(colUsersApp(), user.uid), { role:"admin" });
+          currentUser.role = "admin";
+          toast("Se configuró este usuario como ADMIN (primer usuario).");
+        }
+      }
+
+      await bootstrapData();
       renderAppForRole();
       hide(authContainer); show(appContainer);
     }else{
       currentUser = null;
       show(authContainer); hide(appContainer);
-      hide($("#affiliate-modal")); hide($("#advisor-modal")); hide($("#plan-modal")); hide($("#user-modal"));
+      ["affiliate-modal","advisor-modal","plan-modal","user-modal"].forEach(id=>hide($(`#${id}`)));
     }
     lucide.createIcons();
   });
@@ -393,10 +455,7 @@
     settings = await loadSettings();
     usersApp = await loadUsersApp();
   }
-  async function loadUsersApp(){
-    const qs = await getDocs(colUsersApp());
-    return qs.docs.map(d=>d.data());
-  }
+  async function loadUsersApp(){ const qs = await getDocs(colUsersApp()); return qs.docs.map(d=>d.data()); }
   async function loadAffiliates(){
     const qs = await getDocs(query(colAffiliates(), orderBy("createdAt","desc")));
     return qs.docs.map(d=>({ id:d.id, ...d.data() }));
@@ -409,7 +468,6 @@
     const qs = await getDocs(query(colPlans(), orderBy("createdAt","desc")));
     const arr = qs.docs.map(d=>({ id:d.id, ...d.data() }));
     if(arr.length===0){
-      // Seed mínimo
       const seed = [
         {name:"PAC Básico", price:65000, features:"3 especialidades\nAtención domiciliaria"},
         {name:"MP Clásico", price:195000, features:"10+ especialidades\nHabitación individual"},
@@ -422,8 +480,7 @@
   }
   async function loadSettings(){
     const qs = await getDocs(colSettings());
-    const obj = {};
-    qs.forEach(d=>{ obj[d.id]=d.data(); });
+    const obj = {}; qs.forEach(d=>{ obj[d.id]=d.data(); });
     return obj;
   }
 
@@ -450,9 +507,8 @@
     });
 
     $("#user-display-name").textContent = currentUser.email || currentUser.uid;
-    $("#user-display-role").textContent = currentUser.role?.toUpperCase() || "AFILIADO";
+    $("#user-display-role").textContent = (currentUser.role||"afiliado").toUpperCase();
 
-    // Render primer target
     showSection("dashboard");
   }
 
@@ -567,7 +623,6 @@
       </tr>`;
     }).join("");
 
-    // acciones
     $$('[data-edit]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         const id = btn.getAttribute('data-edit');
@@ -595,7 +650,6 @@
     $("#affiliate-phone").value="";
     $("#affiliate-address").value="";
     $("#affiliate-notes").value="";
-    // combos
     const planSel = $("#affiliate-plan");
     planSel.innerHTML = plans.map(p=>`<option value="${p.id}">${p.name}</option>`).join("");
     const advSel = $("#affiliate-advisor");
@@ -848,7 +902,7 @@
       if(u.role==="asesor"){ const a=advisors.find(x=>x.id===u.appDataId); linked = a? a.name : "—"; }
       if(u.role==="afiliado"){ const f=affiliates.find(x=>x.id===u.appDataId); linked = f? f.name : "—"; }
       return `<tr>
-        <td class="p-3">${u.email}</td>
+        <td class="p-3">${u.email ?? "—"}</td>
         <td class="p-3">${u.role}</td>
         <td class="p-3">${linked}</td>
         <td class="p-3 text-right">
@@ -864,7 +918,7 @@
         const u = usersApp.find(x=>x.uid===uid);
         if(!u) return;
         $("#user-id-hidden").value=u.uid;
-        $("#user-email").value=u.email;
+        $("#user-email").value=u.email ?? "";
         $("#user-password").value="";
         $("#user-role").value=u.role;
         fillUserLinkOptions(u.role);
@@ -889,16 +943,14 @@
     const appDataId = $("#user-link").value || null;
 
     if(uid){
-      // actualizar registro usersApp
       await updateDoc(doc(colUsersApp(), uid), { email, role, appDataId });
       const i=usersApp.findIndex(x=>x.uid===uid);
       usersApp[i]={...usersApp[i], email, role, appDataId};
       toast("Usuario actualizado");
     }else{
-      // crear auth user + usersApp (necesita emulador o admin sdk en server; aquí solo emulador)
       const pass = $("#user-password").value.trim();
       if(!useEmu){
-        toast("Para crear cuentas desde el panel usa los Emulators o un backend Admin SDK.", false);
+        toast("Para crear cuentas desde el panel usa Emulators o backend Admin SDK.", false);
       }else{
         const { user } = await createUserWithEmailAndPassword(auth, email, pass||"123456");
         await setDoc(doc(colUsersApp(), user.uid), { uid:user.uid, email, role, appDataId });
@@ -963,19 +1015,10 @@
     catch{ return `$${(n||0).toLocaleString()}`; }
   }
   function capitalize(s){ return (s||"").charAt(0).toUpperCase()+ (s||"").slice(1); }
-  function mapAuthErr(err){
-    const c = err?.code || "";
-    if(c.includes("invalid-credential")) return "Credenciales inválidas";
-    if(c.includes("user-not-found")) return "Usuario no encontrado";
-    if(c.includes("wrong-password")) return "Contraseña incorrecta";
-    if(c.includes("email-already-in-use")) return "El correo ya está registrado";
-    if(c.includes("weak-password")) return "La contraseña es muy débil";
-    return "Ocurrió un error. Intenta de nuevo";
-  }
 
-  // ===== Inicio por defecto (pantalla login visible) =====
+  // ===== Render inicial =====
   lucide.createIcons();
-</script>
 
+</script>
 </body>
 </html>
