@@ -30,6 +30,9 @@
         [data-theme="elegant"] { --color-primary-400: 251 191 36; --color-primary-500: 245 158 11; --color-primary-600: 14 165 233; --color-primary-700: 2 132 199; }
         [data-theme="espacial"] { --color-primary-400: 125 211 252; --color-primary-500: 56 189 248; --color-primary-600: 139 92 246; --color-primary-700: 124 58 237; }
         [data-theme="verano-tropical"] { --color-primary-400: 190 242 100; --color-primary-500: 163 230 53; --color-primary-600: 219 39 119; --color-primary-700: 190 24 93; }
+        [data-theme="apple"] { --color-primary-400: 229 231 235; --color-primary-500: 255 255 255; --color-primary-600: 243 244 246; --color-primary-700: 209 213 219; }
+        [data-theme="neon-amarillo"] { --color-primary-400: 234 255 102; --color-primary-500: 227 255 0; --color-primary-600: 204 255 0; --color-primary-700: 170 204 0; }
+
         body { font-family: 'Inter', sans-serif; }
         .bg-primary-600 { background-color: rgb(var(--color-primary-600)); }
         .bg-primary-700 { background-color: rgb(var(--color-primary-700)); }
@@ -40,7 +43,7 @@
         .hover\:text-primary-600:hover { color: rgb(var(--color-primary-600)); }
         .border-primary-600 { border-color: rgb(var(--color-primary-600)); }
         .ring-primary-600:focus { --tw-ring-color: rgb(var(--color-primary-600)); }
-        .sidebar { transition: transform 0.3s ease-in-out; }
+        .sidebar { transition: transform 0.3s ease-in-out, background-color 0.3s, color 0.3s; }
         .sidebar-overlay { transition: opacity 0.3s ease-in-out; }
         .nav-link.active { background-color: rgb(var(--color-primary-600)); color: white; }
         .bottom-nav-link.active { color: rgb(var(--color-primary-400)); }
@@ -61,218 +64,123 @@
         .health-plan-card { border: 2px solid #e2e8f0; transition: border-color 0.2s, box-shadow 0.2s; }
         .health-plan-card:has(input:checked) { border-color: rgb(var(--color-primary-600)); box-shadow: 0 0 0 2px rgb(var(--color-primary-600) / 0.5); }
         
-        /* --- NUEVAS ANIMACIONES DE INICIO DE SESIÓN --- */
-        .auth-banner { animation: fadeInBanner 0.5s ease-out; }
-        @keyframes fadeInBanner {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        /* --- ESTILOS DEL PANEL LATERAL --- */
+        [data-sidebar-theme="dark"] #sidebar { background-color: #111827; color: #e5e7eb; border-right-color: #374151; }
+        [data-sidebar-theme="dark"] #sidebar .border-b, [data-sidebar-theme="dark"] #sidebar .border-t { border-bottom-color: #374151; border-top-color: #374151; }
+        [data-sidebar-theme="dark"] #sidebar .nav-link:hover { background-color: #1f2937; }
+        [data-sidebar-theme="dark"] #sidebar #user-email-display { background-color: #374151; }
+        [data-sidebar-theme="dark"] #sidebar .text-slate-400 { color: #9ca3af; }
+        [data-sidebar-theme="dark"] #sidebar #logout-btn { color: #fca5a5; }
+        [data-sidebar-theme="dark"] #sidebar #logout-btn:hover { color: #f87171; }
+        
+        [data-sidebar-theme="light"] #sidebar { background-color: #ffffff; color: #334155; border-right: 1px solid #e2e8f0; }
+        [data-sidebar-theme="light"] #sidebar .border-b, [data-sidebar-theme="light"] #sidebar .border-t { border-color: #e2e8f0; }
+        [data-sidebar-theme="light"] #sidebar .nav-link:hover { background-color: #f1f5f9; }
+        [data-sidebar-theme="light"] #sidebar .nav-link.active { background-color: rgb(var(--color-primary-600)); color: white; }
+        [data-sidebar-theme="light"] #sidebar .text-slate-200 { color: #334155; }
+        [data-sidebar-theme="light"] #sidebar .text-slate-400 { color: #64748b; }
+        [data-sidebar-theme="light"] #sidebar #user-email-display { background-color: #e2e8f0; color: #475569; }
+        [data-sidebar-theme="light"] #sidebar #logout-btn { color: #e11d48; }
+        [data-sidebar-theme="light"] #sidebar #logout-btn:hover { color: #be123c; }
 
+        /* --- ESTILOS DEL MENU INFERIOR --- */
+        [data-bottom-nav-theme="dark"] .bottom-nav { background-color: #111827; color: #d1d5db; border-top-color: #374151; }
+        [data-bottom-nav-theme="light"] .bottom-nav { background-color: #ffffff; color: #374151; border-top: 1px solid #e5e7eb; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+        [data-bottom-nav-theme="light"] .bottom-nav .bottom-nav-link { color: #6b7280; }
+        [data-bottom-nav-theme="light"] .bottom-nav .bottom-nav-link.active { color: rgb(var(--color-primary-600)); }
+        
+        /* --- SOBREESCRITURAS DE TEMAS ESPECÍFICOS --- */
+        [data-theme="apple"] body.bg-slate-50 { background-color: #000; color: #fff; }
+        [data-theme="apple"] .bg-white, [data-theme="apple"] .bg-white\/80 { background-color: #1C1C1E !important; }
+        [data-theme="apple"] .text-slate-800, [data-theme="apple"] .text-slate-700 { color: #f9fafb !important; }
+        [data-theme="apple"] .text-slate-600, [data-theme="apple"] .text-slate-500, [data-theme="apple"] .text-slate-400 { color: #9ca3af !important; }
+        [data-theme="apple"] .border, [data-theme="apple"] .border-b, [data-theme="apple"] .border-t, [data-theme="apple"] .divide-slate-200 > :not([hidden]) ~ :not([hidden]) { border-color: #374151 !important; }
+        [data-theme="apple"] .shadow-lg, [data-theme="apple"] .shadow-md, [data-theme="apple"] .shadow-sm { box-shadow: none; border: 1px solid #374151; }
+        [data-theme="apple"] #sidebar { background-color: #000; color: #fff; border-right-color: #374151; }
+        [data-theme="apple"] #sidebar .nav-link:hover { background-color: #1f2937; }
+        [data-theme="apple"] #sidebar .nav-link.active { background-color: transparent !important; color: white !important; border: 1px solid white; }
+        [data-theme="apple"] .bottom-nav { background-color: #000 !important; color: #fff !important; border-top-color: #374151 !important; }
+        [data-theme="apple"] input, [data-theme="apple"] select, [data-theme="apple"] textarea { background-color: #2C2C2E; color: white; border-color: #4b5563; }
+        [data-theme="apple"] .bg-slate-50, [data-theme="apple"] .hover\:bg-slate-50:hover { background-color: #1f2937 !important; }
+        [data-theme="apple"] ::-webkit-scrollbar-track { background: #111; }
+        [data-theme="apple"] ::-webkit-scrollbar-thumb { background: #444; }
+        [data-theme="apple"] ::-webkit-scrollbar-thumb:hover { background: #666; }
+        [data-theme="apple"] .shimmer-button::after { background-image: linear-gradient( to right, transparent, rgba(255, 255, 255, 0.6), transparent ); }
+        [data-theme="apple"] .chat-bubble.bot-message { background-color: #2C2C2E; color: #FFF; }
+
+        /* --- NUEVAS ANIMACIONES Y ESTILOS --- */
+        .auth-banner { animation: fadeInBanner 0.5s ease-out; }
+        @keyframes fadeInBanner { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         .auth-form { animation: fadeInForm 0.6s ease-in-out 0.1s; animation-fill-mode: backwards; }
-        @keyframes fadeInForm {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeInForm { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Estilo para el efecto espejo/shimmer del botón */
+        .shimmer-button { position: relative; overflow: hidden; }
+        .shimmer-button::after { content: ''; position: absolute; top: 0; left: -150%; width: 100%; height: 100%; background-image: linear-gradient( to right, transparent, rgba(255, 255, 255, 0.4), transparent ); transform: skewX(-25deg); animation: shimmer-effect 3.5s infinite linear; }
+        @keyframes shimmer-effect { from { left: -150%; } to { left: 150%; } }
+
+        /* Estilos para el Chat */
+        .chat-bubble { max-width: 70%; padding: 0.75rem 1rem; border-radius: 1.25rem; line-height: 1.5; word-wrap: break-word; }
+        .chat-bubble.user-message { background-color: rgb(var(--color-primary-600)); color: white; border-bottom-right-radius: 0.25rem; }
+        .chat-bubble.bot-message { background-color: #e5e7eb; color: #1f2937; border-bottom-left-radius: 0.25rem; }
+        .typing-indicator span { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: #9ca3af; animation: typing-bounce 1.2s infinite ease-in-out; }
+        .typing-indicator span:nth-child(2) { animation-delay: -1.0s; }
+        .typing-indicator span:nth-child(3) { animation-delay: -0.8s; }
+        @keyframes typing-bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased">
+<body class="bg-slate-50 text-slate-800 antialiased" data-sidebar-theme="dark" data-bottom-nav-theme="dark">
 
     <div id="loader" class="fixed inset-0 bg-slate-100/80 backdrop-blur-sm z-[101] flex items-center justify-center">
-        <div class="flex flex-col items-center">
-              <i data-lucide="shield-check" class="h-12 w-12 text-primary-500 animate-pulse"></i>
-              <p class="mt-4 text-slate-600">Verificando sesión...</p>
-        </div>
+        <div class="flex flex-col items-center"><i data-lucide="shield-check" class="h-12 w-12 text-primary-500 animate-pulse"></i><p class="mt-4 text-slate-600">Verificando sesión...</p></div>
     </div>
-
-    <div id="toast" class="fixed top-5 right-5 z-[100] bg-green-500 text-white py-2 px-4 rounded-lg shadow-xl opacity-0 transform translate-y-2 transition-all duration-300">
-        <span id="toast-message"></span>
-    </div>
+    <div id="toast" class="fixed top-5 right-5 z-[100] bg-green-500 text-white py-2 px-4 rounded-lg shadow-xl opacity-0 transform translate-y-2 transition-all duration-300"><span id="toast-message"></span></div>
 
     <div id="auth-container" style="display: none;" class="min-h-screen bg-slate-100 flex items-center justify-center p-4">
         <div class="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden grid md:grid-cols-2">
-            
-            <div class="auth-banner p-6 md:p-8 lg:p-12 text-white bg-gradient-to-br from-indigo-600 to-sky-500 flex flex-col justify-center items-center text-center">
-                <i data-lucide="shield-check" class="h-16 w-16 md:h-20 md:w-20 text-white/80 mb-6"></i>
-                <h2 class="text-2xl md:text-3xl font-bold mb-4">Bienvenido a Seb Salud</h2>
-                <p class="text-indigo-100 max-w-sm">Tu plataforma de gestión de salud todo en uno. Administra afiliados, asesores y finanzas de forma eficiente y segura.</p>
-            </div>
-
+            <div class="auth-banner p-6 md:p-8 lg:p-12 text-white bg-gradient-to-br from-indigo-600 to-sky-500 flex flex-col justify-center items-center text-center"><i data-lucide="shield-check" class="h-16 w-16 md:h-20 md:w-20 text-white/80 mb-6"></i><h2 class="text-2xl md:text-3xl font-bold mb-4">Bienvenido a Seb Salud</h2><p class="text-indigo-100 max-w-sm">Tu plataforma de gestión de salud todo en uno. Administra afiliados, asesores y finanzas de forma eficiente y segura.</p></div>
             <div class="p-8 lg:p-12 flex flex-col justify-center">
                 <div class="w-full max-w-md mx-auto">
-                    <div id="login-view" class="auth-form">
-                        <h2 class="text-3xl font-bold text-slate-800 mb-2">Iniciar Sesión</h2>
-                        <p class="text-slate-500 mb-8">Ingresa a tu cuenta para continuar.</p>
-                        <form id="login-form">
-                            <div class="space-y-5">
-                                <div class="relative">
-                                    <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i>
-                                    <input type="email" id="login-email" placeholder="Correo Electrónico" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required>
-                                </div>
-                                <div class="relative">
-                                    <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i>
-                                    <input type="password" id="login-password" placeholder="Contraseña" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required>
-                                </div>
-                            </div>
-                            <div class="mt-8">
-                                <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">Ingresar</button>
-                            </div>
-                        </form>
-                        <p class="text-center text-sm text-slate-600 mt-8">
-                            ¿No tienes una cuenta? <button id="show-register" class="font-semibold text-primary-600 hover:underline">Regístrate aquí</button>
-                        </p>
-                    </div>
-
-                    <div id="register-view" class="auth-form" style="display: none;">
-                        <h2 class="text-3xl font-bold text-slate-800 mb-2">Crear Cuenta</h2>
-                        <p class="text-slate-500 mb-8">Únete a nuestra plataforma.</p>
-                        <form id="register-form">
-                           <div class="space-y-5">
-                                <div class="relative">
-                                    <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i>
-                                    <input type="email" id="register-email" placeholder="Correo Electrónico" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required>
-                                </div>
-                                <div class="relative">
-                                     <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i>
-                                    <input type="password" id="register-password" placeholder="Contraseña (mín. 6 caracteres)" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required>
-                                </div>
-                            </div>
-                            <div class="mt-8">
-                                <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">Crear Cuenta</button>
-                            </div>
-                        </form>
-                         <p class="text-center text-sm text-slate-600 mt-8">
-                            ¿Ya tienes una cuenta? <button id="show-login" class="font-semibold text-primary-600 hover:underline">Inicia sesión</button>
-                        </p>
-                    </div>
+                    <div id="login-view" class="auth-form"><h2 class="text-3xl font-bold text-slate-800 mb-2">Iniciar Sesión</h2><p class="text-slate-500 mb-8">Ingresa a tu cuenta para continuar.</p><form id="login-form"><div class="space-y-5"><div class="relative"><i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i><input type="email" id="login-email" placeholder="Correo Electrónico" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required></div><div class="relative"><i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i><input type="password" id="login-password" placeholder="Contraseña" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required></div></div><div class="mt-8"><button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">Ingresar</button></div></form><p class="text-center text-sm text-slate-600 mt-8">¿No tienes una cuenta? <button id="show-register" class="font-semibold text-primary-600 hover:underline">Regístrate aquí</button></p></div>
+                    <div id="register-view" class="auth-form" style="display: none;"><h2 class="text-3xl font-bold text-slate-800 mb-2">Crear Cuenta</h2><p class="text-slate-500 mb-8">Únete a nuestra plataforma.</p><form id="register-form"><div class="space-y-5"><div class="relative"><i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i><input type="email" id="register-email" placeholder="Correo Electrónico" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required></div><div class="relative"><i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i><input type="password" id="register-password" placeholder="Contraseña (mín. 6 caracteres)" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required></div></div><div class="mt-8"><button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">Crear Cuenta</button></div></form><p class="text-center text-sm text-slate-600 mt-8">¿Ya tienes una cuenta? <button id="show-login" class="font-semibold text-primary-600 hover:underline">Inicia sesión</button></p></div>
                 </div>
             </div>
         </div>
     </div>
     
-    <div id="license-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60]">
-        <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95 text-center">
-            <div class="p-6">
-                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100">
-                   <i data-lucide="key-round" class="h-6 w-6 text-primary-600"></i>
-                </div>
-                <h2 class="text-2xl font-bold mt-4">Activar Licencia</h2>
-                <p class="text-slate-500 mt-2">Para continuar, por favor ingresa tu código de licencia.</p>
-            </div>
-            <form id="license-form" class="p-6 pt-0">
-                <div class="space-y-4">
-                    <input type="text" id="license-key-input" placeholder="XXXX-XXXX-XXXX-XXXX" class="w-full text-center tracking-widest font-mono px-4 py-2.5 border rounded-lg" required>
-                    <p id="license-error-message" class="text-red-500 text-sm h-4"></p>
-                </div>
-                <div class="pt-6 mt-2">
-                    <button type="submit" id="activate-license-btn" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg">Activar</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <div id="license-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60]"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95 text-center"><div class="p-6"><div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100"><i data-lucide="key-round" class="h-6 w-6 text-primary-600"></i></div><h2 class="text-2xl font-bold mt-4">Activar Licencia</h2><p class="text-slate-500 mt-2">Para continuar, por favor ingresa tu código de licencia.</p></div><form id="license-form" class="p-6 pt-0"><div class="space-y-4"><input type="text" id="license-key-input" placeholder="XXXX-XXXX-XXXX-XXXX" class="w-full text-center tracking-widest font-mono px-4 py-2.5 border rounded-lg" required><p id="license-error-message" class="text-red-500 text-sm h-4"></p></div><div class="pt-6 mt-2"><button type="submit" id="activate-license-btn" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg">Activar</button></div></form></div></div>
 
     <div id="app-container" style="display: none;">
         <div class="flex h-screen overflow-hidden">
             <div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-30 opacity-0 pointer-events-none md:hidden"></div>
-
-            <aside id="sidebar" class="sidebar bg-slate-900 text-slate-200 w-64 fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 z-40 flex flex-col">
-                <div class="flex items-center justify-center h-16 border-b border-slate-700 flex-shrink-0">
-                    <i data-lucide="shield-check" class="h-8 w-8 text-primary-500"></i>
-                    <span class="ml-3 text-xl font-bold">Seb Salud</span>
-                </div>
-                <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-                    <a href="#" data-target="dashboard" class="nav-link active flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>Dashboard</a>
-                    <a href="#" data-target="novedades" class="nav-link relative flex items-center py-2.5 px-4 rounded-lg">
-                        <i data-lucide="bell" class="w-5 h-5 mr-3"></i>Novedades
-                        <span id="novedades-badge-sidebar" class="novedades-badge hidden"></span>
-                    </a>
-                    <a href="#" data-target="empresa" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="building-2" class="w-5 h-5 mr-3"></i>Perfil Empresa</a>
-                    <a href="#" data-target="flujo-caja" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="wallet" class="w-5 h-5 mr-3"></i>Flujo de Caja</a>
-                    <a href="#" data-target="afiliados" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="users" class="w-5 h-5 mr-3"></i>Afiliados</a>
-                    <a href="#" data-target="asesores" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="user-circle" class="w-5 h-5 mr-3"></i>Asesores</a>
-                    <a href="#" data-target="ranking-vendedores" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="award" class="w-5 h-5 mr-3"></i>Ranking Vendedores</a>
-                    <a href="#" data-target="planes" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="shield-plus" class="w-5 h-5 mr-3"></i>Planes de Salud</a>
-                    <a href="#" data-target="cotizador" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="calculator" class="w-5 h-5 mr-3"></i>Cotizador</a>
-                </nav>
-                <div class="px-4 py-4 border-t border-slate-700 flex-shrink-0">
-                    <p class="text-xs text-slate-400 uppercase tracking-wider">Usuario Conectado</p>
-                    <p id="user-email-display" class="font-mono bg-slate-700 rounded p-1 text-xs break-words mt-1"></p>
-                    <button id="logout-btn" class="w-full mt-3 text-left text-sm text-rose-400 hover:text-rose-300 flex items-center"><i data-lucide="log-out" class="w-4 h-4 mr-2"></i>Cerrar Sesión</button>
-                </div>
-            </aside>
-
+            <aside id="sidebar" class="sidebar w-64 fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 z-40 flex flex-col"><div class="flex items-center justify-center h-16 border-b flex-shrink-0"><i data-lucide="shield-check" class="h-8 w-8 text-primary-500 logo-icon"></i><span class="ml-3 text-xl font-bold">Seb Salud</span></div><nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto"><a href="#" data-target="dashboard" class="nav-link active flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>Dashboard</a><a href="#" data-target="novedades" class="nav-link relative flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="bell" class="w-5 h-5 mr-3"></i>Novedades<span id="novedades-badge-sidebar" class="novedades-badge hidden"></span></a><a href="#" data-target="empresa" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="building-2" class="w-5 h-5 mr-3"></i>Perfil Empresa</a><a href="#" data-target="flujo-caja" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="wallet" class="w-5 h-5 mr-3"></i>Flujo de Caja</a><a href="#" data-target="afiliados" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="users" class="w-5 h-5 mr-3"></i>Afiliados</a><a href="#" data-target="asesores" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="user-circle" class="w-5 h-5 mr-3"></i>Asesores</a><a href="#" data-target="ranking-vendedores" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="award" class="w-5 h-5 mr-3"></i>Ranking Vendedores</a><a href="#" data-target="planes" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="shield-plus" class="w-5 h-5 mr-3"></i>Planes de Salud</a><a href="#" data-target="cotizador" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="calculator" class="w-5 h-5 mr-3"></i>Cotizador</a><a href="#" data-target="chat" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="message-square" class="w-5 h-5 mr-3"></i>Chat</a></nav><div class="px-4 py-4 border-t flex-shrink-0"><p class="text-xs text-slate-400 uppercase tracking-wider">Usuario Conectado</p><p id="user-email-display" class="font-mono rounded p-1 text-xs break-words mt-1"></p><button id="logout-btn" class="w-full mt-3 text-left text-sm flex items-center"><i data-lucide="log-out" class="w-4 h-4 mr-2"></i>Cerrar Sesión</button></div></aside>
             <div class="flex-1 flex flex-col md:ml-64 relative">
-                <header class="fixed top-0 inset-x-0 md:left-64 bg-white/80 backdrop-blur-md shadow-sm h-16 flex items-center justify-between px-4 z-20 border-b border-slate-200/75">
-                    <div class="flex items-center">
-                        <h1 id="header-title" class="text-xl font-semibold text-slate-700 hidden md:block">Dashboard</h1>
-                        <div class="flex items-center md:hidden">
-                            <i data-lucide="shield-check" class="h-6 w-6 text-primary-500"></i>
-                            <span class="ml-2 text-lg font-bold">Seb Salud</span>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button id="profile-toggle-btn" class="relative text-slate-600 focus:outline-none p-2 rounded-full hover:bg-slate-200">
-                            <i data-lucide="user-circle-2" class="h-6 w-6 pointer-events-none"></i>
-                        </button>
-                        <button id="menu-toggle" class="text-slate-600 focus:outline-none md:hidden p-2 rounded-full hover:bg-slate-200">
-                            <i data-lucide="menu" class="h-6 w-6 pointer-events-none"></i>
-                        </button>
-                    </div>
-                </header>
-
-                <div id="profile-modal" class="absolute top-[68px] right-4 z-30 w-64 bg-white rounded-xl shadow-2xl border border-slate-200/50 p-1.5 origin-top-right transition-transform duration-200 ease-out transform scale-95 opacity-0 pointer-events-none">
-                    <div class="p-2">
-                        <p id="profile-modal-name" class="font-semibold text-slate-800 text-sm truncate" title="email del usuario">email@usuario.com</p>
-                        <p class="text-xs text-slate-500 mb-2">Administrador</p>
-                        <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Licencia Activa</span>
-                    </div>
-                    <div class="border-t border-slate-200/80 my-1"></div>
-                    <button id="profile-modal-logout-btn" class="w-full text-left flex items-center gap-2 p-2 text-sm text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
-                        <i data-lucide="log-out" class="w-4 h-4"></i>
-                        <span>Cerrar Sesión</span>
-                    </button>
-                </div>
+                <header class="fixed top-0 inset-x-0 md:left-64 bg-white/80 backdrop-blur-md shadow-sm h-16 flex items-center justify-between px-4 z-20 border-b border-slate-200/75"><div class="flex items-center"><h1 id="header-title" class="text-xl font-semibold text-slate-700 hidden md:block">Dashboard</h1><div class="flex items-center md:hidden"><i data-lucide="shield-check" class="h-6 w-6 text-primary-500 logo-icon"></i><span class="ml-2 text-lg font-bold">Seb Salud</span></div></div><div class="flex items-center gap-2"><button id="profile-toggle-btn" class="relative text-slate-600 focus:outline-none p-2 rounded-full hover:bg-slate-200"><i data-lucide="user-circle-2" class="h-6 w-6 pointer-events-none"></i></button><button id="menu-toggle" class="text-slate-600 focus:outline-none md:hidden p-2 rounded-full hover:bg-slate-200"><i data-lucide="menu" class="h-6 w-6 pointer-events-none"></i></button></div></header>
+                <div id="profile-modal" class="absolute top-[68px] right-4 z-30 w-64 bg-white rounded-xl shadow-2xl border border-slate-200/50 p-1.5 origin-top-right transition-transform duration-200 ease-out transform scale-95 opacity-0 pointer-events-none"><div class="p-2"><p id="profile-modal-name" class="font-semibold text-slate-800 text-sm truncate" title="email del usuario">email@usuario.com</p><p class="text-xs text-slate-500 mb-2">Administrador</p><span class="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Licencia Activa</span></div><div class="border-t border-slate-200/80 my-1"></div><button id="profile-modal-logout-btn" class="w-full text-left flex items-center gap-2 p-2 text-sm text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"><i data-lucide="log-out" class="w-4 h-4"></i><span>Cerrar Sesión</span></button></div>
                 
-                <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8 pt-20">
+                <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8 mt-16">
                     <section id="dashboard" class="content-section active">
-                         <h1 class="text-2xl font-bold text-slate-800 mb-6">Resumen General y Métricas Clave</h1>
-                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                      <div><h3 class="text-sm font-medium text-slate-500 uppercase">Ingresos del Mes</h3><p id="kpi-monthly-income" class="text-3xl font-bold text-slate-800 mt-2">$0</p></div>
-                                      <div class="bg-emerald-100 text-emerald-600 p-2 rounded-full"><i data-lucide="trending-up" class="h-6 w-6"></i></div>
-                                </div>
-                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                      <div><h3 class="text-sm font-medium text-slate-500 uppercase">Cartera Vencida</h3><p id="kpi-overdue-payments" class="text-3xl font-bold text-rose-500 mt-2">$0</p></div>
-                                      <div class="bg-rose-100 text-rose-600 p-2 rounded-full"><i data-lucide="clock" class="h-6 w-6"></i></div>
-                                </div>
-                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                      <div><h3 class="text-sm font-medium text-slate-500 uppercase">Nuevos Afiliados (Mes)</h3><p id="kpi-new-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
-                                      <div class="bg-sky-100 text-sky-600 p-2 rounded-full"><i data-lucide="user-plus" class="h-6 w-6"></i></div>
-                                </div>
-                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                      <div><h3 class="text-sm font-medium text-slate-500 uppercase">Afiliados Activos</h3><p id="kpi-active-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
-                                      <div class="bg-slate-100 text-slate-600 p-2 rounded-full"><i data-lucide="check-circle-2" class="h-6 w-6"></i></div>
-                                </div>
-                         </div>
-                    </section>
-                    
-                    <section id="novedades" class="content-section">
-                        <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-4xl mx-auto">
-                            <h2 class="text-2xl font-bold text-slate-800 mb-6">Última Actividad</h2>
-                            <div id="novedades-feed" class="space-y-6"></div>
+                        <h1 class="text-2xl font-bold text-slate-800 mb-6">Resumen General y Métricas Clave</h1>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+                            <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Ingresos del Mes</h3><p id="kpi-monthly-income" class="text-3xl font-bold text-slate-800 mt-2">$0</p></div><div class="bg-emerald-100 text-emerald-600 p-2 rounded-full"><i data-lucide="trending-up" class="h-6 w-6"></i></div></div>
+                            <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Admin. / Ganancia Neta (Mes)</h3><p id="kpi-net-profit" class="text-3xl font-bold text-slate-800 mt-2">$0</p></div><div class="bg-indigo-100 text-indigo-600 p-2 rounded-full"><i data-lucide="briefcase" class="h-6 w-6"></i></div></div>
+                            <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Nuevos Afiliados (Mes)</h3><p id="kpi-new-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div><div class="bg-sky-100 text-sky-600 p-2 rounded-full"><i data-lucide="user-plus" class="h-6 w-6"></i></div></div>
+                            <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Afiliados Activos</h3><p id="kpi-active-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div><div class="bg-slate-100 text-slate-600 p-2 rounded-full"><i data-lucide="check-circle-2" class="h-6 w-6"></i></div></div>
+                            <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Cartera Vencida</h3><p id="kpi-overdue-payments" class="text-3xl font-bold text-rose-500 mt-2">$0</p></div><div class="bg-rose-100 text-rose-600 p-2 rounded-full"><i data-lucide="clock" class="h-6 w-6"></i></div></div>
                         </div>
                     </section>
+                    <section id="novedades" class="content-section"><div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-4xl mx-auto"><h2 class="text-2xl font-bold text-slate-800 mb-6">Última Actividad</h2><div id="novedades-feed" class="space-y-6"></div></div></section>
 
                     <section id="empresa" class="content-section">
                         <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-3xl mx-auto">
                             <h2 class="text-2xl font-bold text-slate-800 mb-6">Perfil de la Empresa</h2>
-                            <form id="company-profile-form" class="space-y-4">
+                            <form id="company-profile-form" class="space-y-6">
                                 <div><label for="company-name" class="block text-sm font-medium text-slate-600">Nombre</label><input type="text" id="company-name" class="w-full mt-1 p-2 border rounded-lg" required></div>
                                 <div><label for="company-nit" class="block text-sm font-medium text-slate-600">NIT / Documento</label><input type="text" id="company-nit" class="w-full mt-1 p-2 border rounded-lg" required></div>
                                 <div><label for="company-address" class="block text-sm font-medium text-slate-600">Dirección</label><input type="text" id="company-address" class="w-full mt-1 p-2 border rounded-lg"></div>
                                 <div><label for="company-phone" class="block text-sm font-medium text-slate-600">Teléfono</label><input type="tel" id="company-phone" class="w-full mt-1 p-2 border rounded-lg"></div>
                                 <div><label for="company-email" class="block text-sm font-medium text-slate-600">Email</label><input type="email" id="company-email" class="w-full mt-1 p-2 border rounded-lg"></div>
-                                <div class="mt-6 pt-6 border-t">
-                                    <h3 class="text-lg font-medium text-slate-700 mb-4">Color del Tema</h3>
+                                <div class="mt-6 pt-6 border-t"><h3 class="text-lg font-medium text-slate-700 mb-4">Color del Tema Principal</h3>
                                     <div id="theme-selector" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                                         <label class="cursor-pointer"><input type="radio" name="theme" value="default" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Índigo</span><div class="w-6 h-6 rounded-full bg-[#4f46e5]"></div></div></div></label>
                                         <label class="cursor-pointer"><input type="radio" name="theme" value="bosque" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-lime-500 peer-checked:ring-2 peer-checked:ring-lime-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Bosque</span><div style="background-image: linear-gradient(to right top, #a3e635, #06b6d4);" class="w-6 h-6 rounded-full"></div></div></div></label>
@@ -280,138 +188,110 @@
                                         <label class="cursor-pointer"><input type="radio" name="theme" value="elegant" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-amber-500 peer-checked:ring-2 peer-checked:ring-amber-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Elegant</span><div style="background-image: linear-gradient(to right top, #f59e0b, #0ea5e9);" class="w-6 h-6 rounded-full"></div></div></div></label>
                                         <label class="cursor-pointer"><input type="radio" name="theme" value="espacial" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-sky-500 peer-checked:ring-2 peer-checked:ring-sky-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Espacial</span><div class="w-6 h-6 rounded-full bg-gradient-to-br from-[#38bdf8] to-[#8b5cf6]"></div></div></div></label>
                                         <label class="cursor-pointer"><input type="radio" name="theme" value="verano-tropical" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-fuchsia-600 peer-checked:ring-2 peer-checked:ring-fuchsia-600/50"><div class="flex items-center justify-between"><span class="font-semibold">Tropical</span><div class="w-6 h-6 rounded-full bg-gradient-to-br from-[#a3e635] to-[#ec4899]"></div></div></div></label>
+                                        <label class="cursor-pointer"><input type="radio" name="theme" value="apple" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-gray-300 peer-checked:ring-2 peer-checked:ring-gray-300/50"><div class="flex items-center justify-between"><span class="font-semibold">Apple</span><div class="w-6 h-6 rounded-full bg-black border-2 border-white"></div></div></div></label>
+                                        <label class="cursor-pointer"><input type="radio" name="theme" value="neon-amarillo" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-yellow-400 peer-checked:ring-2 peer-checked:ring-yellow-400/50"><div class="flex items-center justify-between"><span class="font-semibold">Neón</span><div class="w-6 h-6 rounded-full bg-[#ccff00]"></div></div></div></label>
                                     </div>
                                 </div>
+                                <div class="mt-6 pt-6 border-t"><h3 class="text-lg font-medium text-slate-700 mb-4">Tema del Panel Lateral</h3><div id="sidebar-theme-selector" class="grid grid-cols-2 gap-4"><label class="cursor-pointer"><input type="radio" name="sidebar-theme" value="dark" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-slate-800 peer-checked:ring-2 peer-checked:ring-slate-800/50"><div class="flex items-center justify-between"><span class="font-semibold">Oscuro</span><div class="w-6 h-6 rounded-full bg-slate-900 border-2"></div></div></div></label><label class="cursor-pointer"><input type="radio" name="sidebar-theme" value="light" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-slate-400 peer-checked:ring-2 peer-checked:ring-slate-400/50"><div class="flex items-center justify-between"><span class="font-semibold">Claro</span><div class="w-6 h-6 rounded-full bg-white border-2"></div></div></div></label></div></div>
+                                <div class="mt-6 pt-6 border-t"><h3 class="text-lg font-medium text-slate-700 mb-4">Tema del Menú Inferior (Móvil)</h3><div id="bottom-nav-theme-selector" class="grid grid-cols-2 gap-4"><label class="cursor-pointer"><input type="radio" name="bottom-nav-theme" value="dark" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-slate-800 peer-checked:ring-2 peer-checked:ring-slate-800/50"><div class="flex items-center justify-between"><span class="font-semibold">Oscuro</span><div class="w-6 h-6 rounded-full bg-slate-900 border-2"></div></div></div></label><label class="cursor-pointer"><input type="radio" name="bottom-nav-theme" value="light" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-slate-400 peer-checked:ring-2 peer-checked:ring-slate-400/50"><div class="flex items-center justify-between"><span class="font-semibold">Claro</span><div class="w-6 h-6 rounded-full bg-white border-2"></div></div></div></label></div></div>
                                 <div class="pt-4"><button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg">Guardar Cambios</button></div>
                             </form>
                         </div>
                     </section>
 
-                    <section id="flujo-caja" class="content-section">
-                        <div class="bg-white p-6 rounded-xl shadow-lg mb-8">
-                            <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
-                                <div><h2 class="text-2xl font-bold text-slate-800">Flujo de Caja</h2><p class="text-slate-500">Gestión de ingresos, egresos y reportes financieros.</p></div>
-                                <div class="flex items-center gap-4">
-                                    <button id="add-expense-btn" class="w-full md:w-auto bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap"><i data-lucide="minus" class="w-5 h-5 mr-2"></i>Nuevo Egreso</button>
-                                    <button id="add-income-btn" class="w-full md:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i>Nuevo Ingreso</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                            <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg">
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center">
-                                    <div class="bg-emerald-50 text-emerald-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Ingresos (Mes)</h3><p id="cashflow-income" class="text-3xl font-bold mt-1">$0</p></div>
-                                    <div class="bg-rose-50 text-rose-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Egresos (Mes)</h3><p id="cashflow-expenses" class="text-3xl font-bold mt-1">$0</p></div>
-                                    <div class="bg-sky-50 text-sky-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Balance (Mes)</h3><p id="cashflow-profit" class="text-3xl font-bold mt-1">$0</p></div>
-                                </div>
-                            </div>
-                            <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg">
-                                <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b pb-4 mb-4">
-                                    <div><h3 class="text-lg font-semibold text-slate-700">Historial de Transacciones</h3></div>
-                                    <div class="flex flex-col sm:flex-row gap-4 items-center">
-                                        <input type="date" id="report-start-date" class="w-full p-2 border rounded-lg"><span class="text-slate-500">a</span><input type="date" id="report-end-date" class="w-full p-2 border rounded-lg">
-                                        <button id="generate-report-btn" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="file-text" class="w-5 h-5 mr-2"></i>Generar PDF</button>
-                                    </div>
-                                </div>
-                                <div class="max-h-96 overflow-y-auto"><table class="w-full text-sm"><thead class="sticky top-0 bg-slate-100"><tr class="text-left"><th class="p-2 text-xs font-semibold text-slate-600 uppercase">Fecha</th><th class="p-2 text-xs font-semibold text-slate-600 uppercase">Concepto</th><th class="p-2 text-right text-xs font-semibold text-slate-600 uppercase">Monto</th></tr></thead><tbody id="transactions-table-body"></tbody></table></div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section id="afiliados" class="content-section">
-                        <div class="bg-white p-4 rounded-xl shadow-lg mb-6">
-                           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
-                                <div class="md:col-span-2">
-                                    <label for="search-affiliate" class="text-sm font-medium text-slate-600">Buscar Afiliado</label>
-                                    <div class="relative mt-1"><input type="text" id="search-affiliate" placeholder="Nombre o documento..." class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg placeholder-slate-400"><i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i></div>
-                                </div>
-                                <div><label for="filter-affiliate-status" class="text-sm font-medium text-slate-600">Estado</label><select id="filter-affiliate-status" class="w-full mt-1 py-2 px-3 border border-slate-300 rounded-lg"><option value="all">Todos</option><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div>
-                                <div><label for="filter-affiliate-payment-status" class="text-sm font-medium text-slate-600">Estado de Pago</label><select id="filter-affiliate-payment-status" class="w-full mt-1 py-2 px-3 border border-slate-300 rounded-lg"><option value="all">Todos</option><option value="Al día">Al día</option><option value="En mora">En mora</option></select></div>
-                           </div>
-                        </div>
-                        <div class="flex justify-between items-center mb-6 gap-4 flex-wrap">
-                            <div class="flex items-center gap-2">
-                                <span class="text-sm font-medium text-slate-600 mr-2">Vista:</span>
-                                <button id="view-as-cards-btn" class="p-2 rounded-lg" title="Ver como tarjetas"><i data-lucide="layout-grid" class="h-5 w-5 pointer-events-none"></i></button>
-                                <button id="view-as-table-btn" class="p-2 rounded-lg" title="Ver como tabla"><i data-lucide="table-2" class="h-5 w-5 pointer-events-none"></i></button>
-                            </div>
-                            <div class="flex items-center gap-4">
-                                <button id="export-affiliates-btn" class="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center whitespace-nowrap"><i data-lucide="download" class="w-5 h-5 mr-2 text-green-600"></i>Exportar a CSV</button>
-                                <button id="add-affiliate-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Afiliado</button>
-                            </div>
-                        </div>
-                        
-                        <div id="affiliates-card-container" class="grid grid-cols-1 xl:grid-cols-2 gap-6"></div>
-
-                        <div id="affiliates-table-container" style="display: none;" class="bg-white rounded-xl shadow-lg overflow-x-auto">
-                            <table class="w-full text-sm">
-                                <thead class="bg-slate-50">
-                                    <tr class="text-left">
-                                        <th class="p-3 text-xs font-semibold text-slate-600 uppercase">Afiliado</th>
-                                        <th class="p-3 text-xs font-semibold text-slate-600 uppercase">Plan / Asesor</th>
-                                        <th class="p-3 text-xs font-semibold text-slate-600 uppercase">Contacto</th>
-                                        <th class="p-3 text-xs font-semibold text-slate-600 uppercase">Estado</th>
-                                        <th class="p-3 text-xs font-semibold text-slate-600 uppercase text-center">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="affiliates-table-body" class="divide-y divide-slate-200"></tbody>
-                            </table>
-                        </div>
-                    </section>
+                    <section id="flujo-caja" class="content-section"><div class="bg-white p-6 rounded-xl shadow-lg mb-8"><div class="flex flex-col md:flex-row justify-between md:items-center gap-4"><div><h2 class="text-2xl font-bold text-slate-800">Flujo de Caja</h2><p class="text-slate-500">Gestión de ingresos, egresos y reportes financieros.</p></div><div class="flex items-center gap-4"><button id="add-expense-btn" class="w-full md:w-auto bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap"><i data-lucide="minus" class="w-5 h-5 mr-2"></i>Nuevo Egreso</button><button id="add-income-btn" class="w-full md:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i>Nuevo Ingreso</button></div></div></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8"><div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg"><div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center"><div class="bg-emerald-50 text-emerald-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Ingresos (Mes)</h3><p id="cashflow-income" class="text-3xl font-bold mt-1">$0</p></div><div class="bg-rose-50 text-rose-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Egresos (Mes)</h3><p id="cashflow-expenses" class="text-3xl font-bold mt-1">$0</p></div><div class="bg-sky-50 text-sky-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Balance (Mes)</h3><p id="cashflow-profit" class="text-3xl font-bold mt-1">$0</p></div></div></div><div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg"><div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b pb-4 mb-4"><div><h3 class="text-lg font-semibold text-slate-700">Historial de Transacciones</h3></div><div class="flex flex-col sm:flex-row gap-4 items-center"><input type="date" id="report-start-date" class="w-full p-2 border rounded-lg"><span class="text-slate-500">a</span><input type="date" id="report-end-date" class="w-full p-2 border rounded-lg"><button id="generate-report-btn" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="file-text" class="w-5 h-5 mr-2"></i>Generar PDF</button></div></div><div class="max-h-96 overflow-y-auto"><table class="w-full text-sm"><thead class="sticky top-0 bg-slate-100"><tr class="text-left"><th class="p-2 text-xs font-semibold text-slate-600 uppercase">Fecha</th><th class="p-2 text-xs font-semibold text-slate-600 uppercase">Concepto</th><th class="p-2 text-right text-xs font-semibold text-slate-600 uppercase">Monto</th></tr></thead><tbody id="transactions-table-body"></tbody></table></div></div></div></section>
+                    <section id="afiliados" class="content-section"><div class="bg-white p-4 rounded-xl shadow-lg mb-6"><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end"><div class="md:col-span-2"><label for="search-affiliate" class="text-sm font-medium text-slate-600">Buscar Afiliado</label><div class="relative mt-1"><input type="text" id="search-affiliate" placeholder="Nombre o documento..." class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg placeholder-slate-400"><i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i></div></div><div><label for="filter-affiliate-status" class="text-sm font-medium text-slate-600">Estado</label><select id="filter-affiliate-status" class="w-full mt-1 py-2 px-3 border border-slate-300 rounded-lg"><option value="all">Todos</option><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div><div><label for="filter-affiliate-payment-status" class="text-sm font-medium text-slate-600">Estado de Pago</label><select id="filter-affiliate-payment-status" class="w-full mt-1 py-2 px-3 border border-slate-300 rounded-lg"><option value="all">Todos</option><option value="Al día">Al día</option><option value="En mora">En mora</option></select></div></div></div><div class="flex justify-between items-center mb-6 gap-4 flex-wrap"><div class="flex items-center gap-2"><span class="text-sm font-medium text-slate-600 mr-2">Vista:</span><button id="view-as-cards-btn" class="p-2 rounded-lg" title="Ver como tarjetas"><i data-lucide="layout-grid" class="h-5 w-5 pointer-events-none"></i></button><button id="view-as-table-btn" class="p-2 rounded-lg" title="Ver como tabla"><i data-lucide="table-2" class="h-5 w-5 pointer-events-none"></i></button></div><div class="flex items-center gap-4"><button id="export-affiliates-btn" class="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center whitespace-nowrap"><i data-lucide="download" class="w-5 h-5 mr-2 text-green-600"></i>Exportar a CSV</button><button id="add-affiliate-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Afiliado</button></div></div><div id="affiliates-card-container" class="grid grid-cols-1 xl:grid-cols-2 gap-6"></div><div id="affiliates-table-container" style="display: none;" class="bg-white rounded-xl shadow-lg overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50"><tr class="text-left"><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Afiliado</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Plan / Asesor</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Contacto</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Estado</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase text-center">Acciones</th></tr></thead><tbody id="affiliates-table-body" class="divide-y divide-slate-200"></tbody></table></div></section>
+                    <section id="asesores" class="content-section"><div class="flex justify-end items-center mb-6 gap-4"><button id="export-advisors-btn" class="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center whitespace-nowrap"><i data-lucide="download" class="w-5 h-5 mr-2 text-green-600"></i>Exportar a CSV</button><button id="add-advisor-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Asesor</button></div><div id="advisors-container" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6"></div></section>
+                    <section id="ranking-vendedores" class="content-section"><div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-2"><h2 class="text-2xl font-bold text-slate-800">Ranking de Vendedores</h2><p class="text-sm text-slate-500">Top vendedores por comisiones totales generadas.</p></div><div id="ranking-list" class="space-y-4"></div></section>
+                    <section id="planes" class="content-section"><div class="flex justify-between items-center mb-6"><h2 class="text-2xl font-bold text-slate-800">Administrar Planes de Salud</h2><button id="add-plan-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Plan</button></div><div id="plans-list" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6"></div></section>
                     
-                    <section id="asesores" class="content-section">
-                        <div class="flex justify-end items-center mb-6 gap-4">
-                            <button id="export-advisors-btn" class="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center whitespace-nowrap"><i data-lucide="download" class="w-5 h-5 mr-2 text-green-600"></i>Exportar a CSV</button>
-                            <button id="add-advisor-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Asesor</button>
-                        </div>
-                        <div id="advisors-container" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6"></div>
-                    </section>
-
-                    <section id="ranking-vendedores" class="content-section">
-                        <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-2">
-                            <h2 class="text-2xl font-bold text-slate-800">Ranking de Vendedores</h2>
-                            <p class="text-sm text-slate-500">Top vendedores por comisiones totales generadas.</p>
-                        </div>
-                        <div id="ranking-list" class="space-y-4"></div>
-                    </section>
-
-                    <section id="planes" class="content-section">
-                        <div class="flex justify-between items-center mb-6">
-                            <h2 class="text-2xl font-bold text-slate-800">Administrar Planes de Salud</h2>
-                            <button id="add-plan-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Plan</button>
-                        </div>
-                        <div id="plans-list" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6"></div>
-                    </section>
-
                     <section id="cotizador" class="content-section">
-                        <div class="flex justify-between items-center mb-6"><h2 class="text-2xl font-bold text-slate-800">Cotizador de Seguridad Social</h2><button id="open-settings-btn" class="text-slate-500 hover:text-primary-600 p-2 rounded-full bg-slate-100 hover:bg-slate-200"><i data-lucide="settings" class="w-6 h-6"></i></button></div>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-slate-800">Cotizador de Seguridad Social</h2>
+                            <button id="open-settings-btn" class="text-slate-500 hover:text-primary-600 p-2 rounded-full bg-slate-100 hover:bg-slate-200"><i data-lucide="settings" class="w-6 h-6"></i></button>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+                            <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg lg:col-span-3">
                                 <form id="calculator-form" class="space-y-6">
-                                    <div><label for="income" class="block text-sm font-medium text-slate-600 mb-1">Ingreso Mensual (COP)</label><input type="number" id="income" placeholder="Ej: 2000000" class="w-full px-4 py-2 border border-slate-300 rounded-lg" required></div>
-                                    <div><label for="contract-type" class="block text-sm font-medium text-slate-600 mb-1">Tipo de Cotizante</label><select id="contract-type" class="w-full px-4 py-2 border border-slate-300 rounded-lg" required><option value="independiente">Independiente</option><option value="dependiente">Dependiente (Empleado)</option></select></div>
-                                    <div><label for="arl-level" class="block text-sm font-medium text-slate-600 mb-1">Nivel de Riesgo ARL</label><select id="arl-level" class="w-full px-4 py-2 border border-slate-300 rounded-lg" required><option value="1">Nivel 1</option><option value="2">Nivel 2</option><option value="3">Nivel 3</option><option value="4">Nivel 4</option><option value="5">Nivel 5</option></select></div>
-                                    <fieldset><legend class="block text-sm font-medium text-slate-600 mb-2">Componentes a Cotizar</legend>
+                                    <div>
+                                        <label for="income" class="block text-sm font-medium text-slate-600 mb-1">Ingreso Mensual Real (COP)</label>
+                                        <div class="relative">
+                                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"><span class="text-gray-500 sm:text-sm">$</span></div>
+                                            <input type="number" id="income" placeholder="2000000" class="w-full pl-7 pr-4 py-2 border border-slate-300 rounded-lg" required>
+                                        </div>
+                                        <p class="text-xs text-slate-500 mt-1">El sistema calculará el IBC (40% del ingreso) como base para los aportes.</p>
+                                    </div>
+                                    <div>
+                                        <label for="contract-type" class="block text-sm font-medium text-slate-600 mb-1">Tipo de Cotizante</label>
+                                        <select id="contract-type" class="w-full px-4 py-2 border border-slate-300 rounded-lg" required>
+                                            <option value="independiente">Independiente</option>
+                                            <option value="dependiente">Dependiente (Empleado)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="arl-level" class="block text-sm font-medium text-slate-600 mb-1">Nivel de Riesgo ARL</label>
+                                        <select id="arl-level" class="w-full px-4 py-2 border border-slate-300 rounded-lg" required>
+                                            <option value="1">Nivel 1 (0.522%)</option>
+                                            <option value="2">Nivel 2 (1.044%)</option>
+                                            <option value="3">Nivel 3 (2.436%)</option>
+                                            <option value="4">Nivel 4 (4.350%)</option>
+                                            <option value="5">Nivel 5 (6.960%)</option>
+                                        </select>
+                                    </div>
+                                    <fieldset>
+                                        <legend class="block text-sm font-medium text-slate-600 mb-2">Componentes a Cotizar</legend>
                                         <div class="grid grid-cols-2 gap-4">
                                             <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="health" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>Salud</span></label>
                                             <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="pension" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>Pensión</span></label>
                                             <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="arl" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>ARL</span></label>
                                             <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="ccf" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>Caja de Comp.</span></label>
                                         </div>
-                                        <div class="mt-3"><label class="flex items-center space-x-2"><input type="checkbox" id="select-all-components" class="h-4 w-4 text-primary-600 rounded" checked><span>Seleccionar Todo</span></label></div>
+                                        <div class="mt-3">
+                                            <label class="flex items-center space-x-2"><input type="checkbox" id="select-all-components" class="h-4 w-4 text-primary-600 rounded" checked><span>Seleccionar Todo</span></label>
+                                        </div>
                                     </fieldset>
-                                    <div class="pt-2"><button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg shadow-md flex items-center justify-center"><i data-lucide="percent-circle" class="w-5 h-5 mr-2"></i>Calcular Aportes</button></div>
+                                    <div class="pt-4 mt-4 border-t">
+                                        <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg shadow-md flex items-center justify-center"><i data-lucide="calculator" class="w-5 h-5 mr-2"></i>Cotizar Aportes</button>
+                                    </div>
                                 </form>
                             </div>
-                            <div class="bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg text-white">
-                                <h3 class="text-2xl font-bold mb-2">Resumen de Aportes</h3><p class="text-sm text-slate-400 mb-6">Calculado sobre un IBC de <strong id="ibc-value" class="text-primary-400"></strong></p>
+                            <div class="bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg text-white lg:col-span-2">
+                                <h3 class="text-2xl font-bold mb-2">Resumen de Aportes</h3>
+                                <p class="text-sm text-slate-400 mb-6">Calculado sobre un IBC de <strong id="ibc-value" class="text-primary-400">$0</strong></p>
                                 <div id="calculator-results" class="space-y-4">
-                                    <div id="health-result-row" class="hidden flex justify-between items-center p-4 bg-slate-700/50 rounded-lg"><div><p class="font-semibold">Salud (EPS)</p><p id="health-breakdown" class="text-xs text-slate-400"></p></div><p id="health-total" class="font-bold text-lg"></p></div>
-                                    <div id="pension-result-row" class="hidden flex justify-between items-center p-4 bg-slate-700/50 rounded-lg"><div><p class="font-semibold">Pensión</p><p id="pension-breakdown" class="text-xs text-slate-400"></p></div><p id="pension-total" class="font-bold text-lg"></p></div>
-                                    <div id="arl-result-row" class="hidden flex justify-between items-center p-4 bg-slate-700/50 rounded-lg"><div><p class="font-semibold">Riesgos Laborales (ARL)</p><p id="arl-breakdown" class="text-xs text-slate-400"></p></div><p id="arl-total" class="font-bold text-lg"></p></div>
-                                    <div id="ccf-result-row" class="hidden flex justify-between items-center p-4 bg-slate-700/50 rounded-lg"><div><p class="font-semibold">Caja de Compensación</p><p id="ccf-breakdown" class="text-xs text-slate-400"></p></div><p id="ccf-total" class="font-bold text-lg"></p></div>
+                                    <div id="quote-placeholder" class="text-center py-10 text-slate-400">
+                                        <i data-lucide="scan-line" class="h-12 w-12 mx-auto mb-4"></i>
+                                        <p>Presione Cotizar para ver los resultados.</p>
+                                    </div>
                                 </div>
-                                <div class="mt-8 pt-6 border-t border-slate-600"><div class="flex justify-between items-center"><p class="text-xl font-bold">TOTAL APORTES</p><p id="grand-total" class="text-2xl font-extrabold text-primary-400"></p></div></div>
+                                <div id="quote-total-container" class="mt-8 pt-6 border-t border-slate-600 hidden">
+                                    <div class="flex justify-between items-center">
+                                        <p class="text-xl font-bold">TOTAL APORTES</p>
+                                        <p id="grand-total" class="text-2xl font-extrabold text-primary-400">$0</p>
+                                    </div>
+                                    <button id="sell-plan-btn" class="shimmer-button mt-6 w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg shadow-md flex items-center justify-center transition-transform transform hover:scale-105">
+                                        <i data-lucide="user-plus" class="w-5 h-5 mr-2"></i>Registrar Afiliado con esta Cotización
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="chat" class="content-section">
+                        <div class="bg-white rounded-xl shadow-lg h-[calc(100vh-10rem)] max-w-4xl mx-auto flex flex-col">
+                            <div class="p-4 border-b flex items-center flex-shrink-0">
+                                <i data-lucide="message-square" class="w-6 h-6 mr-3 text-primary-600"></i>
+                                <h2 class="text-xl font-bold text-slate-800">Asistente Virtual Seb Salud</h2>
+                            </div>
+                            <div id="chat-messages" class="flex-grow p-4 space-y-4 overflow-y-auto">
+                                </div>
+                            <div class="p-4 border-t flex-shrink-0 bg-slate-50">
+                                <form id="chat-form" class="flex items-center gap-3">
+                                    <input type="text" id="chat-input" placeholder="Escribe tu pregunta aquí..." class="w-full px-4 py-2 border border-slate-300 rounded-full focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none">
+                                    <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white p-3 rounded-full flex-shrink-0 shadow-md transform hover:scale-110 transition-transform">
+                                        <i data-lucide="send" class="w-5 h-5"></i>
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </section>
@@ -419,112 +299,25 @@
             </div>
         </div>
         
-        <div id="affiliate-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50">
-           <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col transform scale-95">
-               <div class="flex justify-between items-center p-5 border-b sticky top-0 bg-white z-10 flex-shrink-0">
-                   <h2 id="affiliate-modal-title" class="text-2xl font-bold">Nuevo Afiliado</h2>
-                   <button data-close-modal="affiliate-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
-               </div>
-               <div class="flex-grow overflow-y-auto">
-                   <form id="affiliate-form" class="p-6">
-                       <input type="hidden" id="affiliate-doc-id">
-                       <div class="space-y-10">
-                           <div>
-                               <h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">1. Información Personal</h3>
-                               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                   <input type="text" id="affiliate-name" placeholder="Nombre Completo" class="w-full px-4 py-2 border rounded-lg" required>
-                                   <input type="text" id="affiliate-id" placeholder="Documento" class="w-full px-4 py-2 border rounded-lg" required>
-                                   <input type="email" id="affiliate-email" placeholder="Correo Electrónico" class="w-full px-4 py-2 border rounded-lg" required>
-                                   <input type="tel" id="affiliate-phone" placeholder="Teléfono" class="w-full px-4 py-2 border rounded-lg">
-                                   <input type="text" id="affiliate-address" placeholder="Dirección" class="md:col-span-2 w-full px-4 py-2 border rounded-lg">
-                               </div>
-                           </div>
-                           <div>
-                               <h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">2. Plan de Salud Complementario / Prepagada</h3>
-                               <div id="health-plan-selector" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"></div>
-                           </div>
-                           <div>
-                               <h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">3. Otras Afiliaciones</h3>
-                               <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                   <div><label for="pension-plan" class="block text-sm font-medium text-slate-600 mb-1">Fondo de Pensión</label><select id="pension-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione un fondo</option><option value="Colpensiones">Colpensiones (Público)</option><option value="Porvenir">Porvenir</option><option value="Protección">Protección</option><option value="Colfondos">Colfondos</option><option value="Skandia">Skandia</option></select></div>
-                                   <div><label for="arl-plan" class="block text-sm font-medium text-slate-600 mb-1">ARL</label><select id="arl-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una ARL</option><option value="ARL Sura">ARL Sura</option><option value="ARL Positiva">ARL Positiva</option><option value="ARL Colmena">ARL Colmena</option><option value="Seguros Bolívar ARL">Seguros Bolívar ARL</option><option value="AXA Colpatria ARL">AXA Colpatria ARL</option></select></div>
-                                   <div><label for="ccf-plan" class="block text-sm font-medium text-slate-600 mb-1">Caja de Compensación</label><select id="ccf-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una caja</option><option value="Compensar">Compensar</option><option value="Colsubsidio">Colsubsidio</option><option value="Cafam">Cafam</option><option value="Comfama">Comfama (Antioquia)</option><option value="Comfandi">Comfandi (Valle)</option><option value="Otra">Otra / Ninguna</option></select></div>
-                               </div>
-                           </div>
-                           <div>
-                               <h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">4. Detalles de Venta y Administrativos</h3>
-                               <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                   <div><label for="advisor-select-list" class="block text-sm font-medium text-slate-600 mb-1">Asesor Asignado</label><select id="advisor-select-list" class="w-full px-4 py-2 border rounded-lg" required></select></div>
-                                   <div><label for="affiliate-start-date" class="block text-sm font-medium text-slate-600 mb-1">Fecha de Inicio</label><input type="date" id="affiliate-start-date" class="w-full px-4 py-2 border rounded-lg" required></div>
-                                   <div><label for="affiliate-status" class="block text-sm font-medium text-slate-600 mb-1">Estado del Afiliado</label><select id="affiliate-status" class="w-full px-4 py-2 border rounded-lg" required><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div>
-                               </div>
-                                <div class="mt-6"><label class="flex items-center space-x-2"><input type="checkbox" id="manual-override-checkbox" class="h-4 w-4 text-primary-600 rounded"><span>Usar costos y comisiones manuales</span></label></div>
-                               
-                               <div id="manual-override-container" class="hidden mt-4 space-y-6 p-4 border rounded-lg bg-slate-50">
-                                   <div>
-                                       <h4 class="text-md font-semibold text-slate-600 mb-3">Costos de Afiliación</h4>
-                                       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                           <div><label class="text-sm font-medium">Salud ($)</label><input type="number" id="manual-cost-health" class="w-full p-2 border rounded-lg mt-1" placeholder="Ej: 95000"></div>
-                                           <div><label class="text-sm font-medium">Pensión ($)</label><input type="number" id="manual-cost-pension" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div>
-                                           <div><label class="text-sm font-medium">ARL ($)</label><input type="number" id="manual-cost-arl" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div>
-                                           <div><label class="text-sm font-medium">Caja Comp. ($)</label><input type="number" id="manual-cost-ccf" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div>
-                                       </div>
-                                   </div>
-                                   <div class="pt-4 border-t">
-                                       <h4 class="text-md font-semibold text-slate-600 mb-3">Comisiones</h4>
-                                       <div class="max-w-xs">
-                                           <label class="text-sm font-medium">Comisión Asesor ($)</label>
-                                           <input type="number" id="manual-commission" class="w-full p-2 border rounded-lg mt-1" placeholder="Ej: 20000">
-                                       </div>
-                                   </div>
-                               </div>
-
-                                <div class="mt-6"><textarea id="affiliate-notes" placeholder="Notas adicionales..." class="w-full px-4 py-2 border rounded-lg h-24"></textarea></div>
-                           </div>
-                       </div>
-                       <div class="pt-6 border-t mt-8 flex justify-end">
-                           <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-lg">Guardar Afiliado</button>
-                       </div>
-                   </form>
-               </div>
-           </div>
-        </div>
-
-        <div id="plan-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50">
-           <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-full overflow-y-auto transform scale-95">
-               <div class="flex justify-between items-center p-6 border-b"><h2 id="plan-modal-title" class="text-2xl font-bold">Nuevo Plan de Salud</h2><button data-close-modal="plan-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div>
-               <form id="plan-form" class="p-6">
-                   <input type="hidden" id="plan-doc-id">
-                   <div class="space-y-4">
-                       <div><label for="plan-name" class="block text-sm font-medium text-slate-600">Nombre del Plan</label><input type="text" id="plan-name" placeholder="Ej: Plan Integral" class="w-full mt-1 p-2 border rounded-lg" required></div>
-                       <div><label for="plan-price" class="block text-sm font-medium text-slate-600">Precio Mensual ($)</label><input type="number" id="plan-price" placeholder="Ej: 180000" class="w-full mt-1 p-2 border rounded-lg" required></div>
-                       <div><label for="plan-features" class="block text-sm font-medium text-slate-600">Características (una por línea)</label><textarea id="plan-features" placeholder="Acceso directo a 5 especialidades&#10;Atención domiciliaria" class="w-full mt-1 p-2 border rounded-lg h-32" required></textarea></div>
-                   </div>
-                   <div class="pt-6 border-t mt-6 flex justify-end">
-                       <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Plan</button>
-                   </div>
-               </form>
-           </div>
-        </div>
-
+        <div id="affiliate-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col transform scale-95"><div class="flex justify-between items-center p-5 border-b sticky top-0 bg-white z-10 flex-shrink-0"><h2 id="affiliate-modal-title" class="text-2xl font-bold">Nuevo Afiliado</h2><button data-close-modal="affiliate-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><div class="flex-grow overflow-y-auto"><form id="affiliate-form" class="p-6"><input type="hidden" id="affiliate-doc-id"><div class="space-y-10"><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">1. Información Personal</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><input type="text" id="affiliate-name" placeholder="Nombre Completo" class="w-full px-4 py-2 border rounded-lg" required><input type="text" id="affiliate-id" placeholder="Documento" class="w-full px-4 py-2 border rounded-lg" required><input type="email" id="affiliate-email" placeholder="Correo Electrónico" class="w-full px-4 py-2 border rounded-lg" required><input type="tel" id="affiliate-phone" placeholder="Teléfono" class="w-full px-4 py-2 border rounded-lg"><input type="text" id="affiliate-address" placeholder="Dirección" class="md:col-span-2 w-full px-4 py-2 border rounded-lg"></div></div><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">2. Plan de Salud Complementario / Prepagada</h3><div id="health-plan-selector" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"></div></div><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">3. Otras Afiliaciones</h3><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div><label for="pension-plan" class="block text-sm font-medium text-slate-600 mb-1">Fondo de Pensión</label><select id="pension-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione un fondo</option><option value="Colpensiones">Colpensiones (Público)</option><option value="Porvenir">Porvenir</option><option value="Protección">Protección</option><option value="Colfondos">Colfondos</option><option value="Skandia">Skandia</option></select></div><div><label for="arl-plan" class="block text-sm font-medium text-slate-600 mb-1">ARL</label><select id="arl-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una ARL</option><option value="ARL Sura">ARL Sura</option><option value="ARL Positiva">ARL Positiva</option><option value="ARL Colmena">ARL Colmena</option><option value="Seguros Bolívar ARL">Seguros Bolívar ARL</option><option value="AXA Colpatria ARL">AXA Colpatria ARL</option></select></div><div><label for="ccf-plan" class="block text-sm font-medium text-slate-600 mb-1">Caja de Compensación</label><select id="ccf-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una caja</option><option value="Compensar">Compensar</option><option value="Colsubsidio">Colsubsidio</option><option value="Cafam">Cafam</option><option value="Comfama">Comfama (Antioquia)</option><option value="Comfandi">Comfandi (Valle)</option><option value="Otra">Otra / Ninguna</option></select></div></div></div><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">4. Detalles de Venta y Administrativos</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"><div><label for="advisor-select-list" class="block text-sm font-medium text-slate-600 mb-1">Asesor Asignado</label><select id="advisor-select-list" class="w-full px-4 py-2 border rounded-lg" required></select></div><div><label for="affiliate-start-date" class="block text-sm font-medium text-slate-600 mb-1">Fecha de Inicio</label><input type="date" id="affiliate-start-date" class="w-full px-4 py-2 border rounded-lg" required></div><div><label for="affiliate-end-date" class="block text-sm font-medium text-slate-600 mb-1">Fecha de Finalización</label><input type="date" id="affiliate-end-date" class="w-full px-4 py-2 border rounded-lg"></div><div><label for="affiliate-status" class="block text-sm font-medium text-slate-600 mb-1">Estado del Afiliado</label><select id="affiliate-status" class="w-full px-4 py-2 border rounded-lg" required><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div></div><div class="mt-6"><label class="flex items-center space-x-2"><input type="checkbox" id="manual-override-checkbox" class="h-4 w-4 text-primary-600 rounded"><span>Usar costos y comisiones manuales</span></label></div><div id="manual-override-container" class="hidden mt-4 space-y-6 p-4 border rounded-lg bg-slate-50"><div><h4 class="text-md font-semibold text-slate-600 mb-3">Costos de Afiliación</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="text-sm font-medium">Salud ($)</label><input type="number" id="manual-cost-health" class="w-full p-2 border rounded-lg mt-1" placeholder="Ej: 95000"></div><div><label class="text-sm font-medium">Pensión ($)</label><input type="number" id="manual-cost-pension" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div><div><label class="text-sm font-medium">ARL ($)</label><input type="number" id="manual-cost-arl" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div><div><label class="text-sm font-medium">Caja Comp. ($)</label><input type="number" id="manual-cost-ccf" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div></div></div><div class="pt-4 border-t"><h4 class="text-md font-semibold text-slate-600 mb-3">Comisiones</h4><div class="max-w-xs"><label class="text-sm font-medium">Comisión Asesor ($)</label><input type="number" id="manual-commission" class="w-full p-2 border rounded-lg mt-1" placeholder="Ej: 20000"></div></div></div><div class="mt-6"><textarea id="affiliate-notes" placeholder="Notas adicionales..." class="w-full px-4 py-2 border rounded-lg h-24"></textarea></div></div></div><div class="pt-6 border-t mt-8 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-lg">Guardar Afiliado</button></div></form></div></div></div>
+        <div id="plan-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="plan-modal-title" class="text-2xl font-bold">Nuevo Plan de Salud</h2><button data-close-modal="plan-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="plan-form" class="p-6"><input type="hidden" id="plan-doc-id"><div class="space-y-4"><div><label for="plan-name" class="block text-sm font-medium text-slate-600">Nombre del Plan</label><input type="text" id="plan-name" placeholder="Ej: Plan Integral" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="plan-price" class="block text-sm font-medium text-slate-600">Precio Mensual ($)</label><input type="number" id="plan-price" placeholder="Ej: 180000" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="plan-features" class="block text-sm font-medium text-slate-600">Características (una por línea)</label><textarea id="plan-features" placeholder="Acceso directo a 5 especialidades&#10;Atención domiciliaria" class="w-full mt-1 p-2 border rounded-lg h-32" required></textarea></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Plan</button></div></form></div></div>
         <div id="advisor-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="advisor-modal-title" class="text-2xl font-bold">Nuevo Asesor</h2><button data-close-modal="advisor-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="advisor-form" class="p-6"><input type="hidden" id="advisor-doc-id"><div class="space-y-4"><input type="text" id="advisor-name" placeholder="Nombre Completo" class="w-full px-4 py-2 border rounded-lg" required><input type="number" id="advisor-commission" placeholder="Comisión (%)" min="0" max="100" class="w-full px-4 py-2 border rounded-lg" required></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Asesor</button></div></form></div></div>
-        <div id="settings-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b sticky top-0 bg-white z-10"><h2 class="text-2xl font-bold">Configuración de Parámetros</h2><button data-close-modal="settings-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="settings-form" class="p-6 space-y-6"><div><h3 class="font-semibold text-lg mb-2">Generales</h3><div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-medium">Salario Mínimo (SMMLV)</label><input type="number" id="setting-smmlv" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes de Cotización (%)</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="block text-sm font-medium">Salud Total</label><input type="number" step="0.1" id="setting-health" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Pensión Total</label><input type="number" step="0.1" id="setting-pension" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Indep.</label><input type="number" step="0.1" id="setting-ccf-ind" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Empleador</label><input type="number" step="0.1" id="setting-ccf-emp" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes ARL (%)</h3><div class="grid grid-cols-2 md:grid-cols-5 gap-4"><div><label class="block text-sm font-medium">Riesgo 1</label><input type="number" step="0.001" id="setting-arl-1" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 2</label><input type="number" step="0.001" id="setting-arl-2" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 3</label><input type="number" step="0.001" id="setting-arl-3" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 4</label><input type="number" step="0.001" id="setting-arl-4" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 5</label><input type="number" step="0.001" id="setting-arl-5" class="w-full p-2 border rounded-lg"></div></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Cambios</button></div></form></div></div>
+        <div id="settings-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b sticky top-0 bg-white z-10"><h2 class="text-2xl font-bold">Configuración de Parámetros</h2><button data-close-modal="settings-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="settings-form" class="p-6 space-y-6"><div><h3 class="font-semibold text-lg mb-2">Generales</h3><div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-medium">Salario Mínimo (SMMLV)</label><input type="number" id="setting-smmlv" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Costo Admin. por Afiliado ($)</label><input type="number" id="setting-admin-fee" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes de Cotización (%)</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="block text-sm font-medium">Salud Total</label><input type="number" step="0.1" id="setting-health" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Pensión Total</label><input type="number" step="0.1" id="setting-pension" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Indep.</label><input type="number" step="0.1" id="setting-ccf-ind" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Empleador</label><input type="number" step="0.1" id="setting-ccf-emp" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes ARL (%)</h3><div class="grid grid-cols-2 md:grid-cols-5 gap-4"><div><label class="block text-sm font-medium">Riesgo 1</label><input type="number" step="0.001" id="setting-arl-1" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 2</label><input type="number" step="0.001" id="setting-arl-2" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 3</label><input type="number" step="0.001" id="setting-arl-3" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 4</label><input type="number" step="0.001" id="setting-arl-4" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 5</label><input type="number" step="0.001" id="setting-arl-5" class="w-full p-2 border rounded-lg"></div></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Cambios</button></div></form></div></div>
         <div id="transaction-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="transaction-modal-title" class="text-2xl font-bold"></h2><button data-close-modal="transaction-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="transaction-form" class="p-6"><input type="hidden" id="transaction-type"><div class="space-y-4"><div><label for="transaction-concept" class="block text-sm font-medium text-slate-600">Concepto</label><input type="text" id="transaction-concept" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-amount" class="block text-sm font-medium text-slate-600">Monto</label><input type="number" id="transaction-amount" min="0" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-date" class="block text-sm font-medium text-slate-600">Fecha</label><input type="date" id="transaction-date" class="w-full mt-1 p-2 border rounded-lg" required></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar</button></div></form></div></div>
-        <nav class="md:hidden fixed bottom-0 inset-x-0 bg-slate-900 text-slate-300 flex justify-around p-2 border-t border-slate-700 z-40"><a href="#" data-target="dashboard" class="bottom-nav-link active flex flex-col items-center justify-center text-center w-full"><i data-lucide="layout-dashboard" class="w-6 h-6"></i><span class="text-xs mt-1">Dashboard</span></a><a href="#" data-target="novedades" class="bottom-nav-link relative flex flex-col items-center justify-center text-center w-full"><i data-lucide="bell" class="w-6 h-6"></i><span class="text-xs mt-1">Novedades</span><span id="novedades-badge-mobile" class="novedades-badge hidden"></span></a><a href="#" data-target="afiliados" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full"><i data-lucide="users" class="w-6 h-6"></i><span class="text-xs mt-1">Afiliados</span></a><a href="#" data-target="asesores" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full"><i data-lucide="user-circle" class="w-6 h-6"></i><span class="text-xs mt-1">Asesores</span></a><a href="#" data-target="ranking-vendedores" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full"><i data-lucide="award" class="w-6 h-6"></i><span class="text-xs mt-1">Ranking</span></a></nav>
+        
+        <nav class="bottom-nav md:hidden fixed bottom-0 inset-x-0 flex justify-around p-2 border-t z-40">
+            <a href="#" data-target="afiliados" class="bottom-nav-link active flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="users" class="w-5 h-5"></i><span class="text-[10px] mt-1">Afiliados</span></a>
+            <a href="#" data-target="asesores" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="user-circle" class="w-5 h-5"></i><span class="text-[10px] mt-1">Asesores</span></a>
+            <a href="#" data-target="planes" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="shield-plus" class="w-5 h-5"></i><span class="text-[10px] mt-1">Planes</span></a>
+            <a href="#" data-target="cotizador" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="calculator" class="w-5 h-5"></i><span class="text-[10px] mt-1">Cotizador</span></a>
+            <a href="#" data-target="novedades" class="bottom-nav-link relative flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="bell" class="w-5 h-5"></i><span class="text-[10px] mt-1">Novedades</span><span id="novedades-badge-mobile" class="novedades-badge hidden"></span></a>
+            <a href="#" data-target="chat" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="message-square" class="w-5 h-5"></i><span class="text-[10px] mt-1">Chat</span></a>
+        </nav>
     </div>
 
 <script type="module">
     // --- INICIALIZACIÓN Y CONFIGURACIÓN DE FIREBASE ---
-    const firebaseConfig = {
-      apiKey: "AIzaSyDS4VDnwGia2ZUe3o81rqLe-oEu_pVCUHc",
-      authDomain: "seb-salud.firebaseapp.com",
-      projectId: "seb-salud",
-      storageBucket: "seb-salud.appspot.com",
-      messagingSenderId: "1094873327284",
-      appId: "1:1094873327284:web:001e70e84c2de45389d9e1",
-      measurementId: "G-EJCS9FYWHK"
-    };
-
+    const firebaseConfig = { apiKey: "AIzaSyDS4VDnwGia2ZUe3o81rqLe-oEu_pVCUHc", authDomain: "seb-salud.firebaseapp.com", projectId: "seb-salud", storageBucket: "seb-salud.appspot.com", messagingSenderId: "1094873327284", appId: "1:1094873327284:web:001e70e84c2de45389d9e1", measurementId: "G-EJCS9FYWHK" };
     const app = window.firebase.initializeApp(firebaseConfig);
     const auth = window.firebase.getAuth(app);
     const db = window.firebase.getFirestore(app);
@@ -535,40 +328,31 @@
     let companyProfile = {};
     let settings = {};
     let affiliatesViewMode = 'card';
+    let lastQuoteResult = null;
     let activeListeners = [];
 
-    const defaultSettings = { SMMLV: 1430000, CONTRIBUTION_RATES: { health: 12.5, pension: 16, employee_health: 4, employer_health: 8.5, employee_pension: 4, employer_pension: 12, independiente_ccf: 2, employer_ccf: 4 }, ARL_RATES: { 1: 0.522, 2: 1.044, 3: 2.436, 4: 4.350, 5: 6.960 } };
-    const defaultCompanyProfile = { name: 'Mi Empresa de Seguridad Social', nit: '900.123.456-7', address: 'Calle 123 # 45-67, Bogotá', phone: '3001234567', email: 'contacto@empresa.com', theme: 'default' };
+    const defaultSettings = { 
+        SMMLV: 1430000, 
+        ADMIN_FEE_PER_AFFILIATE: 15000,
+        CONTRIBUTION_RATES: { health: 12.5, pension: 16, employee_health: 4, employer_health: 8.5, employee_pension: 4, employer_pension: 12, independiente_ccf: 2, employer_ccf: 4 }, 
+        ARL_RATES: { 1: 0.522, 2: 1.044, 3: 2.436, 4: 4.350, 5: 6.960 } 
+    };
+    const defaultCompanyProfile = { name: 'Mi Empresa de Seguridad Social', nit: '900.123.456-7', address: 'Calle 123 # 45-67, Bogotá', phone: '3001234567', email: 'contacto@empresa.com', theme: 'default', sidebarTheme: 'dark', bottomNavTheme: 'dark' };
     
     // --- MANEJO DE VISTAS Y ESTADO DE CARGA ---
     const loader = document.getElementById('loader');
     const authContainer = document.getElementById('auth-container');
     const appContainer = document.getElementById('app-container');
     
-    const showView = (view) => {
-        loader.style.display = 'none';
-        authContainer.style.display = 'none';
-        appContainer.style.display = 'none';
-        view.style.display = view === appContainer ? 'block' : 'flex';
-        lucide.createIcons();
-    };
+    const showView = (view) => { loader.style.display = 'none'; authContainer.style.display = 'none'; appContainer.style.display = 'none'; view.style.display = view === appContainer ? 'block' : 'flex'; lucide.createIcons(); };
 
-    // --- PUNTO DE ENTRADA PRINCIPAL: OBSERVA CAMBIOS DE AUTENTICACIÓN ---
     window.firebase.onAuthStateChanged(auth, async (user) => {
         if (user) {
             currentUser = user;
             const userDocRef = window.firebase.doc(db, "users", user.uid);
             const userDocSnap = await window.firebase.getDoc(userDocRef);
-
-            if (userDocSnap.exists() && userDocSnap.data().licenseActivated) {
-                initializeAppForUser();
-                showView(appContainer);
-            } else {
-                loader.style.display = 'none';
-                appContainer.style.display = 'none';
-                authContainer.style.display = 'none';
-                modalManager.open('license-modal');
-            }
+            if (userDocSnap.exists() && userDocSnap.data().licenseActivated) { initializeAppForUser(); showView(appContainer); } 
+            else { loader.style.display = 'none'; appContainer.style.display = 'none'; authContainer.style.display = 'none'; modalManager.open('license-modal'); }
         } else {
             currentUser = null;
             unsubscribeAllListeners();
@@ -580,205 +364,172 @@
     });
     
     // --- LÓGICA DE DATOS CON FIRESTORE ---
-    async function setupNewUserDocument(user) {
-        const userDocRef = window.firebase.doc(db, "users", user.uid);
-        const batch = window.firebase.writeBatch(db);
-        batch.set(userDocRef, { email: user.email, createdAt: window.firebase.serverTimestamp(), licenseActivated: false, companyProfile: defaultCompanyProfile, settings: defaultSettings });
-        const advisorRef = window.firebase.doc(window.firebase.collection(userDocRef, "advisors"));
-        batch.set(advisorRef, { id: advisorRef.id, name: 'Asesor Inicial', commissionRate: 10 });
-        const planRef = window.firebase.doc(window.firebase.collection(userDocRef, "healthPlans"));
-        batch.set(planRef, { id: planRef.id, name: 'Plan de Ejemplo', price: 100000, features: 'Característica 1\nCaracterística 2' });
-        await batch.commit();
-    }
-
-    async function handleLicenseActivation() {
-        const licenseKey = document.getElementById('license-key-input').value.trim().toUpperCase();
-        const errorMsgElement = document.getElementById('license-error-message');
-        const activateBtn = document.getElementById('activate-license-btn');
-        activateBtn.disabled = true;
-        activateBtn.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i> Verificando...';
-        lucide.createIcons();
-        try {
-            const { getDocs, query, collection, where, writeBatch, doc, serverTimestamp } = window.firebase;
-            const licensesRef = collection(db, 'licences');
-            const q = query(licensesRef, where("code", "==", licenseKey), where("status", "==", "available"));
-            const querySnapshot = await getDocs(q);
-            if (querySnapshot.empty) {
-                setTimeout(() => { errorMsgElement.textContent = 'Código de licencia inválido o ya utilizado.'; activateBtn.disabled = false; activateBtn.textContent = 'Activar'; }, 500);
-                return;
-            }
-            const licenseDoc = querySnapshot.docs[0];
-            const batch = writeBatch(db);
-            const licenseDocRef = doc(db, 'licences', licenseDoc.id);
-            batch.update(licenseDocRef, { status: 'used', usedBy: currentUser.uid, usedAt: serverTimestamp() });
-            const userDocRef = doc(db, "users", currentUser.uid);
-            batch.set(userDocRef, { licenseActivated: true }, { merge: true });
-            await batch.commit();
-            showToast('¡Licencia activada con éxito!', 'success');
-            modalManager.close('license-modal');
-            initializeAppForUser();
-            showView(appContainer);
-        } catch (error) {
-            console.error("Error al activar la licencia:", error);
-            errorMsgElement.textContent = 'Ocurrió un error al verificar. Intenta de nuevo.';
-            activateBtn.disabled = false;
-            activateBtn.textContent = 'Activar';
-        }
-    }
-    
-    function setupRealtimeListeners() {
-        if (!currentUser || activeListeners.length > 0) return;
-        const { doc, collection, onSnapshot } = window.firebase;
-        const userDocRef = doc(db, "users", currentUser.uid);
-        const unsubUser = onSnapshot(userDocRef, (docSnap) => {
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                companyProfile = data.companyProfile || defaultCompanyProfile;
-                settings = data.settings || defaultSettings;
-                applyTheme(companyProfile.theme);
-                if (document.getElementById('empresa').classList.contains('active')) { renderEmpresaSection(); }
-            }
-        });
-        activeListeners.push(unsubUser);
-        const collectionsToListen = {
-            affiliates: (data) => { affiliates = data; renderAllDependentOnAffiliates(); },
-            advisors: (data) => { advisors = data; renderAllDependentOnAdvisors(); },
-            healthPlans: (data) => { healthPlans = data; renderAllDependentOnPlans(); },
-            manualTransactions: (data) => { manualTransactions = data; renderFlujoCajaSection(); },
-            novedades: (data) => { novedades = data; updateNovedadesBadge(); if (document.getElementById('novedades').classList.contains('active')) { renderNovedadesSection(); } }
-        };
-        for (const [colName, callback] of Object.entries(collectionsToListen)) {
-            const colRef = collection(db, `users/${currentUser.uid}/${colName}`);
-            const unsub = onSnapshot(colRef, (snapshot) => {
-                const data = snapshot.docs.map(d => {
-                    const docData = d.data();
-                    if (docData.createdAt && docData.createdAt.toDate) docData.createdAt = docData.createdAt.toDate();
-                    if (docData.date && docData.date.toDate) docData.date = docData.date.toDate().toISOString();
-                    if (docData.timestamp && docData.timestamp.toDate) docData.timestamp = docData.timestamp.toDate();
-                    return docData;
-                });
-                callback(data);
-            });
-            activeListeners.push(unsub);
-        }
-    }
-    
+    async function setupNewUserDocument(user) { const userDocRef = window.firebase.doc(db, "users", user.uid); const batch = window.firebase.writeBatch(db); batch.set(userDocRef, { email: user.email, createdAt: window.firebase.serverTimestamp(), licenseActivated: false, companyProfile: defaultCompanyProfile, settings: defaultSettings }); const advisorRef = window.firebase.doc(window.firebase.collection(userDocRef, "advisors")); batch.set(advisorRef, { id: advisorRef.id, name: 'Asesor Inicial', commissionRate: 10 }); const planRef = window.firebase.doc(window.firebase.collection(userDocRef, "healthPlans")); batch.set(planRef, { id: planRef.id, name: 'Plan de Ejemplo', price: 100000, features: 'Característica 1\nCaracterística 2' }); await batch.commit(); }
+    async function handleLicenseActivation() { const licenseKey = document.getElementById('license-key-input').value.trim().toUpperCase(); const errorMsgElement = document.getElementById('license-error-message'); const activateBtn = document.getElementById('activate-license-btn'); activateBtn.disabled = true; activateBtn.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i> Verificando...'; lucide.createIcons(); try { const { getDocs, query, collection, where, writeBatch, doc, serverTimestamp } = window.firebase; const licensesRef = collection(db, 'licences'); const q = query(licensesRef, where("code", "==", licenseKey), where("status", "==", "available")); const querySnapshot = await getDocs(q); if (querySnapshot.empty) { setTimeout(() => { errorMsgElement.textContent = 'Código de licencia inválido o ya utilizado.'; activateBtn.disabled = false; activateBtn.textContent = 'Activar'; }, 500); return; } const licenseDoc = querySnapshot.docs[0]; const batch = writeBatch(db); const licenseDocRef = doc(db, 'licences', licenseDoc.id); batch.update(licenseDocRef, { status: 'used', usedBy: currentUser.uid, usedAt: serverTimestamp() }); const userDocRef = doc(db, "users", currentUser.uid); batch.set(userDocRef, { licenseActivated: true }, { merge: true }); await batch.commit(); showToast('¡Licencia activada con éxito!', 'success'); modalManager.close('license-modal'); initializeAppForUser(); showView(appContainer); } catch (error) { console.error("Error al activar la licencia:", error); errorMsgElement.textContent = 'Ocurrió un error al verificar. Intenta de nuevo.'; activateBtn.disabled = false; activateBtn.textContent = 'Activar'; } }
+    function setupRealtimeListeners() { if (!currentUser || activeListeners.length > 0) return; const { doc, collection, onSnapshot } = window.firebase; const userDocRef = doc(db, "users", currentUser.uid); const unsubUser = onSnapshot(userDocRef, (docSnap) => { if (docSnap.exists()) { const data = docSnap.data(); companyProfile = data.companyProfile || defaultCompanyProfile; settings = { ...defaultSettings, ...data.settings }; applyTheme(companyProfile.theme); applySidebarTheme(companyProfile.sidebarTheme); applyBottomNavTheme(companyProfile.bottomNavTheme); if (document.getElementById('empresa').classList.contains('active')) { renderEmpresaSection(); } if (document.getElementById('dashboard').classList.contains('active')) { renderDashboard(); } } }); activeListeners.push(unsubUser); const collectionsToListen = { affiliates: (data) => { checkAndGenerateNovedades(data, affiliates); affiliates = data; renderAllDependentOnAffiliates(); }, advisors: (data) => { advisors = data; renderAllDependentOnAdvisors(); }, healthPlans: (data) => { healthPlans = data; renderAllDependentOnPlans(); }, manualTransactions: (data) => { manualTransactions = data; renderFlujoCajaSection(); }, novedades: (data) => { novedades = data; updateNovedadesBadge(); if (document.getElementById('novedades').classList.contains('active')) { renderNovedadesSection(); } } }; for (const [colName, callback] of Object.entries(collectionsToListen)) { const colRef = collection(db, `users/${currentUser.uid}/${colName}`); const unsub = onSnapshot(colRef, (snapshot) => { const data = snapshot.docs.map(d => { const docData = d.data(); if (docData.createdAt && docData.createdAt.toDate) docData.createdAt = docData.createdAt.toDate(); if (docData.date && docData.date.toDate) docData.date = docData.date.toDate().toISOString(); if (docData.timestamp && docData.timestamp.toDate) docData.timestamp = docData.timestamp.toDate(); return docData; }); callback(data); }); activeListeners.push(unsub); } }
     function renderAllDependentOnAffiliates() { renderDashboard(); renderFlujoCajaSection(); renderAdvisorsSection(); renderRankingSection(); if (document.getElementById('afiliados').classList.contains('active')) { renderAffiliatesList(); } }
     function renderAllDependentOnAdvisors() { populateAdvisorSelect(); renderAdvisorsSection(); renderRankingSection(); if (document.getElementById('afiliados').classList.contains('active')) { renderAffiliatesList(); } }
     function renderAllDependentOnPlans() { renderPlansList(); if (document.getElementById('afiliados').classList.contains('active')) { renderAffiliatesList(); } }
     function unsubscribeAllListeners() { activeListeners.forEach(unsub => unsub()); activeListeners = []; }
-    function resetLocalData() { affiliates = []; advisors = []; manualTransactions = []; novedades = []; healthPlans = []; companyProfile = {}; settings = {}; }
+    function resetLocalData() { affiliates = []; advisors = []; manualTransactions = []; novedades = []; healthPlans = []; companyProfile = {}; settings = {}; lastQuoteResult = null; }
     async function saveDataToFirestore(collectionName, data) { if (!currentUser) return; const docRef = window.firebase.doc(db, `users/${currentUser.uid}/${collectionName}/${data.id}`); await window.firebase.setDoc(docRef, data, { merge: true }); }
     async function deleteDataFromFirestore(collectionName, docId) { if (!currentUser) return; const docRef = window.firebase.doc(db, `users/${currentUser.uid}/${collectionName}/${docId}`); await window.firebase.deleteDoc(docRef); }
-    
-    function initializeAppForUser() {
-        document.getElementById('user-email-display').textContent = currentUser.email;
-        document.getElementById('profile-modal-name').textContent = currentUser.email;
-        setupRealtimeListeners();
-        renderContent('dashboard');
-    }
-    
-    function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme); const themeSelector = document.querySelector(`#theme-selector input[value="${theme}"]`); if (themeSelector) { themeSelector.checked = true; } }
+    function initializeAppForUser() { document.getElementById('user-email-display').textContent = currentUser.email; document.getElementById('profile-modal-name').textContent = currentUser.email; setupRealtimeListeners(); renderContent('dashboard'); document.querySelector('[data-target="dashboard"]')?.classList.add('active'); getBotResponse('hola'); /* Saludo inicial del bot */ }
+    function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme); }
+    function applySidebarTheme(theme) { document.body.setAttribute('data-sidebar-theme', theme || 'dark'); }
+    function applyBottomNavTheme(theme) { document.body.setAttribute('data-bottom-nav-theme', theme || 'dark'); }
     async function createNovedad(affiliateId, affiliateName, type, description) { if (!currentUser) return; const novedad = { affiliateId, affiliateName, type, description, timestamp: new Date() }; const collectionRef = window.firebase.collection(db, `users/${currentUser.uid}/novedades`); await window.firebase.addDoc(collectionRef, novedad); }
     function getAffiliateCommissionBase(affiliate) { if (affiliate.manualCosts && Object.values(affiliate.manualCosts).some(cost => cost > 0)) { return Object.values(affiliate.manualCosts).reduce((sum, cost) => sum + (Number(cost) || 0), 0); } const plan = healthPlans.find(p => p.id === affiliate.healthPlan); return plan ? plan.price : 0; }
     function getAdvisorCommissionForAffiliate(affiliate) { if (affiliate.manualCommission && affiliate.manualCommission > 0) { return affiliate.manualCommission; } const advisor = advisors.find(v => v.id === affiliate.advisorId); if (!advisor) return 0; return getAffiliateCommissionBase(affiliate) * (advisor.commissionRate / 100); }
-    function renderContent(targetId) { document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active')); const section = document.getElementById(targetId); if (section) { section.classList.add('active'); try { const renderMap = { 'dashboard': renderDashboard, 'afiliados': renderAffiliatesList, 'asesores': renderAdvisorsSection, 'ranking-vendedores': renderRankingSection, 'empresa': renderEmpresaSection, 'flujo-caja': renderFlujoCajaSection, 'novedades': renderNovedadesSection, 'planes': renderPlansList, 'cotizador': () => {} }; if(renderMap[targetId]) renderMap[targetId](); lucide.createIcons(); } catch(error) { console.error(`Error rendering ${targetId}:`, error); } } }
+    function renderContent(targetId) { document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active')); const section = document.getElementById(targetId); if (section) { section.classList.add('active'); try { const renderMap = { 'dashboard': renderDashboard, 'afiliados': renderAffiliatesList, 'asesores': renderAdvisorsSection, 'ranking-vendedores': renderRankingSection, 'empresa': renderEmpresaSection, 'flujo-caja': renderFlujoCajaSection, 'novedades': renderNovedadesSection, 'planes': renderPlansList, 'cotizador': () => {}, 'chat': () => {} }; if(renderMap[targetId]) renderMap[targetId](); lucide.createIcons(); } catch(error) { console.error(`Error rendering ${targetId}:`, error); } } }
     function updateViewToggleButtons() { const cardBtn = document.getElementById('view-as-cards-btn'); const tableBtn = document.getElementById('view-as-table-btn'); cardBtn.className = affiliatesViewMode === 'card' ? 'p-2 rounded-lg bg-primary-600 text-white shadow-md' : 'p-2 rounded-lg bg-white hover:bg-slate-100 border text-slate-600'; tableBtn.className = affiliatesViewMode === 'table' ? 'p-2 rounded-lg bg-primary-600 text-white shadow-md' : 'p-2 rounded-lg bg-white hover:bg-slate-100 border text-slate-600'; }
     function renderAffiliatesList() { const cardContainer = document.getElementById('affiliates-card-container'); const tableContainer = document.getElementById('affiliates-table-container'); const searchTerm = document.getElementById('search-affiliate').value.toLowerCase(); const statusFilter = document.getElementById('filter-affiliate-status').value; const paymentStatusFilter = document.getElementById('filter-affiliate-payment-status').value; let filteredAffiliates = affiliates.filter(a => (a.name.toLowerCase().includes(searchTerm) || a.documentId.includes(searchTerm)) && (statusFilter === 'all' || a.status === statusFilter) && (paymentStatusFilter === 'all' || (a.paymentStatus === (paymentStatusFilter === 'En mora' ? 'En mora' : 'Al día')))); cardContainer.style.display = 'none'; tableContainer.style.display = 'none'; if (filteredAffiliates.length === 0) { cardContainer.innerHTML = `<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No se encontraron afiliados.</p></div>`; cardContainer.style.display = 'grid'; return; } if (affiliatesViewMode === 'card') { renderAffiliatesAsCards(filteredAffiliates); cardContainer.style.display = 'grid'; } else { renderAffiliatesAsTable(filteredAffiliates); tableContainer.style.display = 'block'; } }
     function renderAffiliatesAsCards(filteredData) { const listContainer = document.getElementById('affiliates-card-container'); const statusStyles = { 'Activo': 'bg-green-100 text-green-800', 'Pendiente': 'bg-yellow-100 text-yellow-800', 'Inactivo': 'bg-red-100 text-red-800' }; listContainer.innerHTML = filteredData.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const commission = getAdvisorCommissionForAffiliate(aff); const commissionBase = getAffiliateCommissionBase(aff); const healthPlan = healthPlans.find(p => p.id === aff.healthPlan); return ` <div class="bg-white rounded-xl shadow-lg transition hover:shadow-2xl flex flex-col"> <div class="p-5"> <div class="flex justify-between items-start"> <div><h3 class="font-bold text-lg text-slate-800">${aff.name}</h3><p class="text-sm text-slate-500">Doc: ${aff.documentId}</p></div> <div class="flex items-center gap-2 flex-shrink-0 ml-2"><span class="text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[aff.status] || ''}">${aff.status}</span></div> </div> <div class="grid grid-cols-2 gap-4 mt-4 text-sm"> <div><strong class="block text-slate-500">Asesor</strong><span>${advisor ? advisor.name : 'N/A'}</span></div> <div><strong class="block text-slate-500">Comisión Mensual</strong><span class="font-bold text-green-600">${formatCurrency(commission)} ${aff.manualCommission ? '<span title="Comisión Manual" class="text-blue-500 font-bold">*</span>' : ''}</span></div> <div><strong class="block text-slate-500">Valor Plan/Base</strong><span>${formatCurrency(commissionBase)} ${aff.manualCosts ? '<span title="Costos Manuales" class="text-blue-500 font-bold">*</span>' : ''}</span></div> <div><strong class="block text-slate-500">Fecha Inicio</strong><span>${aff.startDate}</span></div> </div> </div> <div class="details-section hidden p-5 border-t bg-slate-50"> <h4 class="font-semibold mb-2">Detalles Completos:</h4> <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm"> <p><strong class="text-slate-500">Plan:</strong> ${healthPlan ? healthPlan.name : 'N/A'}</p><p><strong class="text-slate-500">Pensión:</strong> ${aff.pensionPlan}</p> <p><strong class="text-slate-500">ARL:</strong> ${aff.arlPlan}</p><p><strong class="text-slate-500">Caja Comp.:</strong> ${aff.ccfPlan}</p> <p class="sm:col-span-2"><strong class="text-slate-500">Notas:</strong> <span class="whitespace-pre-wrap">${aff.notes || 'N/A'}</span></p> </div> </div> <div class="border-t p-3 mt-auto flex justify-between items-center bg-gray-50/50 rounded-b-xl"> <button data-toggle-details="${aff.id}" class="text-sm text-primary-600 font-semibold hover:text-primary-700 flex items-center">Ver Detalles<i data-lucide="chevron-down" class="details-toggle-icon h-5 w-5 ml-1"></i></button> <div><button class="edit-affiliate-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${aff.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button><button class="delete-affiliate-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${aff.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button></div> </div> </div>`; }).join(''); lucide.createIcons(); }
     function renderAffiliatesAsTable(filteredData) { const tableBody = document.getElementById('affiliates-table-body'); const statusStyles = { 'Activo': 'bg-green-100 text-green-800', 'Pendiente': 'bg-yellow-100 text-yellow-800', 'Inactivo': 'bg-red-100 text-red-800' }; tableBody.innerHTML = filteredData.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const healthPlan = healthPlans.find(p => p.id === aff.healthPlan); return ` <tr class="hover:bg-slate-50"> <td class="p-3"><div class="font-semibold text-slate-800">${aff.name}</div><div class="text-xs text-slate-500">Doc: ${aff.documentId}</div></td> <td class="p-3"><div class="text-slate-800">${healthPlan ? healthPlan.name : 'N/A'}</div><div class="text-xs text-slate-500">Asesor: ${advisor ? advisor.name : 'N/A'}</div></td> <td class="p-3"><div class="text-slate-800 break-all">${aff.email || 'N/A'}</div><div class="text-xs text-slate-500">${aff.phone || 'N/A'}</div></td> <td class="p-3"><span class="text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[aff.status] || ''}">${aff.status}</span><div class="text-xs text-slate-500 mt-1">Inicio: ${aff.startDate}</div></td> <td class="p-3 text-center"><div class="flex justify-center items-center"> <button class="edit-affiliate-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${aff.id}" title="Editar"><i data-lucide="pencil" class="h-4 w-4 pointer-events-none"></i></button> <button class="delete-affiliate-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${aff.id}" title="Eliminar"><i data-lucide="trash-2" class="h-4 w-4 pointer-events-none"></i></button> </div></td> </tr>`; }).join(''); lucide.createIcons(); }
-    function renderAdvisorsSection(){const c=document.getElementById("advisors-container");if(!c)return;if(0===advisors.length){c.innerHTML='<p class="text-center text-slate-500 col-span-full">No hay asesores registrados.</p>';return}const t={Activo:"bg-green-100 text-green-800",Pendiente:"bg-yellow-100 text-yellow-800",Inactivo:"bg-red-100 text-red-800"};c.innerHTML=advisors.map(e=>{const a=affiliates.filter(a=>a.advisorId===e.id),n=a.filter(a=>"Activo"===a.status),o=a.reduce((e,a)=>e+getAdvisorCommissionForAffiliate(a),0),s=n.reduce((e,a)=>e+getAdvisorCommissionForAffiliate(a),0),i=0<a.length,l=i?a.map(a=>{const e=getAdvisorCommissionForAffiliate(a);return`<tr class="border-b border-slate-200 last:border-b-0 hover:bg-slate-100"><td class="p-2 font-medium text-slate-800">${a.name}</td><td class="p-2"><span class="text-xs font-semibold px-2 py-0.5 rounded-full ${t[a.status]||""}">${a.status}</span></td><td class="p-2 text-right font-mono text-green-700">${formatCurrency(e)}</td></tr>`}).join(""):`<tr><td colspan="3" class="text-center p-4 text-slate-500">Este asesor no tiene afiliados.</td></tr>`;return` <div class="bg-white rounded-xl shadow-lg flex flex-col transition hover:shadow-2xl"> <div class="p-5 flex justify-between items-start"> <div><h3 class="font-bold text-xl text-slate-800">${e.name}</h3><p class="text-sm text-primary-600 font-semibold">Comisión Base: ${e.commissionRate}%</p></div> <div class="flex-shrink-0"><button class="edit-advisor-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button><button class="delete-advisor-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button></div> </div> <div class="p-5 grid grid-cols-3 gap-4 text-center border-y"> <div><p class="text-3xl font-bold text-slate-700">${a.length}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Afiliados</p></div> <div><p class="text-2xl font-bold text-primary-600">${formatCurrency(s,0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión (Mes)</p></div> <div><p class="text-2xl font-bold text-green-600">${formatCurrency(o,0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión (Total)</p></div> </div> <div id="advisor-stats-${e.id}" class="hidden"> <div class="p-4 bg-slate-50"><h4 class="font-semibold mb-3 text-slate-700 text-sm">Desglose de Afiliados</h4><div class="max-h-64 overflow-y-auto pr-1"><table class="w-full text-sm text-left"><thead class="text-xs text-slate-500 uppercase bg-slate-200 sticky top-0"><tr><th class="p-2 font-semibold">Afiliado</th><th class="p-2 font-semibold">Estado</th><th class="p-2 font-semibold text-right">Ganancia</th></tr></thead><tbody class="bg-white">${l}</tbody></table></div></div> </div> <div class="mt-auto border-t p-3 flex justify-end items-center bg-gray-50/50 rounded-b-xl"><button ${i?"":"disabled"} data-toggle-stats="${e.id}" class="stats-toggle-btn text-sm text-primary-600 font-semibold hover:text-primary-700 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"><span class="button-text">Ver Desglose</span><i data-lucide="chevron-down" class="stats-toggle-icon h-5 w-5 ml-1"></i></button></div> </div>`}).join("");}
+    function renderAdvisorsSection() { const container = document.getElementById("advisors-container"); if (!container) return; if (advisors.length === 0) { container.innerHTML = '<p class="text-center text-slate-500 col-span-full">No hay asesores registrados.</p>'; return; } const statusStyles = { Activo: "bg-green-100 text-green-800", Pendiente: "bg-yellow-100 text-yellow-800", Inactivo: "bg-red-100 text-red-800", }; container.innerHTML = advisors.map((advisor) => { const affs = affiliates.filter((a) => a.advisorId === advisor.id); const activeAffs = affs.filter((a) => a.status === "Activo"); const totalCommission = affs.reduce((sum, a) => sum + getAdvisorCommissionForAffiliate(a), 0); const monthlyCommission = activeAffs.reduce((sum, a) => sum + getAdvisorCommissionForAffiliate(a), 0); const hasAffiliates = affs.length > 0; const breakdownHtml = hasAffiliates ? affs.map((aff) => { const commission = getAdvisorCommissionForAffiliate(aff); return `<tr class="border-b border-slate-200 last:border-b-0 hover:bg-slate-100"><td class="p-2 font-medium text-slate-800">${aff.name}</td><td class="p-2"><span class="text-xs font-semibold px-2 py-0.5 rounded-full ${statusStyles[aff.status] || ""}">${aff.status}</span></td><td class="p-2 text-right font-mono text-green-700">${formatCurrency(commission)}</td></tr>`; }).join("") : `<tr><td colspan="3" class="text-center p-4 text-slate-500">Este asesor no tiene afiliados.</td></tr>`; return ` <div class="bg-white rounded-xl shadow-lg flex flex-col transition hover:shadow-2xl"> <div class="p-5 flex justify-between items-start"> <div><h3 class="font-bold text-xl text-slate-800">${advisor.name}</h3><p class="text-sm text-primary-600 font-semibold">Comisión Base: ${advisor.commissionRate}%</p></div> <div class="flex-shrink-0"><button class="edit-advisor-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${advisor.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button><button class="delete-advisor-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${advisor.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button></div> </div> <div class="p-5 grid grid-cols-3 gap-4 text-center border-y"> <div><p class="text-3xl font-bold text-slate-700">${affs.length}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Afiliados</p></div> <div><p class="text-xl font-bold text-primary-600">${formatCurrency(monthlyCommission, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión (Mes)</p></div> <div><p class="text-xl font-bold text-green-600">${formatCurrency(totalCommission, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión (Total)</p></div> </div> <div id="advisor-stats-${advisor.id}" class="hidden"> <div class="p-4 bg-slate-50"><h4 class="font-semibold mb-3 text-slate-700 text-sm">Desglose de Afiliados</h4><div class="max-h-64 overflow-y-auto pr-1"><table class="w-full text-sm text-left"><thead class="text-xs text-slate-500 uppercase bg-slate-200 sticky top-0"><tr><th class="p-2 font-semibold">Afiliado</th><th class="p-2 font-semibold">Estado</th><th class="p-2 font-semibold text-right">Ganancia</th></tr></thead><tbody class="bg-white">${breakdownHtml}</tbody></table></div></div> </div> <div class="mt-auto border-t p-3 flex justify-end items-center bg-gray-50/50 rounded-b-xl"><button ${hasAffiliates ? "" : "disabled"} data-toggle-stats="${advisor.id}" class="stats-toggle-btn text-sm text-primary-600 font-semibold hover:text-primary-700 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"><span class="button-text">Ver Desglose</span><i data-lucide="chevron-down" class="stats-toggle-icon h-5 w-5 ml-1"></i></button></div> </div>`; }).join(""); lucide.createIcons(); }
     function renderRankingSection(){const e=document.getElementById("ranking-list");if(!e)return;const t=advisors.map(e=>{const t=affiliates.filter(t=>t.advisorId===e.id).reduce((e,t)=>e+getAdvisorCommissionForAffiliate(t),0);return{...e,totalCommission:t}});if(t.sort((e,t)=>t.totalCommission-e.totalCommission),0===t.length){e.innerHTML='<div class="text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay asesores para mostrar en el ranking.</p></div>';return}const a=["bg-amber-400 text-amber-900","bg-slate-300 text-slate-800","bg-orange-400 text-orange-900"],n=['<i data-lucide="trophy" class="w-6 h-6 text-amber-500"></i>','<i data-lucide="award" class="w-6 h-6 text-slate-500"></i>','<i data-lucide="medal" class="w-6 h-6 text-orange-500"></i>'];e.innerHTML=t.map((e,t)=>{const o=t+1,s=3>=o?a[t]:"bg-slate-200 text-slate-700",i=3>=o?n[t]:`<span class="font-bold text-lg">${o}</span>`;return` <div class="bg-white rounded-xl shadow-lg p-4 flex items-center space-x-4 transition hover:shadow-xl hover:scale-[1.02]"> <div class="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${s}">${i}</div> <div class="flex-grow"> <h3 class="font-bold text-lg text-slate-800">${e.name}</h3> <p class="text-sm text-slate-500">Comisión Base: ${e.commissionRate}%</p> </div> <div class="text-right"> <p class="text-xl font-extrabold text-green-600">${formatCurrency(e.totalCommission)}</p> <p class="text-xs font-medium text-slate-500 uppercase">Comisión Total</p> </div> </div>`}).join("");}
     function renderPlansList(){const e=document.getElementById("plans-list");if(!e)return;if(0===healthPlans.length){e.innerHTML='<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay planes de salud creados. ¡Añade el primero!</p></div>';return}e.innerHTML=healthPlans.map(e=>` <div class="bg-white rounded-xl shadow-lg flex flex-col"> <div class="p-5 flex-grow"> <div class="flex justify-between items-start"><h3 class="font-bold text-lg text-slate-800">${e.name}</h3><p class="text-xl font-extrabold text-primary-600">${formatCurrency(e.price)}</p></div> <ul class="text-sm text-slate-600 space-y-1 mt-4"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check-circle-2" class="w-4 h-4 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> <div class="border-t p-3 flex justify-end items-center bg-gray-50/50 rounded-b-xl"> <button class="edit-plan-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button> <button class="delete-plan-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button> </div> </div>`).join("");}
     function populateAdvisorSelect(){const e=document.getElementById("advisor-select-list");e&&(e.innerHTML='<option value="" disabled selected>Asignar Asesor</option>'+advisors.map(e=>`<option value="${e.id}">${e.name}</option>`).join(""))}
-    function renderDashboard(){const e=new Date,t=e.getMonth(),a=e.getFullYear(),n=affiliates.filter(e=>"Activo"===e.status),o=n.reduce((e,t)=>e+getAffiliateCommissionBase(t),0),s=affiliates.filter(e=>{const a=e.createdAt;return a&&a.getMonth()===t&&a.getFullYear()===a.getFullYear()}).length;document.getElementById("kpi-monthly-income").textContent=formatCurrency(o),document.getElementById("kpi-new-affiliates").textContent=s,document.getElementById("kpi-active-affiliates").textContent=n.length}
-    function calculateContributions(e,t,a,n){if(!settings.SMMLV) return; const o=Math.max(.4*e,settings.SMMLV);let s={ibc:o,grandTotal:0,health:{},pension:{},arl:{},ccf:{}};const i=settings.CONTRIBUTION_RATES,l=settings.ARL_RATES;return n.health&&(s.health.total=o*(i.health/100),s.health.details="independiente"===t?"Aporte total":`Empleado: ${formatCurrency(o*(i.employee_health/100))} | Empleador: ${formatCurrency(o*(i.employer_health/100))}`,s.grandTotal+=s.health.total),n.pension&&(s.pension.total=o*(i.pension/100),s.pension.details="independiente"===t?"Aporte total":`Empleado: ${formatCurrency(o*(i.employee_pension/100))} | Empleador: ${formatCurrency(o*(i.employer_pension/100))}`,s.grandTotal+=s.pension.total),n.arl&&(s.arl.total=o*(l[a]/100),s.arl.details="A cargo del contratante/empleador",s.grandTotal+=s.arl.total),n.ccf&&(s.ccf.total=o*("independiente"===t?i.independiente_ccf/100:i.employer_ccf/100),s.ccf.details="independiente"===t?"Aporte voluntario":"A cargo del empleador",s.grandTotal+=s.ccf.total),s}
-    function renderCalculatorResults(e,t){if(!e) return; document.getElementById("ibc-value").textContent=formatCurrency(e.ibc),document.getElementById("grand-total").textContent=formatCurrency(e.grandTotal);for(const a of["health","pension","arl","ccf"]){const n=document.getElementById(`${a}-result-row`);t[a]&&n?(document.getElementById(`${a}-total`).textContent=formatCurrency(e[a].total),document.getElementById(`${a}-breakdown`).textContent=e[a].details,n.classList.remove("hidden")):n&&n.classList.add("hidden")}}
-    function renderHealthPlanCards(){const e=document.getElementById("health-plan-selector");if(!e)return;if(0===healthPlans.length){e.innerHTML='<p class="text-slate-500 md:col-span-4">No hay planes de salud definidos. Por favor, cree un plan en la sección "Planes de Salud".</p>';return}e.innerHTML=healthPlans.map((e,t)=>` <label class="health-plan-card cursor-pointer rounded-lg p-4 flex flex-col justify-between"> <div> <div class="flex justify-between items-center"><h4 class="font-bold text-md text-slate-800">${e.name}</h4><input type="radio" name="health-plan" value="${e.id}" class="h-4 w-4 text-primary-600" ${0===t?"checked":""}></div> <p class="text-xl font-extrabold text-primary-600 my-2">${formatCurrency(e.price)}<span class="text-sm font-medium text-slate-500">/mes</span></p> <ul class="text-xs text-slate-600 space-y-1 mt-3"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check" class="w-3.5 h-3.5 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> </label>`).join("");}
-    function renderNovedadesSection(){const e=document.getElementById("novedades-feed");if(!e)return;const t=[...novedades].sort((e,t)=>(t.timestamp || 0)-(e.timestamp || 0));if(0===t.length){e.innerHTML='<p class="text-center text-slate-500">No hay actividad reciente.</p>';return}e.innerHTML=t.map(e=>`<div class="flex items-start gap-4"><div class="flex-shrink-0 w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">${getNovedadIcon(e.type)}</div><div> <p class="text-sm text-slate-800">${e.description}</p> <p class="text-xs text-slate-500"> Para el afiliado: <strong class="font-medium">${e.affiliateName}</strong> - ${formatTimeAgo(e.timestamp)} </p> </div></div>`).join("");}
-    function renderEmpresaSection(){if(!companyProfile.name) return; document.getElementById("company-name").value=companyProfile.name,document.getElementById("company-nit").value=companyProfile.nit,document.getElementById("company-address").value=companyProfile.address,document.getElementById("company-phone").value=companyProfile.phone,document.getElementById("company-email").value=companyProfile.email;const e=document.querySelector(`#theme-selector input[value="${companyProfile.theme||"default"}"]`);e&&(e.checked=!0)}
+    function renderDashboard(){const e=new Date,t=e.getMonth(),a=e.getFullYear(),n=affiliates.filter(e=>"Activo"===e.status),o=n.reduce((e,t)=>e+getAffiliateCommissionBase(t),0),s=affiliates.filter(e=>{const n=e.createdAt;return n&&n.getMonth()===t&&n.getFullYear()===a}).length;const i=n.length*(settings.ADMIN_FEE_PER_AFFILIATE||0);document.getElementById("kpi-monthly-income").textContent=formatCurrency(o),document.getElementById("kpi-new-affiliates").textContent=s,document.getElementById("kpi-active-affiliates").textContent=n.length,document.getElementById("kpi-net-profit").textContent=formatCurrency(i)}
+    function calculateContributions(income, contractType, arlLevel, selectedComponents) { if (!settings.SMMLV || !income || income <= 0) return null; const ibc = Math.max(0.4 * income, settings.SMMLV); let results = { ibc: ibc, grandTotal: 0, health: null, pension: null, arl: null, ccf: null }; const rates = settings.CONTRIBUTION_RATES; const arlRates = settings.ARL_RATES; if (selectedComponents.health) { results.health = { total: ibc * (rates.health / 100) }; if (contractType === 'independiente') { results.health.details = `Aporte total (${rates.health}%)`; } else { results.health.details = `Empleado (${rates.employee_health}%): ${formatCurrency(ibc * (rates.employee_health / 100))} | Empleador (${rates.employer_health}%): ${formatCurrency(ibc * (rates.employer_health / 100))}`; } results.grandTotal += results.health.total; } if (selectedComponents.pension) { results.pension = { total: ibc * (rates.pension / 100) }; if (contractType === 'independiente') { results.pension.details = `Aporte total (${rates.pension}%)`; } else { results.pension.details = `Empleado (${rates.employee_pension}%): ${formatCurrency(ibc * (rates.employee_pension / 100))} | Empleador (${rates.employer_pension}%): ${formatCurrency(ibc * (rates.employer_pension / 100))}`; } results.grandTotal += results.pension.total; } if (selectedComponents.arl) { results.arl = { total: ibc * (arlRates[arlLevel] / 100), details: `A cargo del contratante/empleador (${arlRates[arlLevel]}%)` }; results.grandTotal += results.arl.total; } if (selectedComponents.ccf) { const ccfRate = contractType === 'independiente' ? rates.independiente_ccf : rates.employer_ccf; results.ccf = { total: ibc * (ccfRate / 100), details: contractType === 'independiente' ? `Aporte voluntario (${ccfRate}%)` : `A cargo del empleador (${ccfRate}%)` }; results.grandTotal += results.ccf.total; } return results; }
+    function renderCalculatorResults(results){const resultsContainer=document.getElementById("calculator-results"),placeholder=document.getElementById("quote-placeholder"),totalContainer=document.getElementById("quote-total-container");if(!results){document.getElementById("ibc-value").textContent=formatCurrency(0);resultsContainer.innerHTML="";placeholder.style.display="block";totalContainer.classList.add("hidden");return}placeholder.style.display="none";totalContainer.classList.remove("hidden");document.getElementById("ibc-value").textContent=formatCurrency(results.ibc);document.getElementById("grand-total").textContent=formatCurrency(results.grandTotal);const componentMap={health:{title:"Salud (EPS)",icon:"heart-pulse",color:"rose"},pension:{title:"Pensión",icon:"landmark",color:"amber"},arl:{title:"Riesgos Laborales (ARL)",icon:"hard-hat",color:"sky"},ccf:{title:"Caja de Compensación",icon:"boxes",color:"indigo"}},htmlOutput=[];for(const[key,config]of Object.entries(componentMap))results[key]&&htmlOutput.push(`<div class="flex items-start gap-4 p-4 bg-slate-700/50 rounded-lg"><div class="flex-shrink-0 w-10 h-10 rounded-full bg-${config.color}-500/20 text-${config.color}-400 flex items-center justify-center"><i data-lucide="${config.icon}" class="h-5 w-5"></i></div><div class="flex-grow"><p class="font-semibold">${config.title}</p><p class="text-xs text-slate-400">${results[key].details}</p></div><p class="font-bold text-lg whitespace-nowrap">${formatCurrency(results[key].total)}</p></div>`);resultsContainer.innerHTML=htmlOutput.join("");lucide.createIcons()}
+    function renderHealthPlanCards(){const e=document.getElementById("health-plan-selector");if(!e)return;if(0===healthPlans.length){e.innerHTML='<p class="text-slate-500 md:col-span-4">No hay planes de salud definidos. Por favor, cree un plan en la sección "Planes de Salud".</p>';return}e.innerHTML=healthPlans.map((e,t)=>` <label class="health-plan-card cursor-pointer rounded-lg p-4 flex flex-col justify-between"> <div> <div class="flex justify-between items-center"><h4 class="font-bold text-md text-slate-800">${e.name}</h4><input type="radio" name="health-plan" value="${e.id}" class="h-4 w-4 text-primary-600"></div> <p class="text-xl font-extrabold text-primary-600 my-2">${formatCurrency(e.price)}<span class="text-sm font-medium text-slate-500">/mes</span></p> <ul class="text-xs text-slate-600 space-y-1 mt-3"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check" class="w-3.5 h-3.5 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> </label>`).join("");}
+    function renderNovedadesSection(){const e=document.getElementById("novedades-feed");if(!e)return;const t=[...novedades].sort((e,t)=>(t.timestamp || 0)-(e.timestamp || 0));if(0===t.length){e.innerHTML='<p class="text-center text-slate-500">No hay actividad reciente.</p>';return}e.innerHTML=t.map(e=>`<div class="flex items-start gap-4"><div class="flex-shrink-0 w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">${getNovedadIcon(e.type)}</div><div> <p class="text-sm text-slate-800">${e.description}</p> <p class="text-xs text-slate-500"> ${e.affiliateName ? `Para: <strong class="font-medium">${e.affiliateName}</strong> -` : ''} ${formatTimeAgo(e.timestamp)} </p> </div></div>`).join("");lucide.createIcons();}
+    function renderEmpresaSection(){if(!companyProfile.name) return;document.getElementById("company-name").value=companyProfile.name;document.getElementById("company-nit").value=companyProfile.nit;document.getElementById("company-address").value=companyProfile.address;document.getElementById("company-phone").value=companyProfile.phone;document.getElementById("company-email").value=companyProfile.email;document.querySelector(`#theme-selector input[value="${companyProfile.theme||"default"}"]`).checked=!0;document.querySelector(`#sidebar-theme-selector input[value="${companyProfile.sidebarTheme||"dark"}"]`).checked=!0;document.querySelector(`#bottom-nav-theme-selector input[value="${companyProfile.bottomNavTheme||"dark"}"]`).checked=!0}
     function renderFlujoCajaSection(){const e=new Date,t=new Date(e.getFullYear(),e.getMonth(),1);document.getElementById("report-start-date").value=t.toISOString().split("T")[0],document.getElementById("report-end-date").value=e.toISOString().split("T")[0];const a=getAllTransactions(),n=a.filter(t=>{const a=new Date(t.date);return a.getMonth()===e.getMonth()&&a.getFullYear()===e.getFullYear()}),o=n.filter(e=>"ingreso"===e.type).reduce((e,t)=>e+t.amount,0),s=n.filter(e=>"egreso"===e.type).reduce((e,t)=>e+t.amount,0);document.getElementById("cashflow-income").textContent=formatCurrency(o),document.getElementById("cashflow-expenses").textContent=formatCurrency(s),document.getElementById("cashflow-profit").textContent=formatCurrency(o-s),renderTransactionsTable(a)}
     function getAllTransactions(){const e=[];return affiliates.forEach(t=>{if("Activo"===t.status){const a=getAffiliateCommissionBase(t);e.push({id:`auto-i-${t.id}`,type:"ingreso",concept:`Pago afiliado: ${t.name}`,amount:a,date:t.startDate});const n=getAdvisorCommissionForAffiliate(t);if(0<n){const o=advisors.find(e=>e.id===t.advisorId);e.push({id:`auto-e-${t.id}`,type:"egreso",concept:`Comisión ${o?.name||"N/A"} (Afiliado: ${t.name})`,amount:n,date:t.startDate})}}}),[...e,...manualTransactions].sort((e,t)=>new Date(t.date)-new Date(e.date))}
     function renderTransactionsTable(e){const t=document.getElementById("transactions-table-body");if(0===e.length){t.innerHTML='<tr><td colspan="3" class="text-center p-4 text-slate-500">No hay transacciones registradas.</td></tr>';return}t.innerHTML=e.map(e=>{const t="ingreso"===e.type;return`<tr class="border-b"><td class="p-3">${new Date(e.date).toLocaleDateString("es-CO")}</td><td class="p-3 text-slate-700">${e.concept}</td><td class="p-3 text-right font-semibold ${t?"text-emerald-600":"text-rose-600"}">${t?"+":"-"}${formatCurrency(e.amount)}</td></tr>`}).join("")}
     function generatePDFReport(){const{jsPDF:e}=window.jspdf,t=new e,a=new Date(document.getElementById("report-start-date").value+"T00:00:00"),n=new Date(document.getElementById("report-end-date").value+"T23:59:59");if(isNaN(a)||isNaN(n))return void showToast("Por favor, selecciona un rango de fechas válido.","error");const o=getAllTransactions().filter(e=>new Date(e.date)>=a&&new Date(e.date)<=n),s=o.filter(e=>"ingreso"===e.type).reduce((e,t)=>e+t.amount,0),i=o.filter(e=>"egreso"===e.type).reduce((e,t)=>e+t.amount,0),l=getComputedStyle(document.documentElement).getPropertyValue("--color-primary-600").trim().split(" ").map(Number);t.setFontSize(18),t.text(companyProfile.name,14,22),t.setFontSize(11),t.text(`NIT: ${companyProfile.nit}`,14,30),t.text(companyProfile.address,14,36),t.text("Reporte de Flujo de Caja",120,22),t.setFontSize(10),t.text(`Periodo: ${a.toLocaleDateString("es-CO")} - ${n.toLocaleDateString("es-CO")}`,120,30),t.autoTable({startY:45,head:[["Concepto","Total"]],body:[["Ingresos Totales",formatCurrency(s)],["Egresos Totales",formatCurrency(i)],[{content:"Balance del Periodo",styles:{fontStyle:"bold"}},{content:formatCurrency(s-i),styles:{fontStyle:"bold"}}]],theme:"grid",headStyles:{fillColor:l}}),t.autoTable({startY:t.lastAutoTable.finalY+10,head:[["Fecha","Concepto","Tipo","Monto"]],body:o.map(e=>[new Date(e.date).toLocaleDateString("es-CO"),e.concept,"ingreso"===e.type?"Ingreso":"Egreso",formatCurrency(e.amount)]),theme:"striped",headStyles:{fillColor:[45,55,72]}}),t.save(`Reporte_Flujo_Caja_${a.toLocaleDateString("es-CO").replace(/\//g,"-")}.pdf`),showToast("Generando reporte PDF.")}
     function updateNovedadesBadge(){const e=novedades.filter(e=> e.timestamp && (new Date).getTime()-e.timestamp.getTime()<864e5).length,t=document.getElementById("novedades-badge-sidebar"),a=document.getElementById("novedades-badge-mobile");0<e?(t.textContent=e,a.textContent=e,t.classList.remove("hidden"),a.classList.remove("hidden")):(t.classList.add("hidden"),a.classList.add("hidden"))}
-    function getNovedadIcon(e){return{creation:'<i data-lucide="user-plus" class="h-6 w-6 text-green-500"></i>',status_change:'<i data-lucide="alert-triangle" class="h-6 w-6 text-yellow-500"></i>',payment_change:'<i data-lucide="circle-dollar-sign" class="h-6 w-6 text-blue-500"></i>',plan_change:'<i data-lucide="file-check-2" class="h-6 w-6 text-purple-500"></i>',advisor_change:'<i data-lucide="user-cog" class="h-6 w-6 text-indigo-500"></i>',deletion:'<i data-lucide="user-x" class="h-6 w-6 text-red-500"></i>'}[e]||'<i data-lucide="alert-triangle" class="h-6 w-6 text-yellow-500"></i>'}
+    function getNovedadIcon(e){return{creation:'<i data-lucide="user-plus" class="h-6 w-6 text-green-500"></i>',status_change:'<i data-lucide="shuffle" class="h-6 w-6 text-yellow-500"></i>',payment_reminder:'<i data-lucide="calendar-clock" class="h-6 w-6 text-red-500"></i>',commission_earned:'<i data-lucide="award" class="h-6 w-6 text-blue-500"></i>',admin_profit:'<i data-lucide="trending-up" class="h-6 w-6 text-indigo-500"></i>',deletion:'<i data-lucide="user-x" class="h-6 w-6 text-red-500"></i>'}[e]||'<i data-lucide="alert-triangle" class="h-6 w-6 text-yellow-500"></i>'}
     function formatTimeAgo(e){if(!e) return "hace un momento"; const t=Math.floor((new Date-e)/1e3);let a=t/31536e3;if(1<a)return`hace ${Math.floor(a)} años`;if(1<(a=t/2592e3))return`hace ${Math.floor(a)} meses`;if(1<(a=t/86400))return`hace ${Math.floor(a)} días`;if(1<(a=t/3600))return`hace ${Math.floor(a)} horas`;if(1<(a=t/60))return`hace ${Math.floor(a)} minutos`;return`hace ${Math.floor(t)} segundos`}
     
-    // --- MANEJADOR DE EVENTOS DELEGADO Y ÚNICO ---
-    document.addEventListener('DOMContentLoaded', () => {
-        document.body.addEventListener('click', async (e) => {
-            const target = e.target;
-            const button = target.closest('button');
-            const navLink = target.closest('[data-target]');
-            
-            // Lógica para cerrar el modal de perfil si se hace clic afuera
-            const profileModal = document.getElementById('profile-modal');
-            const profileToggleBtn = document.getElementById('profile-toggle-btn');
-            if (profileModal && !profileModal.contains(target) && profileToggleBtn && !profileToggleBtn.contains(target)) {
-                 profileModal.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
+    // --- LÓGICA DEL CHATBOT ---
+    const chatBotQA = [
+        { keywords: ['hola', 'saludos', 'buenas'], answer: '¡Hola! Soy el asistente virtual de Seb Salud. ¿En qué puedo ayudarte hoy? Puedes preguntarme sobre cómo "buscar un afiliado", "crear un plan" o "ver el ranking".' },
+        { keywords: ['afiliado', 'buscar', 'encontrar'], answer: 'Para buscar, ver o editar un afiliado, dirígete a la sección "Afiliados" en el menú lateral. Puedes usar la barra de búsqueda por nombre o documento.' },
+        { keywords: ['plan', 'crear', 'nuevo plan'], answer: 'Puedes crear y administrar todos los planes de salud desde la sección "Planes de Salud". Haz clic allí para empezar.' },
+        { keywords: ['ranking', 'vendedores'], answer: 'El "Ranking de Vendedores" muestra el rendimiento de tus asesores basado en las comisiones generadas. ¡Es una gran herramienta para motivar a tu equipo!' },
+        { keywords: ['cotizador', 'calcular', 'aportes'], answer: 'Usa el "Cotizador" para calcular los aportes a seguridad social de un posible cliente. ¡Solo necesitas su ingreso mensual!' },
+        { keywords: ['qué es el ibc', 'ibc'], answer: 'El IBC es el "Ingreso Base de Cotización". Es el monto sobre el cual se calculan los aportes a seguridad social. Para independientes, corresponde al 40% de tus ingresos mensuales, sin ser menor a 1 SMMLV.' },
+        { keywords: ['flujo de caja', 'ingresos', 'egresos'], answer: 'Puedes ver un resumen de tus finanzas en la sección "Flujo de Caja". Allí puedes registrar ingresos, egresos y generar reportes en PDF.' },
+        { keywords: ['ayuda', 'soporte', 'asesor', 'contacto'], answer: 'Si necesitas ayuda personalizada, puedes contactar a soporte al correo soporte@sebsalud.com. Próximamente, esta función se convertirá en un chat en vivo con nuestros asesores.' },
+        { keywords: ['gracias', 'adios', 'chao'], answer: '¡De nada! Estoy aquí para ayudarte cuando lo necesites. ¡Que tengas un excelente día!' }
+    ];
+
+    function displayChatMessage(message, type) {
+        const chatMessages = document.getElementById('chat-messages');
+        const messageWrapper = document.createElement('div');
+        messageWrapper.className = `w-full flex ${type === 'user' ? 'justify-end' : 'justify-start'}`;
+        
+        const messageEl = document.createElement('div');
+        messageEl.className = `chat-bubble ${type === 'user' ? 'user-message' : 'bot-message'}`;
+        messageEl.innerHTML = message;
+        
+        messageWrapper.appendChild(messageEl);
+        chatMessages.appendChild(messageWrapper);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function getBotResponse(userInput) {
+        const chatMessages = document.getElementById('chat-messages');
+        const lowerInput = userInput.toLowerCase();
+
+        const typingIndicatorWrapper = document.createElement('div');
+        typingIndicatorWrapper.className = 'w-full flex justify-start';
+        typingIndicatorWrapper.id = 'typing-indicator';
+        typingIndicatorWrapper.innerHTML = `<div class="chat-bubble bot-message"><div class="typing-indicator"><span></span><span></span><span></span></div></div>`;
+        if (userInput !== 'hola') { 
+            chatMessages.appendChild(typingIndicatorWrapper);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        setTimeout(() => {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) { indicator.remove(); }
+
+            let response = 'No he entendido tu pregunta. ¿Puedes intentar con otras palabras? Prueba preguntando por "afiliados" o "planes".';
+            for (const qa of chatBotQA) {
+                if (qa.keywords.some(keyword => lowerInput.includes(keyword))) {
+                    response = qa.answer;
+                    break;
+                }
+            }
+            displayChatMessage(response, 'bot');
+        }, userInput === 'hola' ? 500 : 1800);
+    }
+    
+    // --- LÓGICA DE NOVEDADES AUTOMÁTICAS ---
+    function checkAndGenerateNovedades(newData, oldData) {
+        if (oldData.length === 0 && newData.length > 0) return; // Evitar ejecución en la carga inicial
+        const oldAffiliatesMap = new Map(oldData.map(a => [a.id, a]));
+
+        newData.forEach(newAff => {
+            const oldAff = oldAffiliatesMap.get(newAff.id);
+
+            // 1. Nuevo Afiliado
+            if (!oldAff) {
+                createNovedad(newAff.id, newAff.name, 'creation', `Se registró al nuevo afiliado ${newAff.name}.`);
+                
+                // Novedad de Comisión
+                const commission = getAdvisorCommissionForAffiliate(newAff);
+                const advisor = advisors.find(v => v.id === newAff.advisorId);
+                if (advisor && commission > 0) {
+                    createNovedad(newAff.id, newAff.name, 'commission_earned', `El asesor ${advisor.name} ganó ${formatCurrency(commission)} de comisión.`);
+                }
+                
+                // Novedad de Administración
+                if (settings.ADMIN_FEE_PER_AFFILIATE > 0) {
+                    createNovedad(newAff.id, newAff.name, 'admin_profit', `Has ganado ${formatCurrency(settings.ADMIN_FEE_PER_AFFILIATE)} por administración.`);
+                }
+                return; 
             }
 
-            if (navLink) {
-                e.preventDefault();
-                const targetId = navLink.dataset.target;
-                renderContent(targetId);
-                document.querySelectorAll('[data-target]').forEach(l => l.classList.remove('active'));
-                document.querySelectorAll(`[data-target="${targetId}"]`).forEach(l => l.classList.add('active'));
-                const title = navLink.textContent.trim().split('\n')[0].trim() || targetId;
-                document.getElementById('header-title').textContent = title.charAt(0).toUpperCase() + title.slice(1);
-                if (window.innerWidth < 768) { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('sidebar-overlay').classList.add('opacity-0', 'pointer-events-none'); }
-                return;
+            // 2. Cambio de Estado
+            if (newAff.status !== oldAff.status) {
+                createNovedad(newAff.id, newAff.name, 'status_change', `El estado de ${newAff.name} cambió de ${oldAff.status} a ${newAff.status}.`);
             }
-
-            if (!button) return;
-
-            const id = button.dataset.id;
-            switch (button.id) {
-                case 'show-register': document.getElementById('login-view').style.display = 'none'; document.getElementById('register-view').style.display = 'block'; return;
-                case 'show-login': document.getElementById('register-view').style.display = 'none'; document.getElementById('login-view').style.display = 'block'; return;
-                case 'logout-btn': case 'profile-modal-logout-btn': window.firebase.signOut(auth); return;
-                case 'menu-toggle': document.getElementById('sidebar').classList.toggle('-translate-x-full'); const overlay = document.getElementById('sidebar-overlay'); overlay.classList.toggle('opacity-0'); overlay.classList.toggle('pointer-events-none'); return;
-                case 'profile-toggle-btn':
-                    const modal = document.getElementById('profile-modal');
-                    modal.classList.toggle('scale-95');
-                    modal.classList.toggle('opacity-0');
-                    modal.classList.toggle('pointer-events-none');
-                    return;
-                case 'sidebar-overlay': document.getElementById('menu-toggle').click(); return;
-                case 'add-affiliate-btn': modalManager.open('affiliate-modal'); return;
-                case 'add-advisor-btn': modalManager.open('advisor-modal'); return;
-                case 'add-plan-btn': modalManager.open('plan-modal'); return;
-                case 'add-income-btn': modalManager.open('transaction-modal', { type: 'ingreso', title: 'Nuevo Ingreso' }); return;
-                case 'add-expense-btn': modalManager.open('transaction-modal', { type: 'egreso', title: 'Nuevo Egreso' }); return;
-                case 'open-settings-btn': modalManager.open('settings-modal'); return;
-                case 'export-affiliates-btn': handleExportAffiliates(); return;
-                case 'export-advisors-btn': handleExportAdvisors(); return;
-                case 'generate-report-btn': generatePDFReport(); return;
-                case 'view-as-cards-btn': affiliatesViewMode = 'card'; updateViewToggleButtons(); renderAffiliatesList(); return;
-                case 'view-as-table-btn': affiliatesViewMode = 'table'; updateViewToggleButtons(); renderAffiliatesList(); return;
-            }
-            if (button.dataset.closeModal) modalManager.close(button.dataset.closeModal);
-            else if (button.matches('.edit-affiliate-btn')) modalManager.open('affiliate-modal', affiliates.find(a => a.id === id));
-            else if (button.matches('.edit-advisor-btn')) modalManager.open('advisor-modal', advisors.find(v => v.id === id));
-            else if (button.matches('.edit-plan-btn')) modalManager.open('plan-modal', healthPlans.find(p => p.id === id));
-            else if (button.matches('[data-toggle-details]')) { const card = button.closest('.bg-white'); if (card) { card.querySelector('.details-section').classList.toggle('hidden'); button.classList.toggle('details-shown'); } }
-            else if (button.matches('[data-toggle-stats]')) { const statsContainer = document.getElementById(`advisor-stats-${button.dataset.toggleStats}`); if (statsContainer) { statsContainer.classList.toggle('hidden'); button.classList.toggle('stats-shown'); button.querySelector('.button-text').textContent = statsContainer.classList.contains('hidden') ? 'Ver Desglose' : 'Ocular Desglose'; } }
-            else if (button.matches('.delete-affiliate-btn')) { if (confirm('¿Seguro que deseas eliminar este afiliado?')) { await deleteDataFromFirestore('affiliates', id); showToast('Afiliado eliminado.'); } }
-            else if (button.matches('.delete-advisor-btn')) { if (confirm('¿Seguro? Se desasignará de todos los afiliados.')) { const batch = window.firebase.writeBatch(db); affiliates.forEach(aff => { if(aff.advisorId === id) { const affRef = window.firebase.doc(db, `users/${currentUser.uid}/affiliates/${aff.id}`); batch.update(affRef, { advisorId: null }); } }); const advisorRef = window.firebase.doc(db, `users/${currentUser.uid}/advisors/${id}`); batch.delete(advisorRef); await batch.commit(); showToast('Asesor eliminado.'); } }
-            else if (button.matches('.delete-plan-btn')) { const isPlanInUse = affiliates.some(aff => aff.healthPlan === id); if(isPlanInUse) return showToast('Plan en uso. No se puede eliminar.', 'error'); if (confirm('¿Seguro?')) { await deleteDataFromFirestore('healthPlans', id); showToast('Plan eliminado.'); } }
         });
 
+        // 3. Recordatorios de Pago (se ejecuta en cada carga de datos)
+        const today = new Date();
+        const sevenDaysFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+        newData.forEach(aff => {
+            if (aff.endDate) {
+                const endDate = new Date(aff.endDate + "T00:00:00"); // Asegurar que se interpreta como fecha local
+                if (endDate <= sevenDaysFromNow && endDate >= today) {
+                    // Evitar duplicados: solo crear si no existe una reciente para este afiliado
+                    const oneDayAgo = new Date(today.getTime() - 1 * 24 * 60 * 60 * 1000);
+                    const hasRecentReminder = novedades.some(n => 
+                        n.type === 'payment_reminder' && 
+                        n.affiliateId === aff.id && 
+                        n.timestamp > oneDayAgo
+                    );
+                    if (!hasRecentReminder) {
+                        createNovedad(aff.id, aff.name, 'payment_reminder', `El plan de ${aff.name} vence pronto (el ${endDate.toLocaleDateString()}). Recordar renovar.`);
+                    }
+                }
+            }
+        });
+    }
+
+    // --- MANEJADOR DE EVENTOS DELEGADO Y ÚNICO ---
+    document.addEventListener('DOMContentLoaded', () => {
+        document.body.addEventListener('click', async (e) => { const target = e.target; const button = target.closest('button'); const navLink = target.closest('[data-target]'); const profileModal = document.getElementById('profile-modal'); const profileToggleBtn = document.getElementById('profile-toggle-btn'); if (profileModal && !profileModal.contains(target) && profileToggleBtn && !profileToggleBtn.contains(target)) { profileModal.classList.add('scale-95', 'opacity-0', 'pointer-events-none'); } if (navLink) { e.preventDefault(); const targetId = navLink.dataset.target; renderContent(targetId); document.querySelectorAll('[data-target]').forEach(l => l.classList.remove('active')); document.querySelectorAll(`[data-target="${targetId}"]`).forEach(l => l.classList.add('active')); const title = navLink.querySelector('span')?.textContent.trim() || navLink.textContent.trim().split('\n')[0].trim() || targetId; document.getElementById('header-title').textContent = title.charAt(0).toUpperCase() + title.slice(1); if (window.innerWidth < 768) { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('sidebar-overlay').classList.add('opacity-0', 'pointer-events-none'); } return; } if (!button) return; const id = button.dataset.id; switch (button.id) { case 'show-register': document.getElementById('login-view').style.display = 'none'; document.getElementById('register-view').style.display = 'block'; return; case 'show-login': document.getElementById('register-view').style.display = 'none'; document.getElementById('login-view').style.display = 'block'; return; case 'logout-btn': case 'profile-modal-logout-btn': window.firebase.signOut(auth); return; case 'menu-toggle': document.getElementById('sidebar').classList.toggle('-translate-x-full'); const overlay = document.getElementById('sidebar-overlay'); overlay.classList.toggle('opacity-0'); overlay.classList.toggle('pointer-events-none'); return; case 'profile-toggle-btn': const modal = document.getElementById('profile-modal'); modal.classList.toggle('scale-95'); modal.classList.toggle('opacity-0'); modal.classList.toggle('pointer-events-none'); return; case 'sidebar-overlay': document.getElementById('menu-toggle').click(); return; case 'add-affiliate-btn': modalManager.open('affiliate-modal'); return; case 'add-advisor-btn': modalManager.open('advisor-modal'); return; case 'add-plan-btn': modalManager.open('plan-modal'); return; case 'add-income-btn': modalManager.open('transaction-modal', { type: 'ingreso', title: 'Nuevo Ingreso' }); return; case 'add-expense-btn': modalManager.open('transaction-modal', { type: 'egreso', title: 'Nuevo Egreso' }); return; case 'open-settings-btn': modalManager.open('settings-modal'); return; case 'export-affiliates-btn': handleExportAffiliates(); return; case 'export-advisors-btn': handleExportAdvisors(); return; case 'generate-report-btn': generatePDFReport(); return; case 'view-as-cards-btn': affiliatesViewMode = 'card'; updateViewToggleButtons(); renderAffiliatesList(); return; case 'view-as-table-btn': affiliatesViewMode = 'table'; updateViewToggleButtons(); renderAffiliatesList(); return; } if (button.dataset.closeModal) modalManager.close(button.dataset.closeModal); else if (button.matches('.edit-affiliate-btn')) modalManager.open('affiliate-modal', affiliates.find(a => a.id === id)); else if (button.matches('.edit-advisor-btn')) modalManager.open('advisor-modal', advisors.find(v => v.id === id)); else if (button.matches('.edit-plan-btn')) modalManager.open('plan-modal', healthPlans.find(p => p.id === id)); else if (button.matches('[data-toggle-details]')) { const card = button.closest('.bg-white'); if (card) { card.querySelector('.details-section').classList.toggle('hidden'); button.classList.toggle('details-shown'); } } else if (button.matches('[data-toggle-stats]')) { const statsContainer = document.getElementById(`advisor-stats-${button.dataset.toggleStats}`); if (statsContainer) { statsContainer.classList.toggle('hidden'); button.classList.toggle('stats-shown'); button.querySelector('.button-text').textContent = statsContainer.classList.contains('hidden') ? 'Ver Desglose' : 'Ocular Desglose'; } } else if (button.matches('.delete-affiliate-btn')) { if (confirm('¿Seguro que deseas eliminar este afiliado?')) { await deleteDataFromFirestore('affiliates', id); showToast('Afiliado eliminado.'); } } else if (button.matches('.delete-advisor-btn')) { if (confirm('¿Seguro? Se desasignará de todos los afiliados.')) { const batch = window.firebase.writeBatch(db); affiliates.forEach(aff => { if(aff.advisorId === id) { const affRef = window.firebase.doc(db, `users/${currentUser.uid}/affiliates/${aff.id}`); batch.update(affRef, { advisorId: null }); } }); const advisorRef = window.firebase.doc(db, `users/${currentUser.uid}/advisors/${id}`); batch.delete(advisorRef); await batch.commit(); showToast('Asesor eliminado.'); } } else if (button.matches('.delete-plan-btn')) { const isPlanInUse = affiliates.some(aff => aff.healthPlan === id); if(isPlanInUse) return showToast('Plan en uso. No se puede eliminar.', 'error'); if (confirm('¿Seguro?')) { await deleteDataFromFirestore('healthPlans', id); showToast('Plan eliminado.'); } } else if (button.id === 'sell-plan-btn') { if (!lastQuoteResult) { showToast('Por favor, realiza una cotización primero.', 'error'); return; } modalManager.open('affiliate-modal'); setTimeout(() => { const form = document.getElementById('affiliate-form'); if (!form) return; form['manual-override-checkbox'].checked = true; document.getElementById('manual-override-container').classList.remove('hidden'); form['manual-cost-health'].value = lastQuoteResult.health ? Math.round(lastQuoteResult.health.total) : ''; form['manual-cost-pension'].value = lastQuoteResult.pension ? Math.round(lastQuoteResult.pension.total) : ''; form['manual-cost-arl'].value = lastQuoteResult.arl ? Math.round(lastQuoteResult.arl.total) : ''; form['manual-cost-ccf'].value = lastQuoteResult.ccf ? Math.round(lastQuoteResult.ccf.total) : ''; const incomeValue = Number(document.getElementById('income').value); form['affiliate-notes'].value = `Cotización inicial basada en un ingreso mensual de ${formatCurrency(incomeValue)}. IBC: ${formatCurrency(lastQuoteResult.ibc)}.`; showToast('Datos de cotización precargados.'); }, 100); } });
         document.getElementById('login-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { await window.firebase.signInWithEmailAndPassword(auth, e.target['login-email'].value, e.target['login-password'].value); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('register-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { const userCredential = await window.firebase.createUserWithEmailAndPassword(auth, e.target['register-email'].value, e.target['register-password'].value); await setupNewUserDocument(userCredential.user); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('license-form').addEventListener('submit', e => { e.preventDefault(); handleLicenseActivation(); });
-        document.getElementById('calculator-form').addEventListener('submit', e => { e.preventDefault(); const form = e.target; const selections = { health: form.querySelector('[value="health"]').checked, pension: form.querySelector('[value="pension"]').checked, arl: form.querySelector('[value="arl"]').checked, ccf: form.querySelector('[value="ccf"]').checked }; const results = calculateContributions(Number(form['income'].value), form['contract-type'].value, form['arl-level'].value, selections); renderCalculatorResults(results, selections); });
-        document.getElementById('affiliate-form').addEventListener('submit', async (e) => { e.preventDefault(); const form = e.target; const selectedPlan = form.querySelector('input[name="health-plan"]:checked'); if (!selectedPlan && healthPlans.length > 0) return showToast('Debe seleccionar un plan de salud.', 'error'); const affiliateData = { name: form['affiliate-name'].value.trim(), documentId: form['affiliate-id'].value.trim(), email: form['affiliate-email'].value.trim(), phone: form['affiliate-phone'].value.trim(), address: form['affiliate-address'].value.trim(), healthPlan: selectedPlan ? selectedPlan.value : null, pensionPlan: form['pension-plan'].value, arlPlan: form['arl-plan'].value, ccfPlan: form['ccf-plan'].value, advisorId: form['advisor-select-list'].value, startDate: form['affiliate-start-date'].value, status: form['affiliate-status'].value, notes: form['affiliate-notes'].value.trim(), manualCosts: null, manualCommission: null }; if (form['manual-override-checkbox'].checked) { affiliateData.manualCosts = { health: Number(form['manual-cost-health'].value) || 0, pension: Number(form['manual-cost-pension'].value) || 0, arl: Number(form['manual-cost-arl'].value) || 0, ccf: Number(form['manual-cost-ccf'].value) || 0 }; affiliateData.manualCommission = Number(form['manual-commission'].value) || null; } const existingId = form['affiliate-doc-id'].value; if (existingId) { affiliateData.id = existingId; await saveDataToFirestore('affiliates', affiliateData); } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${currentUser.uid}/affiliates`)); affiliateData.id = docRef.id; affiliateData.createdAt = new Date(); await saveDataToFirestore('affiliates', affiliateData); await createNovedad(affiliateData.id, affiliateData.name, 'creation', `Se registró al nuevo afiliado ${affiliateData.name}.`); } modalManager.close('affiliate-modal'); showToast('Afiliado guardado.'); });
+        document.getElementById('calculator-form').addEventListener('submit', e => { e.preventDefault(); const form = document.getElementById('calculator-form'); const selections = { health: form.querySelector('[value="health"]').checked, pension: form.querySelector('[value="pension"]').checked, arl: form.querySelector('[value="arl"]').checked, ccf: form.querySelector('[value="ccf"]').checked }; const results = calculateContributions(Number(form['income'].value), form['contract-type'].value, form['arl-level'].value, selections); lastQuoteResult = results; renderCalculatorResults(results); });
+        document.getElementById('select-all-components').addEventListener('change', e => { document.querySelectorAll('.component-checkbox').forEach(cb => { cb.checked = e.target.checked; }); });
+        document.getElementById('affiliate-form').addEventListener('submit', async (e) => { e.preventDefault(); const form = e.target; const selectedPlan = form.querySelector('input[name="health-plan"]:checked'); const manualOverride = form['manual-override-checkbox'].checked; if (!selectedPlan && !manualOverride && healthPlans.length > 0) { return showToast('Debe seleccionar un plan o ingresar costos manuales.', 'error'); } const affiliateData = { name: form['affiliate-name'].value.trim(), documentId: form['affiliate-id'].value.trim(), email: form['affiliate-email'].value.trim(), phone: form['affiliate-phone'].value.trim(), address: form['affiliate-address'].value.trim(), healthPlan: selectedPlan ? selectedPlan.value : null, pensionPlan: form['pension-plan'].value, arlPlan: form['arl-plan'].value, ccfPlan: form['ccf-plan'].value, advisorId: form['advisor-select-list'].value, startDate: form['affiliate-start-date'].value, endDate: form['affiliate-end-date'].value, status: form['affiliate-status'].value, notes: form['affiliate-notes'].value.trim(), manualCosts: null, manualCommission: null }; if (manualOverride) { affiliateData.manualCosts = { health: Number(form['manual-cost-health'].value) || 0, pension: Number(form['manual-cost-pension'].value) || 0, arl: Number(form['manual-cost-arl'].value) || 0, ccf: Number(form['manual-cost-ccf'].value) || 0 }; affiliateData.manualCommission = Number(form['manual-commission'].value) || null; } const existingId = form['affiliate-doc-id'].value; if (existingId) { affiliateData.id = existingId; await saveDataToFirestore('affiliates', affiliateData); } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${currentUser.uid}/affiliates`)); affiliateData.id = docRef.id; affiliateData.createdAt = new Date(); await saveDataToFirestore('affiliates', affiliateData); } modalManager.close('affiliate-modal'); showToast('Afiliado guardado.'); });
         document.getElementById('advisor-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['advisor-doc-id'].value; const advisorData = { name: form['advisor-name'].value, commissionRate: Number(form['advisor-commission'].value) }; if (id) { advisorData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${currentUser.uid}/advisors`)); advisorData.id = docRef.id; } await saveDataToFirestore('advisors', advisorData); modalManager.close('advisor-modal'); showToast('Asesor guardado.'); });
         document.getElementById('plan-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['plan-doc-id'].value; const planData = { name: form['plan-name'].value, price: Number(form['plan-price'].value), features: form['plan-features'].value }; if (id) { planData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${currentUser.uid}/healthPlans`)); planData.id = docRef.id; } await saveDataToFirestore('healthPlans', planData); modalManager.close('plan-modal'); showToast('Plan guardado.'); });
         document.getElementById('transaction-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const newTransaction = { type: form['transaction-type'].value, concept: form['transaction-concept'].value, amount: parseFloat(form['transaction-amount'].value), date: new Date(form['transaction-date'].value + 'T12:00:00.000Z') }; await window.firebase.addDoc(window.firebase.collection(db, `users/${currentUser.uid}/manualTransactions`), newTransaction); modalManager.close('transaction-modal'); showToast('Transacción guardada.'); });
-        document.getElementById('company-profile-form').addEventListener('submit', async e => { e.preventDefault(); companyProfile.name = document.getElementById('company-name').value; companyProfile.nit = document.getElementById('company-nit').value; companyProfile.address = document.getElementById('company-address').value; companyProfile.phone = document.getElementById('company-phone').value; companyProfile.email = document.getElementById('company-email').value; companyProfile.theme = document.querySelector('#theme-selector input:checked').value; const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { companyProfile }, { merge: true }); showToast('Perfil actualizado.'); });
-        document.getElementById('settings-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; settings.SMMLV = Number(form['setting-smmlv'].value); settings.CONTRIBUTION_RATES.health = parseFloat(form['setting-health'].value); settings.CONTRIBUTION_RATES.pension = parseFloat(form['setting-pension'].value); settings.CONTRIBUTION_RATES.independiente_ccf = parseFloat(form['setting-ccf-ind'].value); settings.CONTRIBUTION_RATES.employer_ccf = parseFloat(form['setting-ccf-emp'].value); for (let i = 1; i <= 5; i++) { settings.ARL_RATES[i] = parseFloat(form[`setting-arl-${i}`].value); } const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { settings }, { merge: true }); modalManager.close('settings-modal'); showToast('Configuración guardada.'); });
+        document.getElementById('company-profile-form').addEventListener('submit', async e => { e.preventDefault(); companyProfile.name = document.getElementById('company-name').value; companyProfile.nit = document.getElementById('company-nit').value; companyProfile.address = document.getElementById('company-address').value; companyProfile.phone = document.getElementById('company-phone').value; companyProfile.email = document.getElementById('company-email').value; companyProfile.theme = document.querySelector('#theme-selector input:checked').value; companyProfile.sidebarTheme = document.querySelector('#sidebar-theme-selector input:checked').value; companyProfile.bottomNavTheme = document.querySelector('#bottom-nav-theme-selector input:checked').value; const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { companyProfile }, { merge: true }); showToast('Perfil actualizado.'); });
+        document.getElementById('settings-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; settings.SMMLV = Number(form['setting-smmlv'].value); settings.ADMIN_FEE_PER_AFFILIATE = Number(form['setting-admin-fee'].value); settings.CONTRIBUTION_RATES.health = parseFloat(form['setting-health'].value); settings.CONTRIBUTION_RATES.pension = parseFloat(form['setting-pension'].value); settings.CONTRIBUTION_RATES.independiente_ccf = parseFloat(form['setting-ccf-ind'].value); settings.CONTRIBUTION_RATES.employer_ccf = parseFloat(form['setting-ccf-emp'].value); for (let i = 1; i <= 5; i++) { settings.ARL_RATES[i] = parseFloat(form[`setting-arl-${i}`].value); } const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { settings }, { merge: true }); modalManager.close('settings-modal'); showToast('Configuración guardada.'); });
+        document.getElementById('manual-override-checkbox').addEventListener('change', (e) => { document.getElementById('manual-override-container').classList.toggle('hidden', !e.target.checked); });
+        document.getElementById('chat-form').addEventListener('submit', (e) => { e.preventDefault(); const chatInput = document.getElementById('chat-input'); const message = chatInput.value.trim(); if (message) { displayChatMessage(message, 'user'); getBotResponse(message); chatInput.value = ''; } });
     });
     
     // --- FUNCIONES AUXILIARES ---
@@ -789,24 +540,11 @@
             const titles = { 'affiliate-modal': 'Afiliado', 'advisor-modal': 'Asesor', 'settings-modal': 'Configuración', 'plan-modal': 'Plan de Salud', 'transaction-modal': 'Transacción', 'license-modal': 'Activar Licencia' };
             modal.querySelector('h2').textContent = data?.id ? `Editar ${titles[modalId]}` : (data?.title || `Nuevo ${titles[modalId]}`);
             if (modalId === 'license-modal') { document.getElementById('license-error-message').textContent = ''; }
-            else if (modalId === 'affiliate-modal') {
-                populateAdvisorSelect(); renderHealthPlanCards();
-                form['affiliate-doc-id'].value = data?.id || ''; form['affiliate-name'].value = data?.name || ''; form['affiliate-id'].value = data?.documentId || ''; form['affiliate-email'].value = data?.email || ''; form['affiliate-phone'].value = data?.phone || ''; form['affiliate-address'].value = data?.address || '';
-                const planInput = form.querySelector(`input[name="health-plan"][value="${data?.healthPlan || (healthPlans.length > 0 ? healthPlans[0].id : '')}"]`); if (planInput) planInput.checked = true;
-                form['pension-plan'].value = data?.pensionPlan || ''; form['arl-plan'].value = data?.arlPlan || ''; form['ccf-plan'].value = data?.ccfPlan || '';
-                form['advisor-select-list'].value = data?.advisorId || ''; form['affiliate-start-date'].value = data?.startDate || new Date().toISOString().split('T')[0]; form['affiliate-status'].value = data?.status || 'Pendiente'; form['affiliate-notes'].value = data?.notes || '';
-                const manualContainer = form.querySelector('#manual-override-container');
-                form['manual-override-checkbox'].checked = !!(data?.manualCosts || data?.manualCommission);
-                manualContainer.classList.toggle('hidden', !form['manual-override-checkbox'].checked);
-                form['manual-cost-health'].value = data?.manualCosts?.health || ''; form['manual-cost-pension'].value = data?.manualCosts?.pension || ''; form['manual-cost-arl'].value = data?.manualCosts?.arl || ''; form['manual-cost-ccf'].value = data?.manualCosts?.ccf || ''; form['manual-commission'].value = data?.manualCommission || '';
-            } else if (modalId === 'advisor-modal') {
-                form['advisor-doc-id'].value = data?.id || ''; form['advisor-name'].value = data?.name || ''; form['advisor-commission'].value = data?.commissionRate || '';
-            } else if (modalId === 'plan-modal') {
-                form['plan-doc-id'].value = data?.id || ''; form['plan-name'].value = data?.name || ''; form['plan-price'].value = data?.price || ''; form['plan-features'].value = data?.features || '';
-            } else if (modalId === 'settings-modal' && settings.SMMLV) {
-                form['setting-smmlv'].value = settings.SMMLV; form['setting-health'].value = settings.CONTRIBUTION_RATES.health; form['setting-pension'].value = settings.CONTRIBUTION_RATES.pension; form['setting-ccf-ind'].value = settings.CONTRIBUTION_RATES.independiente_ccf; form['setting-ccf-emp'].value = settings.CONTRIBUTION_RATES.employer_ccf;
-                for (let i = 1; i <= 5; i++) { form[`setting-arl-${i}`].value = settings.ARL_RATES[i]; }
-            } else if (modalId === 'transaction-modal') { document.getElementById('transaction-type').value = data.type; document.getElementById('transaction-date').value = new Date().toISOString().split('T')[0]; }
+            else if (modalId === 'affiliate-modal') { populateAdvisorSelect(); renderHealthPlanCards(); form['affiliate-doc-id'].value = data?.id || ''; form['affiliate-name'].value = data?.name || ''; form['affiliate-id'].value = data?.documentId || ''; form['affiliate-email'].value = data?.email || ''; form['affiliate-phone'].value = data?.phone || ''; form['affiliate-address'].value = data?.address || ''; if(data?.healthPlan) { const planInput = form.querySelector(`input[name="health-plan"][value="${data.healthPlan}"]`); if (planInput) planInput.checked = true; } form['pension-plan'].value = data?.pensionPlan || ''; form['arl-plan'].value = data?.arlPlan || ''; form['ccf-plan'].value = data?.ccfPlan || ''; form['advisor-select-list'].value = data?.advisorId || ''; form['affiliate-start-date'].value = data?.startDate || new Date().toISOString().split('T')[0]; form['affiliate-end-date'].value = data?.endDate || ''; form['affiliate-status'].value = data?.status || 'Pendiente'; form['affiliate-notes'].value = data?.notes || ''; const manualContainer = form.querySelector('#manual-override-container'); form['manual-override-checkbox'].checked = !!(data?.manualCosts || data?.manualCommission); manualContainer.classList.toggle('hidden', !form['manual-override-checkbox'].checked); form['manual-cost-health'].value = data?.manualCosts?.health || ''; form['manual-cost-pension'].value = data?.manualCosts?.pension || ''; form['manual-cost-arl'].value = data?.manualCosts?.arl || ''; form['manual-cost-ccf'].value = data?.manualCosts?.ccf || ''; form['manual-commission'].value = data?.manualCommission || '';
+            } else if (modalId === 'advisor-modal') { form['advisor-doc-id'].value = data?.id || ''; form['advisor-name'].value = data?.name || ''; form['advisor-commission'].value = data?.commissionRate || ''; } 
+            else if (modalId === 'plan-modal') { form['plan-doc-id'].value = data?.id || ''; form['plan-name'].value = data?.name || ''; form['plan-price'].value = data?.price || ''; form['plan-features'].value = data?.features || ''; } 
+            else if (modalId === 'settings-modal' && settings.SMMLV) { form['setting-smmlv'].value = settings.SMMLV; form['setting-admin-fee'].value = settings.ADMIN_FEE_PER_AFFILIATE; form['setting-health'].value = settings.CONTRIBUTION_RATES.health; form['setting-pension'].value = settings.CONTRIBUTION_RATES.pension; form['setting-ccf-ind'].value = settings.CONTRIBUTION_RATES.independiente_ccf; form['setting-ccf-emp'].value = settings.CONTRIBUTION_RATES.employer_ccf; for (let i = 1; i <= 5; i++) { form[`setting-arl-${i}`].value = settings.ARL_RATES[i]; } } 
+            else if (modalId === 'transaction-modal') { document.getElementById('transaction-type').value = data.type; document.getElementById('transaction-date').value = new Date().toISOString().split('T')[0]; }
             modal.classList.remove('opacity-0', 'pointer-events-none');
             modal.querySelector('.modal-content').classList.remove('scale-95');
             lucide.createIcons();
@@ -818,17 +556,7 @@
     function exportToCSV(headers, data, filename) { const csvRows = [headers.join(',')]; for (const row of data) { const values = headers.map(header => `"${('' + row[header]).replace(/"/g, '\\"')}"`); csvRows.push(values.join(',')); } const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); window.URL.revokeObjectURL(url); }
     function handleExportAffiliates() { const headers = ['Nombre', 'Documento', 'Email', 'Telefono', 'Direccion', 'Asesor', 'Estado', 'Fecha de Inicio', 'Plan de Salud', 'Fondo Pension', 'ARL', 'Caja Comp.']; const dataToExport = affiliates.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const plan = healthPlans.find(p=> p.id === aff.healthPlan); return { 'Nombre': aff.name, 'Documento': aff.documentId, 'Email': aff.email, 'Telefono': aff.phone, 'Direccion': aff.address, 'Asesor': advisor ? advisor.name : 'N/A', 'Estado': aff.status, 'Fecha de Inicio': aff.startDate, 'Plan de Salud': plan ? plan.name : 'N/A', 'Fondo Pension': aff.pensionPlan, 'ARL': aff.arlPlan, 'Caja Comp.': aff.ccfPlan }; }); exportToCSV(headers, dataToExport, 'afiliados_seb_salud.csv'); showToast('Exportando afiliados a CSV.'); }
     function handleExportAdvisors() { const headers = ['Nombre', 'Comision (%)', 'Total Afiliados', 'Comision Total Generada']; const dataToExport = advisors.map(advisor => { const advisorAffiliates = affiliates.filter(a => a.advisorId === advisor.id); const totalCommission = advisorAffiliates.reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0); return { 'Nombre': advisor.name, 'Comision (%)': advisor.commissionRate, 'Total Afiliados': advisorAffiliates.length, 'Comision Total Generada': totalCommission }; }); exportToCSV(headers, dataToExport, 'asesores_seb_salud.csv'); showToast('Exportando asesores a CSV.'); }
-    function getFirebaseAuthErrorMessage(error) {
-        switch (error.code) {
-            case 'auth/invalid-email': return 'El correo es inválido.';
-            case 'auth/user-not-found': return 'Usuario no encontrado.';
-            case 'auth/wrong-password': return 'Contraseña incorrecta.';
-            case 'auth/email-already-in-use': return 'El correo ya está en uso.';
-            case 'auth/weak-password': return 'La contraseña es muy débil (mínimo 6 caracteres).';
-            default: return 'Ocurrió un error inesperado. Intenta de nuevo.';
-        }
-    }
-
+    function getFirebaseAuthErrorMessage(error) { switch (error.code) { case 'auth/invalid-email': return 'El correo es inválido.'; case 'auth/user-not-found': return 'Usuario no encontrado.'; case 'auth/wrong-password': return 'Contraseña incorrecta.'; case 'auth/email-already-in-use': return 'El correo ya está en uso.'; case 'auth/weak-password': return 'La contraseña es muy débil (mínimo 6 caracteres).'; default: return 'Ocurrió un error inesperado. Intenta de nuevo.'; } }
 </script>
 </body>
 </html>
