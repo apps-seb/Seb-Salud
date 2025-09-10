@@ -76,7 +76,6 @@
         .health-plan-card { border: 2px solid #e2e8f0; transition: border-color 0.2s, box-shadow 0.2s; }
         .health-plan-card:has(input:checked) { border-color: rgb(var(--color-primary-600)); box-shadow: 0 0 0 2px rgb(var(--color-primary-600) / 0.5); }
         
-        /* Estilos para el contador de novedades */
         .novedades-badge {
             position: absolute;
             top: 6px;
@@ -100,11 +99,8 @@
             right: calc(50% - 28px);
         }
 
-        /* Estilos para tablas responsivas */
         @media (max-width: 767px) {
-            .responsive-table thead {
-                display: none;
-            }
+            .responsive-table thead { display: none; }
             .responsive-table tr {
                 display: block;
                 margin-bottom: 1rem;
@@ -113,9 +109,7 @@
                 box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
                 padding: 0 1rem;
             }
-             .responsive-table tbody {
-                border: none;
-            }
+             .responsive-table tbody { border: none; }
             .responsive-table td {
                 display: flex;
                 justify-content: space-between;
@@ -124,9 +118,7 @@
                 padding: 0.75rem 0;
                 border-bottom: 1px solid #f1f5f9;
             }
-            .responsive-table td:last-child {
-                border-bottom: none;
-            }
+            .responsive-table td:last-child { border-bottom: none; }
             .responsive-table td[data-label]::before {
                 content: attr(data-label);
                 font-weight: 600;
@@ -134,13 +126,18 @@
                 margin-right: 1rem;
                 color: #475569;
             }
-            .responsive-table .no-data-row {
-                padding: 1rem;
-            }
+            .responsive-table .no-data-row { padding: 1rem; }
         }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
+
+    <div id="loader" class="min-h-screen flex items-center justify-center">
+        <div class="text-center">
+            <i data-lucide="shield-check" class="h-12 w-12 text-primary-500 mx-auto animate-pulse"></i>
+            <p class="mt-4 text-slate-600 font-semibold">Cargando aplicación...</p>
+        </div>
+    </div>
 
     <div id="auth-container" class="hidden">
         <div class="min-h-screen flex items-center justify-center bg-slate-100 p-4">
@@ -241,6 +238,8 @@
         </nav>
     </div>
     
+    <!-- MODALS -->
+    <!-- Contenido de los modales (sin cambios, ya que es solo HTML) -->
     <div id="user-profile-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60]">
         <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-sm transform scale-95">
             <div class="p-6">
@@ -390,15 +389,17 @@
 
 
 <script type="module">
-    // --- IMPORTACIONES DE FIREBASE (SDK v9 modular) ---
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    // --- IMPORTACIONES DE FIREBASE (SDK v10, más reciente) ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { 
         getAuth, 
         onAuthStateChanged, 
         createUserWithEmailAndPassword, 
         signInWithEmailAndPassword, 
-        signOut
-    } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        signOut,
+        setPersistence,
+        browserLocalPersistence
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { 
         getFirestore, 
         collection, 
@@ -413,38 +414,55 @@
         query,
         where,
         serverTimestamp,
-        Timestamp
-    } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        Timestamp,
+        enableIndexedDbPersistence,
+        setLogLevel
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     // --- CONFIGURACIÓN DE FIREBASE ---
-    // IMPORTANTE: Reemplaza este objeto con la configuración de tu propio proyecto de Firebase.
     const firebaseConfig = {
-  apiKey: "AIzaSyDS4VDnwGia2ZUe3o81rqLe-oEu_pVCUHc",
-  authDomain: "seb-salud.firebaseapp.com",
-  projectId: "seb-salud",
-  storageBucket: "seb-salud.firebasestorage.app",
-  messagingSenderId: "1094873327284",
-  appId: "1:1094873327284:web:001e70e84c2de45389d9e1",
-  measurementId: "G-EJCS9FYWHK"
-};
+      apiKey: "AIzaSyDS4VDnwGia2ZUe3o81rqLe-oEu_pVCUHc",
+      authDomain: "seb-salud.firebaseapp.com",
+      projectId: "seb-salud",
+      storageBucket: "seb-salud.appspot.com", // CORREGIDO: Este es el formato estándar y correcto.
+      messagingSenderId: "1094873327284",
+      appId: "1:1094873327284:web:001e70e84c2de45389d9e1",
+      measurementId: "G-EJCS9FYWHK"
+    };
 
     // --- INICIALIZACIÓN DE FIREBASE ---
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // Habilitar persistencia offline y logs para depuración
+    try {
+        await enableIndexedDbPersistence(db);
+    } catch (err) {
+        if (err.code == 'failed-precondition') {
+            console.warn("La persistencia de Firestore falló, probablemente por múltiples pestañas abiertas.");
+        } else if (err.code == 'unimplemented') {
+            console.warn("El navegador actual no soporta la persistencia offline de Firestore.");
+        }
+    }
+    setLogLevel('debug');
+    
+    try {
+        await setPersistence(auth, browserLocalPersistence);
+    } catch (error) {
+        console.error("Error al configurar la persistencia de autenticación:", error);
+    }
+
 
     // --- ESTADO GLOBAL DE LA APLICACIÓN ---
     let currentUser = null;
-    let allUsers = []; // Lista de usuarios de la app (Firestore, no Auth)
+    let allUsers = []; 
     let affiliates = [], advisors = [], manualTransactions = [], novedades = [], healthPlans = [];
     let companyProfile = {};
     let settings = {};
     let affiliatesViewMode = 'card';
-    let currentView = 'dashboard'; // Para saber qué vista refrescar
+    let currentView = 'dashboard';
     
-    // Listeners de Firestore para datos en tiempo real.
-    // Se guardan para poder desuscribirse al cerrar sesión.
     let unsubscribeListeners = [];
 
     const defaultSettings = {
@@ -481,37 +499,40 @@
 
     onAuthStateChanged(auth, async (firebaseUser) => {
         if (firebaseUser) {
-            // Usuario ha iniciado sesión
             const userDocRef = doc(db, "users", firebaseUser.uid);
             const userDocSnap = await getDoc(userDocRef);
 
             if (userDocSnap.exists()) {
                 currentUser = { uid: firebaseUser.uid, email: firebaseUser.email, ...userDocSnap.data() };
-                await initializeApp();
+                await startApp();
             } else {
-                // Caso raro: usuario en Auth pero no en Firestore.
-                // Podríamos crear un perfil por defecto o simplemente cerrar sesión.
                 console.error("Usuario autenticado pero sin perfil en Firestore. Cerrando sesión.");
                 handleLogout();
             }
         } else {
-            // Usuario ha cerrado sesión o no está logueado
             currentUser = null;
-            unsubscribeAll(); // Detener todos los listeners de datos
+            unsubscribeAll();
+            document.getElementById('loader').classList.add('hidden');
             document.getElementById('app-container').classList.add('hidden');
             document.getElementById('auth-container').classList.remove('hidden');
-            checkIfAdminExists();
+            await checkIfAdminExists();
         }
     });
 
     async function checkIfAdminExists() {
-        const usersRef = collection(db, "users");
-        const q = query(usersRef, where("role", "==", "admin"));
-        const querySnapshot = await getDocs(q);
-        if (querySnapshot.empty) {
-            showAuthForm('register');
-        } else {
-            showAuthForm('login');
+        try {
+            const usersRef = collection(db, "users");
+            const q = query(usersRef, where("role", "==", "admin"));
+            const querySnapshot = await getDocs(q);
+            if (querySnapshot.empty) {
+                showAuthForm('register');
+            } else {
+                showAuthForm('login');
+            }
+        } catch(error) {
+            console.error("Error crítico al verificar admin:", error);
+            const errorDiv = document.getElementById('auth-error');
+            errorDiv.textContent = "Error de conexión con la base de datos. Verifica las reglas de seguridad de Firestore.";
         }
     }
     
@@ -524,7 +545,6 @@
 
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            // onAuthStateChanged se encargará del resto.
         } catch (error) {
             console.error("Error de inicio de sesión:", error.code);
             let message = 'Error al iniciar sesión.';
@@ -543,20 +563,15 @@
         errorDiv.textContent = '';
 
         try {
-            // 1. Crear usuario en Firebase Auth
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            // 2. Crear documento de perfil para el usuario en Firestore
-            // El primer usuario registrado será un 'admin'
             const userProfile = {
                 email: user.email,
                 role: 'admin',
                 createdAt: serverTimestamp() 
             };
             await setDoc(doc(db, "users", user.uid), userProfile);
-            
-            // onAuthStateChanged se encargará del resto
         } catch (error) {
             console.error("Error de registro:", error.code);
             let message = 'Error al registrar la cuenta.';
@@ -571,7 +586,6 @@
 
     async function handleLogout() {
         await signOut(auth);
-        // onAuthStateChanged se encargará de limpiar la UI
     }
 
     function showAuthForm(formToShow) {
@@ -604,14 +618,11 @@
                 const dataArray = snapshot.docs.map(doc => ({ 
                     id: doc.id, 
                     ...doc.data(),
-                    // Convertir Timestamps de Firestore a Objetos Date de JS
                     createdAt: doc.data().createdAt?.toDate ? doc.data().createdAt.toDate() : null,
                     timestamp: doc.data().timestamp?.toDate ? doc.data().timestamp.toDate() : null
                 }));
                 
-                window[c.stateVar] = dataArray; // Asigna al array global correspondiente
-                
-                // Si la vista actual depende de estos datos, la refresca
+                window[c.stateVar] = dataArray;
                 refreshCurrentView();
             }, (error) => {
                 console.error(`Error escuchando la colección ${c.name}:`, error);
@@ -620,13 +631,11 @@
             unsubscribeListeners.push(unsubscribe);
         });
 
-        // Listeners para documentos únicos (configuración, perfil empresa)
         const unsubSettings = onSnapshot(doc(db, "appConfig", "settings"), (docSnap) => {
             if (docSnap.exists()) {
                 settings = docSnap.data();
             } else {
                 settings = JSON.parse(JSON.stringify(defaultSettings));
-                // Opcional: Crear el documento de settings si no existe
                 setDoc(doc(db, "appConfig", "settings"), settings).catch(e => console.error("Error creando settings por defecto", e));
             }
             refreshCurrentView();
@@ -652,12 +661,11 @@
     }
 
     function refreshCurrentView() {
-        // No refresca si aún no se ha inicializado la app
         if(!document.getElementById('app-container').classList.contains('hidden')) {
-            renderContent(currentView, false); // false para evitar la animación de fadeIn
+            renderContent(currentView, false); 
             updateNovedadesBadge();
-            populateAdvisorSelect(); // Actualiza selectores que dependen de datos
-            configureUIForRole(currentUser.role); // Para actualizar el nombre del usuario si cambia
+            populateAdvisorSelect(); 
+            configureUIForRole(currentUser.role);
         }
     }
     
@@ -667,8 +675,6 @@
 
 
     // --- UI & RENDERING ---
-    // La mayoría de las funciones de renderizado y UI no necesitan grandes cambios, 
-    // ya que ahora operan sobre los arrays globales que son actualizados en tiempo real.
     const modalManager = {
         open(modalId, data = null) {
             const modal = document.getElementById(modalId);
@@ -794,7 +800,7 @@
             if (animate) {
                  section.classList.add('active');
             } else {
-                 section.style.display = 'block'; // Mostrar sin animación
+                 section.style.display = 'block'; 
             }
            
             if (targetId === 'dashboard') renderDashboard();
@@ -809,7 +815,6 @@
             if (targetId === 'cotizador') renderCotizadorSection();
             if (targetId === 'mi-perfil') renderMiPerfil();
             
-            // Si no animamos, removemos el estilo inline después de un ciclo para que la clase 'active' tome el control de nuevo
             if (!animate) {
                 setTimeout(() => {
                     section.style.display = '';
@@ -819,13 +824,6 @@
         }
     }
     
-    // Todas las demás funciones de RENDERIZADO (renderDashboard, renderAffiliatesList, etc.)
-    // se mantienen casi idénticas, ya que leen de las variables globales que ahora son
-    // alimentadas en tiempo real por Firestore.
-    // ... (El código de renderizado es largo, lo omito aquí por brevedad, pero está incluido en el bloque final)
-    
-    // --- MANEJADORES DE FORMULARIOS Y EVENTOS (Adaptados para Firestore) ---
-
     async function handleSaveAffiliate(e) {
         e.preventDefault();
         const form = e.target;
@@ -867,18 +865,16 @@
         
         try {
             if (existingId) {
-                // Actualizar documento existente
                 const originalAffiliate = affiliates.find(a => a.id === existingId);
                 if (originalAffiliate && originalAffiliate.status !== affiliateData.status) {
-                    createNovedad(existingId, affiliateData.name, 'status_change', `El estado de ${affiliateData.name} cambió de '${originalAffiliate.status}' a '${affiliateData.status}'.`);
+                    await createNovedad(existingId, affiliateData.name, 'status_change', `El estado de ${affiliateData.name} cambió de '${originalAffiliate.status}' a '${affiliateData.status}'.`);
                 }
                 const docRef = doc(db, "affiliates", existingId);
                 await updateDoc(docRef, affiliateData);
             } else {
-                // Crear nuevo documento
                 affiliateData.createdAt = serverTimestamp();
                 const docRef = await addDoc(collection(db, "affiliates"), affiliateData);
-                createNovedad(docRef.id, affiliateData.name, 'creation', `Se ha registrado al nuevo afiliado ${affiliateData.name}.`);
+                await createNovedad(docRef.id, affiliateData.name, 'creation', `Se ha registrado al nuevo afiliado ${affiliateData.name}.`);
             }
             modalManager.close('affiliate-modal');
             showToast('Afiliado guardado correctamente.');
@@ -941,7 +937,7 @@
             type: form['transaction-type'].value,
             concept: form['transaction-concept'].value,
             amount: parseFloat(form['transaction-amount'].value),
-            date: Timestamp.fromDate(transactionDate) // Usar Firestore Timestamp
+            date: Timestamp.fromDate(transactionDate)
         };
 
         try {
@@ -980,18 +976,18 @@
         const settingsData = {
             SMMLV: Number(form['setting-smmlv'].value),
             CONTRIBUTION_RATES: {
-                ...settings.CONTRIBUTION_RATES, // Mantener valores no editables
+                ...settings.CONTRIBUTION_RATES, 
                 health: parseFloat(form['setting-health'].value),
                 pension: parseFloat(form['setting-pension'].value),
                 independiente_ccf: parseFloat(form['setting-ccf-ind'].value),
                 employer_ccf: parseFloat(form['setting-ccf-emp'].value)
             },
             ARL_RATES: {
-                1: parseFloat(form['setting-arl-1'].value),
-                2: parseFloat(form['setting-arl-2'].value),
-                3: parseFloat(form['setting-arl-3'].value),
-                4: parseFloat(form['setting-arl-4'].value),
-                5: parseFloat(form['setting-arl-5'].value)
+                1: parseFloat(form[`setting-arl-1`].value),
+                2: parseFloat(form[`setting-arl-2`].value),
+                3: parseFloat(form[`setting-arl-3`].value),
+                4: parseFloat(form[`setting-arl-4`].value),
+                5: parseFloat(form[`setting-arl-5`].value)
             }
         };
 
@@ -1007,9 +1003,6 @@
 
     async function handleSaveUser(e) {
         e.preventDefault();
-        // NOTA: Para crear usuarios y cambiar contraseñas de forma segura,
-        // se recomienda usar Funciones Cloud de Firebase.
-        // Este es un ejemplo simplificado que funciona desde el cliente.
         const form = e.target;
         const id = form['user-doc-id'].value;
         const email = form['user-email'].value;
@@ -1022,13 +1015,12 @@
         }
 
         if (id) {
-            // Editar usuario existente (solo datos en Firestore)
             try {
                 const userRef = doc(db, "users", id);
                 await updateDoc(userRef, {
                     role: role,
                     appDataId: appDataId,
-                    email: email, // Nota: Cambiar email aquí no lo cambia en Firebase Auth
+                    email: email, 
                 });
                 showToast('Usuario actualizado.');
                 modalManager.close('user-modal');
@@ -1038,24 +1030,20 @@
             }
         } else {
             showToast("La creación de nuevos usuarios debe hacerse desde una Función Cloud por seguridad.", "error");
-            // Aquí iría la lógica para llamar a una Cloud Function que cree el usuario en Auth
-            // y luego cree su perfil en Firestore. Hacerlo desde el cliente no es seguro.
         }
     }
     
-    // --- LÓGICA DE NOVEDADES (Adaptada para Firestore) ---
     async function createNovedad(affiliateId, affiliateName, type, description) {
         const novedad = {
             affiliateId,
             affiliateName,
             type,
             description,
-            timestamp: serverTimestamp(), // Usar timestamp del servidor
+            timestamp: serverTimestamp(),
             isRead: false
         };
         try {
             await addDoc(collection(db, "novedades"), novedad);
-            // El listener se encargará de actualizar la UI
         } catch (error) {
             console.error("Error al crear novedad:", error);
         }
@@ -1071,14 +1059,13 @@
                 return updateDoc(docRef, { isRead: true });
             });
             await Promise.all(batchPromises);
-            // El listener actualizará la UI
         } catch (error) {
             console.error("Error al marcar novedades como leídas:", error);
         }
     }
     
-    // --- INICIALIZACIÓN Y EVENTOS DE LA APP ---
-    async function initializeApp() {
+    async function startApp() {
+        document.getElementById('loader').classList.add('hidden');
         document.getElementById('auth-container').classList.add('hidden');
         document.getElementById('app-container').classList.remove('hidden');
 
@@ -1086,7 +1073,6 @@
         setupRealtimeListeners();
         
         configureUIForRole(currentUser.role);
-        setupAppEventListeners();
         
         const initialView = navLinksConfig[currentUser.role][0].id;
         renderContent(initialView, true);
@@ -1095,15 +1081,6 @@
         document.querySelector(`#mobile-nav [data-target="${initialView}"]`)?.classList.add('active');
         document.getElementById('header-title').textContent = navLinksConfig[currentUser.role][0].text;
     }
-    
-    // --- EVENT LISTENERS GLOBALES ---
-    // (Código de setupAppEventListeners y demás sin cambios significativos)
-    
-    
-    //****************************************************************//
-    // A PARTIR DE AQUÍ, EL CÓDIGO ES MAYORMENTE IDÉNTICO AL ORIGINAL //
-    // YA QUE SE ENCARGA DE LA INTERFAZ Y NO DE LOS DATOS.           //
-    //****************************************************************//
     
     let confirmCallback = null;
     function showConfirmation(message, onConfirm) {
@@ -1178,7 +1155,7 @@
     function renderPlansList() { const container = document.getElementById('planes'); container.innerHTML = `<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4"><h2 class="text-2xl font-bold">Planes de Salud</h2><button id="add-plan-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center self-end sm:self-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Plan</button></div><div id="plans-list" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6"></div>`; const listContainer = document.getElementById('plans-list'); if (healthPlans.length === 0) { listContainer.innerHTML = `<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay planes creados.</p></div>`; return; } listContainer.innerHTML = healthPlans.map(plan => ` <div class="bg-white rounded-xl shadow-lg flex flex-col"><div class="p-5 flex-grow"><div class="flex justify-between items-start"><h3 class="font-bold text-lg">${plan.name}</h3><p class="text-xl font-extrabold text-primary-600">${formatCurrency(plan.price)}</p></div><ul class="text-sm text-slate-600 space-y-1 mt-4">${plan.features.split('\n').map(f => `<li class="flex items-start"><i data-lucide="check-circle-2" class="w-4 h-4 mr-2 text-green-500 mt-0.5 shrink-0"></i><span>${f}</span></li>`).join('')}</ul></div><div class="border-t p-3 flex justify-end items-center bg-gray-50/50 rounded-b-xl"><button class="edit-plan-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${plan.id}" aria-label="Editar plan"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button><button class="delete-plan-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${plan.id}" aria-label="Eliminar plan"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button></div></div>`).join(''); lucide.createIcons(); }
     
     function renderCotizadorSection() {
-        if (!settings.SMMLV) { // Esperar a que cargue la configuración
+        if (!settings.SMMLV) { 
             document.getElementById('cotizador').innerHTML = `<p class="text-center">Cargando configuración...</p>`;
             return;
         }
@@ -1272,7 +1249,6 @@
         markAllNovedadesAsRead();
     }
     
-    // --- UTILITY FUNCTIONS ---
     function showToast(message, type = 'success') { const toast = document.getElementById('toast'); if (!toast) return; toast.textContent = message; toast.className = `fixed top-5 right-5 z-[100] text-white py-2 px-4 rounded-lg shadow-xl transition-all duration-300 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`; toast.classList.remove('opacity-0', 'translate-y-2'); setTimeout(() => toast.classList.add('opacity-0', 'translate-y-2'), 3000); }
     function formatCurrency(value, minimumFractionDigits = 0) { return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits }).format(value || 0); }
     function exportToCSV(headers, data, filename) { const csvRows = [headers.join(',')]; for (const row of data) { const values = headers.map(header => `"${('' + row[header]).replace(/"/g, '\\"')}"`); csvRows.push(values.join(',')); } const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.setAttribute('href', url); a.setAttribute('download', filename); document.body.appendChild(a); a.click(); document.body.removeChild(a); }
@@ -1432,8 +1408,8 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         try {
+            setupAppEventListeners();
             setupAuthEventListeners();
-            // onAuthStateChanged se encarga de iniciar la app o mostrar el login
             lucide.createIcons();
         } catch (error) {
             console.error("Error fatal:", error);
@@ -1444,3 +1420,4 @@
 </script>
 </body>
 </html>
+
