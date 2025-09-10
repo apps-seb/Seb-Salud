@@ -9,7 +9,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     
-    <!-- SDK de Firebase v9 (Modular) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
@@ -60,7 +59,8 @@
         .novedades-badge.hidden { transform: scale(0); }
         .health-plan-card { border: 2px solid #e2e8f0; transition: border-color 0.2s, box-shadow 0.2s; }
         .health-plan-card:has(input:checked) { border-color: rgb(var(--color-primary-600)); box-shadow: 0 0 0 2px rgb(var(--color-primary-600) / 0.5); }
-        .auth-tab.active { border-color: rgb(var(--color-primary-600)); color: rgb(var(--color-primary-600)); }
+        .auth-form { animation: fadeInForm 0.6s ease-in-out; }
+        @keyframes fadeInForm { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
@@ -76,55 +76,67 @@
         <span id="toast-message"></span>
     </div>
 
-    <!-- Contenedor de Autenticación -->
-    <div id="auth-container" style="display: none;" class="min-h-screen flex items-center justify-center bg-slate-100 p-4">
-        <div class="w-full max-w-md">
-            <div class="flex items-center justify-center mb-6">
-                <i data-lucide="shield-check" class="h-10 w-10 text-primary-600"></i>
-                <span class="ml-3 text-3xl font-bold text-slate-800">Seb Salud</span>
+    <div id="auth-container" style="display: none;" class="min-h-screen bg-slate-100 flex items-center justify-center p-4">
+        <div class="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden grid md:grid-cols-2">
+            
+            <div class="p-8 lg:p-12 text-white bg-gradient-to-br from-indigo-600 to-sky-500 hidden md:flex flex-col justify-center items-center text-center">
+                <i data-lucide="shield-check" class="h-20 w-20 text-white/80 mb-6"></i>
+                <h2 class="text-3xl font-bold mb-4">Bienvenido a Seb Salud</h2>
+                <p class="text-indigo-100 max-w-sm">Tu plataforma de gestión de salud todo en uno. Administra afiliados, asesores y finanzas de forma eficiente y segura.</p>
             </div>
-            <div class="bg-white rounded-xl shadow-2xl p-6 sm:p-8">
-                <div class="flex border-b mb-6">
-                    <button id="login-tab" class="auth-tab active flex-1 py-3 font-semibold text-center border-b-2">Iniciar Sesión</button>
-                    <button id="register-tab" class="auth-tab flex-1 py-3 font-semibold text-center border-b-2 border-transparent text-slate-500">Registrarse</button>
-                </div>
-                
-                <form id="login-form">
-                    <div class="space-y-4">
-                        <div>
-                            <label for="login-email" class="text-sm font-medium text-slate-600">Correo Electrónico</label>
-                            <input type="email" id="login-email" class="w-full mt-1 p-2 border border-slate-300 rounded-lg" required>
-                        </div>
-                        <div>
-                            <label for="login-password" class="text-sm font-medium text-slate-600">Contraseña</label>
-                            <input type="password" id="login-password" class="w-full mt-1 p-2 border border-slate-300 rounded-lg" required>
-                        </div>
-                    </div>
-                    <div class="mt-6">
-                        <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-2.5 px-4 rounded-lg transition duration-200">Ingresar</button>
-                    </div>
-                </form>
 
-                <form id="register-form" class="hidden">
-                    <div class="space-y-4">
-                        <div>
-                            <label for="register-email" class="text-sm font-medium text-slate-600">Correo Electrónico</label>
-                            <input type="email" id="register-email" class="w-full mt-1 p-2 border border-slate-300 rounded-lg" required>
-                        </div>
-                        <div>
-                            <label for="register-password" class="text-sm font-medium text-slate-600">Contraseña (mínimo 6 caracteres)</label>
-                            <input type="password" id="register-password" class="w-full mt-1 p-2 border border-slate-300 rounded-lg" required>
-                        </div>
+            <div class="p-8 lg:p-12 flex flex-col justify-center">
+                <div class="w-full max-w-md mx-auto">
+                    <div id="login-view" class="auth-form">
+                        <h2 class="text-3xl font-bold text-slate-800 mb-2">Iniciar Sesión</h2>
+                        <p class="text-slate-500 mb-8">Ingresa a tu cuenta para continuar.</p>
+                        <form id="login-form">
+                            <div class="space-y-5">
+                                <div class="relative">
+                                    <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i>
+                                    <input type="email" id="login-email" placeholder="Correo Electrónico" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required>
+                                </div>
+                                <div class="relative">
+                                    <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i>
+                                    <input type="password" id="login-password" placeholder="Contraseña" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required>
+                                </div>
+                            </div>
+                            <div class="mt-8">
+                                <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">Ingresar</button>
+                            </div>
+                        </form>
+                        <p class="text-center text-sm text-slate-600 mt-8">
+                            ¿No tienes una cuenta? <button id="show-register" class="font-semibold text-primary-600 hover:underline">Regístrate aquí</button>
+                        </p>
                     </div>
-                    <div class="mt-6">
-                        <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-2.5 px-4 rounded-lg transition duration-200">Crear Cuenta</button>
+
+                    <div id="register-view" class="auth-form hidden">
+                        <h2 class="text-3xl font-bold text-slate-800 mb-2">Crear Cuenta</h2>
+                        <p class="text-slate-500 mb-8">Únete a nuestra plataforma.</p>
+                        <form id="register-form">
+                           <div class="space-y-5">
+                                <div class="relative">
+                                    <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i>
+                                    <input type="email" id="register-email" placeholder="Correo Electrónico" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required>
+                                </div>
+                                <div class="relative">
+                                     <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i>
+                                    <input type="password" id="register-password" placeholder="Contraseña (mín. 6 caracteres)" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required>
+                                </div>
+                            </div>
+                            <div class="mt-8">
+                                <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">Crear Cuenta</button>
+                            </div>
+                        </form>
+                         <p class="text-center text-sm text-slate-600 mt-8">
+                            ¿Ya tienes una cuenta? <button id="show-login" class="font-semibold text-primary-600 hover:underline">Inicia sesión</button>
+                        </p>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
     
-    <!-- Contenedor Principal de la Aplicación -->
     <div id="app-container" style="display: none;">
         <div class="flex h-screen overflow-hidden">
             <div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-30 opacity-0 pointer-events-none md:hidden"></div>
@@ -173,149 +185,149 @@
                     <section id="dashboard" class="content-section active">
                          <h1 class="text-2xl font-bold text-slate-800 mb-6">Resumen General y Métricas Clave</h1>
                          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                             <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                 <div><h3 class="text-sm font-medium text-slate-500 uppercase">Ingresos del Mes</h3><p id="kpi-monthly-income" class="text-3xl font-bold text-slate-800 mt-2">$0</p></div>
-                                 <div class="bg-emerald-100 text-emerald-600 p-2 rounded-full"><i data-lucide="trending-up" class="h-6 w-6"></i></div>
-                             </div>
-                             <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                 <div><h3 class="text-sm font-medium text-slate-500 uppercase">Cartera Vencida</h3><p id="kpi-overdue-payments" class="text-3xl font-bold text-rose-500 mt-2">$0</p></div>
-                                 <div class="bg-rose-100 text-rose-600 p-2 rounded-full"><i data-lucide="clock" class="h-6 w-6"></i></div>
-                             </div>
-                             <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                 <div><h3 class="text-sm font-medium text-slate-500 uppercase">Nuevos Afiliados (Mes)</h3><p id="kpi-new-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
-                                 <div class="bg-sky-100 text-sky-600 p-2 rounded-full"><i data-lucide="user-plus" class="h-6 w-6"></i></div>
-                             </div>
-                             <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                 <div><h3 class="text-sm font-medium text-slate-500 uppercase">Afiliados Activos</h3><p id="kpi-active-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
-                                 <div class="bg-slate-100 text-slate-600 p-2 rounded-full"><i data-lucide="check-circle-2" class="h-6 w-6"></i></div>
-                             </div>
+                              <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
+                                  <div><h3 class="text-sm font-medium text-slate-500 uppercase">Ingresos del Mes</h3><p id="kpi-monthly-income" class="text-3xl font-bold text-slate-800 mt-2">$0</p></div>
+                                  <div class="bg-emerald-100 text-emerald-600 p-2 rounded-full"><i data-lucide="trending-up" class="h-6 w-6"></i></div>
+                              </div>
+                              <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
+                                  <div><h3 class="text-sm font-medium text-slate-500 uppercase">Cartera Vencida</h3><p id="kpi-overdue-payments" class="text-3xl font-bold text-rose-500 mt-2">$0</p></div>
+                                  <div class="bg-rose-100 text-rose-600 p-2 rounded-full"><i data-lucide="clock" class="h-6 w-6"></i></div>
+                              </div>
+                              <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
+                                  <div><h3 class="text-sm font-medium text-slate-500 uppercase">Nuevos Afiliados (Mes)</h3><p id="kpi-new-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
+                                  <div class="bg-sky-100 text-sky-600 p-2 rounded-full"><i data-lucide="user-plus" class="h-6 w-6"></i></div>
+                              </div>
+                              <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
+                                  <div><h3 class="text-sm font-medium text-slate-500 uppercase">Afiliados Activos</h3><p id="kpi-active-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
+                                  <div class="bg-slate-100 text-slate-600 p-2 rounded-full"><i data-lucide="check-circle-2" class="h-6 w-6"></i></div>
+                              </div>
                          </div>
                     </section>
                     
                     <section id="novedades" class="content-section">
                          <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-4xl mx-auto">
-                             <h2 class="text-2xl font-bold text-slate-800 mb-6">Última Actividad</h2>
-                             <div id="novedades-feed" class="space-y-6"></div>
+                              <h2 class="text-2xl font-bold text-slate-800 mb-6">Última Actividad</h2>
+                              <div id="novedades-feed" class="space-y-6"></div>
                          </div>
                     </section>
 
                     <section id="empresa" class="content-section">
                          <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-3xl mx-auto">
-                             <h2 class="text-2xl font-bold text-slate-800 mb-6">Perfil de la Empresa</h2>
-                             <form id="company-profile-form" class="space-y-4">
-                                 <div><label for="company-name" class="block text-sm font-medium text-slate-600">Nombre</label><input type="text" id="company-name" class="w-full mt-1 p-2 border rounded-lg" required></div>
-                                 <div><label for="company-nit" class="block text-sm font-medium text-slate-600">NIT / Documento</label><input type="text" id="company-nit" class="w-full mt-1 p-2 border rounded-lg" required></div>
-                                 <div><label for="company-address" class="block text-sm font-medium text-slate-600">Dirección</label><input type="text" id="company-address" class="w-full mt-1 p-2 border rounded-lg"></div>
-                                 <div><label for="company-phone" class="block text-sm font-medium text-slate-600">Teléfono</label><input type="tel" id="company-phone" class="w-full mt-1 p-2 border rounded-lg"></div>
-                                 <div><label for="company-email" class="block text-sm font-medium text-slate-600">Email</label><input type="email" id="company-email" class="w-full mt-1 p-2 border rounded-lg"></div>
-                                 <div class="mt-6 pt-6 border-t">
-                                     <h3 class="text-lg font-medium text-slate-700 mb-4">Color del Tema</h3>
-                                     <div id="theme-selector" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                                         <label class="cursor-pointer"><input type="radio" name="theme" value="default" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Índigo</span><div class="w-6 h-6 rounded-full bg-[#4f46e5]"></div></div></div></label>
-                                         <label class="cursor-pointer"><input type="radio" name="theme" value="bosque" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-lime-500 peer-checked:ring-2 peer-checked:ring-lime-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Bosque</span><div style="background-image: linear-gradient(to right top, #a3e635, #06b6d4);" class="w-6 h-6 rounded-full"></div></div></div></label>
-                                         <label class="cursor-pointer"><input type="radio" name="theme" value="atardecer" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-orange-500 peer-checked:ring-2 peer-checked:ring-orange-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Atardecer</span><div style="background-image: linear-gradient(to right top, #fde047, #f97316, #ef4444);" class="w-6 h-6 rounded-full"></div></div></div></label>
-                                         <label class="cursor-pointer"><input type="radio" name="theme" value="elegant" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-amber-500 peer-checked:ring-2 peer-checked:ring-amber-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Elegant</span><div style="background-image: linear-gradient(to right top, #f59e0b, #0ea5e9);" class="w-6 h-6 rounded-full"></div></div></div></label>
-                                         <label class="cursor-pointer"><input type="radio" name="theme" value="espacial" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-sky-500 peer-checked:ring-2 peer-checked:ring-sky-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Espacial</span><div class="w-6 h-6 rounded-full bg-gradient-to-br from-[#38bdf8] to-[#8b5cf6]"></div></div></div></label>
-                                         <label class="cursor-pointer"><input type="radio" name="theme" value="verano-tropical" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-fuchsia-600 peer-checked:ring-2 peer-checked:ring-fuchsia-600/50"><div class="flex items-center justify-between"><span class="font-semibold">Tropical</span><div class="w-6 h-6 rounded-full bg-gradient-to-br from-[#a3e635] to-[#ec4899]"></div></div></div></label>
-                                     </div>
-                                 </div>
-                                 <div class="pt-4"><button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg">Guardar Cambios</button></div>
-                             </form>
+                              <h2 class="text-2xl font-bold text-slate-800 mb-6">Perfil de la Empresa</h2>
+                              <form id="company-profile-form" class="space-y-4">
+                                  <div><label for="company-name" class="block text-sm font-medium text-slate-600">Nombre</label><input type="text" id="company-name" class="w-full mt-1 p-2 border rounded-lg" required></div>
+                                  <div><label for="company-nit" class="block text-sm font-medium text-slate-600">NIT / Documento</label><input type="text" id="company-nit" class="w-full mt-1 p-2 border rounded-lg" required></div>
+                                  <div><label for="company-address" class="block text-sm font-medium text-slate-600">Dirección</label><input type="text" id="company-address" class="w-full mt-1 p-2 border rounded-lg"></div>
+                                  <div><label for="company-phone" class="block text-sm font-medium text-slate-600">Teléfono</label><input type="tel" id="company-phone" class="w-full mt-1 p-2 border rounded-lg"></div>
+                                  <div><label for="company-email" class="block text-sm font-medium text-slate-600">Email</label><input type="email" id="company-email" class="w-full mt-1 p-2 border rounded-lg"></div>
+                                  <div class="mt-6 pt-6 border-t">
+                                      <h3 class="text-lg font-medium text-slate-700 mb-4">Color del Tema</h3>
+                                      <div id="theme-selector" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                          <label class="cursor-pointer"><input type="radio" name="theme" value="default" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Índigo</span><div class="w-6 h-6 rounded-full bg-[#4f46e5]"></div></div></div></label>
+                                          <label class="cursor-pointer"><input type="radio" name="theme" value="bosque" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-lime-500 peer-checked:ring-2 peer-checked:ring-lime-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Bosque</span><div style="background-image: linear-gradient(to right top, #a3e635, #06b6d4);" class="w-6 h-6 rounded-full"></div></div></div></label>
+                                          <label class="cursor-pointer"><input type="radio" name="theme" value="atardecer" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-orange-500 peer-checked:ring-2 peer-checked:ring-orange-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Atardecer</span><div style="background-image: linear-gradient(to right top, #fde047, #f97316, #ef4444);" class="w-6 h-6 rounded-full"></div></div></div></label>
+                                          <label class="cursor-pointer"><input type="radio" name="theme" value="elegant" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-amber-500 peer-checked:ring-2 peer-checked:ring-amber-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Elegant</span><div style="background-image: linear-gradient(to right top, #f59e0b, #0ea5e9);" class="w-6 h-6 rounded-full"></div></div></div></label>
+                                          <label class="cursor-pointer"><input type="radio" name="theme" value="espacial" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-sky-500 peer-checked:ring-2 peer-checked:ring-sky-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Espacial</span><div class="w-6 h-6 rounded-full bg-gradient-to-br from-[#38bdf8] to-[#8b5cf6]"></div></div></div></label>
+                                          <label class="cursor-pointer"><input type="radio" name="theme" value="verano-tropical" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-fuchsia-600 peer-checked:ring-2 peer-checked:ring-fuchsia-600/50"><div class="flex items-center justify-between"><span class="font-semibold">Tropical</span><div class="w-6 h-6 rounded-full bg-gradient-to-br from-[#a3e635] to-[#ec4899]"></div></div></div></label>
+                                      </div>
+                                  </div>
+                                  <div class="pt-4"><button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg">Guardar Cambios</button></div>
+                              </form>
                          </div>
                     </section>
 
                     <section id="flujo-caja" class="content-section">
                          <div class="bg-white p-6 rounded-xl shadow-lg mb-8">
-                             <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
-                                 <div><h2 class="text-2xl font-bold text-slate-800">Flujo de Caja</h2><p class="text-slate-500">Gestión de ingresos, egresos y reportes financieros.</p></div>
-                                 <div class="flex items-center gap-4">
-                                     <button id="add-expense-btn" class="w-full md:w-auto bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap"><i data-lucide="minus" class="w-5 h-5 mr-2"></i>Nuevo Egreso</button>
-                                     <button id="add-income-btn" class="w-full md:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i>Nuevo Ingreso</button>
-                                 </div>
-                             </div>
+                              <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                                  <div><h2 class="text-2xl font-bold text-slate-800">Flujo de Caja</h2><p class="text-slate-500">Gestión de ingresos, egresos y reportes financieros.</p></div>
+                                  <div class="flex items-center gap-4">
+                                      <button id="add-expense-btn" class="w-full md:w-auto bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap"><i data-lucide="minus" class="w-5 h-5 mr-2"></i>Nuevo Egreso</button>
+                                      <button id="add-income-btn" class="w-full md:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i>Nuevo Ingreso</button>
+                                  </div>
+                              </div>
                          </div>
                          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                             <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg">
-                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center">
-                                     <div class="bg-emerald-50 text-emerald-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Ingresos (Mes)</h3><p id="cashflow-income" class="text-3xl font-bold mt-1">$0</p></div>
-                                     <div class="bg-rose-50 text-rose-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Egresos (Mes)</h3><p id="cashflow-expenses" class="text-3xl font-bold mt-1">$0</p></div>
-                                     <div class="bg-sky-50 text-sky-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Balance (Mes)</h3><p id="cashflow-profit" class="text-3xl font-bold mt-1">$0</p></div>
-                                 </div>
-                             </div>
-                             <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg">
-                                 <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b pb-4 mb-4">
-                                     <div><h3 class="text-lg font-semibold text-slate-700">Historial de Transacciones</h3></div>
-                                     <div class="flex flex-col sm:flex-row gap-4 items-center">
-                                         <input type="date" id="report-start-date" class="w-full p-2 border rounded-lg"><span class="text-slate-500">a</span><input type="date" id="report-end-date" class="w-full p-2 border rounded-lg">
-                                         <button id="generate-report-btn" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="file-text" class="w-5 h-5 mr-2"></i>Generar PDF</button>
-                                     </div>
-                                 </div>
-                                 <div class="max-h-96 overflow-y-auto"><table class="w-full text-sm"><thead class="sticky top-0 bg-slate-100"><tr class="text-left"><th class="p-2 text-xs font-semibold text-slate-600 uppercase">Fecha</th><th class="p-2 text-xs font-semibold text-slate-600 uppercase">Concepto</th><th class="p-2 text-right text-xs font-semibold text-slate-600 uppercase">Monto</th></tr></thead><tbody id="transactions-table-body"></tbody></table></div>
-                             </div>
+                              <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg">
+                                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center">
+                                      <div class="bg-emerald-50 text-emerald-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Ingresos (Mes)</h3><p id="cashflow-income" class="text-3xl font-bold mt-1">$0</p></div>
+                                      <div class="bg-rose-50 text-rose-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Egresos (Mes)</h3><p id="cashflow-expenses" class="text-3xl font-bold mt-1">$0</p></div>
+                                      <div class="bg-sky-50 text-sky-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Balance (Mes)</h3><p id="cashflow-profit" class="text-3xl font-bold mt-1">$0</p></div>
+                                  </div>
+                              </div>
+                              <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg">
+                                  <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b pb-4 mb-4">
+                                      <div><h3 class="text-lg font-semibold text-slate-700">Historial de Transacciones</h3></div>
+                                      <div class="flex flex-col sm:flex-row gap-4 items-center">
+                                          <input type="date" id="report-start-date" class="w-full p-2 border rounded-lg"><span class="text-slate-500">a</span><input type="date" id="report-end-date" class="w-full p-2 border rounded-lg">
+                                          <button id="generate-report-btn" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="file-text" class="w-5 h-5 mr-2"></i>Generar PDF</button>
+                                      </div>
+                                  </div>
+                                  <div class="max-h-96 overflow-y-auto"><table class="w-full text-sm"><thead class="sticky top-0 bg-slate-100"><tr class="text-left"><th class="p-2 text-xs font-semibold text-slate-600 uppercase">Fecha</th><th class="p-2 text-xs font-semibold text-slate-600 uppercase">Concepto</th><th class="p-2 text-right text-xs font-semibold text-slate-600 uppercase">Monto</th></tr></thead><tbody id="transactions-table-body"></tbody></table></div>
+                              </div>
                          </div>
                     </section>
 
                     <section id="afiliados" class="content-section">
                          <div class="bg-white p-4 rounded-xl shadow-lg mb-6">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
+                           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
                                 <div class="md:col-span-2">
                                     <label for="search-affiliate" class="text-sm font-medium text-slate-600">Buscar Afiliado</label>
                                     <div class="relative mt-1"><input type="text" id="search-affiliate" placeholder="Nombre o documento..." class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg placeholder-slate-400"><i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i></div>
                                 </div>
                                 <div><label for="filter-affiliate-status" class="text-sm font-medium text-slate-600">Estado</label><select id="filter-affiliate-status" class="w-full mt-1 py-2 px-3 border border-slate-300 rounded-lg"><option value="all">Todos</option><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div>
                                 <div><label for="filter-affiliate-payment-status" class="text-sm font-medium text-slate-600">Estado de Pago</label><select id="filter-affiliate-payment-status" class="w-full mt-1 py-2 px-3 border border-slate-300 rounded-lg"><option value="all">Todos</option><option value="Al día">Al día</option><option value="En mora">En mora</option></select></div>
-                            </div>
+                           </div>
                          </div>
                          <div class="flex justify-between items-center mb-6 gap-4 flex-wrap">
-                             <div class="flex items-center gap-2">
-                                 <span class="text-sm font-medium text-slate-600 mr-2">Vista:</span>
-                                 <button id="view-as-cards-btn" class="p-2 rounded-lg" title="Ver como tarjetas"><i data-lucide="layout-grid" class="h-5 w-5 pointer-events-none"></i></button>
-                                 <button id="view-as-table-btn" class="p-2 rounded-lg" title="Ver como tabla"><i data-lucide="table-2" class="h-5 w-5 pointer-events-none"></i></button>
-                             </div>
-                             <div class="flex items-center gap-4">
-                                 <button id="export-affiliates-btn" class="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center whitespace-nowrap"><i data-lucide="download" class="w-5 h-5 mr-2 text-green-600"></i>Exportar a CSV</button>
-                                 <button id="add-affiliate-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Afiliado</button>
-                             </div>
+                              <div class="flex items-center gap-2">
+                                  <span class="text-sm font-medium text-slate-600 mr-2">Vista:</span>
+                                  <button id="view-as-cards-btn" class="p-2 rounded-lg" title="Ver como tarjetas"><i data-lucide="layout-grid" class="h-5 w-5 pointer-events-none"></i></button>
+                                  <button id="view-as-table-btn" class="p-2 rounded-lg" title="Ver como tabla"><i data-lucide="table-2" class="h-5 w-5 pointer-events-none"></i></button>
+                              </div>
+                              <div class="flex items-center gap-4">
+                                  <button id="export-affiliates-btn" class="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center whitespace-nowrap"><i data-lucide="download" class="w-5 h-5 mr-2 text-green-600"></i>Exportar a CSV</button>
+                                  <button id="add-affiliate-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Afiliado</button>
+                              </div>
                          </div>
                          
                          <div id="affiliates-card-container" class="grid grid-cols-1 xl:grid-cols-2 gap-6"></div>
 
                          <div id="affiliates-table-container" style="display: none;" class="bg-white rounded-xl shadow-lg overflow-x-auto">
-                             <table class="w-full text-sm">
-                                 <thead class="bg-slate-50">
-                                     <tr class="text-left">
-                                         <th class="p-3 text-xs font-semibold text-slate-600 uppercase">Afiliado</th>
-                                         <th class="p-3 text-xs font-semibold text-slate-600 uppercase">Plan / Asesor</th>
-                                         <th class="p-3 text-xs font-semibold text-slate-600 uppercase">Contacto</th>
-                                         <th class="p-3 text-xs font-semibold text-slate-600 uppercase">Estado</th>
-                                         <th class="p-3 text-xs font-semibold text-slate-600 uppercase text-center">Acciones</th>
-                                     </tr>
-                                 </thead>
-                                 <tbody id="affiliates-table-body" class="divide-y divide-slate-200"></tbody>
-                             </table>
+                              <table class="w-full text-sm">
+                                  <thead class="bg-slate-50">
+                                      <tr class="text-left">
+                                          <th class="p-3 text-xs font-semibold text-slate-600 uppercase">Afiliado</th>
+                                          <th class="p-3 text-xs font-semibold text-slate-600 uppercase">Plan / Asesor</th>
+                                          <th class="p-3 text-xs font-semibold text-slate-600 uppercase">Contacto</th>
+                                          <th class="p-3 text-xs font-semibold text-slate-600 uppercase">Estado</th>
+                                          <th class="p-3 text-xs font-semibold text-slate-600 uppercase text-center">Acciones</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody id="affiliates-table-body" class="divide-y divide-slate-200"></tbody>
+                              </table>
                          </div>
                     </section>
                     
                     <section id="asesores" class="content-section">
                          <div class="flex justify-end items-center mb-6 gap-4">
-                             <button id="export-advisors-btn" class="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center whitespace-nowrap"><i data-lucide="download" class="w-5 h-5 mr-2 text-green-600"></i>Exportar a CSV</button>
-                             <button id="add-advisor-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Asesor</button>
+                              <button id="export-advisors-btn" class="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center whitespace-nowrap"><i data-lucide="download" class="w-5 h-5 mr-2 text-green-600"></i>Exportar a CSV</button>
+                              <button id="add-advisor-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Asesor</button>
                          </div>
                          <div id="advisors-container" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6"></div>
                     </section>
 
                     <section id="ranking-vendedores" class="content-section">
                          <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-2">
-                             <h2 class="text-2xl font-bold text-slate-800">Ranking de Vendedores</h2>
-                             <p class="text-sm text-slate-500">Top vendedores por comisiones totales generadas.</p>
+                              <h2 class="text-2xl font-bold text-slate-800">Ranking de Vendedores</h2>
+                              <p class="text-sm text-slate-500">Top vendedores por comisiones totales generadas.</p>
                          </div>
                          <div id="ranking-list" class="space-y-4"></div>
                     </section>
 
                     <section id="planes" class="content-section">
                          <div class="flex justify-between items-center mb-6">
-                             <h2 class="text-2xl font-bold text-slate-800">Administrar Planes de Salud</h2>
-                             <button id="add-plan-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Plan</button>
+                              <h2 class="text-2xl font-bold text-slate-800">Administrar Planes de Salud</h2>
+                              <button id="add-plan-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Plan</button>
                          </div>
                          <div id="plans-list" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6"></div>
                     </section>
@@ -323,33 +335,33 @@
                     <section id="cotizador" class="content-section">
                          <div class="flex justify-between items-center mb-6"><h2 class="text-2xl font-bold text-slate-800">Cotizador de Seguridad Social</h2><button id="open-settings-btn" class="text-slate-500 hover:text-primary-600 p-2 rounded-full bg-slate-100 hover:bg-slate-200"><i data-lucide="settings" class="w-6 h-6"></i></button></div>
                          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                             <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
-                                 <form id="calculator-form" class="space-y-6">
-                                     <div><label for="income" class="block text-sm font-medium text-slate-600 mb-1">Ingreso Mensual (COP)</label><input type="number" id="income" placeholder="Ej: 2000000" class="w-full px-4 py-2 border border-slate-300 rounded-lg" required></div>
-                                     <div><label for="contract-type" class="block text-sm font-medium text-slate-600 mb-1">Tipo de Cotizante</label><select id="contract-type" class="w-full px-4 py-2 border border-slate-300 rounded-lg" required><option value="independiente">Independiente</option><option value="dependiente">Dependiente (Empleado)</option></select></div>
-                                     <div><label for="arl-level" class="block text-sm font-medium text-slate-600 mb-1">Nivel de Riesgo ARL</label><select id="arl-level" class="w-full px-4 py-2 border border-slate-300 rounded-lg" required><option value="1">Nivel 1</option><option value="2">Nivel 2</option><option value="3">Nivel 3</option><option value="4">Nivel 4</option><option value="5">Nivel 5</option></select></div>
-                                     <fieldset><legend class="block text-sm font-medium text-slate-600 mb-2">Componentes a Cotizar</legend>
-                                         <div class="grid grid-cols-2 gap-4">
-                                             <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="health" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>Salud</span></label>
-                                             <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="pension" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>Pensión</span></label>
-                                             <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="arl" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>ARL</span></label>
-                                             <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="ccf" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>Caja de Comp.</span></label>
-                                         </div>
-                                         <div class="mt-3"><label class="flex items-center space-x-2"><input type="checkbox" id="select-all-components" class="h-4 w-4 text-primary-600 rounded" checked><span>Seleccionar Todo</span></label></div>
-                                     </fieldset>
-                                     <div class="pt-2"><button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg shadow-md flex items-center justify-center"><i data-lucide="percent-circle" class="w-5 h-5 mr-2"></i>Calcular Aportes</button></div>
-                                 </form>
-                             </div>
-                             <div class="bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg text-white">
-                                 <h3 class="text-2xl font-bold mb-2">Resumen de Aportes</h3><p class="text-sm text-slate-400 mb-6">Calculado sobre un IBC de <strong id="ibc-value" class="text-primary-400"></strong></p>
-                                 <div id="calculator-results" class="space-y-4">
-                                     <div id="health-result-row" class="hidden flex justify-between items-center p-4 bg-slate-700/50 rounded-lg"><div><p class="font-semibold">Salud (EPS)</p><p id="health-breakdown" class="text-xs text-slate-400"></p></div><p id="health-total" class="font-bold text-lg"></p></div>
-                                     <div id="pension-result-row" class="hidden flex justify-between items-center p-4 bg-slate-700/50 rounded-lg"><div><p class="font-semibold">Pensión</p><p id="pension-breakdown" class="text-xs text-slate-400"></p></div><p id="pension-total" class="font-bold text-lg"></p></div>
-                                     <div id="arl-result-row" class="hidden flex justify-between items-center p-4 bg-slate-700/50 rounded-lg"><div><p class="font-semibold">Riesgos Laborales (ARL)</p><p id="arl-breakdown" class="text-xs text-slate-400"></p></div><p id="arl-total" class="font-bold text-lg"></p></div>
-                                     <div id="ccf-result-row" class="hidden flex justify-between items-center p-4 bg-slate-700/50 rounded-lg"><div><p class="font-semibold">Caja de Compensación</p><p id="ccf-breakdown" class="text-xs text-slate-400"></p></div><p id="ccf-total" class="font-bold text-lg"></p></div>
-                                 </div>
-                                 <div class="mt-8 pt-6 border-t border-slate-600"><div class="flex justify-between items-center"><p class="text-xl font-bold">TOTAL APORTES</p><p id="grand-total" class="text-2xl font-extrabold text-primary-400"></p></div></div>
-                             </div>
+                              <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+                                  <form id="calculator-form" class="space-y-6">
+                                      <div><label for="income" class="block text-sm font-medium text-slate-600 mb-1">Ingreso Mensual (COP)</label><input type="number" id="income" placeholder="Ej: 2000000" class="w-full px-4 py-2 border border-slate-300 rounded-lg" required></div>
+                                      <div><label for="contract-type" class="block text-sm font-medium text-slate-600 mb-1">Tipo de Cotizante</label><select id="contract-type" class="w-full px-4 py-2 border border-slate-300 rounded-lg" required><option value="independiente">Independiente</option><option value="dependiente">Dependiente (Empleado)</option></select></div>
+                                      <div><label for="arl-level" class="block text-sm font-medium text-slate-600 mb-1">Nivel de Riesgo ARL</label><select id="arl-level" class="w-full px-4 py-2 border border-slate-300 rounded-lg" required><option value="1">Nivel 1</option><option value="2">Nivel 2</option><option value="3">Nivel 3</option><option value="4">Nivel 4</option><option value="5">Nivel 5</option></select></div>
+                                      <fieldset><legend class="block text-sm font-medium text-slate-600 mb-2">Componentes a Cotizar</legend>
+                                          <div class="grid grid-cols-2 gap-4">
+                                              <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="health" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>Salud</span></label>
+                                              <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="pension" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>Pensión</span></label>
+                                              <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="arl" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>ARL</span></label>
+                                              <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="ccf" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>Caja de Comp.</span></label>
+                                          </div>
+                                          <div class="mt-3"><label class="flex items-center space-x-2"><input type="checkbox" id="select-all-components" class="h-4 w-4 text-primary-600 rounded" checked><span>Seleccionar Todo</span></label></div>
+                                      </fieldset>
+                                      <div class="pt-2"><button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg shadow-md flex items-center justify-center"><i data-lucide="percent-circle" class="w-5 h-5 mr-2"></i>Calcular Aportes</button></div>
+                                  </form>
+                              </div>
+                              <div class="bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg text-white">
+                                  <h3 class="text-2xl font-bold mb-2">Resumen de Aportes</h3><p class="text-sm text-slate-400 mb-6">Calculado sobre un IBC de <strong id="ibc-value" class="text-primary-400"></strong></p>
+                                  <div id="calculator-results" class="space-y-4">
+                                      <div id="health-result-row" class="hidden flex justify-between items-center p-4 bg-slate-700/50 rounded-lg"><div><p class="font-semibold">Salud (EPS)</p><p id="health-breakdown" class="text-xs text-slate-400"></p></div><p id="health-total" class="font-bold text-lg"></p></div>
+                                      <div id="pension-result-row" class="hidden flex justify-between items-center p-4 bg-slate-700/50 rounded-lg"><div><p class="font-semibold">Pensión</p><p id="pension-breakdown" class="text-xs text-slate-400"></p></div><p id="pension-total" class="font-bold text-lg"></p></div>
+                                      <div id="arl-result-row" class="hidden flex justify-between items-center p-4 bg-slate-700/50 rounded-lg"><div><p class="font-semibold">Riesgos Laborales (ARL)</p><p id="arl-breakdown" class="text-xs text-slate-400"></p></div><p id="arl-total" class="font-bold text-lg"></p></div>
+                                      <div id="ccf-result-row" class="hidden flex justify-between items-center p-4 bg-slate-700/50 rounded-lg"><div><p class="font-semibold">Caja de Compensación</p><p id="ccf-breakdown" class="text-xs text-slate-400"></p></div><p id="ccf-total" class="font-bold text-lg"></p></div>
+                                  </div>
+                                  <div class="mt-8 pt-6 border-t border-slate-600"><div class="flex justify-between items-center"><p class="text-xl font-bold">TOTAL APORTES</p><p id="grand-total" class="text-2xl font-extrabold text-primary-400"></p></div></div>
+                              </div>
                          </div>
                     </section>
                 </main>
@@ -492,23 +504,27 @@
         authContainer.style.display = 'none';
         appContainer.style.display = 'none';
         view.style.display = view === appContainer ? 'block' : 'flex';
+        lucide.createIcons();
     };
 
-    // --- LÓGICA DE AUTENTICACIÓN ---
+    // --- LÓGICA DE AUTENTICACIÓN [MODIFICADA] ---
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
-    const loginTab = document.getElementById('login-tab');
-    const registerTab = document.getElementById('register-tab');
+    const loginView = document.getElementById('login-view');
+    const registerView = document.getElementById('register-view');
+    const showRegisterBtn = document.getElementById('show-register');
+    const showLoginBtn = document.getElementById('show-login');
     const logoutBtn = document.getElementById('logout-btn');
 
-    loginTab.addEventListener('click', () => {
-        loginTab.classList.add('active'); registerTab.classList.remove('active');
-        loginForm.classList.remove('hidden'); registerForm.classList.add('hidden');
+    showRegisterBtn.addEventListener('click', () => {
+        loginView.classList.add('hidden');
+        registerView.classList.remove('hidden');
     });
-    registerTab.addEventListener('click', () => {
-        registerTab.classList.add('active'); loginTab.classList.remove('active');
-        registerForm.classList.remove('hidden'); loginForm.classList.add('hidden');
+     showLoginBtn.addEventListener('click', () => {
+        registerView.classList.add('hidden');
+        loginView.classList.remove('hidden');
     });
+
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         loader.style.display = 'flex';
@@ -705,6 +721,7 @@
             const titles = { 'affiliate-modal': 'Afiliado', 'advisor-modal': 'Asesor', 'settings-modal': 'Configuración', 'plan-modal': 'Plan de Salud', 'transaction-modal': 'Transacción' };
             modal.querySelector('h2').textContent = data?.id ? `Editar ${titles[modalId]}` : (data?.title || `Nuevo ${titles[modalId]}`);
             if (modalId === 'affiliate-modal') {
+                populateAdvisorSelect(); // <-- [CORRECCIÓN APLICADA AQUÍ]
                 renderHealthPlanCards();
                 form['affiliate-doc-id'].value = data?.id || ''; form['affiliate-name'].value = data?.name || ''; form['affiliate-id'].value = data?.documentId || ''; form['affiliate-email'].value = data?.email || ''; form['affiliate-phone'].value = data?.phone || ''; form['affiliate-address'].value = data?.address || '';
                 const planInput = form.querySelector(`input[name="health-plan"][value="${data?.healthPlan || (healthPlans.length > 0 ? healthPlans[0].id : '')}"]`); if (planInput) planInput.checked = true;
@@ -745,4 +762,3 @@
 </script>
 </body>
 </html>
-
