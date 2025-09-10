@@ -1,1024 +1,1045 @@
 <!DOCTYPE html>
 <html lang="es" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Seb Salud - Plataforma de Gestión (Firebase conectado)</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seb Salud - Plataforma de Gestión</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary-400: 165 180 252; /* indigo-300 */
+            --color-primary-500: 129 140 248; /* indigo-400 */
+            --color-primary-600: 79 70 229;   /* indigo-600 */
+            --color-primary-700: 67 56 202;   /* indigo-700 */
+        }
+        [data-theme="bosque"] {
+            --color-primary-400: 163 230 53;  /* lime-400 */
+            --color-primary-500: 132 204 22;  /* lime-500 */
+            --color-primary-600: 6 182 212;   /* cyan-500 */
+            --color-primary-700: 8 145 178;   /* cyan-600 */
+        }
+        [data-theme="atardecer"] {
+            --color-primary-400: 253 224 71;  /* yellow-300 */
+            --color-primary-500: 251 146 60;  /* orange-400 */
+            --color-primary-600: 249 115 22;  /* orange-500 */
+            --color-primary-700: 239 68 68;   /* red-500 */
+        }
+        [data-theme="elegant"] {
+            --color-primary-400: 251 191 36;  /* amber-400 */
+            --color-primary-500: 245 158 11;  /* amber-500 */
+            --color-primary-600: 14 165 233;  /* sky-500 */
+            --color-primary-700: 2 132 199;   /* sky-600 */
+        }
+        [data-theme="espacial"] {
+            --color-primary-400: 125 211 252; /* sky-300 */
+            --color-primary-500: 56 189 248;  /* sky-400 */
+            --color-primary-600: 139 92 246;  /* violet-500 */
+            --color-primary-700: 124 58 237;  /* violet-600 */
+        }
+        [data-theme="verano-tropical"] {
+            --color-primary-400: 190 242 100; /* lime-300 */
+            --color-primary-500: 163 230 53;  /* lime-400 */
+            --color-primary-600: 219 39 119;  /* fuchsia-600 */
+            --color-primary-700: 190 24 93;   /* fuchsia-700 */
+        }
+        
+        body { font-family: 'Inter', sans-serif; }
+        .bg-primary-600 { background-color: rgb(var(--color-primary-600)); }
+        .bg-primary-700 { background-color: rgb(var(--color-primary-700)); }
+        .hover\:bg-primary-700:hover { background-color: rgb(var(--color-primary-700)); }
+        .text-primary-400 { color: rgb(var(--color-primary-400)); }
+        .text-primary-500 { color: rgb(var(--color-primary-500)); }
+        .text-primary-600 { color: rgb(var(--color-primary-600)); }
+        .hover\:text-primary-600:hover { color: rgb(var(--color-primary-600)); }
+        .border-primary-600 { border-color: rgb(var(--color-primary-600)); }
+        .ring-primary-600:focus { --tw-ring-color: rgb(var(--color-primary-600)); }
+        .sidebar { transition: transform 0.3s ease-in-out; }
+        .sidebar-overlay { transition: opacity 0.3s ease-in-out; }
+        .nav-link.active { background-color: rgb(var(--color-primary-600)); color: white; }
+        .bottom-nav-link.active { color: rgb(var(--color-primary-400)); }
+        .modal { transition: opacity 0.25s ease; }
+        .modal-content { transition: transform 0.25s ease; }
+        .content-section { display: none; }
+        .content-section.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        .details-section.hidden, #manual-override-container.hidden { display: none; }
+        .details-toggle-icon, .stats-toggle-icon { transition: transform 0.3s; }
+        .details-shown .details-toggle-icon, .stats-shown .stats-toggle-icon { transform: rotate(180deg); }
+        .health-plan-card { border: 2px solid #e2e8f0; transition: border-color 0.2s, box-shadow 0.2s; }
+        .health-plan-card:has(input:checked) { border-color: rgb(var(--color-primary-600)); box-shadow: 0 0 0 2px rgb(var(--color-primary-600) / 0.5); }
+        
+        /* Estilos para el contador de novedades */
+        .novedades-badge {
+            position: absolute;
+            top: 6px;
+            right: 12px;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 9999px;
+            background-color: #ef4444; /* red-500 */
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            line-height: 1;
+            z-index: 1;
+        }
+        .bottom-nav-link .novedades-badge {
+            top: -2px;
+            right: calc(50% - 28px);
+        }
 
-  <!-- Tailwind + Iconos -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-
-  <style>
-    :root{
-      --color-primary-400: 165 180 252; /* indigo-300 */
-      --color-primary-500: 129 140 248; /* indigo-400 */
-      --color-primary-600: 79 70 229;   /* indigo-600 */
-      --color-primary-700: 67 56 202;   /* indigo-700 */
-    }
-    body{font-family:'Inter',sans-serif}
-    .bg-primary-600{background:rgb(var(--color-primary-600))}
-    .bg-primary-700{background:rgb(var(--color-primary-700))}
-    .text-primary-500{color:rgb(var(--color-primary-500))}
-    .text-primary-600{color:rgb(var(--color-primary-600))}
-    .hover\:bg-primary-700:hover{background:rgb(var(--color-primary-700))}
-    .sidebar{transition:transform .3s}
-    .modal{transition:opacity .25s}
-    .modal-content{transition:transform .25s}
-    .content-section{display:none}
-    .content-section.active{display:block;animation:fadeIn .5s ease}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-    ::-webkit-scrollbar{width:8px;height:8px}
-    ::-webkit-scrollbar-thumb{background:#94a3b8;border-radius:10px}
-    ::-webkit-scrollbar-thumb:hover{background:#64748b}
-  </style>
+        /* Estilos para tablas responsivas */
+        @media (max-width: 767px) {
+            .responsive-table thead {
+                display: none;
+            }
+            .responsive-table tr {
+                display: block;
+                margin-bottom: 1rem;
+                border-radius: 0.75rem;
+                border: 1px solid #e2e8f0;
+                box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+                padding: 0 1rem;
+            }
+             .responsive-table tbody {
+                border: none;
+            }
+            .responsive-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                text-align: right;
+                padding: 0.75rem 0;
+                border-bottom: 1px solid #f1f5f9;
+            }
+            .responsive-table td:last-child {
+                border-bottom: none;
+            }
+            .responsive-table td[data-label]::before {
+                content: attr(data-label);
+                font-weight: 600;
+                text-align: left;
+                margin-right: 1rem;
+                color: #475569;
+            }
+            .responsive-table .no-data-row {
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
 
-<!-- ====== Banner de ayuda despliegue ====== -->
-<div id="deploy-hint" class="hidden bg-amber-50 text-amber-900 border border-amber-200 px-4 py-3 text-sm">
-  <b>Nota:</b> Si publicaste en <code>github.io</code> y no pasa del login:
-  habilita <b>Email/Password</b> en Firebase Auth, agrega tu dominio en <b>Authorized domains</b>,
-  y pega tus credenciales en <code>window.__FIREBASE_CONFIG__</code>. Si falla, entrarás en <b>modo demo (anónimo)</b>.
-</div>
+    <div id="auth-container" class="hidden">
+        <div class="min-h-screen flex items-center justify-center bg-slate-100 p-4">
+            <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-lg">
+                <div class="text-center">
+                    <div class="flex items-center justify-center mb-4">
+                        <i data-lucide="shield-check" class="h-10 w-10 text-primary-500"></i>
+                        <span class="ml-3 text-3xl font-bold">Seb Salud</span>
+                    </div>
+                    <h2 id="auth-title" class="text-2xl font-bold text-slate-800"></h2>
+                    <p id="auth-subtitle" class="text-slate-500"></p>
+                </div>
 
-<!-- ====== Auth ====== -->
-<div id="auth-container" class="min-h-screen flex items-center justify-center p-4">
-  <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-8 space-y-6">
-    <div class="text-center">
-      <div class="flex items-center justify-center mb-4">
-        <i data-lucide="shield-check" class="h-10 w-10 text-primary-500"></i>
-        <span class="ml-3 text-3xl font-extrabold">Seb Salud</span>
-      </div>
-      <h2 id="auth-title" class="text-2xl font-bold">Inicia sesión</h2>
-      <p id="auth-subtitle" class="text-slate-500">Usa tu correo y contraseña</p>
-    </div>
+                <form id="login-form" class="hidden space-y-6">
+                    <div>
+                        <label for="login-identifier" class="text-sm font-medium text-slate-700">Email o ID de Usuario</label>
+                        <input id="login-identifier" type="text" required class="w-full px-4 py-2 mt-1 border border-slate-300 rounded-lg focus:ring-primary-600 focus:border-primary-600" placeholder="tu@email.com o ID">
+                    </div>
+                    <div>
+                        <label for="login-password" class="text-sm font-medium text-slate-700">Contraseña</label>
+                        <input id="login-password" type="password" required class="w-full px-4 py-2 mt-1 border border-slate-300 rounded-lg focus:ring-primary-600 focus:border-primary-600" placeholder="••••••••">
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full py-3 px-4 text-white bg-primary-600 rounded-lg hover:bg-primary-700 font-semibold">Ingresar</button>
+                    </div>
+                </form>
 
-    <form id="login-form" class="space-y-4">
-      <div>
-        <label class="text-sm font-medium">Correo</label>
-        <input id="login-email" type="email" required class="w-full px-4 py-2 mt-1 border border-slate-300 rounded-lg focus:ring-primary-600 focus:border-primary-600" placeholder="tu@email.com"/>
-      </div>
-      <div>
-        <label class="text-sm font-medium">Contraseña</label>
-        <input id="login-password" type="password" required class="w-full px-4 py-2 mt-1 border border-slate-300 rounded-lg focus:ring-primary-600 focus:border-primary-600" placeholder="••••••••"/>
-      </div>
-      <button class="w-full py-3 px-4 text-white bg-primary-600 rounded-lg hover:bg-primary-700 font-semibold">Ingresar</button>
-      <p class="text-center text-sm text-slate-500">
-        ¿No tienes cuenta?
-        <a href="#" id="goto-register" class="text-primary-600 underline">Crear una</a>
-      </p>
-    </form>
+                <form id="register-form" class="hidden space-y-6">
+                    <div>
+                        <label for="register-email" class="text-sm font-medium text-slate-700">Correo Electrónico</label>
+                        <input id="register-email" type="email" required class="w-full px-4 py-2 mt-1 border border-slate-300 rounded-lg focus:ring-primary-600 focus:border-primary-600" placeholder="tu@email.com">
+                    </div>
+                    <div>
+                        <label for="register-password" class="text-sm font-medium text-slate-700">Contraseña</label>
+                        <input id="register-password" type="password" required class="w-full px-4 py-2 mt-1 border border-slate-300 rounded-lg focus:ring-primary-600 focus:border-primary-600" placeholder="Crea una contraseña segura">
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full py-3 px-4 text-white bg-primary-600 rounded-lg hover:bg-primary-700 font-semibold">Crear Cuenta y Entrar</button>
+                    </div>
+                </form>
 
-    <form id="register-form" class="space-y-4 hidden">
-      <div>
-        <label class="text-sm font-medium">Correo</label>
-        <input id="register-email" type="email" required class="w-full px-4 py-2 mt-1 border border-slate-300 rounded-lg focus:ring-primary-600 focus:border-primary-600" placeholder="tu@email.com"/>
-      </div>
-      <div>
-        <label class="text-sm font-medium">Contraseña</label>
-        <input id="register-password" type="password" required class="w-full px-4 py-2 mt-1 border border-slate-300 rounded-lg focus:ring-primary-600 focus:border-primary-600" placeholder="Mínimo 6 caracteres"/>
-      </div>
-      <button class="w-full py-3 px-4 text-white bg-primary-600 rounded-lg hover:bg-primary-700 font-semibold">Crear cuenta</button>
-      <p class="text-center text-sm text-slate-500">
-        ¿Ya tienes cuenta?
-        <a href="#" id="goto-login" class="text-primary-600 underline">Inicia sesión</a>
-      </p>
-    </form>
-
-    <div id="auth-error" class="text-center text-sm text-red-600 font-medium"></div>
-    <div id="auth-info" class="text-center text-xs text-slate-500"></div>
-  </div>
-</div>
-
-<!-- ====== App ====== -->
-<div id="app-container" class="hidden">
-  <!-- Toast -->
-  <div id="toast" class="fixed top-5 right-5 z-[100] bg-slate-900 text-white py-2 px-4 rounded-lg shadow-xl opacity-0 translate-y-2 transition-all duration-300">
-    <span id="toast-message"></span>
-  </div>
-
-  <div class="flex h-screen overflow-hidden">
-    <!-- Sidebar -->
-    <aside id="sidebar" class="sidebar bg-slate-900 text-slate-200 w-64 fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 z-50 flex flex-col">
-      <div class="flex items-center justify-center h-20 border-b border-slate-700">
-        <i data-lucide="shield-check" class="h-8 w-8 text-primary-500"></i>
-        <span class="ml-3 text-xl font-bold">Seb Salud</span>
-      </div>
-      <nav id="main-nav" class="flex-1 px-4 py-6 space-y-2 overflow-y-auto"></nav>
-      <div class="px-4 py-4 border-t border-slate-700">
-        <div id="user-info" class="mb-4">
-          <p id="user-display-name" class="font-semibold truncate"></p>
-          <p id="user-display-role" class="text-xs text-primary-500 uppercase"></p>
+                <div id="auth-error" class="text-center text-sm text-red-600 font-medium"></div>
+            </div>
         </div>
-        <button id="logout-btn" class="w-full flex items-center justify-center py-2 px-4 rounded-lg bg-slate-700 hover:bg-red-600/60 text-sm">
-          <i data-lucide="log-out" class="w-4 h-4 mr-2"></i> Cerrar sesión
-        </button>
-      </div>
-    </aside>
+    </div>
 
-    <!-- Main -->
-    <div class="flex-1 flex flex-col md:ml-64">
-      <header class="bg-white/70 backdrop-blur-sm shadow-sm flex items-center justify-between p-4 sticky top-0 z-20">
-        <div class="flex items-center">
-          <h1 id="header-title" class="text-xl font-semibold text-slate-700">Dashboard</h1>
+    <div id="app-container" class="hidden">
+        <div id="toast" class="fixed top-5 right-5 z-[100] bg-green-500 text-white py-2 px-4 rounded-lg shadow-xl opacity-0 transform translate-y-2 transition-all duration-300">
+            <span id="toast-message"></span>
         </div>
-      </header>
 
-      <main id="main-content" class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8">
-        <section id="dashboard" class="content-section"></section>
-        <section id="afiliados" class="content-section"></section>
-        <section id="asesores" class="content-section"></section>
-        <section id="planes" class="content-section"></section>
-        <section id="usuarios" class="content-section"></section>
-        <section id="config" class="content-section"></section>
-      </main>
+        <div class="flex h-screen overflow-hidden">
+            <div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-40 opacity-0 pointer-events-none md:hidden"></div>
+
+            <aside id="sidebar" class="sidebar bg-slate-900 text-slate-200 w-64 fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 z-50 flex flex-col">
+                <div class="flex items-center justify-center h-20 border-b border-slate-700 flex-shrink-0">
+                    <i data-lucide="shield-check" class="h-8 w-8 text-primary-500"></i>
+                    <span class="ml-3 text-xl font-bold">Seb Salud</span>
+                </div>
+                <nav id="main-nav" class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+                </nav>
+                <div class="px-4 py-4 border-t border-slate-700 flex-shrink-0">
+                    <div id="user-info" class="mb-4">
+                        <p id="user-display-name" class="font-semibold truncate"></p>
+                        <p id="user-display-role" class="text-xs text-primary-400 uppercase"></p>
+                    </div>
+                    <button id="logout-btn" class="w-full flex items-center justify-center py-2 px-4 rounded-lg bg-slate-700 hover:bg-red-600/50 text-sm">
+                        <i data-lucide="log-out" class="w-4 h-4 mr-2"></i>Cerrar Sesión
+                    </button>
+                </div>
+            </aside>
+
+            <div class="flex-1 flex flex-col md:ml-64">
+                <header class="bg-white/60 backdrop-blur-sm shadow-sm flex items-center justify-between p-4 flex-shrink-0 sticky top-0 z-20">
+                    <div class="flex items-center">
+                        <h1 id="header-title" class="text-xl font-semibold text-slate-700 hidden md:block">Dashboard</h1>
+                        <div class="flex items-center md:hidden">
+                            <i data-lucide="shield-check" class="h-6 w-6 text-primary-500"></i>
+                            <span class="ml-2 text-lg font-bold">Seb Salud</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button id="open-user-profile-modal-btn" class="text-slate-600 focus:outline-none md:hidden p-2 rounded-full hover:bg-slate-200" aria-label="Abrir perfil de usuario">
+                            <i data-lucide="user" class="h-6 w-6"></i>
+                        </button>
+                        <button id="menu-toggle" class="text-slate-600 focus:outline-none md:hidden p-2 rounded-full hover:bg-slate-200" aria-label="Abrir menú">
+                            <i data-lucide="menu" class="h-6 w-6"></i>
+                        </button>
+                    </div>
+                </header>
+                
+                <main id="main-content" class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8">
+                </main>
+            </div>
+        </div>
+
+        <nav id="mobile-nav" class="md:hidden fixed bottom-0 inset-x-0 bg-slate-900 text-slate-300 flex justify-around p-2 border-t border-slate-700 z-30">
+        </nav>
     </div>
-  </div>
-</div>
-
-<!-- ====== Modales mínimos (CRUD) ====== -->
-<!-- Afiliado -->
-<div id="affiliate-modal" class="modal fixed inset-0 bg-black/70 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60] hidden">
-  <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-3xl transform scale-95">
-    <div class="flex justify-between items-center p-5 border-b sticky top-0 bg-white z-10">
-      <h2 id="affiliate-modal-title" class="text-2xl font-bold">Nuevo Afiliado</h2>
-      <button data-close="affiliate-modal" class="text-gray-400 hover:text-gray-600 text-3xl" aria-label="Cerrar">&times;</button>
+    
+    <div id="user-profile-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60]">
+        <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-sm transform scale-95">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                     <h2 class="text-xl font-bold text-slate-800">Mi Perfil</h2>
+                     <button data-close-modal="user-profile-modal" class="text-gray-400 hover:text-gray-600 text-3xl leading-none" aria-label="Cerrar modal">&times;</button>
+                </div>
+                <div id="modal-user-info" class="mb-6 text-center">
+                    <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-slate-100 mb-4">
+                        <i data-lucide="user" class="h-8 w-8 text-slate-600"></i>
+                    </div>
+                    <p id="modal-user-display-name" class="font-semibold text-lg truncate text-slate-800"></p>
+                    <p id="modal-user-display-role" class="text-sm text-primary-500 uppercase"></p>
+                </div>
+                <button id="modal-logout-btn" class="w-full flex items-center justify-center py-3 px-4 rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold text-sm transition-colors">
+                    <i data-lucide="log-out" class="w-5 h-5 mr-2"></i>Cerrar Sesión
+                </button>
+            </div>
+        </div>
     </div>
-    <form id="affiliate-form" class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-      <input type="hidden" id="affiliate-id-hidden"/>
-      <input id="affiliate-name" class="p-2 border rounded-lg" placeholder="Nombre completo" required/>
-      <input id="affiliate-document" class="p-2 border rounded-lg" placeholder="Documento" required/>
-      <input id="affiliate-email" type="email" class="p-2 border rounded-lg" placeholder="Correo" required/>
-      <input id="affiliate-phone" class="p-2 border rounded-lg" placeholder="Teléfono"/>
-      <input id="affiliate-address" class="md:col-span-2 p-2 border rounded-lg" placeholder="Dirección"/>
-      <div>
-        <label class="text-sm font-medium">Plan</label>
-        <select id="affiliate-plan" class="w-full p-2 border rounded-lg"></select>
-      </div>
-      <div>
-        <label class="text-sm font-medium">Asesor</label>
-        <select id="affiliate-advisor" class="w-full p-2 border rounded-lg"></select>
-      </div>
-      <div>
-        <label class="text-sm font-medium">Estado</label>
-        <select id="affiliate-status" class="w-full p-2 border rounded-lg">
-          <option>Activo</option><option>Pendiente</option><option>Inactivo</option>
-        </select>
-      </div>
-      <textarea id="affiliate-notes" class="md:col-span-2 p-2 border rounded-lg" placeholder="Notas..."></textarea>
-      <div class="md:col-span-2 pt-4 border-t flex justify-end">
-        <button class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar</button>
-      </div>
-    </form>
-  </div>
-</div>
+    <div id="affiliate-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60]">
+        <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col transform scale-95">
+            <div class="flex justify-between items-center p-5 border-b sticky top-0 bg-white z-10 flex-shrink-0">
+                <h2 id="affiliate-modal-title" class="text-2xl font-bold">Nuevo Afiliado</h2>
+                <button data-close-modal="affiliate-modal" class="text-gray-400 hover:text-gray-600 text-3xl" aria-label="Cerrar modal">&times;</button>
+            </div>
+            <div class="flex-grow overflow-y-auto">
+                <form id="affiliate-form" class="p-6">
+                    <input type="hidden" id="affiliate-doc-id">
+                    <div class="space-y-10">
+                        <div>
+                            <h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">1. Información Personal</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <input type="text" id="affiliate-name" placeholder="Nombre Completo" class="w-full px-4 py-2 border rounded-lg" required>
+                                <input type="text" id="affiliate-id" placeholder="Documento" class="w-full px-4 py-2 border rounded-lg" required>
+                                <input type="email" id="affiliate-email" placeholder="Correo Electrónico" class="w-full px-4 py-2 border rounded-lg" required>
+                                <input type="tel" id="affiliate-phone" placeholder="Teléfono" class="w-full px-4 py-2 border rounded-lg">
+                                <input type="text" id="affiliate-address" placeholder="Dirección" class="md:col-span-2 w-full px-4 py-2 border rounded-lg">
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">2. Plan de Salud Complementario / Prepagada</h3>
+                            <div id="health-plan-selector" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4"></div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">3. Otras Afiliaciones</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div><label for="pension-plan" class="block text-sm font-medium text-slate-600 mb-1">Fondo de Pensión</label><select id="pension-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione un fondo</option><option value="Colpensiones">Colpensiones (Público)</option><option value="Porvenir">Porvenir</option><option value="Protección">Protección</option><option value="Colfondos">Colfondos</option><option value="Skandia">Skandia</option></select></div>
+                                <div><label for="arl-plan" class="block text-sm font-medium text-slate-600 mb-1">ARL</label><select id="arl-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una ARL</option><option value="ARL Sura">ARL Sura</option><option value="ARL Positiva">ARL Positiva</option><option value="ARL Colmena">ARL Colmena</option><option value="Seguros Bolívar ARL">Seguros Bolívar ARL</option><option value="AXA Colpatria ARL">AXA Colpatria ARL</option></select></div>
+                                <div><label for="ccf-plan" class="block text-sm font-medium text-slate-600 mb-1">Caja de Compensación</label><select id="ccf-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una caja</option><option value="Compensar">Compensar</option><option value="Colsubsidio">Colsubsidio</option><option value="Cafam">Cafam</option><option value="Comfama">Comfama (Antioquia)</option><option value="Comfandi">Comfandi (Valle)</option><option value="Otra">Otra / Ninguna</option></select></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">4. Detalles de Venta y Administrativos</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div><label for="advisor-select-list" class="block text-sm font-medium text-slate-600 mb-1">Asesor Asignado</label><select id="advisor-select-list" class="w-full px-4 py-2 border rounded-lg" required></select></div>
+                                <div><label for="affiliate-start-date" class="block text-sm font-medium text-slate-600 mb-1">Fecha de Inicio</label><input type="date" id="affiliate-start-date" class="w-full px-4 py-2 border rounded-lg" required></div>
+                                <div><label for="affiliate-status" class="block text-sm font-medium text-slate-600 mb-1">Estado del Afiliado</label><select id="affiliate-status" class="w-full px-4 py-2 border rounded-lg" required><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div>
+                            </div>
+                             <div class="mt-6"><label class="flex items-center space-x-2"><input type="checkbox" id="manual-override-checkbox" class="h-4 w-4 text-primary-600 rounded"><span>Usar costos y comisiones manuales</span></label></div>
+                            
+                            <div id="manual-override-container" class="hidden mt-4 space-y-6 p-4 border rounded-lg bg-slate-50">
+                                <div>
+                                    <h4 class="text-md font-semibold text-slate-600 mb-3">Costos de Afiliación</h4>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                                        <div><label class="text-sm font-medium">Salud ($)</label><input type="number" id="manual-cost-health" class="w-full p-2 border rounded-lg mt-1" placeholder="Ej: 95000"></div>
+                                        <div><label class="text-sm font-medium">Pensión ($)</label><input type="number" id="manual-cost-pension" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div>
+                                        <div><label class="text-sm font-medium">ARL ($)</label><input type="number" id="manual-cost-arl" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div>
+                                        <div><label class="text-sm font-medium">Caja Comp. ($)</label><input type="number" id="manual-cost-ccf" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div>
+                                    </div>
+                                </div>
+                                <div class="pt-4 border-t">
+                                    <h4 class="text-md font-semibold text-slate-600 mb-3">Comisiones</h4>
+                                    <div class="max-w-xs">
+                                         <label class="text-sm font-medium">Comisión Asesor ($)</label>
+                                         <input type="number" id="manual-commission" class="w-full p-2 border rounded-lg mt-1" placeholder="Ej: 20000">
+                                    </div>
+                                </div>
+                            </div>
 
-<!-- Asesor -->
-<div id="advisor-modal" class="modal fixed inset-0 bg-black/70 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60] hidden">
-  <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md transform scale-95">
-    <div class="flex justify-between items-center p-5 border-b">
-      <h2 id="advisor-modal-title" class="text-2xl font-bold">Nuevo Asesor</h2>
-      <button data-close="advisor-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+                             <div class="mt-6"><textarea id="affiliate-notes" placeholder="Notas adicionales..." class="w-full px-4 py-2 border rounded-lg h-24"></textarea></div>
+                        </div>
+                    </div>
+                    <div class="pt-6 border-t mt-8 flex justify-end">
+                        <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-lg">Guardar Afiliado</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <form id="advisor-form" class="p-6 space-y-4">
-      <input type="hidden" id="advisor-id-hidden"/>
-      <input id="advisor-name" class="w-full p-2 border rounded-lg" placeholder="Nombre completo" required/>
-      <input id="advisor-commission" type="number" min="0" max="100" class="w-full p-2 border rounded-lg" placeholder="Comisión (%)" required/>
-      <div class="pt-4 border-t flex justify-end">
-        <button class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- Plan -->
-<div id="plan-modal" class="modal fixed inset-0 bg-black/70 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60] hidden">
-  <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md transform scale-95">
-    <div class="flex justify-between items-center p-5 border-b">
-      <h2 id="plan-modal-title" class="text-2xl font-bold">Nuevo Plan</h2>
-      <button data-close="plan-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+    <div id="plan-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60]">
+        <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-full overflow-y-auto transform scale-95">
+            <div class="flex justify-between items-center p-6 border-b"><h2 id="plan-modal-title" class="text-2xl font-bold">Nuevo Plan de Salud</h2><button data-close-modal="plan-modal" class="text-gray-400 hover:text-gray-600 text-3xl" aria-label="Cerrar modal">&times;</button></div>
+            <form id="plan-form" class="p-6">
+                <input type="hidden" id="plan-doc-id">
+                <div class="space-y-4">
+                    <div><label for="plan-name" class="block text-sm font-medium text-slate-600">Nombre del Plan</label><input type="text" id="plan-name" placeholder="Ej: Plan Integral" class="w-full mt-1 p-2 border rounded-lg" required></div>
+                    <div><label for="plan-price" class="block text-sm font-medium text-slate-600">Precio Mensual ($)</label><input type="number" id="plan-price" placeholder="Ej: 180000" class="w-full mt-1 p-2 border rounded-lg" required></div>
+                    <div><label for="plan-features" class="block text-sm font-medium text-slate-600">Características (una por línea)</label><textarea id="plan-features" placeholder="Acceso directo a 5 especialidades&#10;Atención domiciliaria" class="w-full mt-1 p-2 border rounded-lg h-32" required></textarea></div>
+                </div>
+                <div class="pt-6 border-t mt-6 flex justify-end">
+                    <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Plan</button>
+                </div>
+            </form>
+        </div>
     </div>
-    <form id="plan-form" class="p-6 space-y-4">
-      <input type="hidden" id="plan-id-hidden"/>
-      <input id="plan-name" class="w-full p-2 border rounded-lg" placeholder="Nombre del plan" required/>
-      <input id="plan-price" type="number" class="w-full p-2 border rounded-lg" placeholder="Precio mensual" required/>
-      <textarea id="plan-features" class="w-full p-2 border rounded-lg h-28" placeholder="Una por línea..." required></textarea>
-      <div class="pt-4 border-t flex justify-end">
-        <button class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- Usuario App -->
-<div id="user-modal" class="modal fixed inset-0 bg-black/70 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60] hidden">
-  <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md transform scale-95">
-    <div class="flex justify-between items-center p-5 border-b">
-      <h2 id="user-modal-title" class="text-2xl font-bold">Nuevo Usuario (App)</h2>
-      <button data-close="user-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+    <div id="advisor-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60]"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="advisor-modal-title" class="text-2xl font-bold">Nuevo Asesor</h2><button data-close-modal="advisor-modal" class="text-gray-400 hover:text-gray-600 text-3xl" aria-label="Cerrar modal">&times;</button></div><form id="advisor-form" class="p-6"><input type="hidden" id="advisor-doc-id"><div class="space-y-4"><input type="text" id="advisor-name" placeholder="Nombre Completo" class="w-full px-4 py-2 border rounded-lg" required><input type="number" id="advisor-commission" placeholder="Comisión (%)" min="0" max="100" class="w-full px-4 py-2 border rounded-lg" required></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Asesor</button></div></form></div></div>
+    <div id="settings-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60]"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b sticky top-0 bg-white z-10"><h2 class="text-2xl font-bold">Configuración de Parámetros</h2><button data-close-modal="settings-modal" class="text-gray-400 hover:text-gray-600 text-3xl" aria-label="Cerrar modal">&times;</button></div><form id="settings-form" class="p-6 space-y-6"><div><h3 class="font-semibold text-lg mb-2">Generales</h3><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label class="block text-sm font-medium">Salario Mínimo (SMMLV)</label><input type="number" id="setting-smmlv" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes de Cotización (%)</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="block text-sm font-medium">Salud Total</label><input type="number" step="0.1" id="setting-health" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Pensión Total</label><input type="number" step="0.1" id="setting-pension" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Indep.</label><input type="number" step="0.1" id="setting-ccf-ind" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Empleador</label><input type="number" step="0.1" id="setting-ccf-emp" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes ARL (%)</h3><div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4"><div><label class="block text-sm font-medium">Riesgo 1</label><input type="number" step="0.001" id="setting-arl-1" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 2</label><input type="number" step="0.001" id="setting-arl-2" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 3</label><input type="number" step="0.001" id="setting-arl-3" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 4</label><input type="number" step="0.001" id="setting-arl-4" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 5</label><input type="number" step="0.001" id="setting-arl-5" class="w-full p-2 border rounded-lg"></div></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Cambios</button></div></form></div></div>
+    <div id="transaction-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60]"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="transaction-modal-title" class="text-2xl font-bold"></h2><button data-close-modal="transaction-modal" class="text-gray-400 hover:text-gray-600 text-3xl" aria-label="Cerrar modal">&times;</button></div><form id="transaction-form" class="p-6"><input type="hidden" id="transaction-type"><div class="space-y-4"><div><label for="transaction-concept" class="block text-sm font-medium text-slate-600">Concepto</label><input type="text" id="transaction-concept" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-amount" class="block text-sm font-medium text-slate-600">Monto</label><input type="number" id="transaction-amount" min="0" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-date" class="block text-sm font-medium text-slate-600">Fecha</label><input type="date" id="transaction-date" class="w-full mt-1 p-2 border rounded-lg" required></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar</button></div></form></div></div>
+    <div id="user-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60]">
+        <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95">
+            <div class="flex justify-between items-center p-6 border-b"><h2 id="user-modal-title" class="text-2xl font-bold">Nuevo Usuario</h2><button data-close-modal="user-modal" class="text-gray-400 hover:text-gray-600 text-3xl" aria-label="Cerrar modal">&times;</button></div>
+            <form id="user-form" class="p-6 space-y-4">
+                <input type="hidden" id="user-doc-id">
+                <div><label for="user-email" class="block text-sm font-medium text-slate-600">Email</label><input type="email" id="user-email" class="w-full mt-1 p-2 border rounded-lg" required></div>
+                <div><label for="user-password" class="block text-sm font-medium text-slate-600">Contraseña</label><input type="password" id="user-password" class="w-full mt-1 p-2 border rounded-lg"> <small id="password-hint" class="text-xs text-slate-500">Dejar en blanco para no cambiar</small></div>
+                <div><label for="user-role" class="block text-sm font-medium text-slate-600">Rol</label><select id="user-role" class="w-full mt-1 p-2 border rounded-lg" required><option value="asesor">Asesor</option><option value="afiliado">Afiliado</option></select></div>
+                <div id="user-link-container">
+                    <label for="user-link" class="block text-sm font-medium text-slate-600">Vincular a:</label>
+                    <select id="user-link" class="w-full mt-1 p-2 border rounded-lg" required></select>
+                </div>
+                <div class="pt-6 border-t mt-6 flex justify-end">
+                    <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Usuario</button>
+                </div>
+            </form>
+        </div>
     </div>
-    <form id="user-form" class="p-6 space-y-4">
-      <input type="hidden" id="user-id-hidden"/>
-      <input id="user-email" type="email" class="w-full p-2 border rounded-lg" placeholder="Correo" required/>
-      <input id="user-password" type="password" class="w-full p-2 border rounded-lg" placeholder="Contraseña (dejar vacío para no cambiar)"/>
-      <div>
-        <label class="text-sm font-medium">Rol</label>
-        <select id="user-role" class="w-full p-2 border rounded-lg">
-          <option value="admin">Admin</option>
-          <option value="asesor">Asesor</option>
-          <option value="afiliado">Afiliado</option>
-        </select>
-      </div>
-      <div>
-        <label class="text-sm font-medium">Vincular a</label>
-        <select id="user-link" class="w-full p-2 border rounded-lg"></select>
-      </div>
-      <div class="pt-4 border-t flex justify-end">
-        <button class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar</button>
-      </div>
-    </form>
-  </div>
-</div>
+    <div id="confirmation-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[70]">
+        <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-sm transform scale-95">
+            <div class="p-6 text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 mb-4">
+                    <i data-lucide="alert-triangle" class="h-6 w-6 text-yellow-600"></i>
+                </div>
+                <h3 class="text-lg font-medium text-slate-900" id="confirmation-message">¿Estás seguro?</h3>
+                <p class="mt-2 text-sm text-slate-500">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="bg-slate-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-xl">
+                <button id="confirm-action-btn" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm">
+                    Confirmar
+                </button>
+                <button id="cancel-action-btn" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-slate-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-slate-700 hover:bg-slate-50 sm:mt-0 sm:w-auto sm:text-sm">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
 
-<!-- ================= Firebase y App (type=module) ================= -->
+
 <script>
-  /* Pega aquí tus credenciales reales para producción */
-  window.__FIREBASE_CONFIG__ = {
-  apiKey: "AIzaSyDS4VDnwGia2ZUe3o81rqLe-oEu_pVCUHc",
-  authDomain: "seb-salud.firebaseapp.com",
-  projectId: "seb-salud",
-  storageBucket: "seb-salud.firebasestorage.app",
-  messagingSenderId: "1094873327284",
-  appId: "1:1094873327284:web:001e70e84c2de45389d9e1",
-  measurementId: "G-EJCS9FYWHK"
-};
-</script>
-
-<script type="module">
-  // ===== Firebase SDK (modular) =====
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import {
-    getAuth, onAuthStateChanged, signInWithEmailAndPassword,
-    createUserWithEmailAndPassword, signOut, updatePassword,
-    setPersistence, browserLocalPersistence, connectAuthEmulator,
-    signInAnonymously
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import {
-    getFirestore, collection, doc, getDoc, getDocs,
-    setDoc, addDoc, updateDoc, deleteDoc, serverTimestamp,
-    query, orderBy, where, connectFirestoreEmulator
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-  // ===== Flags =====
-  const AUTO_FALLBACK_ANON = true;      // entra sí o sí con anónimo si falla login/registro
-  const PROMOTE_FIRST_ADMIN = true;     // si no hay admin, el primero autenticado será admin
-
-  // ===== Utilidades UI =====
-  const $ = (sel) => document.querySelector(sel);
-  const $$ = (sel) => document.querySelectorAll(sel);
-  const show = (el) => el && el.classList.remove('hidden','opacity-0','pointer-events-none');
-  const hide = (el) => el && el.classList.add('hidden');
-  const openModal = (id)=>{ const m=$(`#${id}`); if(!m) return; show(m); m.classList.remove('opacity-0','pointer-events-none'); m.querySelector('.modal-content')?.classList.remove('scale-95'); }
-  const closeModal = (id)=>{ const m=$(`#${id}`); if(!m) return; m.classList.add('opacity-0'); m.querySelector('.modal-content')?.classList.add('scale-95'); setTimeout(()=>m.classList.add('pointer-events-none','hidden'),200); }
-  const toast = (msg, ok=true)=>{
-    const t=$("#toast"), span=$("#toast-message");
-    span.textContent=msg;
-    t.classList.remove('opacity-0','translate-y-2');
-    t.classList.toggle('bg-slate-900', ok);
-    t.classList.toggle('bg-red-600', !ok);
-    setTimeout(()=>t.classList.add('opacity-0','translate-y-2'),2400);
-  };
-
-  // ===== Firebase Init + Emulators =====
-  const CONFIG = window.__FIREBASE_CONFIG__;
-  const useEmu = new URLSearchParams(location.search).has('emu') || Object.values(CONFIG).some(v => String(v||'').startsWith('TU_'));
-  const app = initializeApp(CONFIG);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  await setPersistence(auth, browserLocalPersistence);
-
-  if(useEmu){
-    try{
-      connectAuthEmulator(auth, "http://127.0.0.1:9099");
-      connectFirestoreEmulator(db, "127.0.0.1", 8080);
-      console.log("✅ Usando Firebase Emulator Suite");
-    }catch(e){ console.warn("Emulators no disponibles:", e); }
-  }
-
-  // Hints para GitHub Pages
-  const host = location.hostname || "";
-  if(host.endsWith("github.io")) show($("#deploy-hint"));
-
-  // ===== Colecciones =====
-  const colUsersApp   = () => collection(db, "usersApp");
-  const colAffiliates = () => collection(db, "affiliates");
-  const colAdvisors   = () => collection(db, "advisors");
-  const colPlans      = () => collection(db, "healthPlans");
-  const colSettings   = () => collection(db, "settings");
-
-  // Estado
-  let currentUser = null;
-  let usersApp = [], affiliates = [], advisors = [], plans = [], settings = {};
-  let anonTried = false;
-
-  // ===== Auth UI =====
-  const authContainer = $("#auth-container");
-  const appContainer  = $("#app-container");
-  const gotoRegister  = $("#goto-register");
-  const gotoLogin     = $("#goto-login");
-  const loginForm     = $("#login-form");
-  const registerForm  = $("#register-form");
-  const authError     = $("#auth-error");
-  const authInfo      = $("#auth-info");
-
-  gotoRegister?.addEventListener("click", e=>{
-    e.preventDefault();
-    hide(loginForm); show(registerForm);
-    $("#auth-title").textContent = "Crea tu cuenta";
-    $("#auth-subtitle").textContent = "Regístrate para empezar";
-  });
-
-  gotoLogin?.addEventListener("click", e=>{
-    e.preventDefault();
-    hide(registerForm); show(loginForm);
-    $("#auth-title").textContent = "Inicia sesión";
-    $("#auth-subtitle").textContent = "Usa tu correo y contraseña";
-  });
-
-  loginForm?.addEventListener("submit", async (e)=>{
-    e.preventDefault(); authError.textContent=""; authInfo.textContent="";
-    const email = $("#login-email").value.trim();
-    const pass  = $("#login-password").value.trim();
-    try{
-      await signInWithEmailAndPassword(auth, email, pass);
-      toast("Bienvenido 👋");
-    }catch(err){
-      handleAuthError(err, "login");
-    }
-  });
-
-  registerForm?.addEventListener("submit", async (e)=>{
-    e.preventDefault(); authError.textContent=""; authInfo.textContent="";
-    const email = $("#register-email").value.trim();
-    const pass  = $("#register-password").value.trim();
-    try{
-      const { user } = await createUserWithEmailAndPassword(auth, email, pass);
-      const hasAdmins = (await getDocs(query(colUsersApp(), where("role","==","admin")))).size > 0;
-      await setDoc(doc(colUsersApp(), user.uid), { uid:user.uid, email, role: hasAdmins ? "afiliado" : "admin", appDataId: null });
-      toast("Cuenta creada ✅");
-    }catch(err){
-      handleAuthError(err, "register");
-    }
-  });
-
-  function hintFor(errorCode){
-    if(errorCode.includes("operation-not-allowed")) return "Habilita Email/Password en Firebase Console → Authentication → Sign-in method.";
-    if(errorCode.includes("invalid-api-key")) return "Revisa tu firebaseConfig (API key/domains).";
-    if(errorCode.includes("network-request-failed")) return "Problema de red/CORS. Verifica dominio autorizado y conexión.";
-    if(errorCode.includes("unauthorized-domain")) return "Agrega este dominio en Authorized domains (Firebase Auth).";
-    return "";
-  }
-
-  async function fallBackAnon(){
-    if(!AUTO_FALLBACK_ANON) return false;
-    if(anonTried) return false;
-    anonTried = true;
-    try{
-      await signInAnonymously(auth);
-      authInfo.textContent = "Entraste en modo demo (anónimo). Configura Auth para login real.";
-      toast("Modo demo activo (sesión anónima)");
-      return true;
-    }catch(e){
-      console.warn("Anon sign-in failed:", e);
-      return false;
-    }
-  }
-
-  function handleAuthError(err, ctx){
-    console.error(`[${ctx}]`, err);
-    const code = err?.code || "auth/unknown";
-    const msgMap = {
-      "auth/invalid-credential": "Credenciales inválidas.",
-      "auth/user-not-found": "Usuario no encontrado.",
-      "auth/wrong-password": "Contraseña incorrecta.",
-      "auth/email-already-in-use": "El correo ya está registrado.",
-      "auth/weak-password": "La contraseña es muy débil.",
+    // --- AUTH, ROLES & APP STATE ---
+    let currentUser = null;
+    let allUsers = [];
+    let affiliates = [], advisors = [], manualTransactions = [], novedades = [], healthPlans = [];
+    let companyProfile = {};
+    let settings = {};
+    let affiliatesViewMode = 'card';
+    const defaultSettings = {
+        SMMLV: 1300000,
+        CONTRIBUTION_RATES: { health: 12.5, pension: 16, employee_health: 4, employer_health: 8.5, employee_pension: 4, employer_pension: 12, independiente_ccf: 2, employer_ccf: 4 },
+        ARL_RATES: { 1: 0.522, 2: 1.044, 3: 2.436, 4: 4.350, 5: 6.960 }
     };
-    const msg = msgMap[code] || `Error de autenticación (${code}).`;
-    authError.textContent = msg + " " + hintFor(code);
 
-    // Fallback automático
-    fallBackAnon();
-  }
+    const navLinksConfig = {
+        admin: [
+            { id: 'dashboard', icon: 'layout-dashboard', text: 'Dashboard' },
+            { id: 'gestion-usuarios', icon: 'user-cog', text: 'Gestionar Usuarios' },
+            { id: 'novedades', icon: 'bell', text: 'Novedades', badge: true },
+            { id: 'empresa', icon: 'building-2', text: 'Perfil Empresa' },
+            { id: 'flujo-caja', icon: 'wallet', text: 'Flujo de Caja' },
+            { id: 'afiliados', icon: 'users', text: 'Afiliados' },
+            { id: 'asesores', icon: 'briefcase', text: 'Asesores' },
+            { id: 'ranking-vendedores', icon: 'award', text: 'Ranking Vendedores' },
+            { id: 'planes', icon: 'shield-plus', text: 'Planes de Salud' },
+            { id: 'cotizador', icon: 'calculator', text: 'Cotizador' }
+        ],
+        asesor: [
+            { id: 'dashboard', icon: 'layout-dashboard', text: 'Dashboard' },
+            { id: 'afiliados', icon: 'users', text: 'Mis Afiliados' }
+        ],
+        afiliado: [
+            { id: 'mi-perfil', icon: 'user', text: 'Mi Perfil' }
+        ]
+    };
 
-  $("#logout-btn")?.addEventListener("click", ()=> signOut(auth));
+    const mockAuth = {
+        hash: (str) => 'simulated_hash_' + btoa(str),
+        compare: (str, hash) => hash === 'simulated_hash_' + btoa(str)
+    };
 
-  onAuthStateChanged(auth, async (user)=>{
-    if(user){
-      let snap = await getDoc(doc(colUsersApp(), user.uid));
-      if(!snap.exists()){
-        await setDoc(doc(colUsersApp(), user.uid), {
-          uid:user.uid, email:user.email || null, role:"afiliado", appDataId:null, createdAt: serverTimestamp()
-        });
-        snap = await getDoc(doc(colUsersApp(), user.uid));
-      }
-      currentUser = { ...snap.data(), authUser:user };
+    // --- DATA MANAGEMENT ---
+    function loadAllUsers() { const stored = localStorage.getItem('sebSalud_users'); allUsers = stored ? JSON.parse(stored) : []; }
+    function saveAllUsers() { localStorage.setItem('sebSalud_users', JSON.stringify(allUsers)); }
+    function loadSettings() { const stored = localStorage.getItem('sebSalud_settings'); settings = stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(defaultSettings)); localStorage.setItem('sebSalud_settings', JSON.stringify(settings)); }
+    function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme); const themeSelector = document.querySelector(`#theme-selector input[value="${theme}"]`); if (themeSelector) themeSelector.checked = true; }
+    function loadCompanyProfile() { const stored = localStorage.getItem('sebSalud_companyProfile'); companyProfile = stored ? JSON.parse(stored) : { name: 'Mi Empresa', nit: '900.123.456-7', address: 'Calle 123, Bogotá', phone: '3001234567', email: 'contacto@empresa.com', theme: 'default' }; applyTheme(companyProfile.theme); }
+    function saveCompanyProfile() { localStorage.setItem('sebSalud_companyProfile', JSON.stringify(companyProfile)); }
+    function loadManualTransactions() { const stored = localStorage.getItem('sebSalud_transactions'); manualTransactions = stored ? JSON.parse(stored) : []; }
+    function saveManualTransactions() { localStorage.setItem('sebSalud_transactions', JSON.stringify(manualTransactions)); }
+    function loadNovedades() { const stored = localStorage.getItem('sebSalud_novedades'); if (stored) { novedades = JSON.parse(stored).map(n => ({ ...n, timestamp: new Date(n.timestamp) })); } else { novedades = []; } }
+    function saveNovedades() { localStorage.setItem('sebSalud_novedades', JSON.stringify(novedades)); }
+    function createNovedad(affiliateId, affiliateName, type, description) { const novedad = { id: 'nov-' + Date.now(), affiliateId, affiliateName, type, description, timestamp: new Date(), isRead: false }; novedades.push(novedad); saveNovedades(); updateNovedadesBadge(); }
+    function loadHealthPlans() { const stored = localStorage.getItem('sebSalud_healthPlans'); if (stored) { healthPlans = JSON.parse(stored); } else { healthPlans = [{ id: 'plan-inicial-1', name: 'PAC Básico', price: 65000, features: 'Acceso a 3 especialidades\nAtención médica domiciliaria\nRed de clínicas seleccionada' }, { id: 'plan-intermedio-2', name: 'MP Clásico', price: 195000, features: 'Acceso a 10+ especialidades\nHabitación individual\nReembolsos nacionales' }, { id: 'plan-avanzado-3', name: 'MP Global', price: 320000, features: 'Acceso a toda la red médica\nCobertura internacional\nAsistencia en viaje' }, { id: 'plan-premium-4', name: 'MP Élite VIP', price: 550000, features: 'Directorio médico abierto\nSin copagos ni preautorizaciones\nServicios de bienestar incluidos' }]; } }
+    function saveHealthPlans() { localStorage.setItem('sebSalud_healthPlans', JSON.stringify(healthPlans)); }
+    function loadDataFromLocalStorage() { const storedAdvisors = localStorage.getItem('sebSalud_advisors'); advisors = storedAdvisors ? JSON.parse(storedAdvisors) : [{ id: 'adv-1', name: 'Asesor Inicial', commissionRate: 10 }]; const storedAffiliates = localStorage.getItem('sebSalud_affiliates'); if (storedAffiliates) { affiliates = JSON.parse(storedAffiliates); affiliates.forEach(aff => aff.createdAt = new Date(aff.createdAt)); } else { affiliates = [{ id: 'aff-1', name: 'Juan Afiliado de Ejemplo', documentId: '123456789', email: 'juan@example.com', phone: '3101234567', address: 'Calle Falsa 123', advisorId: 'adv-1', healthPlan: 'plan-intermedio-2', pensionPlan: 'Porvenir', arlPlan: 'ARL Sura', ccfPlan: 'Compensar', status: 'Activo', startDate: '2024-01-01', notes: 'Cliente referido.', createdAt: new Date(), manualCosts: null, manualCommission: null }]; } }
+    function saveDataToLocalStorage() { localStorage.setItem('sebSalud_affiliates', JSON.stringify(affiliates)); localStorage.setItem('sebSalud_advisors', JSON.stringify(advisors)); }
+    function getAffiliateCommissionBase(affiliate) { if (affiliate.manualCosts && Object.values(affiliate.manualCosts).some(cost => cost > 0)) { return Object.values(affiliate.manualCosts).reduce((sum, cost) => sum + (Number(cost) || 0), 0); } const plan = healthPlans.find(p => p.id === affiliate.healthPlan); return plan ? plan.price : 0; }
+    function getAdvisorCommissionForAffiliate(affiliate) { if (affiliate.manualCommission && affiliate.manualCommission > 0) { return affiliate.manualCommission; } const advisor = advisors.find(v => v.id === affiliate.advisorId); if (!advisor) return 0; const commissionBase = getAffiliateCommissionBase(affiliate); return commissionBase * (advisor.commissionRate / 100); }
 
-      // Seed admin si no existe
-      if(PROMOTE_FIRST_ADMIN){
-        const adminsCount = (await getDocs(query(colUsersApp(), where("role","==","admin")))).size;
-        if(adminsCount === 0){
-          await updateDoc(doc(colUsersApp(), user.uid), { role:"admin" });
-          currentUser.role = "admin";
-          toast("Se configuró este usuario como ADMIN (primer usuario).");
+    // --- UI & RENDERING ---
+    const modalManager = {
+        open(modalId, data = null) {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+            const form = modal.querySelector('form');
+            if (form) this.resetForm(form.id);
+
+            // --- CORRECCIÓN AÑADIDA ---
+            // Si es el modal de usuario y es para crear (no hay 'data'),
+            // poblamos la lista de vínculos con el rol por defecto.
+            if (modalId === 'user-modal' && !data) {
+                const defaultRole = document.getElementById('user-role').value;
+                populateUserLinkForm(defaultRole);
+            }
+
+            if (data) {
+                if (modalId === 'affiliate-modal') this.populateAffiliateForm(data);
+                if (modalId === 'advisor-modal') this.populateAdvisorForm(data);
+                if (modalId === 'plan-modal') this.populatePlanForm(data);
+                if (modalId === 'user-modal') this.populateUserForm(data);
+            }
+            if (modalId === 'transaction-modal' && data) {
+                document.getElementById('transaction-modal-title').textContent = data.title;
+                document.getElementById('transaction-type').value = data.type;
+                document.getElementById('transaction-date').value = new Date().toISOString().split('T')[0];
+            }
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.querySelector('.modal-content').classList.remove('scale-95');
+        },
+        close(modalId) {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+            modal.classList.add('opacity-0');
+            modal.querySelector('.modal-content').classList.add('scale-95');
+            setTimeout(() => modal.classList.add('pointer-events-none'), 250);
+        },
+        resetForm(formId) {
+            const form = document.getElementById(formId);
+            if (!form) return;
+            form.reset();
+            if (formId === 'affiliate-form') {
+                document.getElementById('affiliate-doc-id').value = '';
+                document.getElementById('affiliate-modal-title').textContent = 'Nuevo Afiliado';
+                document.getElementById('manual-override-container').classList.add('hidden');
+                renderHealthPlanCards();
+            }
+             if (formId === 'advisor-form') {
+                document.getElementById('advisor-doc-id').value = '';
+                document.getElementById('advisor-modal-title').textContent = 'Nuevo Asesor';
+            }
+             if (formId === 'plan-form') {
+                document.getElementById('plan-doc-id').value = '';
+                document.getElementById('plan-modal-title').textContent = 'Nuevo Plan de Salud';
+            }
+            if (formId === 'user-form') {
+                document.getElementById('user-doc-id').value = '';
+                document.getElementById('user-modal-title').textContent = 'Nuevo Usuario';
+                document.getElementById('user-password').placeholder = 'Contraseña';
+                document.getElementById('password-hint').classList.add('hidden');
+            }
+        },
+        populateAffiliateForm(data) {
+            document.getElementById('affiliate-modal-title').textContent = 'Editar Afiliado';
+            const form = document.getElementById('affiliate-form');
+            form['affiliate-doc-id'].value = data.id;
+            form['affiliate-name'].value = data.name;
+            form['affiliate-id'].value = data.documentId;
+            form['affiliate-email'].value = data.email;
+            form['affiliate-phone'].value = data.phone;
+            form['affiliate-address'].value = data.address;
+            form['pension-plan'].value = data.pensionPlan;
+            form['arl-plan'].value = data.arlPlan;
+            form['ccf-plan'].value = data.ccfPlan;
+            form['advisor-select-list'].value = data.advisorId;
+            form['affiliate-start-date'].value = data.startDate;
+            form['affiliate-status'].value = data.status;
+            form['affiliate-notes'].value = data.notes;
+            const planRadio = form.querySelector(`input[name="health-plan"][value="${data.healthPlan}"]`);
+            if (planRadio) planRadio.checked = true;
+            
+            form['manual-override-checkbox'].checked = !!data.manualCosts;
+            document.getElementById('manual-override-container').classList.toggle('hidden', !data.manualCosts);
+            if (data.manualCosts) {
+                form['manual-cost-health'].value = data.manualCosts.health || '';
+                form['manual-cost-pension'].value = data.manualCosts.pension || '';
+                form['manual-cost-arl'].value = data.manualCosts.arl || '';
+                form['manual-cost-ccf'].value = data.manualCosts.ccf || '';
+            }
+            if (data.manualCommission) {
+                form['manual-commission'].value = data.manualCommission;
+            }
+        },
+        populateAdvisorForm(data) {
+             document.getElementById('advisor-modal-title').textContent = 'Editar Asesor';
+             document.getElementById('advisor-doc-id').value = data.id;
+             document.getElementById('advisor-name').value = data.name;
+             document.getElementById('advisor-commission').value = data.commissionRate;
+        },
+        populatePlanForm(data) {
+            document.getElementById('plan-modal-title').textContent = 'Editar Plan';
+            document.getElementById('plan-doc-id').value = data.id;
+            document.getElementById('plan-name').value = data.name;
+            document.getElementById('plan-price').value = data.price;
+            document.getElementById('plan-features').value = data.features;
+        },
+        populateUserForm(data) {
+            document.getElementById('user-modal-title').textContent = 'Editar Usuario';
+            document.getElementById('user-doc-id').value = data.id;
+            document.getElementById('user-email').value = data.email;
+            document.getElementById('user-role').value = data.role;
+            document.getElementById('user-password').placeholder = '••••••••';
+            document.getElementById('password-hint').classList.remove('hidden');
+            populateUserLinkForm(data.role, data.appDataId);
         }
-      }
-
-      await bootstrapData();
-      renderAppForRole();
-      hide(authContainer); show(appContainer);
-    }else{
-      currentUser = null;
-      show(authContainer); hide(appContainer);
-      ["affiliate-modal","advisor-modal","plan-modal","user-modal"].forEach(id=>hide($(`#${id}`)));
-    }
-    lucide.createIcons();
-  });
-
-  // ===== Carga inicial de datos =====
-  async function bootstrapData(){
-    [affiliates, advisors, plans] = await Promise.all([loadAffiliates(), loadAdvisors(), loadPlans()]);
-    settings = await loadSettings();
-    usersApp = await loadUsersApp();
-  }
-  async function loadUsersApp(){ const qs = await getDocs(colUsersApp()); return qs.docs.map(d=>d.data()); }
-  async function loadAffiliates(){
-    const qs = await getDocs(query(colAffiliates(), orderBy("createdAt","desc")));
-    return qs.docs.map(d=>({ id:d.id, ...d.data() }));
-  }
-  async function loadAdvisors(){
-    const qs = await getDocs(query(colAdvisors(), orderBy("createdAt","desc")));
-    return qs.docs.map(d=>({ id:d.id, ...d.data() }));
-  }
-  async function loadPlans(){
-    const qs = await getDocs(query(colPlans(), orderBy("createdAt","desc")));
-    const arr = qs.docs.map(d=>({ id:d.id, ...d.data() }));
-    if(arr.length===0){
-      const seed = [
-        {name:"PAC Básico", price:65000, features:"3 especialidades\nAtención domiciliaria"},
-        {name:"MP Clásico", price:195000, features:"10+ especialidades\nHabitación individual"},
-        {name:"MP Global", price:320000, features:"Cobertura internacional\nAsistencia en viaje"}
-      ];
-      for(const p of seed){ await addDoc(colPlans(), {...p, createdAt:serverTimestamp()}); }
-      return loadPlans();
-    }
-    return arr;
-  }
-  async function loadSettings(){
-    const qs = await getDocs(colSettings());
-    const obj = {}; qs.forEach(d=>{ obj[d.id]=d.data(); });
-    return obj;
-  }
-
-  // ===== Navegación por rol =====
-  function renderAppForRole(){
-    const nav = $("#main-nav");
-    const role = currentUser.role || "afiliado";
-    const itemsByRole = {
-      admin:   [{id:"dashboard",icon:"layout-dashboard",text:"Dashboard"},{id:"afiliados",icon:"users",text:"Afiliados"},{id:"asesores",icon:"briefcase",text:"Asesores"},{id:"planes",icon:"shield-plus",text:"Planes"},{id:"usuarios",icon:"user-cog",text:"Usuarios"},{id:"config",icon:"settings",text:"Configuración"}],
-      asesor:  [{id:"dashboard",icon:"layout-dashboard",text:"Dashboard"},{id:"afiliados",icon:"users",text:"Mis Afiliados"}],
-      afiliado:[{id:"dashboard",icon:"layout-dashboard",text:"Mi Estado"}]
     };
-    nav.innerHTML = itemsByRole[role].map(x=>(
-      `<a href="#" data-target="${x.id}" class="nav-link flex items-center py-2.5 px-4 rounded-lg hover:bg-slate-800/60">
-        <i data-lucide="${x.icon}" class="w-5 h-5 mr-3"></i>${x.text}
-       </a>`
-    )).join("");
-    $$("#main-nav .nav-link").forEach(a=>{
-      a.addEventListener("click", (e)=>{
+    
+    function populateAdvisorSelect() { const select = document.getElementById('advisor-select-list'); if (!select) return; select.innerHTML = '<option value="" disabled selected>Asignar Asesor</option>' + advisors.map(v => `<option value="${v.id}">${v.name}</option>`).join(''); }
+    function populateUserLinkForm(role, selectedId = null) { const select = document.getElementById('user-link'); if (!select) return; let options; if (role === 'asesor') { options = advisors.map(item => `<option value="${item.id}">${item.name}</option>`).join(''); } else { options = affiliates.map(item => `<option value="${item.id}">${item.name} (${item.documentId})</option>`).join(''); } select.innerHTML = `<option value="" disabled selected>Seleccione un ${role}</option>` + options; if (selectedId) { select.value = selectedId; } }
+
+    function renderContent(targetId) {
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        const section = document.getElementById(targetId);
+        if (section) {
+            section.classList.add('active');
+            if (targetId === 'dashboard') renderDashboard();
+            if (targetId === 'gestion-usuarios') renderGestionUsuarios();
+            if (targetId === 'afiliados') renderAffiliatesList();
+            if (targetId === 'asesores') renderAdvisorsSection();
+            if (targetId === 'ranking-vendedores') renderRankingSection();
+            if (targetId === 'empresa') renderEmpresaSection();
+            if (targetId === 'flujo-caja') renderFlujoCajaSection();
+            if (targetId === 'novedades') renderNovedadesSection();
+            if (targetId === 'planes') renderPlansList();
+            if (targetId === 'cotizador') renderCotizadorSection();
+            if (targetId === 'mi-perfil') renderMiPerfil();
+        }
+    }
+
+    function buildMainContentHTML() {
+        document.getElementById('main-content').innerHTML = `<section id="dashboard" class="content-section"></section><section id="gestion-usuarios" class="content-section"></section><section id="novedades" class="content-section"></section><section id="empresa" class="content-section"></section><section id="flujo-caja" class="content-section"></section><section id="afiliados" class="content-section"></section><section id="asesores" class="content-section"></section><section id="ranking-vendedores" class="content-section"></section><section id="planes" class="content-section"></section><section id="cotizador" class="content-section"></section><section id="mi-perfil" class="content-section"></section>`;
+    }
+
+    function renderNavigation(role) {
+        const navItems = navLinksConfig[role] || [];
+        const mainNavContainer = document.getElementById('main-nav');
+        const mobileNavContainer = document.getElementById('mobile-nav');
+        mainNavContainer.innerHTML = navItems.map(item => `<a href="#" data-target="${item.id}" class="nav-link relative flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="${item.icon}" class="w-5 h-5 mr-3"></i>${item.text}${item.badge ? `<span id="novedades-badge-sidebar" class="novedades-badge hidden"></span>` : ''}</a>`).join('');
+        mobileNavContainer.innerHTML = navItems.slice(0, 5).map(item => `<a href="#" data-target="${item.id}" class="bottom-nav-link relative flex flex-col items-center justify-center text-center w-full"><i data-lucide="${item.icon}" class="w-6 h-6"></i><span class="text-xs mt-1">${item.text}</span>${item.badge ? `<span id="novedades-badge-mobile" class="novedades-badge hidden"></span>` : ''}</a>`).join('');
+    }
+    
+    function renderDashboard() {
+        const container = document.getElementById('dashboard');
+        if (currentUser.role === 'admin') {
+            const now = new Date(); const thisMonth = now.getMonth(); const thisYear = now.getFullYear(); const activeAffiliates = affiliates.filter(a => a.status === 'Activo'); const monthlyIncome = activeAffiliates.reduce((sum, aff) => sum + getAffiliateCommissionBase(aff), 0); const overdueAffiliates = affiliates.filter(a => a.paymentStatus === 'En mora'); const overdueAmount = overdueAffiliates.reduce((sum, aff) => sum + getAffiliateCommissionBase(aff), 0); const newAffiliatesCount = affiliates.filter(aff => { const affDate = new Date(aff.createdAt); return affDate && affDate.getMonth() === thisMonth && affDate.getFullYear() === thisYear; }).length;
+            container.innerHTML = `<h1 class="text-2xl font-bold text-slate-800 mb-6">Resumen General</h1><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"><div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Ingresos del Mes</h3><p class="text-3xl font-bold text-slate-800 mt-2">${formatCurrency(monthlyIncome)}</p></div><div class="bg-emerald-100 text-emerald-600 p-2 rounded-full"><i data-lucide="trending-up" class="h-6 w-6"></i></div></div><div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Cartera Vencida</h3><p class="text-3xl font-bold text-rose-500 mt-2">${formatCurrency(overdueAmount)}</p></div><div class="bg-rose-100 text-rose-600 p-2 rounded-full"><i data-lucide="clock" class="h-6 w-6"></i></div></div><div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Nuevos Afiliados (Mes)</h3><p class="text-3xl font-bold text-slate-800 mt-2">${newAffiliatesCount}</p></div><div class="bg-sky-100 text-sky-600 p-2 rounded-full"><i data-lucide="user-plus" class="h-6 w-6"></i></div></div><div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Afiliados Activos</h3><p class="text-3xl font-bold text-slate-800 mt-2">${activeAffiliates.length}</p></div><div class="bg-slate-100 text-slate-600 p-2 rounded-full"><i data-lucide="check-circle-2" class="h-6 w-6"></i></div></div></div>`;
+        } else if (currentUser.role === 'asesor') {
+            const myAffiliates = affiliates.filter(a => a.advisorId === currentUser.appDataId); const activeCount = myAffiliates.filter(a => a.status === 'Activo').length; const monthlyCommission = myAffiliates.filter(a => a.status === 'Activo').reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0);
+            container.innerHTML = `<h1 class="text-2xl font-bold text-slate-800 mb-6">Dashboard de Asesor</h1><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"><div class="bg-white p-5 rounded-xl shadow-lg"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Total de Afiliados</h3><p class="text-3xl font-bold text-slate-800 mt-2">${myAffiliates.length}</p></div></div><div class="bg-white p-5 rounded-xl shadow-lg"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Afiliados Activos</h3><p class="text-3xl font-bold text-green-600 mt-2">${activeCount}</p></div></div><div class="bg-white p-5 rounded-xl shadow-lg"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Comisión Mensual Estimada</h3><p class="text-3xl font-bold text-primary-600 mt-2">${formatCurrency(monthlyCommission)}</p></div></div></div>`;
+        }
+        lucide.createIcons();
+    }
+    
+    function renderMiPerfil() {
+        const container = document.getElementById('mi-perfil'); const affiliateData = affiliates.find(a => a.id === currentUser.appDataId); if (!affiliateData) { container.innerHTML = `<p>Error: No se encontraron datos de afiliado.</p>`; return; } const plan = healthPlans.find(p => p.id === affiliateData.healthPlan); const advisor = advisors.find(v => v.id === affiliateData.advisorId); const hoy = new Date(); const fechaCorte = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 5);
+        container.innerHTML = `<div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-4xl mx-auto"><h2 class="text-2xl font-bold text-slate-800 mb-6">Bienvenido, ${affiliateData.name}</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-8"><div><h3 class="text-lg font-semibold text-primary-600 border-b pb-2 mb-4">Mis Datos</h3><div class="space-y-3 text-slate-700"><p><strong>Documento:</strong> ${affiliateData.documentId}</p><p><strong>Correo:</strong> ${affiliateData.email}</p><p><strong>Teléfono:</strong> ${affiliateData.phone || 'No registrado'}</p><p><strong>Asesor Asignado:</strong> ${advisor ? advisor.name : 'N/A'}</p></div></div><div><h3 class="text-lg font-semibold text-primary-600 border-b pb-2 mb-4">Estado de mi Plan</h3><div class="space-y-3 text-slate-700"><p><strong>Estado Actual:</strong> <span class="font-bold ${affiliateData.status === 'Activo' ? 'text-green-600' : 'text-yellow-600'}">${affiliateData.status}</span></p><p><strong>Plan Contratado:</strong> ${plan ? plan.name : 'N/A'}</p><p><strong>Valor Mensual:</strong> ${plan ? formatCurrency(plan.price) : 'N/A'}</p><p><strong>Próxima Fecha de Corte:</strong> <span class="font-bold text-red-600">${fechaCorte.toLocaleDateString('es-CO')}</span></p></div></div></div></div>`;
+    }
+
+    function renderGestionUsuarios() {
+        const container = document.getElementById('gestion-usuarios'); const usersToDisplay = allUsers.filter(u => u.role !== 'admin');
+        container.innerHTML = `<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4"><h2 class="text-2xl font-bold text-slate-800">Gestionar Usuarios</h2><button id="add-user-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center self-end sm:self-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Usuario</button></div><div class="overflow-x-auto"><table class="w-full text-sm responsive-table"><thead class="bg-slate-50"><tr class="text-left"><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Email / ID</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Rol</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Vinculado a</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase text-center">Acciones</th></tr></thead><tbody class="md:divide-y md:divide-slate-200">${usersToDisplay.map(user => { let linkedName = 'N/A'; if (user.role === 'asesor') { const advisor = advisors.find(a => a.id === user.appDataId); linkedName = advisor ? advisor.name : 'Registro no encontrado'; } else if (user.role === 'afiliado') { const affiliate = affiliates.find(a => a.id === user.appDataId); linkedName = affiliate ? affiliate.name : 'Registro no encontrado'; } return `
+<tr><td data-label="Usuario:" class="p-3"><div class="font-semibold text-slate-800">${user.email}</div><div class="text-xs text-slate-500">ID: ${user.id}</div></td><td data-label="Rol:" class="p-3"><span class="text-xs font-semibold px-2 py-1 rounded-full ${user.role === 'asesor' ? 'bg-sky-100 text-sky-800' : 'bg-lime-100 text-lime-800'}">${user.role}</span></td><td data-label="Vinculado a:" class="p-3 text-slate-700">${linkedName}</td><td data-label="Acciones:" class="p-3"><div class="flex justify-end md:justify-center items-center"><button class="edit-user-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${user.id}" title="Editar" aria-label="Editar usuario"><i data-lucide="pencil" class="h-4 w-4 pointer-events-none"></i></button><button class="delete-user-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${user.id}" title="Eliminar" aria-label="Eliminar usuario"><i data-lucide="trash-2" class="h-4 w-4 pointer-events-none"></i></button></div></td></tr>`}).join('') || `<tr class="no-data-row"><td colspan="4" class="text-center p-4 text-slate-500">No hay usuarios creados.</td></tr>`}</tbody></table></div>`;
+        lucide.createIcons();
+    }
+
+    function renderAffiliatesList() {
+        const container = document.getElementById('afiliados'); let baseData = [...affiliates]; if (currentUser.role === 'asesor') { baseData = affiliates.filter(a => a.advisorId === currentUser.appDataId); }
+        container.innerHTML = `<div class="bg-white p-4 rounded-xl shadow-lg mb-6 ${currentUser.role === 'asesor' ? 'hidden' : ''}"><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end"><div class="md:col-span-2"><label for="search-affiliate" class="text-sm font-medium text-slate-600">Buscar Afiliado</label><div class="relative mt-1"><input type="text" id="search-affiliate" placeholder="Nombre o documento..." class="w-full pl-10 pr-4 py-2 border rounded-lg"><i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i></div></div><div><label for="filter-affiliate-status" class="text-sm font-medium text-slate-600">Estado</label><select id="filter-affiliate-status" class="w-full mt-1 py-2 px-3 border rounded-lg"><option value="all">Todos</option><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div><div><label for="filter-affiliate-payment-status" class="text-sm font-medium text-slate-600">Estado de Pago</label><select id="filter-affiliate-payment-status" class="w-full mt-1 py-2 px-3 border rounded-lg"><option value="all">Todos</option><option value="Al día">Al día</option><option value="En mora">En mora</option></select></div></div></div><div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4"><div class="flex items-center gap-2"><span class="text-sm font-medium text-slate-600 mr-2">Vista:</span><button id="view-as-cards-btn" class="p-2 rounded-lg" title="Tarjetas" aria-label="Vista de tarjetas"><i data-lucide="layout-grid" class="h-5 w-5 pointer-events-none"></i></button><button id="view-as-table-btn" class="p-2 rounded-lg" title="Tabla" aria-label="Vista de tabla"><i data-lucide="table-2" class="h-5 w-5 pointer-events-none"></i></button></div><div class="flex items-center gap-4 self-end sm:self-center"><button id="export-affiliates-btn" class="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center ${currentUser.role === 'asesor' ? 'hidden' : ''}"><i data-lucide="download" class="w-5 h-5 mr-2 text-green-600"></i>Exportar</button><button id="add-affiliate-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Afiliado</button></div></div><div id="affiliates-card-container"></div><div id="affiliates-table-container" class="hidden"><table class="w-full text-sm responsive-table"><thead><tr><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Afiliado</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Plan/Asesor</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Contacto</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Estado</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase text-center">Acciones</th></tr></thead><tbody id="affiliates-table-body" class="md:divide-y md:divide-slate-200"></tbody></table></div>`;
+        document.getElementById('search-affiliate')?.addEventListener('input', () => displayFilteredAffiliates(baseData)); document.getElementById('filter-affiliate-status')?.addEventListener('change', () => displayFilteredAffiliates(baseData)); document.getElementById('filter-affiliate-payment-status')?.addEventListener('change', () => displayFilteredAffiliates(baseData));
+        updateViewToggleButtons(); displayFilteredAffiliates(baseData);
+    }
+    
+    function displayFilteredAffiliates(baseData) {
+        const cardContainer = document.getElementById('affiliates-card-container'); const tableContainer = document.getElementById('affiliates-table-container'); const searchTerm = document.getElementById('search-affiliate')?.value.toLowerCase() || ''; const statusFilter = document.getElementById('filter-affiliate-status')?.value || 'all'; const paymentStatusFilter = document.getElementById('filter-affiliate-payment-status')?.value || 'all';
+        let dataToRender = baseData.filter(a => { if (currentUser.role === 'admin') { const matchesSearch = a.name.toLowerCase().includes(searchTerm) || a.documentId.includes(searchTerm); const matchesStatus = (statusFilter === 'all') || (a.status === statusFilter); const matchesPaymentStatus = (paymentStatusFilter === 'all') || (a.paymentStatus === (paymentStatusFilter === 'En mora' ? 'En mora' : 'Al día')); return matchesSearch && matchesStatus && matchesPaymentStatus; } return true; });
+        cardContainer.classList.add('hidden'); tableContainer.classList.add('hidden'); cardContainer.innerHTML = '';
+        if (!dataToRender.length) { cardContainer.className = ''; cardContainer.classList.remove('hidden'); cardContainer.innerHTML = `<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No se encontraron afiliados.</p></div>`; return; }
+        if (affiliatesViewMode === 'card') { cardContainer.className = 'grid grid-cols-1 xl:grid-cols-2 gap-6'; cardContainer.classList.remove('hidden'); renderAffiliatesAsCards(dataToRender); } else { tableContainer.classList.remove('hidden'); renderAffiliatesAsTable(dataToRender); }
+        lucide.createIcons();
+    }
+
+    function renderAffiliatesAsCards(filteredData) { const listContainer = document.getElementById('affiliates-card-container'); const statusStyles = { 'Activo': 'bg-green-100 text-green-800', 'Pendiente': 'bg-yellow-100 text-yellow-800', 'Inactivo': 'bg-red-100 text-red-800' }; listContainer.innerHTML = filteredData.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const commission = getAdvisorCommissionForAffiliate(aff); const commissionBase = getAffiliateCommissionBase(aff); const healthPlan = healthPlans.find(p => p.id === aff.healthPlan); return ` <div class="bg-white rounded-xl shadow-lg transition hover:shadow-2xl flex flex-col"> <div class="p-5"> <div class="flex justify-between items-start"> <div><h3 class="font-bold text-lg text-slate-800">${aff.name}</h3><p class="text-sm text-slate-500">Doc: ${aff.documentId}</p></div> <div class="flex items-center gap-2 flex-shrink-0 ml-2"><span class="text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[aff.status] || ''}">${aff.status}</span></div> </div> <div class="grid grid-cols-2 gap-4 mt-4 text-sm"> <div><strong class="block text-slate-500">Asesor</strong><span>${advisor ? advisor.name : 'N/A'}</span></div> <div><strong class="block text-slate-500">Comisión Mensual</strong><span class="font-bold text-green-600">${formatCurrency(commission)} ${aff.manualCommission ? '<span title="Comisión Manual" class="text-blue-500 font-bold">*</span>' : ''}</span></div> <div><strong class="block text-slate-500">Valor Plan/Base</strong><span>${formatCurrency(commissionBase)} ${aff.manualCosts ? '<span title="Costos Manuales" class="text-blue-500 font-bold">*</span>' : ''}</span></div> <div><strong class="block text-slate-500">Fecha Inicio</strong><span>${aff.startDate}</span></div> </div> </div> <div class="details-section hidden p-5 border-t bg-slate-50"> <h4 class="font-semibold mb-2">Detalles Completos:</h4> <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm"> <p><strong class="text-slate-500">Plan:</strong> ${healthPlan ? healthPlan.name : 'N/A'}</p><p><strong class="text-slate-500">Pensión:</strong> ${aff.pensionPlan}</p> <p><strong class="text-slate-500">ARL:</strong> ${aff.arlPlan}</p><p><strong class="text-slate-500">Caja Comp.:</strong> ${aff.ccfPlan}</p> <p class="sm:col-span-2"><strong class="text-slate-500">Notas:</strong> <span class="whitespace-pre-wrap">${aff.notes || 'N/A'}</span></p> </div> </div> <div class="border-t p-3 mt-auto flex justify-between items-center bg-gray-50/50 rounded-b-xl"> <button data-toggle-details="${aff.id}" class="text-sm text-primary-600 font-semibold hover:text-primary-700 flex items-center">Ver Detalles<i data-lucide="chevron-down" class="details-toggle-icon h-5 w-5 ml-1"></i></button> <div><button class="edit-affiliate-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${aff.id}" aria-label="Editar afiliado"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button><button class="delete-affiliate-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${aff.id}" aria-label="Eliminar afiliado"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button></div> </div> </div>`; }).join(''); }
+    function renderAffiliatesAsTable(filteredData) { const tableBody = document.getElementById('affiliates-table-body'); const statusStyles = { 'Activo': 'bg-green-100 text-green-800', 'Pendiente': 'bg-yellow-100 text-yellow-800', 'Inactivo': 'bg-red-100 text-red-800' }; if (!tableBody) return; tableBody.innerHTML = filteredData.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const healthPlan = healthPlans.find(p => p.id === aff.healthPlan); return ` <tr> <td data-label="Afiliado:" class="p-3"> <div class="font-semibold text-slate-800">${aff.name}</div> <div class="text-xs text-slate-500">Doc: ${aff.documentId}</div> </td> <td data-label="Plan/Asesor:" class="p-3"> <div class="text-slate-800">${healthPlan ? healthPlan.name : 'N/A'}</div> <div class="text-xs text-slate-500">Asesor: ${advisor ? advisor.name : 'N/A'}</div> </td> <td data-label="Contacto:" class="p-3"> <div class="text-slate-800 break-all">${aff.email || 'N/A'}</div> <div class="text-xs text-slate-500">${aff.phone || 'N/A'}</div> </td> <td data-label="Estado:" class="p-3"> <span class="text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[aff.status] || ''}">${aff.status}</span> <div class="text-xs text-slate-500 mt-1 md:mt-0">Inicio: ${aff.startDate}</div> </td> <td data-label="Acciones:" class="p-3"> <div class="flex justify-end md:justify-center items-center"> <button class="edit-affiliate-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${aff.id}" title="Editar" aria-label="Editar afiliado"><i data-lucide="pencil" class="h-4 w-4 pointer-events-none"></i></button> <button class="delete-affiliate-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${aff.id}" title="Eliminar" aria-label="Eliminar afiliado"><i data-lucide="trash-2" class="h-4 w-4 pointer-events-none"></i></button> </div> </td> </tr> `; }).join(''); }
+    function updateViewToggleButtons() { const cardBtn = document.getElementById('view-as-cards-btn'); const tableBtn = document.getElementById('view-as-table-btn'); if (!cardBtn || !tableBtn) return; if (affiliatesViewMode === 'card') { cardBtn.className = 'p-2 rounded-lg bg-primary-600 text-white shadow-md'; tableBtn.className = 'p-2 rounded-lg bg-white hover:bg-slate-100 border text-slate-600'; } else { tableBtn.className = 'p-2 rounded-lg bg-primary-600 text-white shadow-md'; cardBtn.className = 'p-2 rounded-lg bg-white hover:bg-slate-100 border text-slate-600'; } }
+    function renderAdvisorsSection() {
+        const container = document.getElementById('asesores');
+        container.innerHTML = `<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4"><h2 class="text-2xl font-bold text-slate-800">Gestión de Asesores</h2><button id="add-advisor-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center self-end sm:self-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Asesor</button></div><div id="advisors-container" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6"></div>`;
+        const listContainer = document.getElementById('advisors-container'); if (!listContainer) return; if (advisors.length === 0) { listContainer.innerHTML = `<p class="text-center text-slate-500 col-span-full">No hay asesores.</p>`; return; } const statusStyles = { 'Activo': 'bg-green-100 text-green-800', 'Pendiente': 'bg-yellow-100 text-yellow-800', 'Inactivo': 'bg-red-100 text-red-800' };
+        listContainer.innerHTML = advisors.map(advisor => { const advisorAffiliates = affiliates.filter(a => a.advisorId === advisor.id); const activeAffiliates = advisorAffiliates.filter(a => a.status === 'Activo'); const totalCommission = advisorAffiliates.reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0); const monthlyCommission = activeAffiliates.reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0); const hasAffiliates = advisorAffiliates.length > 0; const breakdownTableRows = hasAffiliates ? advisorAffiliates.map(aff => { const commission = getAdvisorCommissionForAffiliate(aff); return `<tr class="border-b hover:bg-slate-100"><td class="p-2 font-medium">${aff.name}</td><td class="p-2"><span class="text-xs font-semibold px-2 py-0.5 rounded-full ${statusStyles[aff.status] || ''}">${aff.status}</span></td><td class="p-2 text-right font-mono text-green-700">${formatCurrency(commission)}</td></tr>`; }).join('') : `<tr><td colspan="3" class="text-center p-4 text-slate-500">No tiene afiliados.</td></tr>`; return ` <div class="bg-white rounded-xl shadow-lg flex flex-col transition hover:shadow-2xl"> <div class="p-5 flex justify-between items-start"> <div><h3 class="font-bold text-xl">${advisor.name}</h3><p class="text-sm text-primary-600 font-semibold">Comisión: ${advisor.commissionRate}%</p></div> <div class="flex-shrink-0"><button class="edit-advisor-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${advisor.id}" aria-label="Editar asesor"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button><button class="delete-advisor-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${advisor.id}" aria-label="Eliminar asesor"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button></div> </div> <div class="p-5 grid grid-cols-3 gap-4 text-center border-y"> <div><p class="text-3xl font-bold">${advisorAffiliates.length}</p><p class="text-xs uppercase tracking-wider">Afiliados</p></div> <div><p class="text-2xl font-bold text-primary-600">${formatCurrency(monthlyCommission, 0)}</p><p class="text-xs uppercase tracking-wider">Com. Mes</p></div> <div><p class="text-2xl font-bold text-green-600">${formatCurrency(totalCommission, 0)}</p><p class="text-xs uppercase tracking-wider">Com. Total</p></div> </div> <div id="advisor-stats-${advisor.id}" class="hidden"> <div class="p-4 bg-slate-50"><h4 class="font-semibold mb-3 text-sm">Desglose</h4><div class="max-h-64 overflow-y-auto pr-1"><table class="w-full text-sm text-left"><thead class="text-xs text-slate-500 bg-slate-200 sticky top-0"><tr><th class="p-2">Afiliado</th><th class="p-2">Estado</th><th class="p-2 text-right">Ganancia</th></tr></thead><tbody class="bg-white">${breakdownTableRows}</tbody></table></div></div> </div> <div class="mt-auto border-t p-3 flex justify-end items-center bg-gray-50/50 rounded-b-xl"><button ${!hasAffiliates ? 'disabled' : ''} data-toggle-stats="${advisor.id}" class="stats-toggle-btn text-sm text-primary-600 font-semibold flex items-center disabled:opacity-50 disabled:cursor-not-allowed"><span class="button-text">Ver Desglose</span><i data-lucide="chevron-down" class="stats-toggle-icon h-5 w-5 ml-1"></i></button></div> </div>`; }).join('');
+        lucide.createIcons();
+    }
+    function renderRankingSection() { const container = document.getElementById('ranking-vendedores'); container.innerHTML = `<div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-2"><h2 class="text-2xl font-bold">Ranking de Vendedores</h2><p class="text-sm text-slate-500">Top por comisiones totales.</p></div><div id="ranking-list" class="space-y-4"></div>`; const listContainer = document.getElementById('ranking-list'); const rankedAdvisors = advisors.map(advisor => ({ ...advisor, totalCommission: affiliates.filter(a => a.advisorId === advisor.id).reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0) })).sort((a, b) => b.totalCommission - a.totalCommission); if (rankedAdvisors.length === 0) { listContainer.innerHTML = `<div class="text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay asesores en el ranking.</p></div>`; return; } const rankColors = ['bg-amber-400 text-amber-900', 'bg-slate-300 text-slate-800', 'bg-orange-400 text-orange-900']; const rankIcons = ['<i data-lucide="trophy" class="w-6 h-6 text-amber-500"></i>', '<i data-lucide="award" class="w-6 h-6 text-slate-500"></i>', '<i data-lucide="medal" class="w-6 h-6 text-orange-500"></i>']; listContainer.innerHTML = rankedAdvisors.map((advisor, index) => `<div class="bg-white rounded-xl shadow-lg p-4 flex items-center space-x-4 transition hover:shadow-xl hover:scale-[1.02]"><div class="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${index < 3 ? rankColors[index] : 'bg-slate-200 text-slate-700'}">${index < 3 ? rankIcons[index] : `<span class="font-bold text-lg">${index + 1}</span>`}</div><div class="flex-grow"><h3 class="font-bold text-lg">${advisor.name}</h3><p class="text-sm text-slate-500">Comisión Base: ${advisor.commissionRate}%</p></div><div class="text-right"><p class="text-xl font-extrabold text-green-600">${formatCurrency(advisor.totalCommission)}</p><p class="text-xs font-medium uppercase">Total</p></div></div>`).join(''); lucide.createIcons(); }
+    function renderPlansList() { const container = document.getElementById('planes'); container.innerHTML = `<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4"><h2 class="text-2xl font-bold">Planes de Salud</h2><button id="add-plan-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center self-end sm:self-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Plan</button></div><div id="plans-list" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6"></div>`; const listContainer = document.getElementById('plans-list'); if (healthPlans.length === 0) { listContainer.innerHTML = `<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay planes creados.</p></div>`; return; } listContainer.innerHTML = healthPlans.map(plan => ` <div class="bg-white rounded-xl shadow-lg flex flex-col"><div class="p-5 flex-grow"><div class="flex justify-between items-start"><h3 class="font-bold text-lg">${plan.name}</h3><p class="text-xl font-extrabold text-primary-600">${formatCurrency(plan.price)}</p></div><ul class="text-sm text-slate-600 space-y-1 mt-4">${plan.features.split('\n').map(f => `<li class="flex items-start"><i data-lucide="check-circle-2" class="w-4 h-4 mr-2 text-green-500 mt-0.5 shrink-0"></i><span>${f}</span></li>`).join('')}</ul></div><div class="border-t p-3 flex justify-end items-center bg-gray-50/50 rounded-b-xl"><button class="edit-plan-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${plan.id}" aria-label="Editar plan"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button><button class="delete-plan-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${plan.id}" aria-label="Eliminar plan"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button></div></div>`).join(''); lucide.createIcons(); }
+    
+    function renderCotizadorSection() {
+        const container = document.getElementById('cotizador');
+        container.innerHTML = `
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg mb-8">
+                <h2 class="text-2xl font-bold text-slate-800">Cotizador de Aportes para Independientes</h2>
+                <p class="text-slate-500 mt-1">Calcula los aportes a seguridad social basados en tus ingresos.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                <div class="lg:col-span-2">
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <form id="cotizador-form" class="space-y-6">
+                            <div>
+                                <label for="cotizador-ibc" class="block text-sm font-medium text-slate-700">Ingreso Base de Cotización (IBC)</label>
+                                <div class="relative mt-1">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">$</span>
+                                    <input type="number" id="cotizador-ibc" min="0" class="w-full pl-7 pr-4 py-2 border rounded-lg" placeholder="${settings.SMMLV}" required>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-1">Mínimo: ${formatCurrency(settings.SMMLV)}</p>
+                            </div>
+                            <div>
+                                <label for="cotizador-arl-risk" class="block text-sm font-medium text-slate-700">Nivel de Riesgo ARL</label>
+                                <select id="cotizador-arl-risk" class="w-full mt-1 py-2 px-3 border rounded-lg">
+                                    <option value="1">Riesgo I (${settings.ARL_RATES[1]}%)</option>
+                                    <option value="2">Riesgo II (${settings.ARL_RATES[2]}%)</option>
+                                    <option value="3">Riesgo III (${settings.ARL_RATES[3]}%)</option>
+                                    <option value="4">Riesgo IV (${settings.ARL_RATES[4]}%)</option>
+                                    <option value="5">Riesgo V (${settings.ARL_RATES[5]}%)</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-sm font-medium text-slate-700">Calcular Aportes Adicionales:</label>
+                                <label class="flex items-center space-x-2 font-normal"><input type="checkbox" id="cotizador-pension-check" class="h-4 w-4 text-primary-600 rounded" checked><span>Pensión</span></label>
+                                <label class="flex items-center space-x-2 font-normal"><input type="checkbox" id="cotizador-ccf-check" class="h-4 w-4 text-primary-600 rounded"><span>Caja de Compensación</span></label>
+                            </div>
+                            <div>
+                                <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center">
+                                    <i data-lucide="calculator" class="w-5 h-5 mr-2"></i>Calcular Aportes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="lg:col-span-3">
+                    <div class="bg-white p-6 rounded-xl shadow-lg h-full">
+                        <h3 class="text-lg font-bold text-slate-800 mb-4">Resultado del Cálculo</h3>
+                        <div id="cotizador-results" class="space-y-3">
+                            <p class="text-center text-slate-500 py-8">Ingresa tus datos para ver el resultado.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        
+        document.getElementById('cotizador-form').addEventListener('submit', handleCotizadorCalculation);
+        lucide.createIcons();
+    }
+
+    function renderHealthPlanCards() { const container = document.getElementById('health-plan-selector'); if (!container) return; if (healthPlans.length === 0) { container.innerHTML = '<p class="text-slate-500 md:col-span-4">No hay planes de salud definidos.</p>'; return; } container.innerHTML = healthPlans.map((plan, index) => `<label class="health-plan-card cursor-pointer rounded-lg p-4 flex flex-col justify-between"><div><div class="flex justify-between items-center"><h4 class="font-bold text-md">${plan.name}</h4><input type="radio" name="health-plan" value="${plan.id}" class="h-4 w-4 text-primary-600" ${index === 0 ? 'checked' : ''}></div><p class="text-xl font-extrabold text-primary-600 my-2">${formatCurrency(plan.price)}<span class="text-sm font-medium text-slate-500">/mes</span></p><ul class="text-xs text-slate-600 space-y-1 mt-3">${plan.features.split('\n').map(f => `<li class="flex items-start"><i data-lucide="check" class="w-3.5 h-3.5 mr-2 text-green-500 mt-0.5 shrink-0"></i><span>${f}</span></li>`).join('')}</ul></div></label>`).join(''); lucide.createIcons(); }
+    function renderEmpresaSection() { const container = document.getElementById('empresa'); container.innerHTML = `<div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-3xl mx-auto"><h2 class="text-2xl font-bold text-slate-800 mb-6">Perfil de la Empresa</h2><form id="company-profile-form" class="space-y-4"><div><label for="company-name" class="block text-sm font-medium">Nombre</label><input type="text" id="company-name" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="company-nit" class="block text-sm font-medium">NIT</label><input type="text" id="company-nit" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="company-address" class="block text-sm font-medium">Dirección</label><input type="text" id="company-address" class="w-full mt-1 p-2 border rounded-lg"></div><div><label for="company-phone" class="block text-sm font-medium">Teléfono</label><input type="tel" id="company-phone" class="w-full mt-1 p-2 border rounded-lg"></div><div><label for="company-email" class="block text-sm font-medium">Email</label><input type="email" id="company-email" class="w-full mt-1 p-2 border rounded-lg"></div><div class="mt-6 pt-6 border-t"><h3 class="text-lg font-medium mb-4">Color del Tema</h3><div id="theme-selector" class="grid grid-cols-2 sm:grid-cols-3 gap-4"><label class="cursor-pointer"><input type="radio" name="theme" value="default" class="sr-only peer"><div class="p-4 rounded-lg border-2 peer-checked:border-indigo-500"><div class="flex items-center justify-between"><span class="font-semibold">Índigo</span><div class="w-6 h-6 rounded-full bg-[#4f46e5]"></div></div></div></label><label class="cursor-pointer"><input type="radio" name="theme" value="bosque" class="sr-only peer"><div class="p-4 rounded-lg border-2 peer-checked:border-lime-500"><div class="flex items-center justify-between"><span class="font-semibold">Bosque</span><div style="background-image:linear-gradient(to right top,#a3e635,#06b6d4);" class="w-6 h-6 rounded-full"></div></div></div></label><label class="cursor-pointer"><input type="radio" name="theme" value="atardecer" class="sr-only peer"><div class="p-4 rounded-lg border-2 peer-checked:border-orange-500"><div class="flex items-center justify-between"><span class="font-semibold">Atardecer</span><div style="background-image:linear-gradient(to right top,#fde047,#f97316,#ef4444);" class="w-6 h-6 rounded-full"></div></div></div></label><label class="cursor-pointer"><input type="radio" name="theme" value="elegant" class="sr-only peer"><div class="p-4 rounded-lg border-2 peer-checked:border-amber-500"><div class="flex items-center justify-between"><span class="font-semibold">Elegant</span><div style="background-image:linear-gradient(to right top,#f59e0b,#0ea5e9);" class="w-6 h-6 rounded-full"></div></div></div></label><label class="cursor-pointer"><input type="radio" name="theme" value="espacial" class="sr-only peer"><div class="p-4 rounded-lg border-2 peer-checked:border-sky-500"><div class="flex items-center justify-between"><span class="font-semibold">Espacial</span><div class="w-6 h-6 rounded-full bg-gradient-to-br from-[#38bdf8] to-[#8b5cf6]"></div></div></div></label><label class="cursor-pointer"><input type="radio" name="theme" value="verano-tropical" class="sr-only peer"><div class="p-4 rounded-lg border-2 peer-checked:border-fuchsia-600"><div class="flex items-center justify-between"><span class="font-semibold">Tropical</span><div class="w-6 h-6 rounded-full bg-gradient-to-br from-[#a3e635] to-[#ec4899]"></div></div></div></label></div></div><div class="pt-4"><button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg">Guardar</button></div></form></div>`; document.getElementById('company-name').value = companyProfile.name; document.getElementById('company-nit').value = companyProfile.nit; document.getElementById('company-address').value = companyProfile.address; document.getElementById('company-phone').value = companyProfile.phone; document.getElementById('company-email').value = companyProfile.email; const themeSelector = document.querySelector(`#theme-selector input[value="${companyProfile.theme || 'default'}"]`); if (themeSelector) themeSelector.checked = true; }
+    function renderFlujoCajaSection() { const container = document.getElementById('flujo-caja'); container.innerHTML = `<div class="bg-white p-6 rounded-xl shadow-lg mb-8"><div class="flex flex-col md:flex-row justify-between md:items-center gap-4"><div><h2 class="text-2xl font-bold">Flujo de Caja</h2><p class="text-slate-500">Gestión de ingresos y egresos.</p></div><div class="flex items-center gap-4"><button id="add-expense-btn" class="w-full md:w-auto bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 px-4 rounded-lg flex items-center"><i data-lucide="minus" class="w-5 h-5 mr-2"></i>Egreso</button><button id="add-income-btn" class="w-full md:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg flex items-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i>Ingreso</button></div></div></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8"><div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg"><div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center"><div class="bg-emerald-50 text-emerald-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Ingresos(Mes)</h3><p id="cashflow-income" class="text-3xl font-bold mt-1">$0</p></div><div class="bg-rose-50 text-rose-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Egresos(Mes)</h3><p id="cashflow-expenses" class="text-3xl font-bold mt-1">$0</p></div><div class="bg-sky-50 text-sky-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Balance(Mes)</h3><p id="cashflow-profit" class="text-3xl font-bold mt-1">$0</p></div></div></div><div class="lg:col-span-3"><div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b pb-4 mb-4 bg-white p-4 rounded-xl shadow-lg"><h3 class="text-lg font-semibold">Historial de Transacciones</h3><div class="flex flex-col sm:flex-row gap-4 items-center w-full sm:w-auto"><input type="date" id="report-start-date" class="w-full sm:w-auto p-2 border rounded-lg"><span class="text-slate-500 hidden sm:block">a</span><input type="date" id="report-end-date" class="w-full sm:w-auto p-2 border rounded-lg"><button id="generate-report-btn" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center"><i data-lucide="file-text" class="w-5 h-5 mr-2"></i>PDF</button></div></div><div class="overflow-x-auto"><table class="w-full text-sm responsive-table"><thead class="bg-slate-100"><tr><th class="p-3 text-xs font-semibold uppercase">Fecha</th><th class="p-3 text-xs font-semibold uppercase">Concepto</th><th class="p-3 text-right text-xs font-semibold uppercase">Monto</th></tr></thead><tbody id="transactions-table-body"></tbody></table></div></div></div>`; const today = new Date(); const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1); document.getElementById('report-start-date').value = firstDayOfMonth.toISOString().split('T')[0]; document.getElementById('report-end-date').value = today.toISOString().split('T')[0]; const allTransactions = getAllTransactions(); const currentMonthTransactions = allTransactions.filter(t => { const tDate = new Date(t.date); return tDate.getMonth() === today.getMonth() && tDate.getFullYear() === today.getFullYear(); }); const monthlyIncome = currentMonthTransactions.filter(t => t.type === 'ingreso').reduce((sum, t) => sum + t.amount, 0); const monthlyExpenses = currentMonthTransactions.filter(t => t.type === 'egreso').reduce((sum, t) => sum + t.amount, 0); document.getElementById('cashflow-income').textContent = formatCurrency(monthlyIncome); document.getElementById('cashflow-expenses').textContent = formatCurrency(monthlyExpenses); document.getElementById('cashflow-profit').textContent = formatCurrency(monthlyIncome - monthlyExpenses); renderTransactionsTable(allTransactions); lucide.createIcons(); }
+    function getAllTransactions() { const autoTransactions = []; affiliates.forEach(aff => { if (aff.status === 'Activo') { const income = getAffiliateCommissionBase(aff); autoTransactions.push({ id: `auto-i-${aff.id}`, type: 'ingreso', concept: `Pago afiliado: ${aff.name}`, amount: income, date: aff.startDate }); const expense = getAdvisorCommissionForAffiliate(aff); if (expense > 0) { const advisor = advisors.find(v => v.id === aff.advisorId); autoTransactions.push({ id: `auto-e-${aff.id}`, type: 'egreso', concept: `Comisión ${advisor?.name || 'N/A'} (${aff.name})`, amount: expense, date: aff.startDate }); } } }); const all = [...autoTransactions, ...manualTransactions]; all.sort((a, b) => new Date(b.date) - new Date(a.date)); return all; }
+    function renderTransactionsTable(transactions) { const tbody = document.getElementById('transactions-table-body'); if (transactions.length === 0) { tbody.innerHTML = `<tr class="no-data-row"><td colspan="3" class="text-center p-4 text-slate-500 bg-white rounded-xl shadow-lg">No hay transacciones.</td></tr>`; return; } tbody.innerHTML = transactions.map(t => `<tr><td data-label="Fecha:" class="p-3">${new Date(t.date).toLocaleDateString('es-CO')}</td><td data-label="Concepto:" class="p-3">${t.concept}</td><td data-label="Monto:" class="p-3 font-semibold ${t.type === 'ingreso' ? 'text-emerald-600' : 'text-rose-600'}">${t.type === 'ingreso' ? '+' : '-'}${formatCurrency(t.amount)}</td></tr>`).join(''); }
+    function renderNovedadesSection() {
+        const container = document.getElementById('novedades');
+        container.innerHTML = `<div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-4xl mx-auto"><h2 class="text-2xl font-bold text-slate-800 mb-6">Última Actividad</h2><div id="novedades-feed" class="space-y-4"></div></div>`;
+        const feedContainer = document.getElementById('novedades-feed');
+        if(!feedContainer) return;
+        const sortedNovedades = [...novedades].sort((a,b) => b.timestamp - a.timestamp);
+        if(sortedNovedades.length === 0){
+            feedContainer.innerHTML = `<p class="text-center text-slate-500">No hay actividad reciente.</p>`;
+            return;
+        }
+        
+        feedContainer.innerHTML = sortedNovedades.map(novedad => {
+            const wasUnread = novedad.isRead === false;
+            const unreadClass = wasUnread ? 'bg-indigo-50 border-l-4 border-indigo-400' : 'border-l-4 border-transparent';
+            
+            return `<div class="flex items-start gap-4 p-4 rounded-md transition-colors ${unreadClass}">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">${getNovedadIcon(novedad.type)}</div>
+                        <div>
+                            <p class="text-sm text-slate-800">${novedad.description}</p>
+                            <p class="text-xs text-slate-500">Afiliado: <strong class="font-medium text-slate-700">${novedad.affiliateName}</strong> - ${formatTimeAgo(novedad.timestamp)}</p>
+                        </div>
+                    </div>`;
+        }).join('');
+        lucide.createIcons();
+        
+        markAllNovedadesAsRead();
+    }
+    
+    // --- UTILITY FUNCTIONS ---
+    function showToast(message, type = 'success') { const toast = document.getElementById('toast'); if (!toast) return; toast.textContent = message; toast.className = `fixed top-5 right-5 z-[100] text-white py-2 px-4 rounded-lg shadow-xl transition-all duration-300 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`; toast.classList.remove('opacity-0', 'translate-y-2'); setTimeout(() => toast.classList.add('opacity-0', 'translate-y-2'), 3000); }
+    function formatCurrency(value, minimumFractionDigits = 0) { return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits }).format(value || 0); }
+    function exportToCSV(headers, data, filename) { const csvRows = [headers.join(',')]; for (const row of data) { const values = headers.map(header => `"${('' + row[header]).replace(/"/g, '\\"')}"`); csvRows.push(values.join(',')); } const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.setAttribute('href', url); a.setAttribute('download', filename); document.body.appendChild(a); a.click(); document.body.removeChild(a); }
+    function generatePDFReport() { const { jsPDF } = window.jspdf; const doc = new jsPDF(); const startDate = new Date(document.getElementById('report-start-date').value + 'T00:00:00'); const endDate = new Date(document.getElementById('report-end-date').value + 'T23:59:59'); if (isNaN(startDate) || isNaN(endDate)) { showToast('Fechas inválidas.', 'error'); return; } const filteredTransactions = getAllTransactions().filter(t => new Date(t.date) >= startDate && new Date(t.date) <= endDate); const totalIncome = filteredTransactions.filter(t => t.type === 'ingreso').reduce((sum, t) => sum + t.amount, 0); const totalExpenses = filteredTransactions.filter(t => t.type === 'egreso').reduce((sum, t) => sum + t.amount, 0); const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim().split(' ').map(Number); doc.setFontSize(18); doc.text(companyProfile.name, 14, 22); doc.setFontSize(11); doc.text(`NIT: ${companyProfile.nit}`, 14, 30); doc.text(`Reporte de Flujo de Caja`, 120, 22); doc.setFontSize(10); doc.text(`Periodo: ${startDate.toLocaleDateString('es-CO')} - ${endDate.toLocaleDateString('es-CO')}`, 120, 30); doc.autoTable({ startY: 45, head: [['Concepto', 'Total']], body: [['Ingresos', formatCurrency(totalIncome)], ['Egresos', formatCurrency(totalExpenses)], [{ content: 'Balance', styles: { fontStyle: 'bold' } }, { content: formatCurrency(totalIncome - totalExpenses), styles: { fontStyle: 'bold' } }]], theme: 'grid', headStyles: { fillColor: themeColor } }); doc.autoTable({ startY: doc.lastAutoTable.finalY + 10, head: [['Fecha', 'Concepto', 'Tipo', 'Monto']], body: filteredTransactions.map(t => [new Date(t.date).toLocaleDateString('es-CO'), t.concept, t.type, formatCurrency(t.amount)]), theme: 'striped', headStyles: { fillColor: [45, 55, 72] } }); doc.save(`Reporte_Flujo_Caja.pdf`); }
+    function countUnreadNovedades() { return novedades.filter(n => n.isRead === false).length; }
+    function updateNovedadesBadge() { const badgeSidebar = document.getElementById('novedades-badge-sidebar'); const badgeMobile = document.getElementById('novedades-badge-mobile'); if (!badgeSidebar || !badgeMobile) return; const count = countUnreadNovedades(); if (count > 0) { badgeSidebar.textContent = count; badgeMobile.textContent = count; badgeSidebar.classList.remove('hidden'); badgeMobile.classList.remove('hidden'); } else { badgeSidebar.classList.add('hidden'); badgeMobile.classList.add('hidden'); } }
+    function formatTimeAgo(date) { const seconds = Math.floor((new Date() - new Date(date)) / 1000); let interval = seconds / 31536000; if (interval > 1) return `hace ${Math.floor(interval)} años`; interval = seconds / 2592000; if (interval > 1) return `hace ${Math.floor(interval)} meses`; interval = seconds / 86400; if (interval > 1) return `hace ${Math.floor(interval)} días`; interval = seconds / 3600; if (interval > 1) return `hace ${Math.floor(interval)} horas`; interval = seconds / 60; if (interval > 1) return `hace ${Math.floor(interval)} minutos`; return `hace ${Math.floor(seconds)} segundos`; }
+    function getNovedadIcon(type) { const icons = { creation: 'user-plus', status_change: 'alert-triangle', deletion: 'user-x', reminder: 'calendar-clock' }; return `<i data-lucide="${icons[type] || 'bell'}" class="h-6 w-6"></i>`; }
+    function markAllNovedadesAsRead() { let itemsWereUpdated = false; novedades.forEach(novedad => { if (novedad.isRead === false) { novedad.isRead = true; itemsWereUpdated = true; } }); if (itemsWereUpdated) { saveNovedades(); setTimeout(updateNovedadesBadge, 500); } }
+
+    // --- EVENT & FORM HANDLERS ---
+    function handleLogin(e) { e.preventDefault(); const identifier = e.target['login-identifier'].value; const password = e.target['login-password'].value; const errorDiv = document.getElementById('auth-error'); errorDiv.textContent = ''; const user = allUsers.find(u => u.email === identifier || u.id === identifier); if (user && mockAuth.compare(password, user.password)) { localStorage.setItem('sebSalud_currentUser', JSON.stringify(user)); initializeApp(user); } else { errorDiv.textContent = 'Credenciales incorrectas.'; } }
+    function handleRegister(e) { e.preventDefault(); const email = e.target['register-email'].value; const password = e.target['register-password'].value; const errorDiv = document.getElementById('auth-error'); errorDiv.textContent = ''; if (allUsers.find(u => u.email === email)) { errorDiv.textContent = 'Este correo ya está registrado.'; return; } const newUser = { id: 'admin-' + Date.now(), email, password: mockAuth.hash(password), role: 'admin' }; allUsers.push(newUser); saveAllUsers(); localStorage.setItem('sebSalud_currentUser', JSON.stringify(newUser)); initializeApp(newUser); }
+    function handleLogout() { localStorage.removeItem('sebSalud_currentUser'); currentUser = null; window.location.reload(); }
+    function handleSaveAffiliate(e) { 
         e.preventDefault();
-        const target=a.getAttribute("data-target");
-        showSection(target);
-      });
-    });
-
-    $("#user-display-name").textContent = currentUser.email || currentUser.uid;
-    $("#user-display-role").textContent = (currentUser.role||"afiliado").toUpperCase();
-
-    showSection("dashboard");
-  }
-
-  function showSection(id){
-    $$(".content-section").forEach(s=>s.classList.remove("active"));
-    $(`#${id}`)?.classList.add("active");
-    if(id==="dashboard") renderDashboard();
-    if(id==="afiliados") renderAffiliates();
-    if(id==="asesores") renderAdvisors();
-    if(id==="planes")   renderPlans();
-    if(id==="usuarios") renderUsers();
-    if(id==="config")   renderConfig();
-    $("#header-title").textContent = capitalize(id);
-    lucide.createIcons();
-  }
-
-  // ===== Dashboard =====
-  function renderDashboard(){
-    const el = $("#dashboard");
-    const mine = currentUser.role==="asesor"
-      ? affiliates.filter(a=>a.advisorId===currentUser.appDataId)
-      : affiliates;
-
-    const activos = mine.filter(a=>a.status==="Activo").length;
-    const total   = mine.length;
-    const estimado = mine.reduce((s,a)=>{
-      const p=plans.find(p=>p.id===a.planId);
-      return s+(p?Number(p.price||0):0);
-    },0);
-
-    el.innerHTML = `
-      <h2 class="text-2xl font-bold mb-6">Resumen</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="bg-white p-5 rounded-xl shadow">
-          <p class="text-sm text-slate-500 uppercase">Afiliados</p>
-          <p class="text-3xl font-extrabold mt-2">${total}</p>
-        </div>
-        <div class="bg-white p-5 rounded-xl shadow">
-          <p class="text-sm text-slate-500 uppercase">Activos</p>
-          <p class="text-3xl font-extrabold mt-2 text-green-600">${activos}</p>
-        </div>
-        <div class="bg-white p-5 rounded-xl shadow">
-          <p class="text-sm text-slate-500 uppercase">Ingreso mensual estimado</p>
-          <p class="text-3xl font-extrabold mt-2 text-primary-600">${formatCurrency(estimado)}</p>
-        </div>
-      </div>
-    `;
-  }
-
-  // ===== Afiliados =====
-  function renderAffiliates(){
-    const el = $("#afiliados");
-    const canEdit = currentUser.role!=="afiliado";
-    el.innerHTML = `
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h2 class="text-2xl font-bold">Afiliados</h2>
-        ${canEdit ? `<button id="add-affiliate-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow flex items-center">
-          <i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Afiliado
-        </button>` : ""}
-      </div>
-      <div class="bg-white rounded-xl shadow overflow-hidden">
-        <table class="w-full text-sm">
-          <thead class="bg-slate-50 text-slate-600 text-xs uppercase">
-            <tr>
-              <th class="text-left p-3">Nombre</th>
-              <th class="text-left p-3">Documento</th>
-              <th class="text-left p-3">Plan</th>
-              <th class="text-left p-3">Asesor</th>
-              <th class="text-left p-3">Estado</th>
-              ${canEdit?`<th class="text-right p-3">Acciones</th>`:""}
-            </tr>
-          </thead>
-          <tbody id="affiliates-tbody" class="divide-y"></tbody>
-        </table>
-      </div>
-    `;
-
-    $("#add-affiliate-btn")?.addEventListener("click", ()=>{
-      resetAffiliateForm();
-      openModal("affiliate-modal");
-    });
-
-    drawAffiliatesRows();
-    lucide.createIcons();
-  }
-
-  function drawAffiliatesRows(){
-    const tbody = $("#affiliates-tbody");
-    const canEdit = currentUser.role!=="afiliado";
-    if(!affiliates.length){
-      tbody.innerHTML = `<tr><td colspan="${canEdit?6:5}" class="p-4 text-center text-slate-500">Sin afiliados</td></tr>`;
-      return;
+        const form = e.target; 
+        const selectedPlan = form.querySelector('input[name="health-plan"]:checked'); 
+        if (!selectedPlan && healthPlans.length > 0) { showToast('Debe seleccionar un plan de salud.', 'error'); return; } 
+        const affiliateData = { name: form['affiliate-name'].value.trim(), documentId: form['affiliate-id'].value.trim(), email: form['affiliate-email'].value.trim(), phone: form['affiliate-phone'].value.trim(), address: form['affiliate-address'].value.trim(), healthPlan: selectedPlan ? selectedPlan.value : null, pensionPlan: form['pension-plan'].value, arlPlan: form['arl-plan'].value, ccfPlan: form['ccf-plan'].value, advisorId: form['advisor-select-list'].value, startDate: form['affiliate-start-date'].value, status: form['affiliate-status'].value, notes: form['affiliate-notes'].value.trim(), manualCosts: null, manualCommission: null }; 
+        if (form['manual-override-checkbox'].checked) { affiliateData.manualCosts = { health: Number(form['manual-cost-health'].value) || 0, pension: Number(form['manual-cost-pension'].value) || 0, arl: Number(form['manual-cost-arl'].value) || 0, ccf: Number(form['manual-cost-ccf'].value) || 0 }; affiliateData.manualCommission = Number(form['manual-commission'].value) || null; } 
+        const existingId = form['affiliate-doc-id'].value; 
+        if (existingId) { 
+            const index = affiliates.findIndex(a => a.id === existingId); 
+            if (index !== -1) {
+                const originalAffiliate = affiliates[index];
+                if (originalAffiliate && originalAffiliate.status !== affiliateData.status) {
+                    createNovedad(existingId, affiliateData.name, 'status_change', `El estado de ${affiliateData.name} cambió de '${originalAffiliate.status}' a '${affiliateData.status}'.`);
+                }
+                affiliates[index] = { ...affiliates[index], ...affiliateData }; 
+            } 
+        } else { 
+            affiliateData.id = 'aff-' + Date.now(); 
+            affiliateData.createdAt = new Date(); 
+            affiliates.push(affiliateData); 
+            createNovedad(affiliateData.id, affiliateData.name, 'creation', `Se ha registrado al nuevo afiliado ${affiliateData.name}.`); 
+        } 
+        saveDataToLocalStorage(); 
+        renderContent('afiliados'); 
+        modalManager.close('affiliate-modal'); 
+        showToast('Afiliado guardado.'); 
     }
-    tbody.innerHTML = affiliates.map(a=>{
-      const plan = plans.find(p=>p.id===a.planId);
-      const adv  = advisors.find(v=>v.id===a.advisorId);
-      return `<tr>
-        <td class="p-3">${a.name||""}</td>
-        <td class="p-3">${a.document||""}</td>
-        <td class="p-3">${plan?plan.name:"—"}</td>
-        <td class="p-3">${adv?adv.name:"—"}</td>
-        <td class="p-3"><span class="px-2 py-1 rounded-full text-xs ${a.status==="Activo"?"bg-green-100 text-green-700":a.status==="Pendiente"?"bg-yellow-100 text-yellow-700":"bg-slate-200 text-slate-700"}">${a.status||"—"}</span></td>
-        ${canEdit?`
-        <td class="p-3 text-right">
-          <button data-edit="${a.id}" class="inline-flex items-center p-2 text-slate-500 hover:text-primary-600 rounded-full" title="Editar">
-            <i data-lucide="pencil" class="h-4 w-4"></i>
-          </button>
-          <button data-del="${a.id}" class="inline-flex items-center p-2 text-slate-500 hover:text-red-600 rounded-full" title="Eliminar">
-            <i data-lucide="trash-2" class="h-4 w-4"></i>
-          </button>
-        </td>`:""}
-      </tr>`;
-    }).join("");
-
-    $$('[data-edit]').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        const id = btn.getAttribute('data-edit');
-        const a = affiliates.find(x=>x.id===id);
-        if(!a) return;
-        fillAffiliateForm(a);
-        openModal("affiliate-modal");
-      });
-    });
-    $$('[data-del]').forEach(btn=>{
-      btn.addEventListener('click', async ()=>{
-        const id = btn.getAttribute('data-del');
-        await deleteDoc(doc(colAffiliates(), id));
-        affiliates = affiliates.filter(x=>x.id!==id);
-        drawAffiliatesRows(); toast("Afiliado eliminado");
-      });
-    });
-  }
-
-  function resetAffiliateForm(){
-    $("#affiliate-id-hidden").value="";
-    $("#affiliate-name").value="";
-    $("#affiliate-document").value="";
-    $("#affiliate-email").value="";
-    $("#affiliate-phone").value="";
-    $("#affiliate-address").value="";
-    $("#affiliate-notes").value="";
-    const planSel = $("#affiliate-plan");
-    planSel.innerHTML = plans.map(p=>`<option value="${p.id}">${p.name}</option>`).join("");
-    const advSel = $("#affiliate-advisor");
-    advSel.innerHTML = advisors.map(v=>`<option value="${v.id}">${v.name}</option>`).join("");
-  }
-  function fillAffiliateForm(a){
-    resetAffiliateForm();
-    $("#affiliate-id-hidden").value=a.id;
-    $("#affiliate-name").value=a.name||"";
-    $("#affiliate-document").value=a.document||"";
-    $("#affiliate-email").value=a.email||"";
-    $("#affiliate-phone").value=a.phone||"";
-    $("#affiliate-address").value=a.address||"";
-    $("#affiliate-plan").value=a.planId||"";
-    $("#affiliate-advisor").value=a.advisorId||"";
-    $("#affiliate-status").value=a.status||"Activo";
-    $("#affiliate-notes").value=a.notes||"";
-  }
-  $("#affiliate-form")?.addEventListener("submit", async (e)=>{
-    e.preventDefault();
-    const payload = {
-      name: $("#affiliate-name").value.trim(),
-      document: $("#affiliate-document").value.trim(),
-      email: $("#affiliate-email").value.trim(),
-      phone: $("#affiliate-phone").value.trim(),
-      address: $("#affiliate-address").value.trim(),
-      planId: $("#affiliate-plan").value,
-      advisorId: $("#affiliate-advisor").value,
-      status: $("#affiliate-status").value,
-      notes: $("#affiliate-notes").value.trim(),
-      updatedAt: serverTimestamp()
-    };
-    const id = $("#affiliate-id-hidden").value;
-    if(id){
-      await updateDoc(doc(colAffiliates(), id), payload);
-      const idx = affiliates.findIndex(x=>x.id===id);
-      affiliates[idx] = { ...affiliates[idx], ...payload };
-      toast("Afiliado actualizado");
-    }else{
-      const ref = await addDoc(colAffiliates(), { ...payload, createdAt: serverTimestamp() });
-      affiliates.unshift({ id: ref.id, ...payload });
-      toast("Afiliado creado");
+    function handleSaveAdvisor(e) { const form = e.target; const id = form['advisor-doc-id'].value; const advisorData = { name: form['advisor-name'].value, commissionRate: Number(form['advisor-commission'].value) }; if (id) { const index = advisors.findIndex(v => v.id === id); if (index !== -1) advisors[index] = { ...advisors[index], ...advisorData }; } else { advisorData.id = 'adv-' + Date.now(); advisors.push(advisorData); } saveDataToLocalStorage(); populateAdvisorSelect(); renderContent('asesores'); modalManager.close('advisor-modal'); showToast('Asesor guardado.'); }
+    function handleSavePlan(e) { const form = e.target; const id = form['plan-doc-id'].value; const planData = { name: form['plan-name'].value, price: Number(form['plan-price'].value), features: form['plan-features'].value }; if (id) { const index = healthPlans.findIndex(p => p.id === id); if (index !== -1) healthPlans[index] = { ...healthPlans[index], ...planData }; } else { planData.id = `plan-${Date.now()}`; healthPlans.push(planData); } saveHealthPlans(); renderPlansList(); modalManager.close('plan-modal'); showToast('Plan guardado.'); }
+    function handleSaveTransaction(e) { const form = e.target; const newTransaction = { id: 'm-' + Date.now(), type: form['transaction-type'].value, concept: form['transaction-concept'].value, amount: parseFloat(form['transaction-amount'].value), date: form['transaction-date'].value + 'T12:00:00.000Z' }; manualTransactions.push(newTransaction); saveManualTransactions(); renderFlujoCajaSection(); modalManager.close('transaction-modal'); showToast('Transacción guardada.'); }
+    function handleSaveCompanyProfile(e) { companyProfile.name = document.getElementById('company-name').value; companyProfile.nit = document.getElementById('company-nit').value; companyProfile.address = document.getElementById('company-address').value; companyProfile.phone = document.getElementById('company-phone').value; companyProfile.email = document.getElementById('company-email').value; companyProfile.theme = document.querySelector('#theme-selector input:checked').value; applyTheme(companyProfile.theme); saveCompanyProfile(); showToast('Perfil actualizado.'); }
+    function handleSaveSettings(e) { const form = e.target; settings.SMMLV = Number(form['setting-smmlv'].value); settings.CONTRIBUTION_RATES.health = parseFloat(form['setting-health'].value); settings.CONTRIBUTION_RATES.pension = parseFloat(form['setting-pension'].value); settings.CONTRIBUTION_RATES.independiente_ccf = parseFloat(form['setting-ccf-ind'].value); settings.CONTRIBUTION_RATES.employer_ccf = parseFloat(form['setting-ccf-emp'].value); for (let i = 1; i <= 5; i++) { settings.ARL_RATES[i] = parseFloat(form[`setting-arl-${i}`].value); } localStorage.setItem('sebSalud_settings', JSON.stringify(settings)); modalManager.close('settings-modal'); showToast('Configuración guardada.'); }
+    function handleSaveUser(e) {
+        const form = e.target; const id = form['user-doc-id'].value; const email = form['user-email'].value; const password = form['user-password'].value; const role = form['user-role'].value; const appDataId = form['user-link'].value;
+        if (!appDataId) { showToast(`Debe seleccionar un ${role} para vincular.`, 'error'); return; }
+        if (id) { const userIndex = allUsers.findIndex(u => u.id === id); if (userIndex > -1) { allUsers[userIndex].email = email; allUsers[userIndex].role = role; allUsers[userIndex].appDataId = appDataId; if (password) { allUsers[userIndex].password = mockAuth.hash(password); } }
+        } else {
+            if (allUsers.some(u => u.email === email)) { showToast('Este correo ya está registrado.', 'error'); return; } if (!password) { showToast('La contraseña es obligatoria.', 'error'); return; }
+            allUsers.push({ id: (role === 'asesor' ? 'asesor-' : 'afil-') + Date.now(), email, password: mockAuth.hash(password), role, appDataId });
+        }
+        saveAllUsers(); renderGestionUsuarios(); modalManager.close('user-modal'); showToast('Usuario guardado.');
     }
-    drawAffiliatesRows();
-    closeModal("affiliate-modal");
-  });
+    function handleExportAffiliates() { const headers = ['Nombre', 'Documento', 'Email', 'Telefono', 'Asesor', 'Estado', 'Fecha de Inicio', 'Plan de Salud']; const dataToExport = affiliates.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const plan = healthPlans.find(p=> p.id === aff.healthPlan); return { 'Nombre': aff.name, 'Documento': aff.documentId, 'Email': aff.email, 'Telefono': aff.phone, 'Asesor': advisor?.name || 'N/A', 'Estado': aff.status, 'Fecha de Inicio': aff.startDate, 'Plan de Salud': plan?.name || 'N/A' }; }); exportToCSV(headers, dataToExport, 'afiliados.csv'); }
+    function handleExportAdvisors() { const headers = ['Nombre', 'Comision (%)', 'Total Afiliados', 'Comision Total']; const dataToExport = advisors.map(advisor => ({ 'Nombre': advisor.name, 'Comision (%)': advisor.commissionRate, 'Total Afiliados': affiliates.filter(a => a.advisorId === advisor.id).length, 'Comision Total': affiliates.filter(a => a.advisorId === advisor.id).reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0) })); exportToCSV(headers, dataToExport, 'asesores.csv'); }
+    function handleCotizadorCalculation(e) {
+        e.preventDefault();
+        const resultsContainer = document.getElementById('cotizador-results');
+        
+        let ibc = parseFloat(document.getElementById('cotizador-ibc').value);
+        const arlRisk = document.getElementById('cotizador-arl-risk').value;
+        const calcPension = document.getElementById('cotizador-pension-check').checked;
+        const calcCcf = document.getElementById('cotizador-ccf-check').checked;
 
-  // ===== Asesores =====
-  function renderAdvisors(){
-    const el = $("#asesores");
-    if(currentUser.role==="afiliado"){
-      el.innerHTML = `<p class="text-slate-600">No tienes acceso a esta sección.</p>`;
-      return;
+        if (isNaN(ibc) || ibc <= 0) {
+            ibc = settings.SMMLV;
+        }
+        
+        if (ibc < settings.SMMLV) {
+            showToast(`El IBC no puede ser menor al salario mínimo (${formatCurrency(settings.SMMLV)}). Se ajustará al mínimo.`, 'error');
+            ibc = settings.SMMLV;
+            document.getElementById('cotizador-ibc').value = ibc;
+        }
+
+        const healthCost = ibc * (settings.CONTRIBUTION_RATES.health / 100);
+        const pensionCost = calcPension ? ibc * (settings.CONTRIBUTION_RATES.pension / 100) : 0;
+        const arlCost = ibc * (settings.ARL_RATES[arlRisk] / 100);
+        const ccfCost = calcCcf ? ibc * (settings.CONTRIBUTION_RATES.independiente_ccf / 100) : 0;
+        const total = healthCost + pensionCost + arlCost + ccfCost;
+
+        resultsContainer.innerHTML = `
+            <div class="bg-slate-50 p-4 rounded-lg">
+                <div class="flex justify-between items-center">
+                    <span class="font-medium text-slate-600">Ingreso Base (IBC)</span>
+                    <span class="font-bold text-slate-800">${formatCurrency(ibc)}</span>
+                </div>
+            </div>
+            <div class="border-t pt-4 space-y-3">
+                <div class="flex justify-between items-center text-sm">
+                    <span class="text-slate-500">Salud (${settings.CONTRIBUTION_RATES.health}%)</span>
+                    <span class="font-semibold text-slate-700">${formatCurrency(healthCost)}</span>
+                </div>
+                ${calcPension ? `
+                <div class="flex justify-between items-center text-sm">
+                    <span class="text-slate-500">Pensión (${settings.CONTRIBUTION_RATES.pension}%)</span>
+                    <span class="font-semibold text-slate-700">${formatCurrency(pensionCost)}</span>
+                </div>` : ''}
+                <div class="flex justify-between items-center text-sm">
+                    <span class="text-slate-500">ARL Riesgo ${arlRisk} (${settings.ARL_RATES[arlRisk]}%)</span>
+                    <span class="font-semibold text-slate-700">${formatCurrency(arlCost)}</span>
+                </div>
+                ${calcCcf ? `
+                <div class="flex justify-between items-center text-sm">
+                    <span class="text-slate-500">Caja de Compensación (${settings.CONTRIBUTION_RATES.independiente_ccf}%)</span>
+                    <span class="font-semibold text-slate-700">${formatCurrency(ccfCost)}</span>
+                </div>` : ''}
+            </div>
+            <div class="border-t mt-4 pt-4">
+                <div class="flex justify-between items-center text-lg">
+                    <span class="font-bold text-primary-600">TOTAL A PAGAR</span>
+                    <span class="font-extrabold text-primary-600">${formatCurrency(total)}</span>
+                </div>
+            </div>
+        `;
     }
-    el.innerHTML = `
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h2 class="text-2xl font-bold">Asesores</h2>
-        <button id="add-advisor-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow flex items-center">
-          <i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Asesor
-        </button>
-      </div>
-      <div class="bg-white rounded-xl shadow overflow-hidden">
-        <table class="w-full text-sm">
-          <thead class="bg-slate-50 text-slate-600 text-xs uppercase">
-            <tr><th class="p-3 text-left">Nombre</th><th class="p-3 text-left">Comisión</th><th class="p-3 text-right">Acciones</th></tr>
-          </thead>
-          <tbody id="advisors-tbody" class="divide-y"></tbody>
-        </table>
-      </div>
-    `;
-    $("#add-advisor-btn").addEventListener("click", ()=>{
-      $("#advisor-id-hidden").value=""; $("#advisor-name").value=""; $("#advisor-commission").value="";
-      openModal("advisor-modal");
-    });
-    drawAdvisorsRows();
-    lucide.createIcons();
-  }
-  function drawAdvisorsRows(){
-    const tbody = $("#advisors-tbody");
-    if(!advisors.length){ tbody.innerHTML=`<tr><td colspan="3" class="p-4 text-center text-slate-500">Sin asesores</td></tr>`; return; }
-    tbody.innerHTML = advisors.map(a=>`
-      <tr>
-        <td class="p-3">${a.name}</td>
-        <td class="p-3">${a.commissionRate}%</td>
-        <td class="p-3 text-right">
-          <button data-edit-adv="${a.id}" class="p-2 text-slate-500 hover:text-primary-600"><i data-lucide="pencil" class="h-4 w-4"></i></button>
-          <button data-del-adv="${a.id}" class="p-2 text-slate-500 hover:text-red-600"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
-        </td>
-      </tr>
-    `).join("");
-    $$('[data-edit-adv]').forEach(b=>{
-      b.addEventListener('click', ()=>{
-        const id=b.getAttribute('data-edit-adv'); const a=advisors.find(x=>x.id===id);
-        $("#advisor-id-hidden").value=a.id; $("#advisor-name").value=a.name; $("#advisor-commission").value=a.commissionRate;
-        openModal("advisor-modal");
-      });
-    });
-    $$('[data-del-adv]').forEach(b=>{
-      b.addEventListener('click', async ()=>{
-        const id=b.getAttribute('data-del-adv');
-        await deleteDoc(doc(colAdvisors(), id));
-        advisors = advisors.filter(x=>x.id!==id);
-        drawAdvisorsRows(); toast("Asesor eliminado");
-      });
-    });
-  }
-  $("#advisor-form")?.addEventListener("submit", async (e)=>{
-    e.preventDefault();
-    const payload = {
-      name: $("#advisor-name").value.trim(),
-      commissionRate: Number($("#advisor-commission").value)||0,
-      updatedAt: serverTimestamp()
-    };
-    const id = $("#advisor-id-hidden").value;
-    if(id){
-      await updateDoc(doc(colAdvisors(), id), payload);
-      const i=advisors.findIndex(x=>x.id===id); advisors[i]={...advisors[i],...payload};
-      toast("Asesor actualizado");
-    }else{
-      const ref = await addDoc(colAdvisors(), { ...payload, createdAt: serverTimestamp() });
-      advisors.unshift({ id:ref.id, ...payload });
-      toast("Asesor creado");
+
+    // --- APPLICATION SETUP & FLOW ---
+    function setupAppEventListeners() {
+        document.body.addEventListener('submit', e => {
+            const form = e.target.closest('form'); if (!form || !form.id) return;
+            e.preventDefault();
+            const formId = form.id;
+            if (formId === 'affiliate-form') handleSaveAffiliate(e); if (formId === 'advisor-form') handleSaveAdvisor(e); if (formId === 'plan-form') handleSavePlan(e); if (formId === 'transaction-form') handleSaveTransaction(e); if (formId === 'company-profile-form') handleSaveCompanyProfile(e); if (formId === 'settings-form') handleSaveSettings(e); if (formId === 'user-form') handleSaveUser(e);
+        });
+        document.body.addEventListener('click', e => {
+            const target = e.target.closest('button, a, #sidebar-overlay'); if (!target) return;
+            const dataset = target.dataset;
+
+            if (dataset.target) {
+                e.preventDefault();
+                const targetId = target.dataset.target;
+                renderContent(targetId);
+                document.querySelectorAll('[data-target]').forEach(l => l.classList.remove('active'));
+                document.querySelectorAll(`[data-target="${targetId}"]`).forEach(l => l.classList.add('active'));
+                const title = target.textContent.trim().split('\n')[0].trim() || targetId;
+                document.getElementById('header-title').textContent = title.charAt(0).toUpperCase() + title.slice(1);
+                
+                document.getElementById('main-content').scrollTo(0, 0);
+
+                if (window.innerWidth < 768 && target.closest('#sidebar')) {
+                    toggleSidebar();
+                }
+            }
+            if (target.id === 'menu-toggle' || target.id === 'sidebar-overlay') {
+                toggleSidebar();
+            }
+
+            if (target.id === 'logout-btn' || target.id === 'modal-logout-btn') handleLogout();
+            if (dataset.closeModal) modalManager.close(dataset.closeModal); 
+            if (target.id === 'open-user-profile-modal-btn') modalManager.open('user-profile-modal');
+            if (target.id === 'add-affiliate-btn') modalManager.open('affiliate-modal'); 
+            if (target.id === 'add-advisor-btn') modalManager.open('advisor-modal'); 
+            if (target.id === 'add-plan-btn') modalManager.open('plan-modal'); 
+            if (target.id === 'add-income-btn') modalManager.open('transaction-modal', { type: 'ingreso', title: 'Nuevo Ingreso' }); 
+            if (target.id === 'add-expense-btn') modalManager.open('transaction-modal', { type: 'egreso', title: 'Nuevo Egreso' }); 
+            if (target.id === 'open-settings-btn') modalManager.open('settings-modal'); 
+            if (target.id === 'add-user-btn') modalManager.open('user-modal');
+            if (target.id === 'export-affiliates-btn') handleExportAffiliates(); if (target.id === 'export-advisors-btn') handleExportAdvisors(); if (target.id === 'generate-report-btn') generatePDFReport();
+            if (target.matches('.edit-affiliate-btn')) modalManager.open('affiliate-modal', affiliates.find(a => a.id === dataset.id)); if (target.matches('.edit-advisor-btn')) modalManager.open('advisor-modal', advisors.find(v => v.id === dataset.id)); if (target.matches('.edit-plan-btn')) modalManager.open('plan-modal', healthPlans.find(p => p.id === dataset.id)); if (target.matches('.edit-user-btn')) modalManager.open('user-modal', allUsers.find(u => u.id === dataset.id));
+            if (target.matches('[data-toggle-details]')) { const card = target.closest('.bg-white'); if (card) { card.querySelector('.details-section').classList.toggle('hidden'); target.classList.toggle('details-shown'); } }
+            if (target.matches('[data-toggle-stats]')) { const statsContainer = document.getElementById(`advisor-stats-${dataset.toggleStats}`); const buttonText = target.querySelector('.button-text'); if (statsContainer) { statsContainer.classList.toggle('hidden'); target.classList.toggle('stats-shown'); buttonText.textContent = statsContainer.classList.contains('hidden') ? 'Ver Desglose' : 'Ocultar Desglose'; } }
+            if (target.matches('.delete-affiliate-btn')) { showConfirmation('¿Seguro que deseas eliminar este afiliado?', () => { 
+                const affiliateToDelete = affiliates.find(a => a.id === dataset.id);
+                affiliates = affiliates.filter(a => a.id !== dataset.id); 
+                if (affiliateToDelete) {
+                    createNovedad(affiliateToDelete.id, affiliateToDelete.name, 'deletion', `El afiliado ${affiliateToDelete.name} ha sido eliminado del sistema.`);
+                }
+                saveDataToLocalStorage(); 
+                renderAffiliatesList(); 
+                showToast('Afiliado eliminado.'); 
+            }); }
+            if (target.matches('.delete-advisor-btn')) { showConfirmation('¿Seguro que deseas eliminar este asesor?', () => { advisors = advisors.filter(v => v.id !== dataset.id); saveDataToLocalStorage(); populateAdvisorSelect(); renderAdvisorsSection(); showToast('Asesor eliminado.'); }); }
+            if (target.matches('.delete-plan-btn')) { if (affiliates.some(aff => aff.healthPlan === dataset.id)) { showToast('Plan en uso, no se puede eliminar.', 'error'); return; } showConfirmation('¿Seguro que deseas eliminar este plan?', () => { healthPlans = healthPlans.filter(p => p.id !== dataset.id); saveHealthPlans(); renderPlansList(); showToast('Plan eliminado.'); }); }
+            if (target.matches('.delete-user-btn')) { showConfirmation('¿Seguro que deseas eliminar este usuario?', () => { allUsers = allUsers.filter(u => u.id !== dataset.id); saveAllUsers(); renderGestionUsuarios(); showToast('Usuario eliminado.'); }); }
+            if (target.id === 'view-as-cards-btn') { affiliatesViewMode = 'card'; updateViewToggleButtons(); displayFilteredAffiliates(affiliates.filter(a => currentUser.role === 'admin' || a.advisorId === currentUser.appDataId)); }
+            if (target.id === 'view-as-table-btn') { affiliatesViewMode = 'table'; updateViewToggleButtons(); displayFilteredAffiliates(affiliates.filter(a => currentUser.role === 'admin' || a.advisorId === currentUser.appDataId)); }
+        });
+        document.getElementById('user-modal')?.addEventListener('change', e => { if (e.target.id === 'user-role') populateUserLinkForm(e.target.value); });
+        document.getElementById('manual-override-checkbox')?.addEventListener('change', e => { document.getElementById('manual-override-container').classList.toggle('hidden', !e.target.checked); });
+        
+        document.getElementById('confirm-action-btn').addEventListener('click', () => { if (confirmCallback) { confirmCallback(); } modalManager.close('confirmation-modal'); confirmCallback = null; });
+        document.getElementById('cancel-action-btn').addEventListener('click', () => { modalManager.close('confirmation-modal'); confirmCallback = null; });
     }
-    drawAdvisorsRows(); closeModal("advisor-modal");
-  });
 
-  // ===== Planes =====
-  function renderPlans(){
-    const el = $("#planes");
-    if(currentUser.role==="afiliado"){
-      el.innerHTML = `<p class="text-slate-600">No tienes acceso a esta sección.</p>`;
-      return;
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        const overlay = document.getElementById('sidebar-overlay');
+        overlay.classList.toggle('opacity-0');
+        overlay.classList.toggle('pointer-events-none');
     }
-    el.innerHTML = `
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h2 class="text-2xl font-bold">Planes de Salud</h2>
-        <button id="add-plan-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow flex items-center">
-          <i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Plan
-        </button>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="plans-grid"></div>
-    `;
-    $("#add-plan-btn").addEventListener("click", ()=>{
-      $("#plan-id-hidden").value=""; $("#plan-name").value=""; $("#plan-price").value=""; $("#plan-features").value="";
-      openModal("plan-modal");
-    });
-    drawPlansGrid();
-    lucide.createIcons();
-  }
-  function drawPlansGrid(){
-    const grid = $("#plans-grid");
-    grid.innerHTML = plans.map(p=>{
-      const feats = (p.features||"").split("\n").map(f=>`<li class="flex items-start"><span class="mt-1 mr-2">•</span><span>${f}</span></li>`).join("");
-      return `
-        <div class="bg-white p-5 rounded-xl shadow flex flex-col">
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold">${p.name}</h3>
-            <div class="text-primary-600 font-bold">${formatCurrency(p.price||0)}</div>
-          </div>
-          <ul class="mt-3 text-sm text-slate-600 space-y-1">${feats}</ul>
-          <div class="mt-4 pt-4 border-t flex justify-end gap-2">
-            <button data-edit-plan="${p.id}" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-sm">Editar</button>
-            <button data-del-plan="${p.id}" class="px-3 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-sm">Eliminar</button>
-          </div>
-        </div>
-      `;
-    }).join("");
 
-    $$('[data-edit-plan]').forEach(b=>{
-      b.addEventListener('click', ()=>{
-        const id=b.getAttribute('data-edit-plan'); const p=plans.find(x=>x.id===id);
-        $("#plan-id-hidden").value=p.id; $("#plan-name").value=p.name; $("#plan-price").value=p.price; $("#plan-features").value=p.features;
-        openModal("plan-modal");
-      });
-    });
-    $$('[data-del-plan]').forEach(b=>{
-      b.addEventListener('click', async ()=>{
-        const id=b.getAttribute('data-del-plan');
-        await deleteDoc(doc(colPlans(), id));
-        plans = plans.filter(x=>x.id!==id);
-        drawPlansGrid(); toast("Plan eliminado");
-      });
-    });
-  }
-  $("#plan-form")?.addEventListener("submit", async (e)=>{
-    e.preventDefault();
-    const payload = {
-      name: $("#plan-name").value.trim(),
-      price: Number($("#plan-price").value)||0,
-      features: $("#plan-features").value.trim(),
-      updatedAt: serverTimestamp()
-    };
-    const id = $("#plan-id-hidden").value;
-    if(id){
-      await updateDoc(doc(colPlans(), id), payload);
-      const i=plans.findIndex(x=>x.id===id); plans[i]={...plans[i],...payload};
-      toast("Plan actualizado");
-    }else{
-      const ref = await addDoc(colPlans(), { ...payload, createdAt: serverTimestamp() });
-      plans.unshift({ id:ref.id, ...payload });
-      toast("Plan creado");
+    function setupAuthEventListeners() {
+        document.getElementById('login-form').addEventListener('submit', handleLogin);
+        document.getElementById('register-form').addEventListener('submit', handleRegister);
     }
-    drawPlansGrid(); closeModal("plan-modal");
-  });
-
-  // ===== Usuarios (roles de la app) =====
-  function renderUsers(){
-    const el = $("#usuarios");
-    if(currentUser.role!=="admin"){ el.innerHTML=`<p class="text-slate-600">No tienes acceso.</p>`; return; }
-    el.innerHTML = `
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h2 class="text-2xl font-bold">Usuarios</h2>
-        <button id="add-user-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow flex items-center">
-          <i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Usuario
-        </button>
-      </div>
-      <div class="bg-white rounded-xl shadow overflow-hidden">
-        <table class="w-full text-sm">
-          <thead class="bg-slate-50 text-slate-600 text-xs uppercase">
-            <tr><th class="text-left p-3">Email</th><th class="text-left p-3">Rol</th><th class="text-left p-3">Vinculado</th><th class="text-right p-3">Acciones</th></tr>
-          </thead>
-          <tbody id="users-tbody" class="divide-y"></tbody>
-        </table>
-      </div>
-    `;
-    $("#add-user-btn").addEventListener("click", ()=>{
-      $("#user-id-hidden").value=""; $("#user-email").value=""; $("#user-password").value="";
-      $("#user-role").value="asesor"; fillUserLinkOptions("asesor");
-      openModal("user-modal");
-    });
-    $("#user-role").addEventListener("change", (e)=> fillUserLinkOptions(e.target.value));
-    drawUsersRows();
-    lucide.createIcons();
-  }
-  function fillUserLinkOptions(role){
-    const sel = $("#user-link");
-    if(role==="asesor"){
-      sel.innerHTML = advisors.map(v=>`<option value="${v.id}">${v.name}</option>`).join("");
-    }else if(role==="afiliado"){
-      sel.innerHTML = affiliates.map(a=>`<option value="${a.id}">${a.name} (${a.document})</option>`).join("");
-    }else{
-      sel.innerHTML = `<option value="">—</option>`;
+    function showAuthForm(formToShow) {
+        const loginForm = document.getElementById('login-form'); const registerForm = document.getElementById('register-form'); const title = document.getElementById('auth-title'); const subtitle = document.getElementById('auth-subtitle');
+        if (formToShow === 'register') {
+            loginForm.classList.add('hidden'); registerForm.classList.remove('hidden');
+            title.textContent = 'Crear Cuenta de Administrador'; subtitle.textContent = 'Bienvenido. Completa el registro para iniciar.';
+        } else {
+            loginForm.classList.remove('hidden'); registerForm.classList.add('hidden');
+            title.textContent = 'Iniciar Sesión'; subtitle.textContent = 'Bienvenido de nuevo';
+        }
     }
-  }
-  function drawUsersRows(){
-    const tbody = $("#users-tbody");
-    if(!usersApp.length){ tbody.innerHTML=`<tr><td colspan="4" class="p-4 text-center text-slate-500">Sin usuarios</td></tr>`; return; }
-    tbody.innerHTML = usersApp.map(u=>{
-      let linked = "—";
-      if(u.role==="asesor"){ const a=advisors.find(x=>x.id===u.appDataId); linked = a? a.name : "—"; }
-      if(u.role==="afiliado"){ const f=affiliates.find(x=>x.id===u.appDataId); linked = f? f.name : "—"; }
-      return `<tr>
-        <td class="p-3">${u.email ?? "—"}</td>
-        <td class="p-3">${u.role}</td>
-        <td class="p-3">${linked}</td>
-        <td class="p-3 text-right">
-          <button data-edit-user="${u.uid}" class="p-2 text-slate-500 hover:text-primary-600"><i data-lucide="pencil" class="h-4 w-4"></i></button>
-          <button data-del-user="${u.uid}" class="p-2 text-slate-500 hover:text-red-600"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
-        </td>
-      </tr>`;
-    }).join("");
+    function configureUIForRole(role) {
+        renderNavigation(role); 
+        let userName = currentUser.email;
+        if(role === 'asesor') userName = advisors.find(a => a.id === currentUser.appDataId)?.name || currentUser.email;
+        if(role === 'afiliado') userName = affiliates.find(a => a.id === currentUser.appDataId)?.name || currentUser.email;
+        
+        // Populate sidebar user info
+        document.getElementById('user-display-name').textContent = userName; 
+        document.getElementById('user-display-role').textContent = role;
 
-    $$('[data-edit-user]').forEach(b=>{
-      b.addEventListener('click', async ()=>{
-        const uid=b.getAttribute('data-edit-user');
-        const u = usersApp.find(x=>x.uid===uid);
-        if(!u) return;
-        $("#user-id-hidden").value=u.uid;
-        $("#user-email").value=u.email ?? "";
-        $("#user-password").value="";
-        $("#user-role").value=u.role;
-        fillUserLinkOptions(u.role);
-        $("#user-link").value = u.appDataId || "";
-        openModal("user-modal");
-      });
-    });
-    $$('[data-del-user]').forEach(b=>{
-      b.addEventListener('click', async ()=>{
-        const uid=b.getAttribute('data-del-user');
-        await deleteDoc(doc(colUsersApp(), uid));
-        usersApp = usersApp.filter(x=>x.uid!==uid);
-        drawUsersRows(); toast("Usuario eliminado (registro de app)");
-      });
-    });
-  }
-  $("#user-form")?.addEventListener("submit", async (e)=>{
-    e.preventDefault();
-    const uid = $("#user-id-hidden").value;
-    const email = $("#user-email").value.trim();
-    const role = $("#user-role").value;
-    const appDataId = $("#user-link").value || null;
+        // Populate header user modal info
+        document.getElementById('modal-user-display-name').textContent = userName; 
+        document.getElementById('modal-user-display-role').textContent = role;
 
-    if(uid){
-      await updateDoc(doc(colUsersApp(), uid), { email, role, appDataId });
-      const i=usersApp.findIndex(x=>x.uid===uid);
-      usersApp[i]={...usersApp[i], email, role, appDataId};
-      toast("Usuario actualizado");
-    }else{
-      const pass = $("#user-password").value.trim();
-      if(!useEmu){
-        toast("Para crear cuentas desde el panel usa Emulators o backend Admin SDK.", false);
-      }else{
-        const { user } = await createUserWithEmailAndPassword(auth, email, pass||"123456");
-        await setDoc(doc(colUsersApp(), user.uid), { uid:user.uid, email, role, appDataId });
-        usersApp.unshift({ uid:user.uid, email, role, appDataId });
-        toast("Usuario creado");
-      }
+        updateNovedadesBadge(); 
+        populateAdvisorSelect();
+        lucide.createIcons();
     }
-    drawUsersRows(); closeModal("user-modal");
-  });
+    function checkAndCreateReminders() {
+        const today = new Date();
+        const oneMonthAgo = new Date();
+        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
-  // ===== Configuración =====
-  function renderConfig(){
-    const el = $("#config");
-    if(currentUser.role!=="admin"){ el.innerHTML=`<p class="text-slate-600">No tienes acceso.</p>`; return; }
-    const smmlv = settings?.general?.SMMLV ?? "";
-    const health = settings?.rates?.HEALTH ?? 12.5;
-    const pension = settings?.rates?.PENSION ?? 16;
+        affiliates.forEach(aff => {
+            if (aff.status !== 'Activo' || !aff.startDate) return;
 
-    el.innerHTML = `
-      <h2 class="text-2xl font-bold mb-6">Configuración</h2>
-      <form id="config-form" class="bg-white rounded-xl shadow p-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div>
-          <label class="text-sm font-medium">SMMLV</label>
-          <input id="cfg-smmlv" type="number" class="w-full p-2 border rounded-lg" value="${smmlv}"/>
-        </div>
-        <div>
-          <label class="text-sm font-medium">% Salud</label>
-          <input id="cfg-health" type="number" step="0.1" class="w-full p-2 border rounded-lg" value="${health}"/>
-        </div>
-        <div>
-          <label class="text-sm font-medium">% Pensión</label>
-          <input id="cfg-pension" type="number" step="0.1" class="w-full p-2 border rounded-lg" value="${pension}"/>
-        </div>
-        <div class="sm:col-span-3 pt-4 border-t flex justify-end">
-          <button class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar</button>
-        </div>
-      </form>
-    `;
+            const startDate = new Date(aff.startDate);
+            const renewalDay = startDate.getDate();
+            const daysUntilRenewal = renewalDay - today.getDate();
 
-    $("#config-form").addEventListener("submit", async (e)=>{
-      e.preventDefault();
-      const general = { SMMLV: Number($("#cfg-smmlv").value)||0, updatedAt: serverTimestamp() };
-      const rates   = { HEALTH: Number($("#cfg-health").value)||0, PENSION: Number($("#cfg-pension").value)||0, updatedAt: serverTimestamp() };
-      await setDoc(doc(colSettings(), "general"), general);
-      await setDoc(doc(colSettings(), "rates"), rates);
-      settings = { ...settings, general, rates };
-      toast("Configuración guardada");
+            if (daysUntilRenewal > 0 && daysUntilRenewal <= 7) {
+                const hasRecentReminder = novedades.some(n =>
+                    n.affiliateId === aff.id &&
+                    n.type === 'reminder' &&
+                    new Date(n.timestamp) > oneMonthAgo
+                );
+
+                if (!hasRecentReminder) {
+                    createNovedad(aff.id, aff.name, 'reminder', `Recordatorio: El pago mensual para ${aff.name} vence pronto (día ${renewalDay} de cada mes).`);
+                }
+            }
+        });
+    }
+    function initializeApp(user) {
+        currentUser = user; document.getElementById('auth-container').classList.add('hidden'); document.getElementById('app-container').classList.remove('hidden');
+        loadSettings(); loadCompanyProfile(); loadManualTransactions(); loadHealthPlans(); loadDataFromLocalStorage(); loadNovedades();
+        checkAndCreateReminders();
+        buildMainContentHTML();
+        configureUIForRole(user.role);
+        setupAppEventListeners();
+        const initialView = navLinksConfig[user.role][0].id;
+        renderContent(initialView);
+        document.querySelector(`#main-nav [data-target="${initialView}"]`)?.classList.add('active');
+        document.querySelector(`#mobile-nav [data-target="${initialView}"]`)?.classList.add('active');
+        document.getElementById('header-title').textContent = navLinksConfig[user.role][0].text;
+    }
+    function checkSession() {
+        loadAllUsers(); const storedUser = localStorage.getItem('sebSalud_currentUser');
+        if (storedUser) {
+            const user = JSON.parse(storedUser);
+            if (allUsers.some(u => u.id === user.id)) { initializeApp(user); } else { handleLogout(); }
+        } else {
+            document.getElementById('auth-container').classList.remove('hidden');
+            if (allUsers.length === 0) { showAuthForm('register'); } else { showAuthForm('login'); }
+        }
+    }
+
+    // --- APP INITIALIZATION ---
+    let confirmCallback = null;
+    function showConfirmation(message, onConfirm) {
+        document.getElementById('confirmation-message').textContent = message;
+        confirmCallback = onConfirm;
+        modalManager.open('confirmation-modal');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        try {
+            setupAuthEventListeners();
+            checkSession();
+            lucide.createIcons();
+        } catch (error) {
+            console.error("Error fatal:", error);
+            document.body.innerHTML = `<div class="p-8 text-center text-red-500"><h1>Error Crítico</h1><p>La aplicación no pudo iniciarse. Revisa la consola (F12).</p></div>`;
+        }
     });
-  }
-
-  // ===== Modales (cerrar) =====
-  $$('[data-close]').forEach(btn=>{
-    btn.addEventListener('click', ()=> closeModal(btn.getAttribute('data-close')));
-  });
-  window.addEventListener('keydown', e=>{
-    if(e.key==="Escape"){ ["affiliate-modal","advisor-modal","plan-modal","user-modal"].forEach(closeModal); }
-  });
-
-  // ===== Helpers =====
-  function formatCurrency(n, locale="es-CO", currency="COP"){
-    try{ return new Intl.NumberFormat(locale, { style:"currency", currency, maximumFractionDigits:0 }).format(n||0); }
-    catch{ return `$${(n||0).toLocaleString()}`; }
-  }
-  function capitalize(s){ return (s||"").charAt(0).toUpperCase()+ (s||"").slice(1); }
-
-  // ===== Render inicial =====
-  lucide.createIcons();
-
 </script>
 </body>
 </html>
