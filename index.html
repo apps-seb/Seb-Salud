@@ -9,16 +9,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     
-    <!-- ACTUALIZADO: Firebase v11.6.1 y se añade 'onSnapshot' y 'collection' para tiempo real -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
-        // Se exponen las funciones de Firebase a la ventana global para su uso en el script principal
         window.firebase = {
             initializeApp, getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut,
-            getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query
+            getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query, where
         };
     </script>
     
@@ -62,7 +60,7 @@
         .novedades-badge.hidden { transform: scale(0); }
         .health-plan-card { border: 2px solid #e2e8f0; transition: border-color 0.2s, box-shadow 0.2s; }
         .health-plan-card:has(input:checked) { border-color: rgb(var(--color-primary-600)); box-shadow: 0 0 0 2px rgb(var(--color-primary-600) / 0.5); }
-        .auth-form { animation: fadeInForm 0.6s ease-in-out; }
+        .auth-form, .license-form-animation { animation: fadeInForm 0.6s ease-in-out; }
         @keyframes fadeInForm { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -141,6 +139,26 @@
     </div>
     
     <div id="app-container" style="display: none;">
+        <div id="license-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60]">
+            <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95 text-center">
+                <div class="p-6">
+                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100">
+                       <i data-lucide="key-round" class="h-6 w-6 text-primary-600"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold mt-4">Activar Licencia</h2>
+                    <p class="text-slate-500 mt-2">Para continuar, por favor ingresa tu código de licencia.</p>
+                </div>
+                <form id="license-form" class="p-6 pt-0">
+                    <div class="space-y-4">
+                        <input type="text" id="license-key-input" placeholder="XXXX-XXXX-XXXX-XXXX" class="w-full text-center tracking-widest font-mono px-4 py-2.5 border rounded-lg" required>
+                        <p id="license-error-message" class="text-red-500 text-sm h-4"></p>
+                    </div>
+                    <div class="pt-6 mt-2">
+                        <button type="submit" id="activate-license-btn" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg">Activar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
         <div class="flex h-screen overflow-hidden">
             <div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-30 opacity-0 pointer-events-none md:hidden"></div>
 
@@ -188,22 +206,22 @@
                     <section id="dashboard" class="content-section active">
                          <h1 class="text-2xl font-bold text-slate-800 mb-6">Resumen General y Métricas Clave</h1>
                          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                               <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                   <div><h3 class="text-sm font-medium text-slate-500 uppercase">Ingresos del Mes</h3><p id="kpi-monthly-income" class="text-3xl font-bold text-slate-800 mt-2">$0</p></div>
-                                   <div class="bg-emerald-100 text-emerald-600 p-2 rounded-full"><i data-lucide="trending-up" class="h-6 w-6"></i></div>
-                               </div>
-                               <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                   <div><h3 class="text-sm font-medium text-slate-500 uppercase">Cartera Vencida</h3><p id="kpi-overdue-payments" class="text-3xl font-bold text-rose-500 mt-2">$0</p></div>
-                                   <div class="bg-rose-100 text-rose-600 p-2 rounded-full"><i data-lucide="clock" class="h-6 w-6"></i></div>
-                               </div>
-                               <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                   <div><h3 class="text-sm font-medium text-slate-500 uppercase">Nuevos Afiliados (Mes)</h3><p id="kpi-new-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
-                                   <div class="bg-sky-100 text-sky-600 p-2 rounded-full"><i data-lucide="user-plus" class="h-6 w-6"></i></div>
-                               </div>
-                               <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                   <div><h3 class="text-sm font-medium text-slate-500 uppercase">Afiliados Activos</h3><p id="kpi-active-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
-                                   <div class="bg-slate-100 text-slate-600 p-2 rounded-full"><i data-lucide="check-circle-2" class="h-6 w-6"></i></div>
-                               </div>
+                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
+                                    <div><h3 class="text-sm font-medium text-slate-500 uppercase">Ingresos del Mes</h3><p id="kpi-monthly-income" class="text-3xl font-bold text-slate-800 mt-2">$0</p></div>
+                                    <div class="bg-emerald-100 text-emerald-600 p-2 rounded-full"><i data-lucide="trending-up" class="h-6 w-6"></i></div>
+                                </div>
+                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
+                                    <div><h3 class="text-sm font-medium text-slate-500 uppercase">Cartera Vencida</h3><p id="kpi-overdue-payments" class="text-3xl font-bold text-rose-500 mt-2">$0</p></div>
+                                    <div class="bg-rose-100 text-rose-600 p-2 rounded-full"><i data-lucide="clock" class="h-6 w-6"></i></div>
+                                </div>
+                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
+                                    <div><h3 class="text-sm font-medium text-slate-500 uppercase">Nuevos Afiliados (Mes)</h3><p id="kpi-new-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
+                                    <div class="bg-sky-100 text-sky-600 p-2 rounded-full"><i data-lucide="user-plus" class="h-6 w-6"></i></div>
+                                </div>
+                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
+                                    <div><h3 class="text-sm font-medium text-slate-500 uppercase">Afiliados Activos</h3><p id="kpi-active-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
+                                    <div class="bg-slate-100 text-slate-600 p-2 rounded-full"><i data-lucide="check-circle-2" class="h-6 w-6"></i></div>
+                                </div>
                          </div>
                     </section>
                     
@@ -477,7 +495,6 @@
       measurementId: "G-EJCS9FYWHK"
     };
 
-    // Servicios de Firebase
     const app = window.firebase.initializeApp(firebaseConfig);
     const auth = window.firebase.getAuth(app);
     const db = window.firebase.getFirestore(app);
@@ -488,22 +505,16 @@
     let companyProfile = {};
     let settings = {};
     let affiliatesViewMode = 'card';
-    let activeListeners = []; // Para almacenar las funciones de cancelación de escucha
+    let activeListeners = [];
 
-    const defaultSettings = {
-        SMMLV: 1430000,
-        CONTRIBUTION_RATES: { health: 12.5, pension: 16, employee_health: 4, employer_health: 8.5, employee_pension: 4, employer_pension: 12, independiente_ccf: 2, employer_ccf: 4 },
-        ARL_RATES: { 1: 0.522, 2: 1.044, 3: 2.436, 4: 4.350, 5: 6.960 }
-    };
-    const defaultCompanyProfile = { 
-        name: 'Mi Empresa de Seguridad Social', nit: '900.123.456-7', address: 'Calle 123 # 45-67, Bogotá', phone: '3001234567', email: 'contacto@empresa.com', theme: 'default' 
-    };
+    const defaultSettings = { SMMLV: 1430000, CONTRIBUTION_RATES: { health: 12.5, pension: 16, employee_health: 4, employer_health: 8.5, employee_pension: 4, employer_pension: 12, independiente_ccf: 2, employer_ccf: 4 }, ARL_RATES: { 1: 0.522, 2: 1.044, 3: 2.436, 4: 4.350, 5: 6.960 } };
+    const defaultCompanyProfile = { name: 'Mi Empresa de Seguridad Social', nit: '900.123.456-7', address: 'Calle 123 # 45-67, Bogotá', phone: '3001234567', email: 'contacto@empresa.com', theme: 'default' };
     
     // --- MANEJO DE VISTAS Y ESTADO DE CARGA ---
     const loader = document.getElementById('loader');
     const authContainer = document.getElementById('auth-container');
     const appContainer = document.getElementById('app-container');
-
+    
     const showView = (view) => {
         loader.style.display = 'none';
         authContainer.style.display = 'none';
@@ -512,58 +523,29 @@
         lucide.createIcons();
     };
 
-    // --- LÓGICA DE AUTENTICACIÓN ---
-    const loginForm = document.getElementById('login-form');
-    const registerForm = document.getElementById('register-form');
-    const loginView = document.getElementById('login-view');
-    const registerView = document.getElementById('register-view');
-    const showRegisterBtn = document.getElementById('show-register');
-    const showLoginBtn = document.getElementById('show-login');
-    const logoutBtn = document.getElementById('logout-btn');
-
-    showRegisterBtn.addEventListener('click', () => {
-        loginView.classList.add('hidden');
-        registerView.classList.remove('hidden');
-    });
-     showLoginBtn.addEventListener('click', () => {
-        registerView.classList.add('hidden');
-        loginView.classList.remove('hidden');
-    });
-
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        loader.style.display = 'flex';
-        try {
-            await window.firebase.signInWithEmailAndPassword(auth, loginForm['login-email'].value, loginForm['login-password'].value);
-        } catch (error) { 
-            showToast(getFirebaseAuthErrorMessage(error), 'error'); 
-            loader.style.display = 'none';
-        }
-    });
-    registerForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        loader.style.display = 'flex';
-        try {
-            const userCredential = await window.firebase.createUserWithEmailAndPassword(auth, registerForm['register-email'].value, registerForm['register-password'].value);
-            await setupNewUserDocument(userCredential.user);
-        } catch (error) { 
-            showToast(getFirebaseAuthErrorMessage(error), 'error');
-            loader.style.display = 'none';
-        }
-    });
-    logoutBtn.addEventListener('click', () => window.firebase.signOut(auth));
-
     // --- PUNTO DE ENTRADA PRINCIPAL: OBSERVA CAMBIOS DE AUTENTICACIÓN ---
     window.firebase.onAuthStateChanged(auth, async (user) => {
         if (user) {
             currentUser = user;
-            initializeAppForUser();
-            showView(appContainer);
+            const userDocRef = window.firebase.doc(db, "users", user.uid);
+            const userDocSnap = await window.firebase.getDoc(userDocRef);
+
+            if (userDocSnap.exists() && userDocSnap.data().licenseActivated) {
+                initializeAppForUser();
+                showView(appContainer);
+            } else {
+                showView(authContainer); 
+                document.getElementById('login-view').style.display = 'none';
+                document.getElementById('register-view').style.display = 'none';
+                modalManager.open('license-modal');
+            }
         } else {
             currentUser = null;
-            unsubscribeAllListeners(); // Detener escuchas al cerrar sesión
+            unsubscribeAllListeners();
             resetLocalData();
             showView(authContainer);
+            document.getElementById('login-view').style.display = 'block';
+            document.getElementById('register-view').classList.add('hidden');
         }
     });
     
@@ -571,30 +553,73 @@
     async function setupNewUserDocument(user) {
         const userDocRef = window.firebase.doc(db, "users", user.uid);
         const batch = window.firebase.writeBatch(db);
-        
         batch.set(userDocRef, {
             email: user.email,
             createdAt: window.firebase.serverTimestamp(),
+            licenseActivated: false,
             companyProfile: defaultCompanyProfile,
             settings: defaultSettings,
         });
-        
         const advisorRef = window.firebase.doc(window.firebase.collection(userDocRef, "advisors"));
         batch.set(advisorRef, { id: advisorRef.id, name: 'Asesor Inicial', commissionRate: 10 });
-        
         const planRef = window.firebase.doc(window.firebase.collection(userDocRef, "healthPlans"));
         batch.set(planRef, { id: planRef.id, name: 'Plan de Ejemplo', price: 100000, features: 'Característica 1\nCaracterística 2' });
-
         await batch.commit();
     }
 
-    // NUEVA FUNCIÓN: Configura todos los listeners en tiempo real
+    async function handleLicenseActivation() {
+        const licenseKey = document.getElementById('license-key-input').value.trim().toUpperCase();
+        const errorMsgElement = document.getElementById('license-error-message');
+        const activateBtn = document.getElementById('activate-license-btn');
+        
+        errorMsgElement.textContent = '';
+        if (!licenseKey) {
+            errorMsgElement.textContent = 'Por favor, ingresa un código.';
+            return;
+        }
+
+        activateBtn.disabled = true;
+        activateBtn.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i> Verificando...';
+        lucide.createIcons();
+
+        try {
+            const { getDocs, query, collection, where, writeBatch, doc, serverTimestamp } = window.firebase;
+            const licensesRef = collection(db, 'licences');
+            const q = query(licensesRef, where("code", "==", licenseKey), where("status", "==", "available"));
+            const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.empty) {
+                setTimeout(() => {
+                    errorMsgElement.textContent = 'Código de licencia inválido o ya utilizado.';
+                    activateBtn.disabled = false;
+                    activateBtn.textContent = 'Activar';
+                }, 500);
+                return;
+            }
+
+            const licenseDoc = querySnapshot.docs[0];
+            const batch = writeBatch(db);
+            const licenseDocRef = doc(db, 'licences', licenseDoc.id);
+            batch.update(licenseDocRef, { status: 'used', usedBy: currentUser.uid, usedAt: serverTimestamp() });
+            const userDocRef = doc(db, "users", currentUser.uid);
+            batch.set(userDocRef, { licenseActivated: true }, { merge: true });
+            await batch.commit();
+
+            showToast('¡Licencia activada con éxito!', 'success');
+            modalManager.close('license-modal');
+            initializeAppForUser();
+            showView(appContainer);
+        } catch (error) {
+            console.error("Error al activar la licencia:", error);
+            errorMsgElement.textContent = 'Ocurrió un error al verificar. Intenta de nuevo.';
+            activateBtn.disabled = false;
+            activateBtn.textContent = 'Activar';
+        }
+    }
+    
     function setupRealtimeListeners() {
-        if (!currentUser || activeListeners.length > 0) return; // Evitar duplicados
-
+        if (!currentUser || activeListeners.length > 0) return;
         const { doc, collection, onSnapshot } = window.firebase;
-
-        // Listener para el documento del usuario (perfil y configuración)
         const userDocRef = doc(db, "users", currentUser.uid);
         const unsubUser = onSnapshot(userDocRef, (docSnap) => {
             if (docSnap.exists()) {
@@ -605,31 +630,15 @@
                 if (document.getElementById('empresa').classList.contains('active')) {
                     renderEmpresaSection();
                 }
-            } else {
-                console.log("Creando documento de usuario...");
-                setupNewUserDocument(currentUser);
             }
         });
         activeListeners.push(unsubUser);
 
-        // Listeners para las colecciones
         const collectionsToListen = {
-            affiliates: (data) => {
-                affiliates = data;
-                renderAllDependentOnAffiliates();
-            },
-            advisors: (data) => {
-                advisors = data;
-                renderAllDependentOnAdvisors();
-            },
-            healthPlans: (data) => {
-                healthPlans = data;
-                renderAllDependentOnPlans();
-            },
-            manualTransactions: (data) => {
-                manualTransactions = data;
-                renderFlujoCajaSection();
-            },
+            affiliates: (data) => { affiliates = data; renderAllDependentOnAffiliates(); },
+            advisors: (data) => { advisors = data; renderAllDependentOnAdvisors(); },
+            healthPlans: (data) => { healthPlans = data; renderAllDependentOnPlans(); },
+            manualTransactions: (data) => { manualTransactions = data; renderFlujoCajaSection(); },
             novedades: (data) => {
                 novedades = data;
                 updateNovedadesBadge();
@@ -644,7 +653,6 @@
             const unsub = onSnapshot(colRef, (snapshot) => {
                 const data = snapshot.docs.map(d => {
                     const docData = d.data();
-                    // Convierte Timestamps de Firebase a objetos Date de JS
                     if (docData.createdAt && docData.createdAt.toDate) docData.createdAt = docData.createdAt.toDate();
                     if (docData.date && docData.date.toDate) docData.date = docData.date.toDate().toISOString();
                     if (docData.timestamp && docData.timestamp.toDate) docData.timestamp = docData.timestamp.toDate();
@@ -656,69 +664,23 @@
         }
     }
     
-    // NUEVAS FUNCIONES DE AYUDA para re-renderizado
-    function renderAllDependentOnAffiliates() {
-        renderDashboard();
-        renderFlujoCajaSection();
-        renderAdvisorsSection();
-        renderRankingSection();
-        if (document.getElementById('afiliados').classList.contains('active')) {
-            renderAffiliatesList();
-        }
-    }
-    
-    function renderAllDependentOnAdvisors() {
-        populateAdvisorSelect();
-        renderAdvisorsSection();
-        renderRankingSection();
-        if (document.getElementById('afiliados').classList.contains('active')) {
-            renderAffiliatesList();
-        }
-    }
-    
-    function renderAllDependentOnPlans() {
-        renderPlansList();
-        if (document.getElementById('afiliados').classList.contains('active')) {
-            renderAffiliatesList();
-        }
-    }
-
-    // NUEVA FUNCIÓN: Detiene todas las escuchas activas
-    function unsubscribeAllListeners() {
-        activeListeners.forEach(unsub => unsub());
-        activeListeners = [];
-    }
-
-    // NUEVA FUNCIÓN: Resetea los datos locales al cerrar sesión
-    function resetLocalData() {
-        affiliates = []; advisors = []; manualTransactions = []; novedades = []; healthPlans = [];
-        companyProfile = {}; settings = {};
-    }
-
-    async function saveDataToFirestore(collectionName, data) {
-        if (!currentUser) return;
-        const docRef = window.firebase.doc(db, `users/${currentUser.uid}/${collectionName}/${data.id}`);
-        await window.firebase.setDoc(docRef, data, { merge: true });
-    }
-
-    async function deleteDataFromFirestore(collectionName, docId) {
-        if (!currentUser) return;
-        const docRef = window.firebase.doc(db, `users/${currentUser.uid}/${collectionName}/${docId}`);
-        await window.firebase.deleteDoc(docRef);
-    }
+    function renderAllDependentOnAffiliates() { renderDashboard(); renderFlujoCajaSection(); renderAdvisorsSection(); renderRankingSection(); if (document.getElementById('afiliados').classList.contains('active')) { renderAffiliatesList(); } }
+    function renderAllDependentOnAdvisors() { populateAdvisorSelect(); renderAdvisorsSection(); renderRankingSection(); if (document.getElementById('afiliados').classList.contains('active')) { renderAffiliatesList(); } }
+    function renderAllDependentOnPlans() { renderPlansList(); if (document.getElementById('afiliados').classList.contains('active')) { renderAffiliatesList(); } }
+    function unsubscribeAllListeners() { activeListeners.forEach(unsub => unsub()); activeListeners = []; }
+    function resetLocalData() { affiliates = []; advisors = []; manualTransactions = []; novedades = []; healthPlans = []; companyProfile = {}; settings = {}; }
+    async function saveDataToFirestore(collectionName, data) { if (!currentUser) return; const docRef = window.firebase.doc(db, `users/${currentUser.uid}/${collectionName}/${data.id}`); await window.firebase.setDoc(docRef, data, { merge: true }); }
+    async function deleteDataFromFirestore(collectionName, docId) { if (!currentUser) return; const docRef = window.firebase.doc(db, `users/${currentUser.uid}/${collectionName}/${docId}`); await window.firebase.deleteDoc(docRef); }
     
     // --- INICIALIZACIÓN DE LA APP PARA USUARIO LOGUEADO ---
     function initializeAppForUser() {
         document.getElementById('user-email-display').textContent = currentUser.email;
-        setupRealtimeListeners(); // <--- CAMBIO CLAVE: Se inician las escuchas en tiempo real
-        setupEventListeners();
+        setupRealtimeListeners();
         renderContent('dashboard');
-        lucide.createIcons();
     }
     
-    // --- LÓGICA DE NEGOCIO Y RENDERIZADO (sin cambios, solo se mantiene el código original) ---
-    // (El resto de las funciones de renderizado y lógica de negocio se mantienen igual)
-     function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme); const themeSelector = document.querySelector(`#theme-selector input[value="${theme}"]`); if (themeSelector) { themeSelector.checked = true; } }
+    // --- LÓGICA DE NEGOCIO Y RENDERIZADO ---
+    function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme); const themeSelector = document.querySelector(`#theme-selector input[value="${theme}"]`); if (themeSelector) { themeSelector.checked = true; } }
     async function createNovedad(affiliateId, affiliateName, type, description) { if (!currentUser) return; const novedad = { affiliateId, affiliateName, type, description, timestamp: new Date() }; const collectionRef = window.firebase.collection(db, `users/${currentUser.uid}/novedades`); const docRef = await window.firebase.addDoc(collectionRef, novedad); }
     function getAffiliateCommissionBase(affiliate) { if (affiliate.manualCosts && Object.values(affiliate.manualCosts).some(cost => cost > 0)) { return Object.values(affiliate.manualCosts).reduce((sum, cost) => sum + (Number(cost) || 0), 0); } const plan = healthPlans.find(p => p.id === affiliate.healthPlan); return plan ? plan.price : 0; }
     function getAdvisorCommissionForAffiliate(affiliate) { if (affiliate.manualCommission && affiliate.manualCommission > 0) { return affiliate.manualCommission; } const advisor = advisors.find(v => v.id === affiliate.advisorId); if (!advisor) return 0; return getAffiliateCommissionBase(affiliate) * (advisor.commissionRate / 100); }
@@ -745,42 +707,55 @@
     function getNovedadIcon(e){return{creation:'<i data-lucide="user-plus" class="h-6 w-6 text-green-500"></i>',status_change:'<i data-lucide="alert-triangle" class="h-6 w-6 text-yellow-500"></i>',payment_change:'<i data-lucide="circle-dollar-sign" class="h-6 w-6 text-blue-500"></i>',plan_change:'<i data-lucide="file-check-2" class="h-6 w-6 text-purple-500"></i>',advisor_change:'<i data-lucide="user-cog" class="h-6 w-6 text-indigo-500"></i>',deletion:'<i data-lucide="user-x" class="h-6 w-6 text-red-500"></i>'}[e]||'<i data-lucide="alert-triangle" class="h-6 w-6 text-yellow-500"></i>'}
     function formatTimeAgo(e){if(!e) return "hace un momento"; const t=Math.floor((new Date-e)/1e3);let a=t/31536e3;if(1<a)return`hace ${Math.floor(a)} años`;if(1<(a=t/2592e3))return`hace ${Math.floor(a)} meses`;if(1<(a=t/86400))return`hace ${Math.floor(a)} días`;if(1<(a=t/3600))return`hace ${Math.floor(a)} horas`;if(1<(a=t/60))return`hace ${Math.floor(a)} minutos`;return`hace ${Math.floor(t)} segundos`}
     
-    // --- EVENT LISTENERS ---
-    let eventListenersSetup = false;
-    function setupEventListeners() {
-        if (eventListenersSetup) return;
-        
-        document.querySelectorAll('[data-target]').forEach(link => link.addEventListener('click', e => { e.preventDefault(); const targetId = e.currentTarget.dataset.target; renderContent(targetId); document.querySelectorAll('[data-target]').forEach(l => l.classList.remove('active')); document.querySelectorAll(`[data-target="${targetId}"]`).forEach(l => l.classList.add('active')); const title = e.currentTarget.textContent.trim().split('\n')[0].trim() || targetId; document.getElementById('header-title').textContent = title.charAt(0).toUpperCase() + title.slice(1); if (window.innerWidth < 768) { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('sidebar-overlay').classList.add('opacity-0', 'pointer-events-none'); } }));
-        document.getElementById('menu-toggle').addEventListener('click', () => { document.getElementById('sidebar').classList.toggle('-translate-x-full'); const overlay = document.getElementById('sidebar-overlay'); overlay.classList.toggle('opacity-0'); overlay.classList.toggle('pointer-events-none'); });
-        document.getElementById('sidebar-overlay').addEventListener('click', () => document.getElementById('menu-toggle').click());
-        document.getElementById('search-affiliate').addEventListener('input', renderAffiliatesList);
-        document.getElementById('filter-affiliate-status').addEventListener('change', renderAffiliatesList);
-        document.getElementById('filter-affiliate-payment-status').addEventListener('change', renderAffiliatesList);
-        document.getElementById('view-as-cards-btn').addEventListener('click', () => { affiliatesViewMode = 'card'; updateViewToggleButtons(); renderAffiliatesList(); });
-        document.getElementById('view-as-table-btn').addEventListener('click', () => { affiliatesViewMode = 'table'; updateViewToggleButtons(); renderAffiliatesList(); });
-        document.getElementById('calculator-form').addEventListener('submit', e => { e.preventDefault(); const form = e.target; const selections = { health: form.querySelector('[value="health"]').checked, pension: form.querySelector('[value="pension"]').checked, arl: form.querySelector('[value="arl"]').checked, ccf: form.querySelector('[value="ccf"]').checked }; const results = calculateContributions(Number(form['income'].value), form['contract-type'].value, form['arl-level'].value, selections); renderCalculatorResults(results, selections); });
-        
-        // MODIFICACIÓN: Ya no se actualiza el estado local manualmente. onSnapshot se encarga.
-        document.getElementById('affiliate-form').addEventListener('submit', async (e) => { e.preventDefault(); const form = e.target; const selectedPlan = form.querySelector('input[name="health-plan"]:checked'); if (!selectedPlan && healthPlans.length > 0) return showToast('Debe seleccionar un plan de salud.', 'error'); const affiliateData = { name: form['affiliate-name'].value.trim(), documentId: form['affiliate-id'].value.trim(), email: form['affiliate-email'].value.trim(), phone: form['affiliate-phone'].value.trim(), address: form['affiliate-address'].value.trim(), healthPlan: selectedPlan ? selectedPlan.value : null, pensionPlan: form['pension-plan'].value, arlPlan: form['arl-plan'].value, ccfPlan: form['ccf-plan'].value, advisorId: form['advisor-select-list'].value, startDate: form['affiliate-start-date'].value, status: form['affiliate-status'].value, notes: form['affiliate-notes'].value.trim(), manualCosts: null, manualCommission: null }; if (form['manual-override-checkbox'].checked) { affiliateData.manualCosts = { health: Number(form['manual-cost-health'].value) || 0, pension: Number(form['manual-cost-pension'].value) || 0, arl: Number(form['manual-cost-arl'].value) || 0, ccf: Number(form['manual-cost-ccf'].value) || 0 }; affiliateData.manualCommission = Number(form['manual-commission'].value) || null; } const existingId = form['affiliate-doc-id'].value; if (existingId) { affiliateData.id = existingId; await saveDataToFirestore('affiliates', affiliateData); } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${currentUser.uid}/affiliates`)); affiliateData.id = docRef.id; affiliateData.createdAt = new Date(); await saveDataToFirestore('affiliates', affiliateData); await createNovedad(affiliateData.id, affiliateData.name, 'creation', `Se registró al nuevo afiliado ${affiliateData.name}.`); } modalManager.close('affiliate-modal'); showToast('Afiliado guardado.'); });
-        document.getElementById('advisor-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['advisor-doc-id'].value; const advisorData = { name: form['advisor-name'].value, commissionRate: Number(form['advisor-commission'].value) }; if (id) { advisorData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${currentUser.uid}/advisors`)); advisorData.id = docRef.id; } await saveDataToFirestore('advisors', advisorData); modalManager.close('advisor-modal'); showToast('Asesor guardado.'); });
-        document.getElementById('plan-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['plan-doc-id'].value; const planData = { name: form['plan-name'].value, price: Number(form['plan-price'].value), features: form['plan-features'].value }; if (id) { planData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${currentUser.uid}/healthPlans`)); planData.id = docRef.id; } await saveDataToFirestore('healthPlans', planData); modalManager.close('plan-modal'); showToast('Plan guardado.'); });
-        document.getElementById('transaction-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const newTransaction = { type: form['transaction-type'].value, concept: form['transaction-concept'].value, amount: parseFloat(form['transaction-amount'].value), date: new Date(form['transaction-date'].value + 'T12:00:00.000Z') }; await window.firebase.addDoc(window.firebase.collection(db, `users/${currentUser.uid}/manualTransactions`), newTransaction); modalManager.close('transaction-modal'); showToast('Transacción guardada.'); });
-        document.getElementById('company-profile-form').addEventListener('submit', async e => { e.preventDefault(); companyProfile.name = document.getElementById('company-name').value; companyProfile.nit = document.getElementById('company-nit').value; companyProfile.address = document.getElementById('company-address').value; companyProfile.phone = document.getElementById('company-phone').value; companyProfile.email = document.getElementById('company-email').value; companyProfile.theme = document.querySelector('#theme-selector input:checked').value; const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { companyProfile }, { merge: true }); showToast('Perfil actualizado.'); });
-        document.getElementById('settings-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; settings.SMMLV = Number(form['setting-smmlv'].value); settings.CONTRIBUTION_RATES.health = parseFloat(form['setting-health'].value); settings.CONTRIBUTION_RATES.pension = parseFloat(form['setting-pension'].value); settings.CONTRIBUTION_RATES.independiente_ccf = parseFloat(form['setting-ccf-ind'].value); settings.CONTRIBUTION_RATES.employer_ccf = parseFloat(form['setting-ccf-emp'].value); for (let i = 1; i <= 5; i++) { settings.ARL_RATES[i] = parseFloat(form[`setting-arl-${i}`].value); } const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { settings }, { merge: true }); modalManager.close('settings-modal'); showToast('Configuración guardada.'); });
-        
+    // --- MANEJADOR DE EVENTOS DELEGADO Y ÚNICO ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // Este listener se adjunta una sola vez y maneja todos los eventos de click en la página
         document.body.addEventListener('click', async (e) => {
-            const button = e.target.closest('button'); if (!button) return;
+            const target = e.target;
+            const button = target.closest('button'); // Busca el botón más cercano, incluso si se hizo clic en un ícono dentro de él
+            
+            // --- Lógica de navegación (para <a> y <button>) ---
+            const navLink = target.closest('[data-target]');
+            if (navLink) {
+                e.preventDefault();
+                const targetId = navLink.dataset.target;
+                renderContent(targetId);
+                document.querySelectorAll('[data-target]').forEach(l => l.classList.remove('active'));
+                document.querySelectorAll(`[data-target="${targetId}"]`).forEach(l => l.classList.add('active'));
+                const title = navLink.textContent.trim().split('\n')[0].trim() || targetId;
+                document.getElementById('header-title').textContent = title.charAt(0).toUpperCase() + title.slice(1);
+                if (window.innerWidth < 768) {
+                    document.getElementById('sidebar').classList.add('-translate-x-full');
+                    document.getElementById('sidebar-overlay').classList.add('opacity-0', 'pointer-events-none');
+                }
+                return;
+            }
+
+            if (!button) return; // Si no es un botón, no hacemos nada más
             const id = button.dataset.id;
+            
+            // --- Lógica para botones específicos por ID ---
+            switch (button.id) {
+                case 'show-register': document.getElementById('login-view').classList.add('hidden'); document.getElementById('register-view').classList.remove('hidden'); return;
+                case 'show-login': document.getElementById('register-view').classList.add('hidden'); document.getElementById('login-view').classList.remove('hidden'); return;
+                case 'logout-btn': window.firebase.signOut(auth); return;
+                case 'menu-toggle': document.getElementById('sidebar').classList.toggle('-translate-x-full'); const overlay = document.getElementById('sidebar-overlay'); overlay.classList.toggle('opacity-0'); overlay.classList.toggle('pointer-events-none'); return;
+                case 'sidebar-overlay': document.getElementById('menu-toggle').click(); return;
+                case 'add-affiliate-btn': modalManager.open('affiliate-modal'); return;
+                case 'add-advisor-btn': modalManager.open('advisor-modal'); return;
+                case 'add-plan-btn': modalManager.open('plan-modal'); return;
+                case 'add-income-btn': modalManager.open('transaction-modal', { type: 'ingreso', title: 'Nuevo Ingreso' }); return;
+                case 'add-expense-btn': modalManager.open('transaction-modal', { type: 'egreso', title: 'Nuevo Egreso' }); return;
+                case 'open-settings-btn': modalManager.open('settings-modal'); return;
+                case 'export-affiliates-btn': handleExportAffiliates(); return;
+                case 'export-advisors-btn': handleExportAdvisors(); return;
+                case 'generate-report-btn': generatePDFReport(); return;
+                case 'view-as-cards-btn': affiliatesViewMode = 'card'; updateViewToggleButtons(); renderAffiliatesList(); return;
+                case 'view-as-table-btn': affiliatesViewMode = 'table'; updateViewToggleButtons(); renderAffiliatesList(); return;
+            }
+
+            // --- Lógica para botones con clases o atributos de datos ---
             if (button.dataset.closeModal) modalManager.close(button.dataset.closeModal);
-            else if (button.id === 'add-affiliate-btn') modalManager.open('affiliate-modal');
-            else if (button.id === 'add-advisor-btn') modalManager.open('advisor-modal');
-            else if (button.id === 'add-plan-btn') modalManager.open('plan-modal');
-            else if (button.id === 'add-income-btn') modalManager.open('transaction-modal', { type: 'ingreso', title: 'Nuevo Ingreso' });
-            else if (button.id === 'add-expense-btn') modalManager.open('transaction-modal', { type: 'egreso', title: 'Nuevo Egreso' });
-            else if (button.id === 'open-settings-btn') modalManager.open('settings-modal');
-            else if (button.id === 'export-affiliates-btn') handleExportAffiliates();
-            else if (button.id === 'export-advisors-btn') handleExportAdvisors();
-            else if (button.id === 'generate-report-btn') generatePDFReport();
             else if (button.matches('.edit-affiliate-btn')) modalManager.open('affiliate-modal', affiliates.find(a => a.id === id));
             else if (button.matches('.edit-advisor-btn')) modalManager.open('advisor-modal', advisors.find(v => v.id === id));
             else if (button.matches('.edit-plan-btn')) modalManager.open('plan-modal', healthPlans.find(p => p.id === id));
@@ -791,19 +766,29 @@
             else if (button.matches('.delete-plan-btn')) { const isPlanInUse = affiliates.some(aff => aff.healthPlan === id); if(isPlanInUse) return showToast('Plan en uso. No se puede eliminar.', 'error'); if (confirm('¿Seguro?')) { await deleteDataFromFirestore('healthPlans', id); showToast('Plan eliminado.'); } }
         });
 
-        eventListenersSetup = true;
-    }
+        // --- Listeners de formularios ---
+        document.getElementById('login-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { await window.firebase.signInWithEmailAndPassword(auth, e.target['login-email'].value, e.target['login-password'].value); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
+        document.getElementById('register-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { const userCredential = await window.firebase.createUserWithEmailAndPassword(auth, e.target['register-email'].value, e.target['register-password'].value); await setupNewUserDocument(userCredential.user); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
+        document.getElementById('license-form').addEventListener('submit', e => { e.preventDefault(); handleLicenseActivation(); });
+        document.getElementById('calculator-form').addEventListener('submit', e => { e.preventDefault(); const form = e.target; const selections = { health: form.querySelector('[value="health"]').checked, pension: form.querySelector('[value="pension"]').checked, arl: form.querySelector('[value="arl"]').checked, ccf: form.querySelector('[value="ccf"]').checked }; const results = calculateContributions(Number(form['income'].value), form['contract-type'].value, form['arl-level'].value, selections); renderCalculatorResults(results, selections); });
+        document.getElementById('affiliate-form').addEventListener('submit', async (e) => { e.preventDefault(); const form = e.target; const selectedPlan = form.querySelector('input[name="health-plan"]:checked'); if (!selectedPlan && healthPlans.length > 0) return showToast('Debe seleccionar un plan de salud.', 'error'); const affiliateData = { name: form['affiliate-name'].value.trim(), documentId: form['affiliate-id'].value.trim(), email: form['affiliate-email'].value.trim(), phone: form['affiliate-phone'].value.trim(), address: form['affiliate-address'].value.trim(), healthPlan: selectedPlan ? selectedPlan.value : null, pensionPlan: form['pension-plan'].value, arlPlan: form['arl-plan'].value, ccfPlan: form['ccf-plan'].value, advisorId: form['advisor-select-list'].value, startDate: form['affiliate-start-date'].value, status: form['affiliate-status'].value, notes: form['affiliate-notes'].value.trim(), manualCosts: null, manualCommission: null }; if (form['manual-override-checkbox'].checked) { affiliateData.manualCosts = { health: Number(form['manual-cost-health'].value) || 0, pension: Number(form['manual-cost-pension'].value) || 0, arl: Number(form['manual-cost-arl'].value) || 0, ccf: Number(form['manual-cost-ccf'].value) || 0 }; affiliateData.manualCommission = Number(form['manual-commission'].value) || null; } const existingId = form['affiliate-doc-id'].value; if (existingId) { affiliateData.id = existingId; await saveDataToFirestore('affiliates', affiliateData); } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${currentUser.uid}/affiliates`)); affiliateData.id = docRef.id; affiliateData.createdAt = new Date(); await saveDataToFirestore('affiliates', affiliateData); await createNovedad(affiliateData.id, affiliateData.name, 'creation', `Se registró al nuevo afiliado ${affiliateData.name}.`); } modalManager.close('affiliate-modal'); showToast('Afiliado guardado.'); });
+        document.getElementById('advisor-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['advisor-doc-id'].value; const advisorData = { name: form['advisor-name'].value, commissionRate: Number(form['advisor-commission'].value) }; if (id) { advisorData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${currentUser.uid}/advisors`)); advisorData.id = docRef.id; } await saveDataToFirestore('advisors', advisorData); modalManager.close('advisor-modal'); showToast('Asesor guardado.'); });
+        document.getElementById('plan-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['plan-doc-id'].value; const planData = { name: form['plan-name'].value, price: Number(form['plan-price'].value), features: form['plan-features'].value }; if (id) { planData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${currentUser.uid}/healthPlans`)); planData.id = docRef.id; } await saveDataToFirestore('healthPlans', planData); modalManager.close('plan-modal'); showToast('Plan guardado.'); });
+        document.getElementById('transaction-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const newTransaction = { type: form['transaction-type'].value, concept: form['transaction-concept'].value, amount: parseFloat(form['transaction-amount'].value), date: new Date(form['transaction-date'].value + 'T12:00:00.000Z') }; await window.firebase.addDoc(window.firebase.collection(db, `users/${currentUser.uid}/manualTransactions`), newTransaction); modalManager.close('transaction-modal'); showToast('Transacción guardada.'); });
+        document.getElementById('company-profile-form').addEventListener('submit', async e => { e.preventDefault(); companyProfile.name = document.getElementById('company-name').value; companyProfile.nit = document.getElementById('company-nit').value; companyProfile.address = document.getElementById('company-address').value; companyProfile.phone = document.getElementById('company-phone').value; companyProfile.email = document.getElementById('company-email').value; companyProfile.theme = document.querySelector('#theme-selector input:checked').value; const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { companyProfile }, { merge: true }); showToast('Perfil actualizado.'); });
+        document.getElementById('settings-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; settings.SMMLV = Number(form['setting-smmlv'].value); settings.CONTRIBUTION_RATES.health = parseFloat(form['setting-health'].value); settings.CONTRIBUTION_RATES.pension = parseFloat(form['setting-pension'].value); settings.CONTRIBUTION_RATES.independiente_ccf = parseFloat(form['setting-ccf-ind'].value); settings.CONTRIBUTION_RATES.employer_ccf = parseFloat(form['setting-ccf-emp'].value); for (let i = 1; i <= 5; i++) { settings.ARL_RATES[i] = parseFloat(form[`setting-arl-${i}`].value); } const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { settings }, { merge: true }); modalManager.close('settings-modal'); showToast('Configuración guardada.'); });
+    });
     
     // --- FUNCIONES AUXILIARES ---
     const modalManager = {
         open(modalId, data = null) {
             const modal = document.getElementById(modalId); if (!modal) return;
             const form = modal.querySelector('form'); if(form) form.reset();
-            const titles = { 'affiliate-modal': 'Afiliado', 'advisor-modal': 'Asesor', 'settings-modal': 'Configuración', 'plan-modal': 'Plan de Salud', 'transaction-modal': 'Transacción' };
+            const titles = { 'affiliate-modal': 'Afiliado', 'advisor-modal': 'Asesor', 'settings-modal': 'Configuración', 'plan-modal': 'Plan de Salud', 'transaction-modal': 'Transacción', 'license-modal': 'Activar Licencia' };
             modal.querySelector('h2').textContent = data?.id ? `Editar ${titles[modalId]}` : (data?.title || `Nuevo ${titles[modalId]}`);
-            if (modalId === 'affiliate-modal') {
-                populateAdvisorSelect(); 
-                renderHealthPlanCards();
+            if (modalId === 'license-modal') { document.getElementById('license-error-message').textContent = ''; }
+            else if (modalId === 'affiliate-modal') {
+                populateAdvisorSelect(); renderHealthPlanCards();
                 form['affiliate-doc-id'].value = data?.id || ''; form['affiliate-name'].value = data?.name || ''; form['affiliate-id'].value = data?.documentId || ''; form['affiliate-email'].value = data?.email || ''; form['affiliate-phone'].value = data?.phone || ''; form['affiliate-address'].value = data?.address || '';
                 const planInput = form.querySelector(`input[name="health-plan"][value="${data?.healthPlan || (healthPlans.length > 0 ? healthPlans[0].id : '')}"]`); if (planInput) planInput.checked = true;
                 form['pension-plan'].value = data?.pensionPlan || ''; form['arl-plan'].value = data?.arlPlan || ''; form['ccf-plan'].value = data?.ccfPlan || '';
@@ -822,6 +807,7 @@
             } else if (modalId === 'transaction-modal') { document.getElementById('transaction-type').value = data.type; document.getElementById('transaction-date').value = new Date().toISOString().split('T')[0]; }
             modal.classList.remove('opacity-0', 'pointer-events-none');
             modal.querySelector('.modal-content').classList.remove('scale-95');
+            lucide.createIcons();
         },
         close(modalId) { const modal = document.getElementById(modalId); if (!modal) return; modal.classList.add('opacity-0'); modal.querySelector('.modal-content').classList.add('scale-95'); setTimeout(() => modal.classList.add('pointer-events-none'), 250); }
     };
@@ -840,6 +826,7 @@
             default: return 'Ocurrió un error inesperado. Intenta de nuevo.';
         }
     }
+
 </script>
 </body>
 </html>
