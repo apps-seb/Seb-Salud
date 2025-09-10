@@ -73,6 +73,12 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* --- ESTILOS PARA OCULTAR ELEMENTOS POR ROL --- */
+        .admin-only, .asesor-only { display: none; }
+        body[data-user-role="admin"] .admin-only { display: revert; }
+        body[data-user-role="asesor"] .asesor-only { display: revert; }
+
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
@@ -123,7 +129,7 @@
                     </div>
 
                     <div id="register-view" class="auth-form" style="display: none;">
-                        <h2 class="text-3xl font-bold text-slate-800 mb-2">Crear Cuenta</h2>
+                        <h2 class="text-3xl font-bold text-slate-800 mb-2">Crear Cuenta de Administrador</h2>
                         <p class="text-slate-500 mb-8">Únete a nuestra plataforma.</p>
                         <form id="register-form">
                            <div class="space-y-5">
@@ -181,17 +187,17 @@
                 </div>
                 <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
                     <a href="#" data-target="dashboard" class="nav-link active flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>Dashboard</a>
-                    <a href="#" data-target="novedades" class="nav-link relative flex items-center py-2.5 px-4 rounded-lg">
+                    <a href="#" data-target="novedades" class="nav-link relative flex items-center py-2.5 px-4 rounded-lg admin-only">
                         <i data-lucide="bell" class="w-5 h-5 mr-3"></i>Novedades
                         <span id="novedades-badge-sidebar" class="novedades-badge hidden"></span>
                     </a>
-                    <a href="#" data-target="empresa" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="building-2" class="w-5 h-5 mr-3"></i>Perfil Empresa</a>
-                    <a href="#" data-target="flujo-caja" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="wallet" class="w-5 h-5 mr-3"></i>Flujo de Caja</a>
+                    <a href="#" data-target="empresa" class="nav-link flex items-center py-2.5 px-4 rounded-lg admin-only"><i data-lucide="building-2" class="w-5 h-5 mr-3"></i>Perfil Empresa</a>
+                    <a href="#" data-target="flujo-caja" class="nav-link flex items-center py-2.5 px-4 rounded-lg admin-only"><i data-lucide="wallet" class="w-5 h-5 mr-3"></i>Flujo de Caja</a>
                     <a href="#" data-target="afiliados" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="users" class="w-5 h-5 mr-3"></i>Afiliados</a>
-                    <a href="#" data-target="asesores" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="user-circle" class="w-5 h-5 mr-3"></i>Asesores</a>
-                    <a href="#" data-target="ranking-vendedores" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="award" class="w-5 h-5 mr-3"></i>Ranking Vendedores</a>
-                    <a href="#" data-target="planes" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="shield-plus" class="w-5 h-5 mr-3"></i>Planes de Salud</a>
-                    <a href="#" data-target="cotizador" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="calculator" class="w-5 h-5 mr-3"></i>Cotizador</a>
+                    <a href="#" data-target="asesores" class="nav-link flex items-center py-2.5 px-4 rounded-lg admin-only"><i data-lucide="user-circle" class="w-5 h-5 mr-3"></i>Asesores</a>
+                    <a href="#" data-target="ranking-vendedores" class="nav-link flex items-center py-2.5 px-4 rounded-lg admin-only"><i data-lucide="award" class="w-5 h-5 mr-3"></i>Ranking Vendedores</a>
+                    <a href="#" data-target="planes" class="nav-link flex items-center py-2.5 px-4 rounded-lg admin-only"><i data-lucide="shield-plus" class="w-5 h-5 mr-3"></i>Planes de Salud</a>
+                    <a href="#" data-target="cotizador" class="nav-link flex items-center py-2.5 px-4 rounded-lg admin-only"><i data-lucide="calculator" class="w-5 h-5 mr-3"></i>Cotizador</a>
                 </nav>
                 <div class="px-4 py-4 border-t border-slate-700 flex-shrink-0">
                     <p class="text-xs text-slate-400 uppercase tracking-wider">Usuario Conectado</p>
@@ -222,7 +228,7 @@
                 <div id="profile-modal" class="absolute top-[68px] right-4 z-30 w-64 bg-white rounded-xl shadow-2xl border border-slate-200/50 p-1.5 origin-top-right transition-transform duration-200 ease-out transform scale-95 opacity-0 pointer-events-none">
                     <div class="p-2">
                         <p id="profile-modal-name" class="font-semibold text-slate-800 text-sm truncate" title="email del usuario">email@usuario.com</p>
-                        <p class="text-xs text-slate-500 mb-2">Administrador</p>
+                        <p id="profile-modal-role" class="text-xs text-slate-500 mb-2">Administrador</p>
                         <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Licencia Activa</span>
                     </div>
                     <div class="border-t border-slate-200/80 my-1"></div>
@@ -236,33 +242,37 @@
                     <section id="dashboard" class="content-section active">
                          <h1 class="text-2xl font-bold text-slate-800 mb-6">Resumen General y Métricas Clave</h1>
                          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                      <div><h3 class="text-sm font-medium text-slate-500 uppercase">Ingresos del Mes</h3><p id="kpi-monthly-income" class="text-3xl font-bold text-slate-800 mt-2">$0</p></div>
-                                      <div class="bg-emerald-100 text-emerald-600 p-2 rounded-full"><i data-lucide="trending-up" class="h-6 w-6"></i></div>
+                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between admin-only">
+                                    <div><h3 class="text-sm font-medium text-slate-500 uppercase">Ingresos del Mes</h3><p id="kpi-monthly-income" class="text-3xl font-bold text-slate-800 mt-2">$0</p></div>
+                                    <div class="bg-emerald-100 text-emerald-600 p-2 rounded-full"><i data-lucide="trending-up" class="h-6 w-6"></i></div>
+                                </div>
+                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between admin-only">
+                                    <div><h3 class="text-sm font-medium text-slate-500 uppercase">Cartera Vencida</h3><p id="kpi-overdue-payments" class="text-3xl font-bold text-rose-500 mt-2">$0</p></div>
+                                    <div class="bg-rose-100 text-rose-600 p-2 rounded-full"><i data-lucide="clock" class="h-6 w-6"></i></div>
                                 </div>
                                 <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                      <div><h3 class="text-sm font-medium text-slate-500 uppercase">Cartera Vencida</h3><p id="kpi-overdue-payments" class="text-3xl font-bold text-rose-500 mt-2">$0</p></div>
-                                      <div class="bg-rose-100 text-rose-600 p-2 rounded-full"><i data-lucide="clock" class="h-6 w-6"></i></div>
+                                    <div><h3 class="text-sm font-medium text-slate-500 uppercase">Nuevos Afiliados (Mes)</h3><p id="kpi-new-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
+                                    <div class="bg-sky-100 text-sky-600 p-2 rounded-full"><i data-lucide="user-plus" class="h-6 w-6"></i></div>
                                 </div>
                                 <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                      <div><h3 class="text-sm font-medium text-slate-500 uppercase">Nuevos Afiliados (Mes)</h3><p id="kpi-new-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
-                                      <div class="bg-sky-100 text-sky-600 p-2 rounded-full"><i data-lucide="user-plus" class="h-6 w-6"></i></div>
+                                    <div><h3 class="text-sm font-medium text-slate-500 uppercase">Afiliados Activos</h3><p id="kpi-active-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
+                                    <div class="bg-slate-100 text-slate-600 p-2 rounded-full"><i data-lucide="check-circle-2" class="h-6 w-6"></i></div>
                                 </div>
-                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between">
-                                      <div><h3 class="text-sm font-medium text-slate-500 uppercase">Afiliados Activos</h3><p id="kpi-active-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div>
-                                      <div class="bg-slate-100 text-slate-600 p-2 rounded-full"><i data-lucide="check-circle-2" class="h-6 w-6"></i></div>
+                                <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between asesor-only">
+                                    <div><h3 class="text-sm font-medium text-slate-500 uppercase">Comisión Estimada (Mes)</h3><p id="kpi-asesor-commission" class="text-3xl font-bold text-emerald-600 mt-2">$0</p></div>
+                                    <div class="bg-emerald-100 text-emerald-600 p-2 rounded-full"><i data-lucide="circle-dollar-sign" class="h-6 w-6"></i></div>
                                 </div>
                          </div>
                     </section>
                     
-                    <section id="novedades" class="content-section">
+                    <section id="novedades" class="content-section admin-only">
                         <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-4xl mx-auto">
                             <h2 class="text-2xl font-bold text-slate-800 mb-6">Última Actividad</h2>
                             <div id="novedades-feed" class="space-y-6"></div>
                         </div>
                     </section>
 
-                    <section id="empresa" class="content-section">
+                    <section id="empresa" class="content-section admin-only">
                         <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-3xl mx-auto">
                             <h2 class="text-2xl font-bold text-slate-800 mb-6">Perfil de la Empresa</h2>
                             <form id="company-profile-form" class="space-y-4">
@@ -287,7 +297,7 @@
                         </div>
                     </section>
 
-                    <section id="flujo-caja" class="content-section">
+                    <section id="flujo-caja" class="content-section admin-only">
                         <div class="bg-white p-6 rounded-xl shadow-lg mb-8">
                             <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
                                 <div><h2 class="text-2xl font-bold text-slate-800">Flujo de Caja</h2><p class="text-slate-500">Gestión de ingresos, egresos y reportes financieros.</p></div>
@@ -359,7 +369,7 @@
                         </div>
                     </section>
                     
-                    <section id="asesores" class="content-section">
+                    <section id="asesores" class="content-section admin-only">
                         <div class="flex justify-end items-center mb-6 gap-4">
                             <button id="export-advisors-btn" class="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center whitespace-nowrap"><i data-lucide="download" class="w-5 h-5 mr-2 text-green-600"></i>Exportar a CSV</button>
                             <button id="add-advisor-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Asesor</button>
@@ -367,7 +377,7 @@
                         <div id="advisors-container" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6"></div>
                     </section>
 
-                    <section id="ranking-vendedores" class="content-section">
+                    <section id="ranking-vendedores" class="content-section admin-only">
                         <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-2">
                             <h2 class="text-2xl font-bold text-slate-800">Ranking de Vendedores</h2>
                             <p class="text-sm text-slate-500">Top vendedores por comisiones totales generadas.</p>
@@ -375,7 +385,7 @@
                         <div id="ranking-list" class="space-y-4"></div>
                     </section>
 
-                    <section id="planes" class="content-section">
+                    <section id="planes" class="content-section admin-only">
                         <div class="flex justify-between items-center mb-6">
                             <h2 class="text-2xl font-bold text-slate-800">Administrar Planes de Salud</h2>
                             <button id="add-plan-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Plan</button>
@@ -383,7 +393,7 @@
                         <div id="plans-list" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6"></div>
                     </section>
 
-                    <section id="cotizador" class="content-section">
+                    <section id="cotizador" class="content-section admin-only">
                         <div class="flex justify-between items-center mb-6"><h2 class="text-2xl font-bold text-slate-800">Cotizador de Seguridad Social</h2><button id="open-settings-btn" class="text-slate-500 hover:text-primary-600 p-2 rounded-full bg-slate-100 hover:bg-slate-200"><i data-lucide="settings" class="w-6 h-6"></i></button></div>
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                             <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
@@ -439,11 +449,11 @@
                                    <input type="text" id="affiliate-address" placeholder="Dirección" class="md:col-span-2 w-full px-4 py-2 border rounded-lg">
                                </div>
                            </div>
-                           <div>
+                           <div class="admin-only">
                                <h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">2. Plan de Salud Complementario / Prepagada</h3>
                                <div id="health-plan-selector" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"></div>
                            </div>
-                           <div>
+                           <div class="admin-only">
                                <h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">3. Otras Afiliaciones</h3>
                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                    <div><label for="pension-plan" class="block text-sm font-medium text-slate-600 mb-1">Fondo de Pensión</label><select id="pension-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione un fondo</option><option value="Colpensiones">Colpensiones (Público)</option><option value="Porvenir">Porvenir</option><option value="Protección">Protección</option><option value="Colfondos">Colfondos</option><option value="Skandia">Skandia</option></select></div>
@@ -454,13 +464,13 @@
                            <div>
                                <h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">4. Detalles de Venta y Administrativos</h3>
                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                   <div><label for="advisor-select-list" class="block text-sm font-medium text-slate-600 mb-1">Asesor Asignado</label><select id="advisor-select-list" class="w-full px-4 py-2 border rounded-lg" required></select></div>
+                                   <div class="admin-only"><label for="advisor-select-list" class="block text-sm font-medium text-slate-600 mb-1">Asesor Asignado</label><select id="advisor-select-list" class="w-full px-4 py-2 border rounded-lg" required></select></div>
                                    <div><label for="affiliate-start-date" class="block text-sm font-medium text-slate-600 mb-1">Fecha de Inicio</label><input type="date" id="affiliate-start-date" class="w-full px-4 py-2 border rounded-lg" required></div>
                                    <div><label for="affiliate-status" class="block text-sm font-medium text-slate-600 mb-1">Estado del Afiliado</label><select id="affiliate-status" class="w-full px-4 py-2 border rounded-lg" required><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div>
                                </div>
-                                <div class="mt-6"><label class="flex items-center space-x-2"><input type="checkbox" id="manual-override-checkbox" class="h-4 w-4 text-primary-600 rounded"><span>Usar costos y comisiones manuales</span></label></div>
+                                <div class="mt-6 admin-only"><label class="flex items-center space-x-2"><input type="checkbox" id="manual-override-checkbox" class="h-4 w-4 text-primary-600 rounded"><span>Usar costos y comisiones manuales</span></label></div>
                                
-                               <div id="manual-override-container" class="hidden mt-4 space-y-6 p-4 border rounded-lg bg-slate-50">
+                               <div id="manual-override-container" class="hidden mt-4 space-y-6 p-4 border rounded-lg bg-slate-50 admin-only">
                                    <div>
                                        <h4 class="text-md font-semibold text-slate-600 mb-3">Costos de Afiliación</h4>
                                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -507,10 +517,33 @@
            </div>
         </div>
 
-        <div id="advisor-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="advisor-modal-title" class="text-2xl font-bold">Nuevo Asesor</h2><button data-close-modal="advisor-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="advisor-form" class="p-6"><input type="hidden" id="advisor-doc-id"><div class="space-y-4"><input type="text" id="advisor-name" placeholder="Nombre Completo" class="w-full px-4 py-2 border rounded-lg" required><input type="number" id="advisor-commission" placeholder="Comisión (%)" min="0" max="100" class="w-full px-4 py-2 border rounded-lg" required></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Asesor</button></div></form></div></div>
+        <div id="advisor-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50">
+            <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95">
+                <div class="flex justify-between items-center p-6 border-b"><h2 id="advisor-modal-title" class="text-2xl font-bold">Nuevo Asesor</h2><button data-close-modal="advisor-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div>
+                <form id="advisor-form" class="p-6">
+                    <input type="hidden" id="advisor-doc-id">
+                    <div class="space-y-4">
+                        <p class="text-sm text-slate-600 bg-blue-50 p-3 rounded-lg">Estás creando un nuevo usuario para un asesor. Recibirá un correo para establecer su contraseña y poder ingresar a la plataforma.</p>
+                        <input type="text" id="advisor-name" placeholder="Nombre Completo" class="w-full px-4 py-2 border rounded-lg" required>
+                        <input type="email" id="advisor-email" placeholder="Correo Electrónico (será su usuario)" class="w-full px-4 py-2 border rounded-lg" required>
+                        <input type="password" id="advisor-password" placeholder="Contraseña Temporal" class="w-full px-4 py-2 border rounded-lg" required>
+                        <input type="number" id="advisor-commission" placeholder="Comisión (%)" min="0" max="100" class="w-full px-4 py-2 border rounded-lg" required>
+                    </div>
+                    <div class="pt-6 border-t mt-6 flex justify-end">
+                        <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Asesor</button>
+                    </div>
+                </form>
+            </div>
+        </div>
         <div id="settings-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b sticky top-0 bg-white z-10"><h2 class="text-2xl font-bold">Configuración de Parámetros</h2><button data-close-modal="settings-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="settings-form" class="p-6 space-y-6"><div><h3 class="font-semibold text-lg mb-2">Generales</h3><div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-medium">Salario Mínimo (SMMLV)</label><input type="number" id="setting-smmlv" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes de Cotización (%)</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="block text-sm font-medium">Salud Total</label><input type="number" step="0.1" id="setting-health" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Pensión Total</label><input type="number" step="0.1" id="setting-pension" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Indep.</label><input type="number" step="0.1" id="setting-ccf-ind" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Empleador</label><input type="number" step="0.1" id="setting-ccf-emp" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes ARL (%)</h3><div class="grid grid-cols-2 md:grid-cols-5 gap-4"><div><label class="block text-sm font-medium">Riesgo 1</label><input type="number" step="0.001" id="setting-arl-1" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 2</label><input type="number" step="0.001" id="setting-arl-2" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 3</label><input type="number" step="0.001" id="setting-arl-3" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 4</label><input type="number" step="0.001" id="setting-arl-4" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 5</label><input type="number" step="0.001" id="setting-arl-5" class="w-full p-2 border rounded-lg"></div></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Cambios</button></div></form></div></div>
         <div id="transaction-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="transaction-modal-title" class="text-2xl font-bold"></h2><button data-close-modal="transaction-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="transaction-form" class="p-6"><input type="hidden" id="transaction-type"><div class="space-y-4"><div><label for="transaction-concept" class="block text-sm font-medium text-slate-600">Concepto</label><input type="text" id="transaction-concept" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-amount" class="block text-sm font-medium text-slate-600">Monto</label><input type="number" id="transaction-amount" min="0" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-date" class="block text-sm font-medium text-slate-600">Fecha</label><input type="date" id="transaction-date" class="w-full mt-1 p-2 border rounded-lg" required></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar</button></div></form></div></div>
-        <nav class="md:hidden fixed bottom-0 inset-x-0 bg-slate-900 text-slate-300 flex justify-around p-2 border-t border-slate-700 z-40"><a href="#" data-target="dashboard" class="bottom-nav-link active flex flex-col items-center justify-center text-center w-full"><i data-lucide="layout-dashboard" class="w-6 h-6"></i><span class="text-xs mt-1">Dashboard</span></a><a href="#" data-target="novedades" class="bottom-nav-link relative flex flex-col items-center justify-center text-center w-full"><i data-lucide="bell" class="w-6 h-6"></i><span class="text-xs mt-1">Novedades</span><span id="novedades-badge-mobile" class="novedades-badge hidden"></span></a><a href="#" data-target="afiliados" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full"><i data-lucide="users" class="w-6 h-6"></i><span class="text-xs mt-1">Afiliados</span></a><a href="#" data-target="asesores" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full"><i data-lucide="user-circle" class="w-6 h-6"></i><span class="text-xs mt-1">Asesores</span></a><a href="#" data-target="ranking-vendedores" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full"><i data-lucide="award" class="w-6 h-6"></i><span class="text-xs mt-1">Ranking</span></a></nav>
+        <nav class="md:hidden fixed bottom-0 inset-x-0 bg-slate-900 text-slate-300 flex justify-around p-2 border-t border-slate-700 z-40">
+            <a href="#" data-target="dashboard" class="bottom-nav-link active flex flex-col items-center justify-center text-center w-full"><i data-lucide="layout-dashboard" class="w-6 h-6"></i><span class="text-xs mt-1">Dashboard</span></a>
+            <a href="#" data-target="novedades" class="bottom-nav-link relative flex flex-col items-center justify-center text-center w-full admin-only"><i data-lucide="bell" class="w-6 h-6"></i><span class="text-xs mt-1">Novedades</span><span id="novedades-badge-mobile" class="novedades-badge hidden"></span></a>
+            <a href="#" data-target="afiliados" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full"><i data-lucide="users" class="w-6 h-6"></i><span class="text-xs mt-1">Afiliados</span></a>
+            <a href="#" data-target="asesores" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full admin-only"><i data-lucide="user-circle" class="w-6 h-6"></i><span class="text-xs mt-1">Asesores</span></a>
+            <a href="#" data-target="ranking-vendedores" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full admin-only"><i data-lucide="award" class="w-6 h-6"></i><span class="text-xs mt-1">Ranking</span></a>
+        </nav>
     </div>
 
 <script type="module">
@@ -528,7 +561,13 @@
     const app = window.firebase.initializeApp(firebaseConfig);
     const auth = window.firebase.getAuth(app);
     const db = window.firebase.getFirestore(app);
-    let currentUser = null;
+    // MODIFICADO: Objeto de usuario más completo
+    let currentUser = {
+        auth: null, // Objeto de Firebase Auth
+        data: null, // Datos del documento de /users/{uid} (rol, companyId)
+        companyId: null, // UID del admin principal
+        role: null // 'admin' o 'asesor'
+    };
 
     // --- ESTADO GLOBAL Y CONFIGURACIÓN ---
     let affiliates = [], advisors = [], manualTransactions = [], novedades = [], healthPlans = [];
@@ -554,25 +593,45 @@
     };
 
     // --- PUNTO DE ENTRADA PRINCIPAL: OBSERVA CAMBIOS DE AUTENTICACIÓN ---
+    // MODIFICADO: Lógica de autenticación mejorada para manejar roles
     window.firebase.onAuthStateChanged(auth, async (user) => {
         if (user) {
-            currentUser = user;
             const userDocRef = window.firebase.doc(db, "users", user.uid);
             const userDocSnap = await window.firebase.getDoc(userDocRef);
 
-            if (userDocSnap.exists() && userDocSnap.data().licenseActivated) {
+            if (!userDocSnap.exists()) {
+                // Esto puede ocurrir si un usuario se registra pero el documento no se crea
+                // O si un asesor intenta loguearse antes de que el admin lo cree.
+                showToast("Error: Perfil de usuario no encontrado.", "error");
+                await window.firebase.signOut(auth);
+                return;
+            }
+
+            currentUser.auth = user;
+            currentUser.data = userDocSnap.data();
+            currentUser.role = currentUser.data.role;
+            currentUser.companyId = currentUser.data.companyId;
+
+            const companyDocRef = window.firebase.doc(db, "companies", currentUser.companyId);
+            const companyDocSnap = await window.firebase.getDoc(companyDocRef);
+
+            if (!companyDocSnap.exists() || !companyDocSnap.data().licenseActivated) {
+                if (currentUser.role === 'admin' && !companyDocSnap.data()?.licenseActivated) {
+                    loader.style.display = 'none';
+                    modalManager.open('license-modal');
+                } else {
+                    showToast("La cuenta principal de la compañía no está activa.", "error");
+                    await window.firebase.signOut(auth);
+                }
+            } else {
                 initializeAppForUser();
                 showView(appContainer);
-            } else {
-                loader.style.display = 'none';
-                appContainer.style.display = 'none';
-                authContainer.style.display = 'none';
-                modalManager.open('license-modal');
             }
         } else {
-            currentUser = null;
+            currentUser = { auth: null, data: null, companyId: null, role: null };
             unsubscribeAllListeners();
             resetLocalData();
+            document.body.removeAttribute('data-user-role');
             showView(authContainer);
             document.getElementById('login-view').style.display = 'block';
             document.getElementById('register-view').style.display = 'none';
@@ -580,17 +639,38 @@
     });
     
     // --- LÓGICA DE DATOS CON FIRESTORE ---
-    async function setupNewUserDocument(user) {
-        const userDocRef = window.firebase.doc(db, "users", user.uid);
+    // MODIFICADO: Creación de usuario y compañía
+    async function setupNewUserAndCompany(user) {
         const batch = window.firebase.writeBatch(db);
-        batch.set(userDocRef, { email: user.email, createdAt: window.firebase.serverTimestamp(), licenseActivated: false, companyProfile: defaultCompanyProfile, settings: defaultSettings });
-        const advisorRef = window.firebase.doc(window.firebase.collection(userDocRef, "advisors"));
+
+        // 1. Crear documento de usuario
+        const userDocRef = window.firebase.doc(db, "users", user.uid);
+        batch.set(userDocRef, { 
+            email: user.email, 
+            createdAt: window.firebase.serverTimestamp(),
+            role: 'admin',
+            companyId: user.uid // El admin es dueño de su propia compañía
+        });
+
+        // 2. Crear documento de compañía
+        const companyDocRef = window.firebase.doc(db, "companies", user.uid);
+        batch.set(companyDocRef, {
+            owner: user.uid,
+            licenseActivated: false,
+            companyProfile: defaultCompanyProfile,
+            settings: defaultSettings
+        });
+        
+        // 3. Crear datos iniciales dentro de la compañía
+        const advisorRef = window.firebase.doc(window.firebase.collection(companyDocRef, "advisors"));
         batch.set(advisorRef, { id: advisorRef.id, name: 'Asesor Inicial', commissionRate: 10 });
-        const planRef = window.firebase.doc(window.firebase.collection(userDocRef, "healthPlans"));
+        const planRef = window.firebase.doc(window.firebase.collection(companyDocRef, "healthPlans"));
         batch.set(planRef, { id: planRef.id, name: 'Plan de Ejemplo', price: 100000, features: 'Característica 1\nCaracterística 2' });
+        
         await batch.commit();
     }
 
+    // MODIFICADO: Activación de licencia en el documento de la compañía
     async function handleLicenseActivation() {
         const licenseKey = document.getElementById('license-key-input').value.trim().toUpperCase();
         const errorMsgElement = document.getElementById('license-error-message');
@@ -610,9 +690,12 @@
             const licenseDoc = querySnapshot.docs[0];
             const batch = writeBatch(db);
             const licenseDocRef = doc(db, 'licences', licenseDoc.id);
-            batch.update(licenseDocRef, { status: 'used', usedBy: currentUser.uid, usedAt: serverTimestamp() });
-            const userDocRef = doc(db, "users", currentUser.uid);
-            batch.set(userDocRef, { licenseActivated: true }, { merge: true });
+            batch.update(licenseDocRef, { status: 'used', usedBy: currentUser.auth.uid, usedAt: serverTimestamp() });
+            
+            // Actualiza la compañía, no el usuario
+            const companyDocRef = doc(db, "companies", currentUser.companyId);
+            batch.update(companyDocRef, { licenseActivated: true });
+            
             await batch.commit();
             showToast('¡Licencia activada con éxito!', 'success');
             modalManager.close('license-modal');
@@ -626,11 +709,13 @@
         }
     }
     
+    // MODIFICADO: Escucha los datos de la compañía correcta y filtra para asesores
     function setupRealtimeListeners() {
-        if (!currentUser || activeListeners.length > 0) return;
-        const { doc, collection, onSnapshot } = window.firebase;
-        const userDocRef = doc(db, "users", currentUser.uid);
-        const unsubUser = onSnapshot(userDocRef, (docSnap) => {
+        if (!currentUser.companyId || activeListeners.length > 0) return;
+        const { doc, collection, onSnapshot, query, where } = window.firebase;
+        
+        const companyDocRef = doc(db, "companies", currentUser.companyId);
+        const unsubCompany = onSnapshot(companyDocRef, (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 companyProfile = data.companyProfile || defaultCompanyProfile;
@@ -639,20 +724,39 @@
                 if (document.getElementById('empresa').classList.contains('active')) { renderEmpresaSection(); }
             }
         });
-        activeListeners.push(unsubUser);
+        activeListeners.push(unsubCompany);
+
+        // NUEVO: Query base para asesores, para que solo vean sus afiliados
+        let affiliatesQuery;
+        const affiliatesColRef = collection(db, `companies/${currentUser.companyId}/affiliates`);
+        if (currentUser.role === 'asesor') {
+            affiliatesQuery = query(affiliatesColRef, where("advisorId", "==", currentUser.auth.uid));
+        } else {
+            affiliatesQuery = affiliatesColRef;
+        }
+
+        const unsubAffiliates = onSnapshot(affiliatesQuery, (snapshot) => {
+             affiliates = snapshot.docs.map(d => {
+                const docData = d.data();
+                if (docData.createdAt && docData.createdAt.toDate) docData.createdAt = docData.createdAt.toDate();
+                return docData;
+             });
+             renderAllDependentOnAffiliates();
+        });
+        activeListeners.push(unsubAffiliates);
+        
         const collectionsToListen = {
-            affiliates: (data) => { affiliates = data; renderAllDependentOnAffiliates(); },
             advisors: (data) => { advisors = data; renderAllDependentOnAdvisors(); },
             healthPlans: (data) => { healthPlans = data; renderAllDependentOnPlans(); },
             manualTransactions: (data) => { manualTransactions = data; renderFlujoCajaSection(); },
             novedades: (data) => { novedades = data; updateNovedadesBadge(); if (document.getElementById('novedades').classList.contains('active')) { renderNovedadesSection(); } }
         };
+
         for (const [colName, callback] of Object.entries(collectionsToListen)) {
-            const colRef = collection(db, `users/${currentUser.uid}/${colName}`);
+            const colRef = collection(db, `companies/${currentUser.companyId}/${colName}`);
             const unsub = onSnapshot(colRef, (snapshot) => {
                 const data = snapshot.docs.map(d => {
                     const docData = d.data();
-                    if (docData.createdAt && docData.createdAt.toDate) docData.createdAt = docData.createdAt.toDate();
                     if (docData.date && docData.date.toDate) docData.date = docData.date.toDate().toISOString();
                     if (docData.timestamp && docData.timestamp.toDate) docData.timestamp = docData.timestamp.toDate();
                     return docData;
@@ -662,36 +766,64 @@
             activeListeners.push(unsub);
         }
     }
-    
+
     function renderAllDependentOnAffiliates() { renderDashboard(); renderFlujoCajaSection(); renderAdvisorsSection(); renderRankingSection(); if (document.getElementById('afiliados').classList.contains('active')) { renderAffiliatesList(); } }
     function renderAllDependentOnAdvisors() { populateAdvisorSelect(); renderAdvisorsSection(); renderRankingSection(); if (document.getElementById('afiliados').classList.contains('active')) { renderAffiliatesList(); } }
     function renderAllDependentOnPlans() { renderPlansList(); if (document.getElementById('afiliados').classList.contains('active')) { renderAffiliatesList(); } }
     function unsubscribeAllListeners() { activeListeners.forEach(unsub => unsub()); activeListeners = []; }
     function resetLocalData() { affiliates = []; advisors = []; manualTransactions = []; novedades = []; healthPlans = []; companyProfile = {}; settings = {}; }
-    async function saveDataToFirestore(collectionName, data) { if (!currentUser) return; const docRef = window.firebase.doc(db, `users/${currentUser.uid}/${collectionName}/${data.id}`); await window.firebase.setDoc(docRef, data, { merge: true }); }
-    async function deleteDataFromFirestore(collectionName, docId) { if (!currentUser) return; const docRef = window.firebase.doc(db, `users/${currentUser.uid}/${collectionName}/${docId}`); await window.firebase.deleteDoc(docRef); }
+    async function saveDataToFirestore(collectionName, data) { if (!currentUser.companyId) return; const docRef = window.firebase.doc(db, `companies/${currentUser.companyId}/${collectionName}/${data.id}`); await window.firebase.setDoc(docRef, data, { merge: true }); }
+    async function deleteDataFromFirestore(collectionName, docId) { if (!currentUser.companyId) return; const docRef = window.firebase.doc(db, `companies/${currentUser.companyId}/${collectionName}/${docId}`); await window.firebase.deleteDoc(docRef); }
+    
+    // NUEVO: Función para actualizar la visibilidad de la UI según el rol
+    function updateUIVisibility() {
+        document.body.setAttribute('data-user-role', currentUser.role);
+    }
     
     function initializeAppForUser() {
-        document.getElementById('user-email-display').textContent = currentUser.email;
-        document.getElementById('profile-modal-name').textContent = currentUser.email;
+        document.getElementById('user-email-display').textContent = currentUser.auth.email;
+        document.getElementById('profile-modal-name').textContent = currentUser.auth.email;
+        document.getElementById('profile-modal-role').textContent = currentUser.role === 'admin' ? 'Administrador' : 'Asesor';
+        updateUIVisibility();
         setupRealtimeListeners();
         renderContent('dashboard');
     }
     
     function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme); const themeSelector = document.querySelector(`#theme-selector input[value="${theme}"]`); if (themeSelector) { themeSelector.checked = true; } }
-    async function createNovedad(affiliateId, affiliateName, type, description) { if (!currentUser) return; const novedad = { affiliateId, affiliateName, type, description, timestamp: new Date() }; const collectionRef = window.firebase.collection(db, `users/${currentUser.uid}/novedades`); await window.firebase.addDoc(collectionRef, novedad); }
+    async function createNovedad(affiliateId, affiliateName, type, description) { if (!currentUser.companyId) return; const novedad = { affiliateId, affiliateName, type, description, timestamp: new Date() }; const collectionRef = window.firebase.collection(db, `companies/${currentUser.companyId}/novedades`); await window.firebase.addDoc(collectionRef, novedad); }
     function getAffiliateCommissionBase(affiliate) { if (affiliate.manualCosts && Object.values(affiliate.manualCosts).some(cost => cost > 0)) { return Object.values(affiliate.manualCosts).reduce((sum, cost) => sum + (Number(cost) || 0), 0); } const plan = healthPlans.find(p => p.id === affiliate.healthPlan); return plan ? plan.price : 0; }
     function getAdvisorCommissionForAffiliate(affiliate) { if (affiliate.manualCommission && affiliate.manualCommission > 0) { return affiliate.manualCommission; } const advisor = advisors.find(v => v.id === affiliate.advisorId); if (!advisor) return 0; return getAffiliateCommissionBase(affiliate) * (advisor.commissionRate / 100); }
     function renderContent(targetId) { document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active')); const section = document.getElementById(targetId); if (section) { section.classList.add('active'); try { const renderMap = { 'dashboard': renderDashboard, 'afiliados': renderAffiliatesList, 'asesores': renderAdvisorsSection, 'ranking-vendedores': renderRankingSection, 'empresa': renderEmpresaSection, 'flujo-caja': renderFlujoCajaSection, 'novedades': renderNovedadesSection, 'planes': renderPlansList, 'cotizador': () => {} }; if(renderMap[targetId]) renderMap[targetId](); lucide.createIcons(); } catch(error) { console.error(`Error rendering ${targetId}:`, error); } } }
     function updateViewToggleButtons() { const cardBtn = document.getElementById('view-as-cards-btn'); const tableBtn = document.getElementById('view-as-table-btn'); cardBtn.className = affiliatesViewMode === 'card' ? 'p-2 rounded-lg bg-primary-600 text-white shadow-md' : 'p-2 rounded-lg bg-white hover:bg-slate-100 border text-slate-600'; tableBtn.className = affiliatesViewMode === 'table' ? 'p-2 rounded-lg bg-primary-600 text-white shadow-md' : 'p-2 rounded-lg bg-white hover:bg-slate-100 border text-slate-600'; }
-    function renderAffiliatesList() { const cardContainer = document.getElementById('affiliates-card-container'); const tableContainer = document.getElementById('affiliates-table-container'); const searchTerm = document.getElementById('search-affiliate').value.toLowerCase(); const statusFilter = document.getElementById('filter-affiliate-status').value; const paymentStatusFilter = document.getElementById('filter-affiliate-payment-status').value; let filteredAffiliates = affiliates.filter(a => (a.name.toLowerCase().includes(searchTerm) || a.documentId.includes(searchTerm)) && (statusFilter === 'all' || a.status === statusFilter) && (paymentStatusFilter === 'all' || (a.paymentStatus === (paymentStatusFilter === 'En mora' ? 'En mora' : 'Al día')))); cardContainer.style.display = 'none'; tableContainer.style.display = 'none'; if (filteredAffiliates.length === 0) { cardContainer.innerHTML = `<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No se encontraron afiliados.</p></div>`; cardContainer.style.display = 'grid'; return; } if (affiliatesViewMode === 'card') { renderAffiliatesAsCards(filteredAffiliates); cardContainer.style.display = 'grid'; } else { renderAffiliatesAsTable(filteredAffiliates); tableContainer.style.display = 'block'; } }
-    function renderAffiliatesAsCards(filteredData) { const listContainer = document.getElementById('affiliates-card-container'); const statusStyles = { 'Activo': 'bg-green-100 text-green-800', 'Pendiente': 'bg-yellow-100 text-yellow-800', 'Inactivo': 'bg-red-100 text-red-800' }; listContainer.innerHTML = filteredData.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const commission = getAdvisorCommissionForAffiliate(aff); const commissionBase = getAffiliateCommissionBase(aff); const healthPlan = healthPlans.find(p => p.id === aff.healthPlan); return ` <div class="bg-white rounded-xl shadow-lg transition hover:shadow-2xl flex flex-col"> <div class="p-5"> <div class="flex justify-between items-start"> <div><h3 class="font-bold text-lg text-slate-800">${aff.name}</h3><p class="text-sm text-slate-500">Doc: ${aff.documentId}</p></div> <div class="flex items-center gap-2 flex-shrink-0 ml-2"><span class="text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[aff.status] || ''}">${aff.status}</span></div> </div> <div class="grid grid-cols-2 gap-4 mt-4 text-sm"> <div><strong class="block text-slate-500">Asesor</strong><span>${advisor ? advisor.name : 'N/A'}</span></div> <div><strong class="block text-slate-500">Comisión Mensual</strong><span class="font-bold text-green-600">${formatCurrency(commission)} ${aff.manualCommission ? '<span title="Comisión Manual" class="text-blue-500 font-bold">*</span>' : ''}</span></div> <div><strong class="block text-slate-500">Valor Plan/Base</strong><span>${formatCurrency(commissionBase)} ${aff.manualCosts ? '<span title="Costos Manuales" class="text-blue-500 font-bold">*</span>' : ''}</span></div> <div><strong class="block text-slate-500">Fecha Inicio</strong><span>${aff.startDate}</span></div> </div> </div> <div class="details-section hidden p-5 border-t bg-slate-50"> <h4 class="font-semibold mb-2">Detalles Completos:</h4> <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm"> <p><strong class="text-slate-500">Plan:</strong> ${healthPlan ? healthPlan.name : 'N/A'}</p><p><strong class="text-slate-500">Pensión:</strong> ${aff.pensionPlan}</p> <p><strong class="text-slate-500">ARL:</strong> ${aff.arlPlan}</p><p><strong class="text-slate-500">Caja Comp.:</strong> ${aff.ccfPlan}</p> <p class="sm:col-span-2"><strong class="text-slate-500">Notas:</strong> <span class="whitespace-pre-wrap">${aff.notes || 'N/A'}</span></p> </div> </div> <div class="border-t p-3 mt-auto flex justify-between items-center bg-gray-50/50 rounded-b-xl"> <button data-toggle-details="${aff.id}" class="text-sm text-primary-600 font-semibold hover:text-primary-700 flex items-center">Ver Detalles<i data-lucide="chevron-down" class="details-toggle-icon h-5 w-5 ml-1"></i></button> <div><button class="edit-affiliate-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${aff.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button><button class="delete-affiliate-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${aff.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button></div> </div> </div>`; }).join(''); lucide.createIcons(); }
-    function renderAffiliatesAsTable(filteredData) { const tableBody = document.getElementById('affiliates-table-body'); const statusStyles = { 'Activo': 'bg-green-100 text-green-800', 'Pendiente': 'bg-yellow-100 text-yellow-800', 'Inactivo': 'bg-red-100 text-red-800' }; tableBody.innerHTML = filteredData.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const healthPlan = healthPlans.find(p => p.id === aff.healthPlan); return ` <tr class="hover:bg-slate-50"> <td class="p-3"><div class="font-semibold text-slate-800">${aff.name}</div><div class="text-xs text-slate-500">Doc: ${aff.documentId}</div></td> <td class="p-3"><div class="text-slate-800">${healthPlan ? healthPlan.name : 'N/A'}</div><div class="text-xs text-slate-500">Asesor: ${advisor ? advisor.name : 'N/A'}</div></td> <td class="p-3"><div class="text-slate-800 break-all">${aff.email || 'N/A'}</div><div class="text-xs text-slate-500">${aff.phone || 'N/A'}</div></td> <td class="p-3"><span class="text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[aff.status] || ''}">${aff.status}</span><div class="text-xs text-slate-500 mt-1">Inicio: ${aff.startDate}</div></td> <td class="p-3 text-center"><div class="flex justify-center items-center"> <button class="edit-affiliate-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${aff.id}" title="Editar"><i data-lucide="pencil" class="h-4 w-4 pointer-events-none"></i></button> <button class="delete-affiliate-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${aff.id}" title="Eliminar"><i data-lucide="trash-2" class="h-4 w-4 pointer-events-none"></i></button> </div></td> </tr>`; }).join(''); lucide.createIcons(); }
+    function renderAffiliatesList() { const cardContainer = document.getElementById('affiliates-card-container'); const tableContainer = document.getElementById('affiliates-table-container'); const searchTerm = document.getElementById('search-affiliate').value.toLowerCase(); const statusFilter = document.getElementById('filter-affiliate-status').value; const paymentStatusFilter = document.getElementById('filter-affiliate-payment-status').value; let filteredAffiliates = affiliates.filter(a => (a.name.toLowerCase().includes(searchTerm) || (a.documentId && a.documentId.includes(searchTerm))) && (statusFilter === 'all' || a.status === statusFilter) && (paymentStatusFilter === 'all' || (a.paymentStatus === (paymentStatusFilter === 'En mora' ? 'En mora' : 'Al día')))); cardContainer.style.display = 'none'; tableContainer.style.display = 'none'; if (filteredAffiliates.length === 0) { cardContainer.innerHTML = `<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No se encontraron afiliados.</p></div>`; cardContainer.style.display = 'grid'; return; } if (affiliatesViewMode === 'card') { renderAffiliatesAsCards(filteredAffiliates); cardContainer.style.display = 'grid'; } else { renderAffiliatesAsTable(filteredAffiliates); tableContainer.style.display = 'block'; } }
+    function renderAffiliatesAsCards(filteredData) { const listContainer = document.getElementById('affiliates-card-container'); const statusStyles = { 'Activo': 'bg-green-100 text-green-800', 'Pendiente': 'bg-yellow-100 text-yellow-800', 'Inactivo': 'bg-red-100 text-red-800' }; listContainer.innerHTML = filteredData.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const commission = getAdvisorCommissionForAffiliate(aff); const commissionBase = getAffiliateCommissionBase(aff); const healthPlan = healthPlans.find(p => p.id === aff.healthPlan); return ` <div class="bg-white rounded-xl shadow-lg transition hover:shadow-2xl flex flex-col"> <div class="p-5"> <div class="flex justify-between items-start"> <div><h3 class="font-bold text-lg text-slate-800">${aff.name}</h3><p class="text-sm text-slate-500">Doc: ${aff.documentId}</p></div> <div class="flex items-center gap-2 flex-shrink-0 ml-2"><span class="text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[aff.status] || ''}">${aff.status}</span></div> </div> <div class="grid grid-cols-2 gap-4 mt-4 text-sm"> <div class="admin-only"><strong class="block text-slate-500">Asesor</strong><span>${advisor ? advisor.name : 'N/A'}</span></div> <div class="admin-only"><strong class="block text-slate-500">Comisión Mensual</strong><span class="font-bold text-green-600">${formatCurrency(commission)} ${aff.manualCommission ? '<span title="Comisión Manual" class="text-blue-500 font-bold">*</span>' : ''}</span></div> <div><strong class="block text-slate-500">Valor Plan/Base</strong><span>${formatCurrency(commissionBase)} ${aff.manualCosts ? '<span title="Costos Manuales" class="text-blue-500 font-bold">*</span>' : ''}</span></div> <div><strong class="block text-slate-500">Fecha Inicio</strong><span>${aff.startDate}</span></div> </div> </div> <div class="details-section hidden p-5 border-t bg-slate-50"> <h4 class="font-semibold mb-2">Detalles Completos:</h4> <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm"> <p><strong class="text-slate-500">Plan:</strong> ${healthPlan ? healthPlan.name : 'N/A'}</p><p><strong class="text-slate-500">Pensión:</strong> ${aff.pensionPlan}</p> <p><strong class="text-slate-500">ARL:</strong> ${aff.arlPlan}</p><p><strong class="text-slate-500">Caja Comp.:</strong> ${aff.ccfPlan}</p> <p class="sm:col-span-2"><strong class="text-slate-500">Notas:</strong> <span class="whitespace-pre-wrap">${aff.notes || 'N/A'}</span></p> </div> </div> <div class="border-t p-3 mt-auto flex justify-between items-center bg-gray-50/50 rounded-b-xl"> <button data-toggle-details="${aff.id}" class="text-sm text-primary-600 font-semibold hover:text-primary-700 flex items-center">Ver Detalles<i data-lucide="chevron-down" class="details-toggle-icon h-5 w-5 ml-1"></i></button> <div><button class="edit-affiliate-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${aff.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button><button class="delete-affiliate-btn text-slate-500 hover:text-red-600 p-2 rounded-full admin-only" data-id="${aff.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button></div> </div> </div>`; }).join(''); lucide.createIcons(); }
+    function renderAffiliatesAsTable(filteredData) { const tableBody = document.getElementById('affiliates-table-body'); const statusStyles = { 'Activo': 'bg-green-100 text-green-800', 'Pendiente': 'bg-yellow-100 text-yellow-800', 'Inactivo': 'bg-red-100 text-red-800' }; tableBody.innerHTML = filteredData.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const healthPlan = healthPlans.find(p => p.id === aff.healthPlan); return ` <tr class="hover:bg-slate-50"> <td class="p-3"><div class="font-semibold text-slate-800">${aff.name}</div><div class="text-xs text-slate-500">Doc: ${aff.documentId}</div></td> <td class="p-3"><div class="text-slate-800">${healthPlan ? healthPlan.name : 'N/A'}</div><div class="text-xs text-slate-500 admin-only">Asesor: ${advisor ? advisor.name : 'N/A'}</div></td> <td class="p-3"><div class="text-slate-800 break-all">${aff.email || 'N/A'}</div><div class="text-xs text-slate-500">${aff.phone || 'N/A'}</div></td> <td class="p-3"><span class="text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[aff.status] || ''}">${aff.status}</span><div class="text-xs text-slate-500 mt-1">Inicio: ${aff.startDate}</div></td> <td class="p-3 text-center"><div class="flex justify-center items-center"> <button class="edit-affiliate-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${aff.id}" title="Editar"><i data-lucide="pencil" class="h-4 w-4 pointer-events-none"></i></button> <button class="delete-affiliate-btn text-slate-500 hover:text-red-600 p-2 rounded-full admin-only" data-id="${aff.id}" title="Eliminar"><i data-lucide="trash-2" class="h-4 w-4 pointer-events-none"></i></button> </div></td> </tr>`; }).join(''); lucide.createIcons(); }
     function renderAdvisorsSection(){const c=document.getElementById("advisors-container");if(!c)return;if(0===advisors.length){c.innerHTML='<p class="text-center text-slate-500 col-span-full">No hay asesores registrados.</p>';return}const t={Activo:"bg-green-100 text-green-800",Pendiente:"bg-yellow-100 text-yellow-800",Inactivo:"bg-red-100 text-red-800"};c.innerHTML=advisors.map(e=>{const a=affiliates.filter(a=>a.advisorId===e.id),n=a.filter(a=>"Activo"===a.status),o=a.reduce((e,a)=>e+getAdvisorCommissionForAffiliate(a),0),s=n.reduce((e,a)=>e+getAdvisorCommissionForAffiliate(a),0),i=0<a.length,l=i?a.map(a=>{const e=getAdvisorCommissionForAffiliate(a);return`<tr class="border-b border-slate-200 last:border-b-0 hover:bg-slate-100"><td class="p-2 font-medium text-slate-800">${a.name}</td><td class="p-2"><span class="text-xs font-semibold px-2 py-0.5 rounded-full ${t[a.status]||""}">${a.status}</span></td><td class="p-2 text-right font-mono text-green-700">${formatCurrency(e)}</td></tr>`}).join(""):`<tr><td colspan="3" class="text-center p-4 text-slate-500">Este asesor no tiene afiliados.</td></tr>`;return` <div class="bg-white rounded-xl shadow-lg flex flex-col transition hover:shadow-2xl"> <div class="p-5 flex justify-between items-start"> <div><h3 class="font-bold text-xl text-slate-800">${e.name}</h3><p class="text-sm text-primary-600 font-semibold">Comisión Base: ${e.commissionRate}%</p></div> <div class="flex-shrink-0"><button class="edit-advisor-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button><button class="delete-advisor-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button></div> </div> <div class="p-5 grid grid-cols-3 gap-4 text-center border-y"> <div><p class="text-3xl font-bold text-slate-700">${a.length}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Afiliados</p></div> <div><p class="text-2xl font-bold text-primary-600">${formatCurrency(s,0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión (Mes)</p></div> <div><p class="text-2xl font-bold text-green-600">${formatCurrency(o,0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión (Total)</p></div> </div> <div id="advisor-stats-${e.id}" class="hidden"> <div class="p-4 bg-slate-50"><h4 class="font-semibold mb-3 text-slate-700 text-sm">Desglose de Afiliados</h4><div class="max-h-64 overflow-y-auto pr-1"><table class="w-full text-sm text-left"><thead class="text-xs text-slate-500 uppercase bg-slate-200 sticky top-0"><tr><th class="p-2 font-semibold">Afiliado</th><th class="p-2 font-semibold">Estado</th><th class="p-2 font-semibold text-right">Ganancia</th></tr></thead><tbody class="bg-white">${l}</tbody></table></div></div> </div> <div class="mt-auto border-t p-3 flex justify-end items-center bg-gray-50/50 rounded-b-xl"><button ${i?"":"disabled"} data-toggle-stats="${e.id}" class="stats-toggle-btn text-sm text-primary-600 font-semibold hover:text-primary-700 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"><span class="button-text">Ver Desglose</span><i data-lucide="chevron-down" class="stats-toggle-icon h-5 w-5 ml-1"></i></button></div> </div>`}).join("");}
     function renderRankingSection(){const e=document.getElementById("ranking-list");if(!e)return;const t=advisors.map(e=>{const t=affiliates.filter(t=>t.advisorId===e.id).reduce((e,t)=>e+getAdvisorCommissionForAffiliate(t),0);return{...e,totalCommission:t}});if(t.sort((e,t)=>t.totalCommission-e.totalCommission),0===t.length){e.innerHTML='<div class="text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay asesores para mostrar en el ranking.</p></div>';return}const a=["bg-amber-400 text-amber-900","bg-slate-300 text-slate-800","bg-orange-400 text-orange-900"],n=['<i data-lucide="trophy" class="w-6 h-6 text-amber-500"></i>','<i data-lucide="award" class="w-6 h-6 text-slate-500"></i>','<i data-lucide="medal" class="w-6 h-6 text-orange-500"></i>'];e.innerHTML=t.map((e,t)=>{const o=t+1,s=3>=o?a[t]:"bg-slate-200 text-slate-700",i=3>=o?n[t]:`<span class="font-bold text-lg">${o}</span>`;return` <div class="bg-white rounded-xl shadow-lg p-4 flex items-center space-x-4 transition hover:shadow-xl hover:scale-[1.02]"> <div class="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${s}">${i}</div> <div class="flex-grow"> <h3 class="font-bold text-lg text-slate-800">${e.name}</h3> <p class="text-sm text-slate-500">Comisión Base: ${e.commissionRate}%</p> </div> <div class="text-right"> <p class="text-xl font-extrabold text-green-600">${formatCurrency(e.totalCommission)}</p> <p class="text-xs font-medium text-slate-500 uppercase">Comisión Total</p> </div> </div>`}).join("");}
     function renderPlansList(){const e=document.getElementById("plans-list");if(!e)return;if(0===healthPlans.length){e.innerHTML='<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay planes de salud creados. ¡Añade el primero!</p></div>';return}e.innerHTML=healthPlans.map(e=>` <div class="bg-white rounded-xl shadow-lg flex flex-col"> <div class="p-5 flex-grow"> <div class="flex justify-between items-start"><h3 class="font-bold text-lg text-slate-800">${e.name}</h3><p class="text-xl font-extrabold text-primary-600">${formatCurrency(e.price)}</p></div> <ul class="text-sm text-slate-600 space-y-1 mt-4"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check-circle-2" class="w-4 h-4 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> <div class="border-t p-3 flex justify-end items-center bg-gray-50/50 rounded-b-xl"> <button class="edit-plan-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button> <button class="delete-plan-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button> </div> </div>`).join("");}
     function populateAdvisorSelect(){const e=document.getElementById("advisor-select-list");e&&(e.innerHTML='<option value="" disabled selected>Asignar Asesor</option>'+advisors.map(e=>`<option value="${e.id}">${e.name}</option>`).join(""))}
-    function renderDashboard(){const e=new Date,t=e.getMonth(),a=e.getFullYear(),n=affiliates.filter(e=>"Activo"===e.status),o=n.reduce((e,t)=>e+getAffiliateCommissionBase(t),0),s=affiliates.filter(e=>{const a=e.createdAt;return a&&a.getMonth()===t&&a.getFullYear()===a.getFullYear()}).length;document.getElementById("kpi-monthly-income").textContent=formatCurrency(o),document.getElementById("kpi-new-affiliates").textContent=s,document.getElementById("kpi-active-affiliates").textContent=n.length}
+    function renderDashboard(){
+        const e = new Date(), t = e.getMonth(), a = e.getFullYear();
+        const activeAffiliates = affiliates.filter(aff => aff.status === 'Activo');
+        const monthlyIncome = activeAffiliates.reduce((sum, aff) => sum + getAffiliateCommissionBase(aff), 0);
+        const newAffiliatesThisMonth = affiliates.filter(aff => {
+            const createdAt = aff.createdAt; // Assuming createdAt is a Date object
+            return createdAt && createdAt.getMonth() === t && createdAt.getFullYear() === a;
+        }).length;
+        
+        // Admin-only KPIs
+        document.getElementById("kpi-monthly-income").textContent=formatCurrency(monthlyIncome);
+
+        // Shared KPIs
+        document.getElementById("kpi-new-affiliates").textContent = newAffiliatesThisMonth;
+        document.getElementById("kpi-active-affiliates").textContent = activeAffiliates.length;
+        
+        // Asesor-only KPIs
+        if(currentUser.role === 'asesor') {
+            const advisorMonthlyCommission = activeAffiliates.reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0);
+            document.getElementById("kpi-asesor-commission").textContent = formatCurrency(advisorMonthlyCommission);
+        }
+    }
     function calculateContributions(e,t,a,n){if(!settings.SMMLV) return; const o=Math.max(.4*e,settings.SMMLV);let s={ibc:o,grandTotal:0,health:{},pension:{},arl:{},ccf:{}};const i=settings.CONTRIBUTION_RATES,l=settings.ARL_RATES;return n.health&&(s.health.total=o*(i.health/100),s.health.details="independiente"===t?"Aporte total":`Empleado: ${formatCurrency(o*(i.employee_health/100))} | Empleador: ${formatCurrency(o*(i.employer_health/100))}`,s.grandTotal+=s.health.total),n.pension&&(s.pension.total=o*(i.pension/100),s.pension.details="independiente"===t?"Aporte total":`Empleado: ${formatCurrency(o*(i.employee_pension/100))} | Empleador: ${formatCurrency(o*(i.employer_pension/100))}`,s.grandTotal+=s.pension.total),n.arl&&(s.arl.total=o*(l[a]/100),s.arl.details="A cargo del contratante/empleador",s.grandTotal+=s.arl.total),n.ccf&&(s.ccf.total=o*("independiente"===t?i.independiente_ccf/100:i.employer_ccf/100),s.ccf.details="independiente"===t?"Aporte voluntario":"A cargo del empleador",s.grandTotal+=s.ccf.total),s}
     function renderCalculatorResults(e,t){if(!e) return; document.getElementById("ibc-value").textContent=formatCurrency(e.ibc),document.getElementById("grand-total").textContent=formatCurrency(e.grandTotal);for(const a of["health","pension","arl","ccf"]){const n=document.getElementById(`${a}-result-row`);t[a]&&n?(document.getElementById(`${a}-total`).textContent=formatCurrency(e[a].total),document.getElementById(`${a}-breakdown`).textContent=e[a].details,n.classList.remove("hidden")):n&&n.classList.add("hidden")}}
     function renderHealthPlanCards(){const e=document.getElementById("health-plan-selector");if(!e)return;if(0===healthPlans.length){e.innerHTML='<p class="text-slate-500 md:col-span-4">No hay planes de salud definidos. Por favor, cree un plan en la sección "Planes de Salud".</p>';return}e.innerHTML=healthPlans.map((e,t)=>` <label class="health-plan-card cursor-pointer rounded-lg p-4 flex flex-col justify-between"> <div> <div class="flex justify-between items-center"><h4 class="font-bold text-md text-slate-800">${e.name}</h4><input type="radio" name="health-plan" value="${e.id}" class="h-4 w-4 text-primary-600" ${0===t?"checked":""}></div> <p class="text-xl font-extrabold text-primary-600 my-2">${formatCurrency(e.price)}<span class="text-sm font-medium text-slate-500">/mes</span></p> <ul class="text-xs text-slate-600 space-y-1 mt-3"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check" class="w-3.5 h-3.5 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> </label>`).join("");}
@@ -716,7 +848,7 @@
             const profileModal = document.getElementById('profile-modal');
             const profileToggleBtn = document.getElementById('profile-toggle-btn');
             if (profileModal && !profileModal.contains(target) && profileToggleBtn && !profileToggleBtn.contains(target)) {
-                 profileModal.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
+                profileModal.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
             }
 
             if (navLink) {
@@ -765,20 +897,104 @@
             else if (button.matches('[data-toggle-details]')) { const card = button.closest('.bg-white'); if (card) { card.querySelector('.details-section').classList.toggle('hidden'); button.classList.toggle('details-shown'); } }
             else if (button.matches('[data-toggle-stats]')) { const statsContainer = document.getElementById(`advisor-stats-${button.dataset.toggleStats}`); if (statsContainer) { statsContainer.classList.toggle('hidden'); button.classList.toggle('stats-shown'); button.querySelector('.button-text').textContent = statsContainer.classList.contains('hidden') ? 'Ver Desglose' : 'Ocular Desglose'; } }
             else if (button.matches('.delete-affiliate-btn')) { if (confirm('¿Seguro que deseas eliminar este afiliado?')) { await deleteDataFromFirestore('affiliates', id); showToast('Afiliado eliminado.'); } }
-            else if (button.matches('.delete-advisor-btn')) { if (confirm('¿Seguro? Se desasignará de todos los afiliados.')) { const batch = window.firebase.writeBatch(db); affiliates.forEach(aff => { if(aff.advisorId === id) { const affRef = window.firebase.doc(db, `users/${currentUser.uid}/affiliates/${aff.id}`); batch.update(affRef, { advisorId: null }); } }); const advisorRef = window.firebase.doc(db, `users/${currentUser.uid}/advisors/${id}`); batch.delete(advisorRef); await batch.commit(); showToast('Asesor eliminado.'); } }
+            else if (button.matches('.delete-advisor-btn')) { if (confirm('¿Seguro? Se desasignará de todos los afiliados y se eliminará su cuenta de acceso.')) {
+                // Eliminar asesor es más complejo, requiere una función de backend (Cloud Function)
+                // para eliminar el usuario de Firebase Auth de forma segura. Por ahora, solo eliminamos el registro.
+                await deleteDataFromFirestore('advisors', id);
+                showToast('Asesor eliminado. La cuenta de acceso debe eliminarse manualmente desde la consola de Firebase.', 'warning');
+            }}
             else if (button.matches('.delete-plan-btn')) { const isPlanInUse = affiliates.some(aff => aff.healthPlan === id); if(isPlanInUse) return showToast('Plan en uso. No se puede eliminar.', 'error'); if (confirm('¿Seguro?')) { await deleteDataFromFirestore('healthPlans', id); showToast('Plan eliminado.'); } }
         });
 
         document.getElementById('login-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { await window.firebase.signInWithEmailAndPassword(auth, e.target['login-email'].value, e.target['login-password'].value); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
-        document.getElementById('register-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { const userCredential = await window.firebase.createUserWithEmailAndPassword(auth, e.target['register-email'].value, e.target['register-password'].value); await setupNewUserDocument(userCredential.user); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
+        document.getElementById('register-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { const userCredential = await window.firebase.createUserWithEmailAndPassword(auth, e.target['register-email'].value, e.target['register-password'].value); await setupNewUserAndCompany(userCredential.user); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('license-form').addEventListener('submit', e => { e.preventDefault(); handleLicenseActivation(); });
         document.getElementById('calculator-form').addEventListener('submit', e => { e.preventDefault(); const form = e.target; const selections = { health: form.querySelector('[value="health"]').checked, pension: form.querySelector('[value="pension"]').checked, arl: form.querySelector('[value="arl"]').checked, ccf: form.querySelector('[value="ccf"]').checked }; const results = calculateContributions(Number(form['income'].value), form['contract-type'].value, form['arl-level'].value, selections); renderCalculatorResults(results, selections); });
-        document.getElementById('affiliate-form').addEventListener('submit', async (e) => { e.preventDefault(); const form = e.target; const selectedPlan = form.querySelector('input[name="health-plan"]:checked'); if (!selectedPlan && healthPlans.length > 0) return showToast('Debe seleccionar un plan de salud.', 'error'); const affiliateData = { name: form['affiliate-name'].value.trim(), documentId: form['affiliate-id'].value.trim(), email: form['affiliate-email'].value.trim(), phone: form['affiliate-phone'].value.trim(), address: form['affiliate-address'].value.trim(), healthPlan: selectedPlan ? selectedPlan.value : null, pensionPlan: form['pension-plan'].value, arlPlan: form['arl-plan'].value, ccfPlan: form['ccf-plan'].value, advisorId: form['advisor-select-list'].value, startDate: form['affiliate-start-date'].value, status: form['affiliate-status'].value, notes: form['affiliate-notes'].value.trim(), manualCosts: null, manualCommission: null }; if (form['manual-override-checkbox'].checked) { affiliateData.manualCosts = { health: Number(form['manual-cost-health'].value) || 0, pension: Number(form['manual-cost-pension'].value) || 0, arl: Number(form['manual-cost-arl'].value) || 0, ccf: Number(form['manual-cost-ccf'].value) || 0 }; affiliateData.manualCommission = Number(form['manual-commission'].value) || null; } const existingId = form['affiliate-doc-id'].value; if (existingId) { affiliateData.id = existingId; await saveDataToFirestore('affiliates', affiliateData); } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${currentUser.uid}/affiliates`)); affiliateData.id = docRef.id; affiliateData.createdAt = new Date(); await saveDataToFirestore('affiliates', affiliateData); await createNovedad(affiliateData.id, affiliateData.name, 'creation', `Se registró al nuevo afiliado ${affiliateData.name}.`); } modalManager.close('affiliate-modal'); showToast('Afiliado guardado.'); });
-        document.getElementById('advisor-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['advisor-doc-id'].value; const advisorData = { name: form['advisor-name'].value, commissionRate: Number(form['advisor-commission'].value) }; if (id) { advisorData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${currentUser.uid}/advisors`)); advisorData.id = docRef.id; } await saveDataToFirestore('advisors', advisorData); modalManager.close('advisor-modal'); showToast('Asesor guardado.'); });
-        document.getElementById('plan-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['plan-doc-id'].value; const planData = { name: form['plan-name'].value, price: Number(form['plan-price'].value), features: form['plan-features'].value }; if (id) { planData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${currentUser.uid}/healthPlans`)); planData.id = docRef.id; } await saveDataToFirestore('healthPlans', planData); modalManager.close('plan-modal'); showToast('Plan guardado.'); });
-        document.getElementById('transaction-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const newTransaction = { type: form['transaction-type'].value, concept: form['transaction-concept'].value, amount: parseFloat(form['transaction-amount'].value), date: new Date(form['transaction-date'].value + 'T12:00:00.000Z') }; await window.firebase.addDoc(window.firebase.collection(db, `users/${currentUser.uid}/manualTransactions`), newTransaction); modalManager.close('transaction-modal'); showToast('Transacción guardada.'); });
-        document.getElementById('company-profile-form').addEventListener('submit', async e => { e.preventDefault(); companyProfile.name = document.getElementById('company-name').value; companyProfile.nit = document.getElementById('company-nit').value; companyProfile.address = document.getElementById('company-address').value; companyProfile.phone = document.getElementById('company-phone').value; companyProfile.email = document.getElementById('company-email').value; companyProfile.theme = document.querySelector('#theme-selector input:checked').value; const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { companyProfile }, { merge: true }); showToast('Perfil actualizado.'); });
-        document.getElementById('settings-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; settings.SMMLV = Number(form['setting-smmlv'].value); settings.CONTRIBUTION_RATES.health = parseFloat(form['setting-health'].value); settings.CONTRIBUTION_RATES.pension = parseFloat(form['setting-pension'].value); settings.CONTRIBUTION_RATES.independiente_ccf = parseFloat(form['setting-ccf-ind'].value); settings.CONTRIBUTION_RATES.employer_ccf = parseFloat(form['setting-ccf-emp'].value); for (let i = 1; i <= 5; i++) { settings.ARL_RATES[i] = parseFloat(form[`setting-arl-${i}`].value); } const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { settings }, { merge: true }); modalManager.close('settings-modal'); showToast('Configuración guardada.'); });
+        
+        document.getElementById('affiliate-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const selectedPlan = form.querySelector('input[name="health-plan"]:checked');
+            // MODIFICADO: Un asesor no necesita seleccionar plan si no hay.
+            if (currentUser.role === 'admin' && !selectedPlan && healthPlans.length > 0) return showToast('Debe seleccionar un plan de salud.', 'error');
+            
+            const affiliateData = {
+                name: form['affiliate-name'].value.trim(), documentId: form['affiliate-id'].value.trim(), email: form['affiliate-email'].value.trim(), phone: form['affiliate-phone'].value.trim(), address: form['affiliate-address'].value.trim(),
+                // MODIFICADO: Asigna el asesor automáticamente si es un asesor
+                advisorId: currentUser.role === 'asesor' ? currentUser.auth.uid : form['advisor-select-list'].value,
+                startDate: form['affiliate-start-date'].value, status: form['affiliate-status'].value, notes: form['affiliate-notes'].value.trim(),
+                // Datos que solo puede llenar el admin
+                healthPlan: selectedPlan ? selectedPlan.value : null, pensionPlan: form['pension-plan'].value, arlPlan: form['arl-plan'].value, ccfPlan: form['ccf-plan'].value,
+                manualCosts: null, manualCommission: null
+            };
+
+            if (currentUser.role === 'admin' && form['manual-override-checkbox'].checked) {
+                affiliateData.manualCosts = { health: Number(form['manual-cost-health'].value) || 0, pension: Number(form['manual-cost-pension'].value) || 0, arl: Number(form['manual-cost-arl'].value) || 0, ccf: Number(form['manual-cost-ccf'].value) || 0 };
+                affiliateData.manualCommission = Number(form['manual-commission'].value) || null;
+            }
+
+            const existingId = form['affiliate-doc-id'].value;
+            if (existingId) {
+                affiliateData.id = existingId;
+            } else {
+                const docRef = window.firebase.doc(window.firebase.collection(db, `companies/${currentUser.companyId}/affiliates`));
+                affiliateData.id = docRef.id;
+                affiliateData.createdAt = new Date();
+                await createNovedad(affiliateData.id, affiliateData.name, 'creation', `Se registró al nuevo afiliado ${affiliateData.name}.`);
+            }
+            await saveDataToFirestore('affiliates', affiliateData);
+            modalManager.close('affiliate-modal');
+            showToast('Afiliado guardado.');
+        });
+        
+        // MODIFICADO: Creación de Asesor
+        document.getElementById('advisor-form').addEventListener('submit', async e => {
+            e.preventDefault();
+            const form = e.target;
+            const { createUserWithEmailAndPassword } = window.firebase;
+            
+            // Usamos un auth secundario para crear el usuario sin desloguear al admin
+            const tempApp = window.firebase.initializeApp(firebaseConfig, 'secondary');
+            const tempAuth = window.firebase.getAuth(tempApp);
+            
+            try {
+                const userCredential = await createUserWithEmailAndPassword(tempAuth, form['advisor-email'].value, form['advisor-password'].value);
+                const newAdvisorUID = userCredential.user.uid;
+                
+                const batch = window.firebase.writeBatch(db);
+                // 1. Crear documento de usuario para el asesor
+                const userDocRef = window.firebase.doc(db, "users", newAdvisorUID);
+                batch.set(userDocRef, {
+                    email: form['advisor-email'].value,
+                    role: 'asesor',
+                    companyId: currentUser.companyId
+                });
+                
+                // 2. Crear documento de 'asesor' en la subcolección de la compañía
+                const advisorDocRef = window.firebase.doc(db, `companies/${currentUser.companyId}/advisors/${newAdvisorUID}`);
+                batch.set(advisorDocRef, {
+                    id: newAdvisorUID,
+                    name: form['advisor-name'].value,
+                    email: form['advisor-email'].value,
+                    commissionRate: Number(form['advisor-commission'].value)
+                });
+                
+                await batch.commit();
+                modalManager.close('advisor-modal');
+                showToast('Asesor creado con éxito.');
+                
+            } catch (error) {
+                showToast(getFirebaseAuthErrorMessage(error), 'error');
+            } finally {
+                await window.firebase.signOut(tempAuth);
+                // No hay método público para eliminar la app secundaria, pero el logout es suficiente
+            }
+        });
+        
+        document.getElementById('plan-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['plan-doc-id'].value; const planData = { name: form['plan-name'].value, price: Number(form['plan-price'].value), features: form['plan-features'].value }; if (id) { planData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `companies/${currentUser.companyId}/healthPlans`)); planData.id = docRef.id; } await saveDataToFirestore('healthPlans', planData); modalManager.close('plan-modal'); showToast('Plan guardado.'); });
+        document.getElementById('transaction-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const newTransaction = { type: form['transaction-type'].value, concept: form['transaction-concept'].value, amount: parseFloat(form['transaction-amount'].value), date: new Date(form['transaction-date'].value + 'T12:00:00.000Z') }; await window.firebase.addDoc(window.firebase.collection(db, `companies/${currentUser.companyId}/manualTransactions`), newTransaction); modalManager.close('transaction-modal'); showToast('Transacción guardada.'); });
+        document.getElementById('company-profile-form').addEventListener('submit', async e => { e.preventDefault(); companyProfile.name = document.getElementById('company-name').value; companyProfile.nit = document.getElementById('company-nit').value; companyProfile.address = document.getElementById('company-address').value; companyProfile.phone = document.getElementById('company-phone').value; companyProfile.email = document.getElementById('company-email').value; companyProfile.theme = document.querySelector('#theme-selector input:checked').value; const companyDocRef = window.firebase.doc(db, "companies", currentUser.companyId); await window.firebase.setDoc(companyDocRef, { companyProfile }, { merge: true }); showToast('Perfil actualizado.'); });
+        document.getElementById('settings-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; settings.SMMLV = Number(form['setting-smmlv'].value); settings.CONTRIBUTION_RATES.health = parseFloat(form['setting-health'].value); settings.CONTRIBUTION_RATES.pension = parseFloat(form['setting-pension'].value); settings.CONTRIBUTION_RATES.independiente_ccf = parseFloat(form['setting-ccf-ind'].value); settings.CONTRIBUTION_RATES.employer_ccf = parseFloat(form['setting-ccf-emp'].value); for (let i = 1; i <= 5; i++) { settings.ARL_RATES[i] = parseFloat(form[`setting-arl-${i}`].value); } const companyDocRef = window.firebase.doc(db, "companies", currentUser.companyId); await window.firebase.setDoc(companyDocRef, { settings }, { merge: true }); modalManager.close('settings-modal'); showToast('Configuración guardada.'); });
     });
     
     // --- FUNCIONES AUXILIARES ---
@@ -800,7 +1016,10 @@
                 manualContainer.classList.toggle('hidden', !form['manual-override-checkbox'].checked);
                 form['manual-cost-health'].value = data?.manualCosts?.health || ''; form['manual-cost-pension'].value = data?.manualCosts?.pension || ''; form['manual-cost-arl'].value = data?.manualCosts?.arl || ''; form['manual-cost-ccf'].value = data?.manualCosts?.ccf || ''; form['manual-commission'].value = data?.manualCommission || '';
             } else if (modalId === 'advisor-modal') {
-                form['advisor-doc-id'].value = data?.id || ''; form['advisor-name'].value = data?.name || ''; form['advisor-commission'].value = data?.commissionRate || '';
+                const isEditing = !!data?.id;
+                modal.querySelector('#advisor-email').disabled = isEditing;
+                modal.querySelector('#advisor-password').style.display = isEditing ? 'none' : 'block';
+                form['advisor-doc-id'].value = data?.id || ''; form['advisor-name'].value = data?.name || ''; form['advisor-email'].value = data?.email || ''; form['advisor-commission'].value = data?.commissionRate || '';
             } else if (modalId === 'plan-modal') {
                 form['plan-doc-id'].value = data?.id || ''; form['plan-name'].value = data?.name || ''; form['plan-price'].value = data?.price || ''; form['plan-features'].value = data?.features || '';
             } else if (modalId === 'settings-modal' && settings.SMMLV) {
@@ -813,9 +1032,9 @@
         },
         close(modalId) { const modal = document.getElementById(modalId); if (!modal) return; modal.classList.add('opacity-0'); modal.querySelector('.modal-content').classList.add('scale-95'); setTimeout(() => modal.classList.add('pointer-events-none'), 250); }
     };
-    function showToast(message, type = 'success') { const toast = document.getElementById('toast'); if (!toast) return; toast.textContent = message; toast.className = `fixed top-5 right-5 z-[100] text-white py-2 px-4 rounded-lg shadow-xl transition-all duration-300 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`; toast.classList.remove('opacity-0', 'translate-y-2'); setTimeout(() => toast.classList.add('opacity-0', 'translate-y-2'), 3000); }
+    function showToast(message, type = 'success') { const toast = document.getElementById('toast'); if (!toast) return; toast.textContent = message; toast.className = `fixed top-5 right-5 z-[100] text-white py-2 px-4 rounded-lg shadow-xl transition-all duration-300 ${type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-yellow-500 text-black'}`; toast.classList.remove('opacity-0', 'translate-y-2'); setTimeout(() => toast.classList.add('opacity-0', 'translate-y-2'), 4000); }
     function formatCurrency(value, minimumFractionDigits = 0) { return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits }).format(value || 0); }
-    function exportToCSV(headers, data, filename) { const csvRows = [headers.join(',')]; for (const row of data) { const values = headers.map(header => `"${('' + row[header]).replace(/"/g, '\\"')}"`); csvRows.push(values.join(',')); } const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); window.URL.revokeObjectURL(url); }
+    function exportToCSV(headers, data, filename) { const csvRows = [headers.join(',')]; for (const row of data) { const values = headers.map(header => `"${('' + (row[header] ?? '')).replace(/"/g, '\\"')}"`); csvRows.push(values.join(',')); } const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8,' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); document.body.removeChild(a); window.URL.revokeObjectURL(url); }
     function handleExportAffiliates() { const headers = ['Nombre', 'Documento', 'Email', 'Telefono', 'Direccion', 'Asesor', 'Estado', 'Fecha de Inicio', 'Plan de Salud', 'Fondo Pension', 'ARL', 'Caja Comp.']; const dataToExport = affiliates.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const plan = healthPlans.find(p=> p.id === aff.healthPlan); return { 'Nombre': aff.name, 'Documento': aff.documentId, 'Email': aff.email, 'Telefono': aff.phone, 'Direccion': aff.address, 'Asesor': advisor ? advisor.name : 'N/A', 'Estado': aff.status, 'Fecha de Inicio': aff.startDate, 'Plan de Salud': plan ? plan.name : 'N/A', 'Fondo Pension': aff.pensionPlan, 'ARL': aff.arlPlan, 'Caja Comp.': aff.ccfPlan }; }); exportToCSV(headers, dataToExport, 'afiliados_seb_salud.csv'); showToast('Exportando afiliados a CSV.'); }
     function handleExportAdvisors() { const headers = ['Nombre', 'Comision (%)', 'Total Afiliados', 'Comision Total Generada']; const dataToExport = advisors.map(advisor => { const advisorAffiliates = affiliates.filter(a => a.advisorId === advisor.id); const totalCommission = advisorAffiliates.reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0); return { 'Nombre': advisor.name, 'Comision (%)': advisor.commissionRate, 'Total Afiliados': advisorAffiliates.length, 'Comision Total Generada': totalCommission }; }); exportToCSV(headers, dataToExport, 'asesores_seb_salud.csv'); showToast('Exportando asesores a CSV.'); }
     function getFirebaseAuthErrorMessage(error) {
@@ -825,10 +1044,9 @@
             case 'auth/wrong-password': return 'Contraseña incorrecta.';
             case 'auth/email-already-in-use': return 'El correo ya está en uso.';
             case 'auth/weak-password': return 'La contraseña es muy débil (mínimo 6 caracteres).';
-            default: return 'Ocurrió un error inesperado. Intenta de nuevo.';
+            default: console.error(error); return 'Ocurrió un error inesperado. Intenta de nuevo.';
         }
     }
-
 </script>
 </body>
 </html>
