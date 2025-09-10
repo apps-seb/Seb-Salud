@@ -9,6 +9,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+
     <style>
         :root {
             --color-primary-400: 165 180 252; /* indigo-300 */
@@ -76,6 +81,7 @@
         .health-plan-card { border: 2px solid #e2e8f0; transition: border-color 0.2s, box-shadow 0.2s; }
         .health-plan-card:has(input:checked) { border-color: rgb(var(--color-primary-600)); box-shadow: 0 0 0 2px rgb(var(--color-primary-600) / 0.5); }
         
+        /* Estilos para el contador de novedades */
         .novedades-badge {
             position: absolute;
             top: 6px;
@@ -99,8 +105,11 @@
             right: calc(50% - 28px);
         }
 
+        /* Estilos para tablas responsivas */
         @media (max-width: 767px) {
-            .responsive-table thead { display: none; }
+            .responsive-table thead {
+                display: none;
+            }
             .responsive-table tr {
                 display: block;
                 margin-bottom: 1rem;
@@ -109,7 +118,9 @@
                 box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
                 padding: 0 1rem;
             }
-             .responsive-table tbody { border: none; }
+             .responsive-table tbody {
+                border: none;
+            }
             .responsive-table td {
                 display: flex;
                 justify-content: space-between;
@@ -118,7 +129,9 @@
                 padding: 0.75rem 0;
                 border-bottom: 1px solid #f1f5f9;
             }
-            .responsive-table td:last-child { border-bottom: none; }
+            .responsive-table td:last-child {
+                border-bottom: none;
+            }
             .responsive-table td[data-label]::before {
                 content: attr(data-label);
                 font-weight: 600;
@@ -126,18 +139,13 @@
                 margin-right: 1rem;
                 color: #475569;
             }
-            .responsive-table .no-data-row { padding: 1rem; }
+            .responsive-table .no-data-row {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
-
-    <div id="loader" class="min-h-screen flex items-center justify-center">
-        <div class="text-center">
-            <i data-lucide="shield-check" class="h-12 w-12 text-primary-500 mx-auto animate-pulse"></i>
-            <p class="mt-4 text-slate-600 font-semibold">Cargando aplicación...</p>
-        </div>
-    </div>
 
     <div id="auth-container" class="hidden">
         <div class="min-h-screen flex items-center justify-center bg-slate-100 p-4">
@@ -153,8 +161,8 @@
 
                 <form id="login-form" class="hidden space-y-6">
                     <div>
-                        <label for="login-email" class="text-sm font-medium text-slate-700">Correo Electrónico</label>
-                        <input id="login-email" type="email" required class="w-full px-4 py-2 mt-1 border border-slate-300 rounded-lg focus:ring-primary-600 focus:border-primary-600" placeholder="tu@email.com">
+                        <label for="login-identifier" class="text-sm font-medium text-slate-700">Email</label>
+                        <input id="login-identifier" type="email" required class="w-full px-4 py-2 mt-1 border border-slate-300 rounded-lg focus:ring-primary-600 focus:border-primary-600" placeholder="tu@email.com">
                     </div>
                     <div>
                         <label for="login-password" class="text-sm font-medium text-slate-700">Contraseña</label>
@@ -238,14 +246,12 @@
         </nav>
     </div>
     
-    <!-- MODALS -->
-    <!-- Contenido de los modales (sin cambios, ya que es solo HTML) -->
     <div id="user-profile-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60]">
         <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-sm transform scale-95">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-bold text-slate-800">Mi Perfil</h2>
-                    <button data-close-modal="user-profile-modal" class="text-gray-400 hover:text-gray-600 text-3xl leading-none" aria-label="Cerrar modal">&times;</button>
+                     <h2 class="text-xl font-bold text-slate-800">Mi Perfil</h2>
+                     <button data-close-modal="user-profile-modal" class="text-gray-400 hover:text-gray-600 text-3xl leading-none" aria-label="Cerrar modal">&times;</button>
                 </div>
                 <div id="modal-user-info" class="mb-6 text-center">
                     <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-slate-100 mb-4">
@@ -388,90 +394,37 @@
     </div>
 
 
-<script type="module">
-    // --- IMPORTACIONES DE FIREBASE (SDK v10, más reciente) ---
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { 
-        getAuth, 
-        onAuthStateChanged, 
-        createUserWithEmailAndPassword, 
-        signInWithEmailAndPassword, 
-        signOut,
-        setPersistence,
-        browserLocalPersistence
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { 
-        getFirestore, 
-        collection, 
-        doc, 
-        getDoc, 
-        getDocs,
-        setDoc,
-        addDoc, 
-        updateDoc,
-        deleteDoc, 
-        onSnapshot,
-        query,
-        where,
-        serverTimestamp,
-        Timestamp,
-        enableIndexedDbPersistence,
-        setLogLevel
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-    // --- CONFIGURACIÓN DE FIREBASE ---
+<script>
+    // --- FIREBASE: Configuración e Inicialización ---
     const firebaseConfig = {
-      apiKey: "AIzaSyDS4VDnwGia2ZUe3o81rqLe-oEu_pVCUHc",
-      authDomain: "seb-salud.firebaseapp.com",
-      projectId: "seb-salud",
-      storageBucket: "seb-salud.appspot.com", // CORREGIDO: Este es el formato estándar y correcto.
-      messagingSenderId: "1094873327284",
-      appId: "1:1094873327284:web:001e70e84c2de45389d9e1",
-      measurementId: "G-EJCS9FYWHK"
-    };
+  apiKey: "AIzaSyDS4VDnwGia2ZUe3o81rqLe-oEu_pVCUHc",
+  authDomain: "seb-salud.firebaseapp.com",
+  projectId: "seb-salud",
+  storageBucket: "seb-salud.firebasestorage.app",
+  messagingSenderId: "1094873327284",
+  appId: "1:1094873327284:web:001e70e84c2de45389d9e1",
+  measurementId: "G-EJCS9FYWHK"
+};
 
-    // --- INICIALIZACIÓN DE FIREBASE ---
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    // Habilitar persistencia offline y logs para depuración
-    try {
-        await enableIndexedDbPersistence(db);
-    } catch (err) {
-        if (err.code == 'failed-precondition') {
-            console.warn("La persistencia de Firestore falló, probablemente por múltiples pestañas abiertas.");
-        } else if (err.code == 'unimplemented') {
-            console.warn("El navegador actual no soporta la persistencia offline de Firestore.");
-        }
-    }
-    setLogLevel('debug');
-    
-    try {
-        await setPersistence(auth, browserLocalPersistence);
-    } catch (error) {
-        console.error("Error al configurar la persistencia de autenticación:", error);
-    }
-
-
-    // --- ESTADO GLOBAL DE LA APLICACIÓN ---
-    let currentUser = null;
-    let allUsers = []; 
-    let affiliates = [], advisors = [], manualTransactions = [], novedades = [], healthPlans = [];
+    // --- AUTH, ROLES & APP STATE ---
+    let currentUser = null; // Almacenará datos de Auth y de Firestore (rol, etc.)
+    // FIREBASE: Los arrays de datos ahora se cargarán desde Firestore
+    let affiliates = [], advisors = [], manualTransactions = [], novedades = [], healthPlans = [], allUsers = [];
     let companyProfile = {};
     let settings = {};
     let affiliatesViewMode = 'card';
-    let currentView = 'dashboard';
-    
-    let unsubscribeListeners = [];
 
     const defaultSettings = {
         SMMLV: 1300000,
         CONTRIBUTION_RATES: { health: 12.5, pension: 16, employee_health: 4, employer_health: 8.5, employee_pension: 4, employer_pension: 12, independiente_ccf: 2, employer_ccf: 4 },
-        ARL_RATES: { 1: 0.522, 2: 1.044, 3: 2.436, 4: 4.350, 5: 6.960 }
+        ARL_RATES: { '1': 0.522, '2': 1.044, '3': 2.436, '4': 4.350, '5': 6.960 }
     };
-    
-    // --- NAVEGACIÓN Y ROLES ---
+
     const navLinksConfig = {
         admin: [
             { id: 'dashboard', icon: 'layout-dashboard', text: 'Dashboard' },
@@ -494,185 +447,161 @@
         ]
     };
     
-
-    // --- MANEJO DE AUTENTICACIÓN Y SESIÓN ---
-
-    onAuthStateChanged(auth, async (firebaseUser) => {
-        if (firebaseUser) {
-            const userDocRef = doc(db, "users", firebaseUser.uid);
-            const userDocSnap = await getDoc(userDocRef);
-
-            if (userDocSnap.exists()) {
-                currentUser = { uid: firebaseUser.uid, email: firebaseUser.email, ...userDocSnap.data() };
-                await startApp();
-            } else {
-                console.error("Usuario autenticado pero sin perfil en Firestore. Cerrando sesión.");
-                handleLogout();
+    // --- FIREBASE: DATA MANAGEMENT ---
+    // Convierte un snapshot de Firestore a un array de objetos, añadiendo el ID del documento.
+    const snapshotToArray = (snapshot) => {
+        const data = [];
+        snapshot.forEach(doc => {
+            data.push({ id: doc.id, ...doc.data() });
+        });
+        return data;
+    };
+    
+    // Convierte Timestamps de Firestore a objetos Date de JS
+    const convertTimestamps = (data) => {
+        for (const key in data) {
+            if (data[key] && typeof data[key].toDate === 'function') {
+                data[key] = data[key].toDate();
             }
-        } else {
-            currentUser = null;
-            unsubscribeAll();
-            document.getElementById('loader').classList.add('hidden');
-            document.getElementById('app-container').classList.add('hidden');
-            document.getElementById('auth-container').classList.remove('hidden');
-            await checkIfAdminExists();
         }
-    });
+        return data;
+    };
 
-    async function checkIfAdminExists() {
+    async function loadAllUsers() {
         try {
-            const usersRef = collection(db, "users");
-            const q = query(usersRef, where("role", "==", "admin"));
-            const querySnapshot = await getDocs(q);
-            if (querySnapshot.empty) {
-                showAuthForm('register');
+            const snapshot = await db.collection('users').get();
+            allUsers = snapshotToArray(snapshot);
+        } catch (error) {
+            console.error("Error loading users:", error);
+        }
+    }
+
+    async function loadSettings() {
+        try {
+            const docRef = db.collection('_config').doc('appSettings');
+            const doc = await docRef.get();
+            if (doc.exists) {
+                settings = doc.data();
             } else {
-                showAuthForm('login');
+                await docRef.set(defaultSettings);
+                settings = { ...defaultSettings };
+                console.log("Default settings created in Firestore.");
             }
-        } catch(error) {
-            console.error("Error crítico al verificar admin:", error);
-            const errorDiv = document.getElementById('auth-error');
-            errorDiv.textContent = "Error de conexión con la base de datos. Verifica las reglas de seguridad de Firestore.";
+        } catch (error) {
+            console.error("Error loading settings:", error);
+            settings = { ...defaultSettings }; // Fallback to defaults
+        }
+    }
+
+    function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme); const themeSelector = document.querySelector(`#theme-selector input[value="${theme}"]`); if (themeSelector) themeSelector.checked = true; }
+    
+    async function loadCompanyProfile() {
+        try {
+            const docRef = db.collection('_config').doc('companyProfile');
+            const doc = await docRef.get();
+            const defaultProfile = { name: 'Mi Empresa', nit: '900.123.456-7', address: 'Calle 123, Bogotá', phone: '3001234567', email: 'contacto@empresa.com', theme: 'default' };
+
+            if (doc.exists) {
+                companyProfile = doc.data();
+            } else {
+                await docRef.set(defaultProfile);
+                companyProfile = defaultProfile;
+            }
+        } catch (error) {
+            console.error("Error loading company profile:", error);
+        }
+        applyTheme(companyProfile.theme || 'default');
+    }
+    
+    async function saveCompanyProfile() {
+        try {
+            await db.collection('_config').doc('companyProfile').set(companyProfile, { merge: true });
+        } catch (error) {
+            console.error("Error saving company profile:", error);
+            showToast('Error al guardar perfil.', 'error');
+        }
+    }
+
+    async function loadManualTransactions() {
+        try {
+            const snapshot = await db.collection('manualTransactions').orderBy('date', 'desc').get();
+            manualTransactions = snapshotToArray(snapshot).map(convertTimestamps);
+        } catch (error) {
+            console.error("Error loading transactions:", error);
         }
     }
     
-    async function handleLogin(e) { 
-        e.preventDefault();
-        const email = e.target['login-email'].value;
-        const password = e.target['login-password'].value;
-        const errorDiv = document.getElementById('auth-error');
-        errorDiv.textContent = '';
-
+    async function loadNovedades() {
         try {
-            await signInWithEmailAndPassword(auth, email, password);
+            const snapshot = await db.collection('novedades').orderBy('timestamp', 'desc').limit(50).get();
+            novedades = snapshotToArray(snapshot).map(convertTimestamps);
         } catch (error) {
-            console.error("Error de inicio de sesión:", error.code);
-            let message = 'Error al iniciar sesión.';
-            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                message = 'Correo o contraseña incorrectos.';
-            }
-            errorDiv.textContent = message;
+            console.error("Error loading novedades:", error);
         }
     }
 
-    async function handleRegister(e) {
-        e.preventDefault();
-        const email = e.target['register-email'].value;
-        const password = e.target['register-password'].value;
-        const errorDiv = document.getElementById('auth-error');
-        errorDiv.textContent = '';
-
+    async function createNovedad(affiliateId, affiliateName, type, description) {
+        const novedad = { 
+            affiliateId, 
+            affiliateName, 
+            type, 
+            description, 
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(), 
+            isRead: false 
+        };
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-
-            const userProfile = {
-                email: user.email,
-                role: 'admin',
-                createdAt: serverTimestamp() 
-            };
-            await setDoc(doc(db, "users", user.uid), userProfile);
-        } catch (error) {
-            console.error("Error de registro:", error.code);
-            let message = 'Error al registrar la cuenta.';
-            if (error.code === 'auth/email-already-in-use') {
-                message = 'Este correo electrónico ya está en uso.';
-            } else if (error.code === 'auth/weak-password') {
-                message = 'La contraseña debe tener al menos 6 caracteres.';
-            }
-            errorDiv.textContent = message;
-        }
-    }
-
-    async function handleLogout() {
-        await signOut(auth);
-    }
-
-    function showAuthForm(formToShow) {
-        const loginForm = document.getElementById('login-form'); const registerForm = document.getElementById('register-form'); const title = document.getElementById('auth-title'); const subtitle = document.getElementById('auth-subtitle');
-        if (formToShow === 'register') {
-            loginForm.classList.add('hidden'); registerForm.classList.remove('hidden');
-            title.textContent = 'Crear Cuenta de Administrador'; subtitle.textContent = 'Bienvenido. Completa el registro para iniciar.';
-        } else {
-            loginForm.classList.remove('hidden'); registerForm.classList.add('hidden');
-            title.textContent = 'Iniciar Sesión'; subtitle.textContent = 'Bienvenido de nuevo';
-        }
-    }
-
-
-    // --- MANEJO DE DATOS CON FIRESTORE (REAL-TIME) ---
-
-    function setupRealtimeListeners() {
-        const collectionsToListen = [
-            { name: 'affiliates', stateVar: 'affiliates' },
-            { name: 'advisors', stateVar: 'advisors' },
-            { name: 'healthPlans', stateVar: 'healthPlans' },
-            { name: 'novedades', stateVar: 'novedades' },
-            { name: 'manualTransactions', stateVar: 'manualTransactions' },
-            { name: 'users', stateVar: 'allUsers' }
-        ];
-
-        collectionsToListen.forEach(c => {
-            const q = query(collection(db, c.name));
-            const unsubscribe = onSnapshot(q, (snapshot) => {
-                const dataArray = snapshot.docs.map(doc => ({ 
-                    id: doc.id, 
-                    ...doc.data(),
-                    createdAt: doc.data().createdAt?.toDate ? doc.data().createdAt.toDate() : null,
-                    timestamp: doc.data().timestamp?.toDate ? doc.data().timestamp.toDate() : null
-                }));
-                
-                window[c.stateVar] = dataArray;
-                refreshCurrentView();
-            }, (error) => {
-                console.error(`Error escuchando la colección ${c.name}:`, error);
-                showToast(`Error de conexión con ${c.name}`, 'error');
-            });
-            unsubscribeListeners.push(unsubscribe);
-        });
-
-        const unsubSettings = onSnapshot(doc(db, "appConfig", "settings"), (docSnap) => {
-            if (docSnap.exists()) {
-                settings = docSnap.data();
-            } else {
-                settings = JSON.parse(JSON.stringify(defaultSettings));
-                setDoc(doc(db, "appConfig", "settings"), settings).catch(e => console.error("Error creando settings por defecto", e));
-            }
-            refreshCurrentView();
-        });
-        unsubscribeListeners.push(unsubSettings);
-        
-        const unsubProfile = onSnapshot(doc(db, "appConfig", "companyProfile"), (docSnap) => {
-             if (docSnap.exists()) {
-                companyProfile = docSnap.data();
-            } else {
-                companyProfile = { name: 'Mi Empresa', nit: '900.123.456-7', address: 'Calle 123, Bogotá', phone: '3001234567', email: 'contacto@empresa.com', theme: 'default' };
-                 setDoc(doc(db, "appConfig", "companyProfile"), companyProfile).catch(e => console.error("Error creando perfil de empresa por defecto", e));
-            }
-            applyTheme(companyProfile.theme);
-            refreshCurrentView();
-        });
-        unsubscribeListeners.push(unsubProfile);
-    }
-    
-    function unsubscribeAll() {
-        unsubscribeListeners.forEach(unsub => unsub());
-        unsubscribeListeners = [];
-    }
-
-    function refreshCurrentView() {
-        if(!document.getElementById('app-container').classList.contains('hidden')) {
-            renderContent(currentView, false); 
+            const newNovedadRef = await db.collection('novedades').add(novedad);
+            novedades.unshift({ id: newNovedadRef.id, ...novedad, timestamp: new Date() });
             updateNovedadesBadge();
-            populateAdvisorSelect(); 
-            configureUIForRole(currentUser.role);
+        } catch (error) {
+            console.error("Error creating novedad:", error);
         }
     }
     
-    // --- LÓGICA DE CÁLCULO (sin cambios) ---
+    async function loadHealthPlans() {
+        try {
+            const snapshot = await db.collection('healthPlans').get();
+            if (snapshot.empty) {
+                const initialPlans = [{ name: 'PAC Básico', price: 65000, features: 'Acceso a 3 especialidades\nAtención médica domiciliaria\nRed de clínicas seleccionada' }, { name: 'MP Clásico', price: 195000, features: 'Acceso a 10+ especialidades\nHabitación individual\nReembolsos nacionales' }, { name: 'MP Global', price: 320000, features: 'Acceso a toda la red médica\nCobertura internacional\nAsistencia en viaje' }, { name: 'MP Élite VIP', price: 550000, features: 'Directorio médico abierto\nSin copagos ni preautorizaciones\nServicios de bienestar incluidos' }];
+                const batch = db.batch();
+                initialPlans.forEach(plan => {
+                    const docRef = db.collection('healthPlans').doc();
+                    batch.set(docRef, plan);
+                });
+                await batch.commit();
+                await loadHealthPlans();
+            } else {
+                healthPlans = snapshotToArray(snapshot);
+            }
+        } catch (error) {
+            console.error("Error loading health plans:", error);
+        }
+    }
+    
+    async function loadDataFromFirebase() {
+        try {
+            const advisorsSnapshot = await db.collection('advisors').get();
+            if (advisorsSnapshot.empty) {
+                 await db.collection('advisors').add({ name: 'Asesor Inicial', commissionRate: 10 });
+                 await loadDataFromFirebase();
+                 return;
+            }
+            advisors = snapshotToArray(advisorsSnapshot);
+            
+            const affiliatesSnapshot = await db.collection('affiliates').get();
+            affiliates = snapshotToArray(affiliatesSnapshot).map(aff => {
+                if (aff.createdAt && aff.createdAt.toDate) {
+                    aff.createdAt = aff.createdAt.toDate();
+                }
+                return aff;
+            });
+        } catch (error) {
+            console.error("Error loading core data:", error);
+        }
+    }
+
     function getAffiliateCommissionBase(affiliate) { if (affiliate.manualCosts && Object.values(affiliate.manualCosts).some(cost => cost > 0)) { return Object.values(affiliate.manualCosts).reduce((sum, cost) => sum + (Number(cost) || 0), 0); } const plan = healthPlans.find(p => p.id === affiliate.healthPlan); return plan ? plan.price : 0; }
     function getAdvisorCommissionForAffiliate(affiliate) { if (affiliate.manualCommission && affiliate.manualCommission > 0) { return affiliate.manualCommission; } const advisor = advisors.find(v => v.id === affiliate.advisorId); if (!advisor) return 0; const commissionBase = getAffiliateCommissionBase(affiliate); return commissionBase * (advisor.commissionRate / 100); }
-
 
     // --- UI & RENDERING ---
     const modalManager = {
@@ -792,17 +721,11 @@
     function populateAdvisorSelect() { const select = document.getElementById('advisor-select-list'); if (!select) return; select.innerHTML = '<option value="" disabled selected>Asignar Asesor</option>' + advisors.map(v => `<option value="${v.id}">${v.name}</option>`).join(''); }
     function populateUserLinkForm(role, selectedId = null) { const select = document.getElementById('user-link'); if (!select) return; let options; if (role === 'asesor') { options = advisors.map(item => `<option value="${item.id}">${item.name}</option>`).join(''); } else { options = affiliates.map(item => `<option value="${item.id}">${item.name} (${item.documentId})</option>`).join(''); } select.innerHTML = `<option value="" disabled selected>Seleccione un ${role}</option>` + options; if (selectedId) { select.value = selectedId; } }
 
-    function renderContent(targetId, animate = true) {
-        currentView = targetId;
+    function renderContent(targetId) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         const section = document.getElementById(targetId);
         if (section) {
-            if (animate) {
-                 section.classList.add('active');
-            } else {
-                 section.style.display = 'block'; 
-            }
-           
+            section.classList.add('active');
             if (targetId === 'dashboard') renderDashboard();
             if (targetId === 'gestion-usuarios') renderGestionUsuarios();
             if (targetId === 'afiliados') renderAffiliatesList();
@@ -814,279 +737,7 @@
             if (targetId === 'planes') renderPlansList();
             if (targetId === 'cotizador') renderCotizadorSection();
             if (targetId === 'mi-perfil') renderMiPerfil();
-            
-            if (!animate) {
-                setTimeout(() => {
-                    section.style.display = '';
-                    section.classList.add('active');
-                }, 0);
-            }
         }
-    }
-    
-    async function handleSaveAffiliate(e) {
-        e.preventDefault();
-        const form = e.target;
-        const selectedPlan = form.querySelector('input[name="health-plan"]:checked');
-        if (!selectedPlan && healthPlans.length > 0) {
-            showToast('Debe seleccionar un plan de salud.', 'error');
-            return;
-        }
-        
-        const affiliateData = {
-            name: form['affiliate-name'].value.trim(),
-            documentId: form['affiliate-id'].value.trim(),
-            email: form['affiliate-email'].value.trim(),
-            phone: form['affiliate-phone'].value.trim(),
-            address: form['affiliate-address'].value.trim(),
-            healthPlan: selectedPlan ? selectedPlan.value : null,
-            pensionPlan: form['pension-plan'].value,
-            arlPlan: form['arl-plan'].value,
-            ccfPlan: form['ccf-plan'].value,
-            advisorId: form['advisor-select-list'].value,
-            startDate: form['affiliate-start-date'].value,
-            status: form['affiliate-status'].value,
-            notes: form['affiliate-notes'].value.trim(),
-            manualCosts: null,
-            manualCommission: null
-        };
-        
-        if (form['manual-override-checkbox'].checked) {
-            affiliateData.manualCosts = {
-                health: Number(form['manual-cost-health'].value) || 0,
-                pension: Number(form['manual-cost-pension'].value) || 0,
-                arl: Number(form['manual-cost-arl'].value) || 0,
-                ccf: Number(form['manual-cost-ccf'].value) || 0
-            };
-            affiliateData.manualCommission = Number(form['manual-commission'].value) || null;
-        }
-        
-        const existingId = form['affiliate-doc-id'].value;
-        
-        try {
-            if (existingId) {
-                const originalAffiliate = affiliates.find(a => a.id === existingId);
-                if (originalAffiliate && originalAffiliate.status !== affiliateData.status) {
-                    await createNovedad(existingId, affiliateData.name, 'status_change', `El estado de ${affiliateData.name} cambió de '${originalAffiliate.status}' a '${affiliateData.status}'.`);
-                }
-                const docRef = doc(db, "affiliates", existingId);
-                await updateDoc(docRef, affiliateData);
-            } else {
-                affiliateData.createdAt = serverTimestamp();
-                const docRef = await addDoc(collection(db, "affiliates"), affiliateData);
-                await createNovedad(docRef.id, affiliateData.name, 'creation', `Se ha registrado al nuevo afiliado ${affiliateData.name}.`);
-            }
-            modalManager.close('affiliate-modal');
-            showToast('Afiliado guardado correctamente.');
-        } catch (error) {
-            console.error("Error guardando afiliado:", error);
-            showToast('Ocurrió un error al guardar.', 'error');
-        }
-    }
-
-    async function handleSaveAdvisor(e) {
-        e.preventDefault();
-        const form = e.target;
-        const id = form['advisor-doc-id'].value;
-        const advisorData = {
-            name: form['advisor-name'].value,
-            commissionRate: Number(form['advisor-commission'].value)
-        };
-        try {
-            if (id) {
-                await updateDoc(doc(db, "advisors", id), advisorData);
-            } else {
-                await addDoc(collection(db, "advisors"), advisorData);
-            }
-            modalManager.close('advisor-modal');
-            showToast('Asesor guardado.');
-        } catch (error) {
-            console.error("Error guardando asesor:", error);
-            showToast('Error al guardar asesor.', 'error');
-        }
-    }
-
-    async function handleSavePlan(e) {
-        e.preventDefault();
-        const form = e.target;
-        const id = form['plan-doc-id'].value;
-        const planData = {
-            name: form['plan-name'].value,
-            price: Number(form['plan-price'].value),
-            features: form['plan-features'].value
-        };
-        try {
-            if (id) {
-                await updateDoc(doc(db, "healthPlans", id), planData);
-            } else {
-                await addDoc(collection(db, "healthPlans"), planData);
-            }
-            modalManager.close('plan-modal');
-            showToast('Plan guardado.');
-        } catch (error) {
-            console.error("Error guardando plan:", error);
-            showToast('Error al guardar el plan.', 'error');
-        }
-    }
-    
-    async function handleSaveTransaction(e) {
-        e.preventDefault();
-        const form = e.target;
-        const transactionDate = new Date(form['transaction-date'].value + 'T12:00:00.000Z');
-        const newTransaction = {
-            type: form['transaction-type'].value,
-            concept: form['transaction-concept'].value,
-            amount: parseFloat(form['transaction-amount'].value),
-            date: Timestamp.fromDate(transactionDate)
-        };
-
-        try {
-            await addDoc(collection(db, "manualTransactions"), newTransaction);
-            modalManager.close('transaction-modal');
-            showToast('Transacción guardada.');
-        } catch(error) {
-            console.error("Error al guardar transacción:", error);
-            showToast('Error al guardar la transacción.', 'error');
-        }
-    }
-    
-    async function handleSaveCompanyProfile(e) {
-        e.preventDefault();
-        const profileData = {
-            name: document.getElementById('company-name').value,
-            nit: document.getElementById('company-nit').value,
-            address: document.getElementById('company-address').value,
-            phone: document.getElementById('company-phone').value,
-            email: document.getElementById('company-email').value,
-            theme: document.querySelector('#theme-selector input:checked').value
-        };
-        try {
-            await setDoc(doc(db, "appConfig", "companyProfile"), profileData, { merge: true });
-            applyTheme(profileData.theme);
-            showToast('Perfil actualizado.');
-        } catch (error) {
-            console.error("Error guardando perfil:", error);
-            showToast('Error al guardar el perfil.', 'error');
-        }
-    }
-
-    async function handleSaveSettings(e) {
-        e.preventDefault();
-        const form = e.target;
-        const settingsData = {
-            SMMLV: Number(form['setting-smmlv'].value),
-            CONTRIBUTION_RATES: {
-                ...settings.CONTRIBUTION_RATES, 
-                health: parseFloat(form['setting-health'].value),
-                pension: parseFloat(form['setting-pension'].value),
-                independiente_ccf: parseFloat(form['setting-ccf-ind'].value),
-                employer_ccf: parseFloat(form['setting-ccf-emp'].value)
-            },
-            ARL_RATES: {
-                1: parseFloat(form[`setting-arl-1`].value),
-                2: parseFloat(form[`setting-arl-2`].value),
-                3: parseFloat(form[`setting-arl-3`].value),
-                4: parseFloat(form[`setting-arl-4`].value),
-                5: parseFloat(form[`setting-arl-5`].value)
-            }
-        };
-
-        try {
-            await setDoc(doc(db, "appConfig", "settings"), settingsData);
-            modalManager.close('settings-modal');
-            showToast('Configuración guardada.');
-        } catch(error) {
-            console.error("Error guardando configuración:", error);
-            showToast('Error al guardar la configuración.', 'error');
-        }
-    }
-
-    async function handleSaveUser(e) {
-        e.preventDefault();
-        const form = e.target;
-        const id = form['user-doc-id'].value;
-        const email = form['user-email'].value;
-        const role = form['user-role'].value;
-        const appDataId = form['user-link'].value;
-        
-        if (!appDataId) {
-            showToast(`Debe seleccionar un ${role} para vincular.`, 'error');
-            return;
-        }
-
-        if (id) {
-            try {
-                const userRef = doc(db, "users", id);
-                await updateDoc(userRef, {
-                    role: role,
-                    appDataId: appDataId,
-                    email: email, 
-                });
-                showToast('Usuario actualizado.');
-                modalManager.close('user-modal');
-            } catch (error) {
-                console.error("Error actualizando usuario:", error);
-                showToast('Error al actualizar el usuario.', 'error');
-            }
-        } else {
-            showToast("La creación de nuevos usuarios debe hacerse desde una Función Cloud por seguridad.", "error");
-        }
-    }
-    
-    async function createNovedad(affiliateId, affiliateName, type, description) {
-        const novedad = {
-            affiliateId,
-            affiliateName,
-            type,
-            description,
-            timestamp: serverTimestamp(),
-            isRead: false
-        };
-        try {
-            await addDoc(collection(db, "novedades"), novedad);
-        } catch (error) {
-            console.error("Error al crear novedad:", error);
-        }
-    }
-
-    async function markAllNovedadesAsRead() {
-        const unreadNovedades = novedades.filter(n => n.isRead === false);
-        if (unreadNovedades.length === 0) return;
-
-        try {
-            const batchPromises = unreadNovedades.map(novedad => {
-                const docRef = doc(db, "novedades", novedad.id);
-                return updateDoc(docRef, { isRead: true });
-            });
-            await Promise.all(batchPromises);
-        } catch (error) {
-            console.error("Error al marcar novedades como leídas:", error);
-        }
-    }
-    
-    async function startApp() {
-        document.getElementById('loader').classList.add('hidden');
-        document.getElementById('auth-container').classList.add('hidden');
-        document.getElementById('app-container').classList.remove('hidden');
-
-        buildMainContentHTML();
-        setupRealtimeListeners();
-        
-        configureUIForRole(currentUser.role);
-        
-        const initialView = navLinksConfig[currentUser.role][0].id;
-        renderContent(initialView, true);
-        
-        document.querySelector(`#main-nav [data-target="${initialView}"]`)?.classList.add('active');
-        document.querySelector(`#mobile-nav [data-target="${initialView}"]`)?.classList.add('active');
-        document.getElementById('header-title').textContent = navLinksConfig[currentUser.role][0].text;
-    }
-    
-    let confirmCallback = null;
-    function showConfirmation(message, onConfirm) {
-        document.getElementById('confirmation-message').textContent = message;
-        confirmCallback = onConfirm;
-        modalManager.open('confirmation-modal');
     }
 
     function buildMainContentHTML() {
@@ -1155,10 +806,6 @@
     function renderPlansList() { const container = document.getElementById('planes'); container.innerHTML = `<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4"><h2 class="text-2xl font-bold">Planes de Salud</h2><button id="add-plan-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center self-end sm:self-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Plan</button></div><div id="plans-list" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6"></div>`; const listContainer = document.getElementById('plans-list'); if (healthPlans.length === 0) { listContainer.innerHTML = `<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay planes creados.</p></div>`; return; } listContainer.innerHTML = healthPlans.map(plan => ` <div class="bg-white rounded-xl shadow-lg flex flex-col"><div class="p-5 flex-grow"><div class="flex justify-between items-start"><h3 class="font-bold text-lg">${plan.name}</h3><p class="text-xl font-extrabold text-primary-600">${formatCurrency(plan.price)}</p></div><ul class="text-sm text-slate-600 space-y-1 mt-4">${plan.features.split('\n').map(f => `<li class="flex items-start"><i data-lucide="check-circle-2" class="w-4 h-4 mr-2 text-green-500 mt-0.5 shrink-0"></i><span>${f}</span></li>`).join('')}</ul></div><div class="border-t p-3 flex justify-end items-center bg-gray-50/50 rounded-b-xl"><button class="edit-plan-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${plan.id}" aria-label="Editar plan"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button><button class="delete-plan-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${plan.id}" aria-label="Eliminar plan"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button></div></div>`).join(''); lucide.createIcons(); }
     
     function renderCotizadorSection() {
-        if (!settings.SMMLV) { 
-            document.getElementById('cotizador').innerHTML = `<p class="text-center">Cargando configuración...</p>`;
-            return;
-        }
         const container = document.getElementById('cotizador');
         container.innerHTML = `
         <div class="max-w-4xl mx-auto">
@@ -1218,9 +865,9 @@
 
     function renderHealthPlanCards() { const container = document.getElementById('health-plan-selector'); if (!container) return; if (healthPlans.length === 0) { container.innerHTML = '<p class="text-slate-500 md:col-span-4">No hay planes de salud definidos.</p>'; return; } container.innerHTML = healthPlans.map((plan, index) => `<label class="health-plan-card cursor-pointer rounded-lg p-4 flex flex-col justify-between"><div><div class="flex justify-between items-center"><h4 class="font-bold text-md">${plan.name}</h4><input type="radio" name="health-plan" value="${plan.id}" class="h-4 w-4 text-primary-600" ${index === 0 ? 'checked' : ''}></div><p class="text-xl font-extrabold text-primary-600 my-2">${formatCurrency(plan.price)}<span class="text-sm font-medium text-slate-500">/mes</span></p><ul class="text-xs text-slate-600 space-y-1 mt-3">${plan.features.split('\n').map(f => `<li class="flex items-start"><i data-lucide="check" class="w-3.5 h-3.5 mr-2 text-green-500 mt-0.5 shrink-0"></i><span>${f}</span></li>`).join('')}</ul></div></label>`).join(''); lucide.createIcons(); }
     function renderEmpresaSection() { const container = document.getElementById('empresa'); container.innerHTML = `<div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-3xl mx-auto"><h2 class="text-2xl font-bold text-slate-800 mb-6">Perfil de la Empresa</h2><form id="company-profile-form" class="space-y-4"><div><label for="company-name" class="block text-sm font-medium">Nombre</label><input type="text" id="company-name" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="company-nit" class="block text-sm font-medium">NIT</label><input type="text" id="company-nit" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="company-address" class="block text-sm font-medium">Dirección</label><input type="text" id="company-address" class="w-full mt-1 p-2 border rounded-lg"></div><div><label for="company-phone" class="block text-sm font-medium">Teléfono</label><input type="tel" id="company-phone" class="w-full mt-1 p-2 border rounded-lg"></div><div><label for="company-email" class="block text-sm font-medium">Email</label><input type="email" id="company-email" class="w-full mt-1 p-2 border rounded-lg"></div><div class="mt-6 pt-6 border-t"><h3 class="text-lg font-medium mb-4">Color del Tema</h3><div id="theme-selector" class="grid grid-cols-2 sm:grid-cols-3 gap-4"><label class="cursor-pointer"><input type="radio" name="theme" value="default" class="sr-only peer"><div class="p-4 rounded-lg border-2 peer-checked:border-indigo-500"><div class="flex items-center justify-between"><span class="font-semibold">Índigo</span><div class="w-6 h-6 rounded-full bg-[#4f46e5]"></div></div></div></label><label class="cursor-pointer"><input type="radio" name="theme" value="bosque" class="sr-only peer"><div class="p-4 rounded-lg border-2 peer-checked:border-lime-500"><div class="flex items-center justify-between"><span class="font-semibold">Bosque</span><div style="background-image:linear-gradient(to right top,#a3e635,#06b6d4);" class="w-6 h-6 rounded-full"></div></div></div></label><label class="cursor-pointer"><input type="radio" name="theme" value="atardecer" class="sr-only peer"><div class="p-4 rounded-lg border-2 peer-checked:border-orange-500"><div class="flex items-center justify-between"><span class="font-semibold">Atardecer</span><div style="background-image:linear-gradient(to right top,#fde047,#f97316,#ef4444);" class="w-6 h-6 rounded-full"></div></div></div></label><label class="cursor-pointer"><input type="radio" name="theme" value="elegant" class="sr-only peer"><div class="p-4 rounded-lg border-2 peer-checked:border-amber-500"><div class="flex items-center justify-between"><span class="font-semibold">Elegant</span><div style="background-image:linear-gradient(to right top,#f59e0b,#0ea5e9);" class="w-6 h-6 rounded-full"></div></div></div></label><label class="cursor-pointer"><input type="radio" name="theme" value="espacial" class="sr-only peer"><div class="p-4 rounded-lg border-2 peer-checked:border-sky-500"><div class="flex items-center justify-between"><span class="font-semibold">Espacial</span><div class="w-6 h-6 rounded-full bg-gradient-to-br from-[#38bdf8] to-[#8b5cf6]"></div></div></div></label><label class="cursor-pointer"><input type="radio" name="theme" value="verano-tropical" class="sr-only peer"><div class="p-4 rounded-lg border-2 peer-checked:border-fuchsia-600"><div class="flex items-center justify-between"><span class="font-semibold">Tropical</span><div class="w-6 h-6 rounded-full bg-gradient-to-br from-[#a3e635] to-[#ec4899]"></div></div></div></label></div></div><div class="pt-4"><button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg">Guardar</button></div></form></div>`; document.getElementById('company-name').value = companyProfile.name; document.getElementById('company-nit').value = companyProfile.nit; document.getElementById('company-address').value = companyProfile.address; document.getElementById('company-phone').value = companyProfile.phone; document.getElementById('company-email').value = companyProfile.email; const themeSelector = document.querySelector(`#theme-selector input[value="${companyProfile.theme || 'default'}"]`); if (themeSelector) themeSelector.checked = true; }
-    function renderFlujoCajaSection() { const container = document.getElementById('flujo-caja'); container.innerHTML = `<div class="bg-white p-6 rounded-xl shadow-lg mb-8"><div class="flex flex-col md:flex-row justify-between md:items-center gap-4"><div><h2 class="text-2xl font-bold">Flujo de Caja</h2><p class="text-slate-500">Gestión de ingresos y egresos.</p></div><div class="flex items-center gap-4"><button id="add-expense-btn" class="w-full md:w-auto bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 px-4 rounded-lg flex items-center"><i data-lucide="minus" class="w-5 h-5 mr-2"></i>Egreso</button><button id="add-income-btn" class="w-full md:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg flex items-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i>Ingreso</button></div></div></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8"><div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg"><div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center"><div class="bg-emerald-50 text-emerald-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Ingresos(Mes)</h3><p id="cashflow-income" class="text-3xl font-bold mt-1">$0</p></div><div class="bg-rose-50 text-rose-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Egresos(Mes)</h3><p id="cashflow-expenses" class="text-3xl font-bold mt-1">$0</p></div><div class="bg-sky-50 text-sky-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Balance(Mes)</h3><p id="cashflow-profit" class="text-3xl font-bold mt-1">$0</p></div></div></div><div class="lg:col-span-3"><div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b pb-4 mb-4 bg-white p-4 rounded-xl shadow-lg"><h3 class="text-lg font-semibold">Historial de Transacciones</h3><div class="flex flex-col sm:flex-row gap-4 items-center w-full sm:w-auto"><input type="date" id="report-start-date" class="w-full sm:w-auto p-2 border rounded-lg"><span class="text-slate-500 hidden sm:block">a</span><input type="date" id="report-end-date" class="w-full sm:w-auto p-2 border rounded-lg"><button id="generate-report-btn" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center"><i data-lucide="file-text" class="w-5 h-5 mr-2"></i>PDF</button></div></div><div class="overflow-x-auto"><table class="w-full text-sm responsive-table"><thead class="bg-slate-100"><tr><th class="p-3 text-xs font-semibold uppercase">Fecha</th><th class="p-3 text-xs font-semibold uppercase">Concepto</th><th class="p-3 text-right text-xs font-semibold uppercase">Monto</th></tr></thead><tbody id="transactions-table-body"></tbody></table></div></div></div>`; const today = new Date(); const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1); document.getElementById('report-start-date').value = firstDayOfMonth.toISOString().split('T')[0]; document.getElementById('report-end-date').value = today.toISOString().split('T')[0]; const allTransactions = getAllTransactions(); const currentMonthTransactions = allTransactions.filter(t => { const tDate = new Date(t.date); return tDate.getMonth() === today.getMonth() && tDate.getFullYear() === today.getFullYear(); }); const monthlyIncome = currentMonthTransactions.filter(t => t.type === 'ingreso').reduce((sum, t) => sum + t.amount, 0); const monthlyExpenses = currentMonthTransactions.filter(t => t.type === 'egreso').reduce((sum, t) => sum + t.amount, 0); document.getElementById('cashflow-income').textContent = formatCurrency(monthlyIncome); document.getElementById('cashflow-expenses').textContent = formatCurrency(monthlyExpenses); document.getElementById('cashflow-profit').textContent = formatCurrency(monthlyIncome - monthlyExpenses); renderTransactionsTable(allTransactions); lucide.createIcons(); }
-    function getAllTransactions() { const autoTransactions = []; affiliates.forEach(aff => { if (aff.status === 'Activo') { const income = getAffiliateCommissionBase(aff); autoTransactions.push({ id: `auto-i-${aff.id}`, type: 'ingreso', concept: `Pago afiliado: ${aff.name}`, amount: income, date: new Date(aff.startDate) }); const expense = getAdvisorCommissionForAffiliate(aff); if (expense > 0) { const advisor = advisors.find(v => v.id === aff.advisorId); autoTransactions.push({ id: `auto-e-${aff.id}`, type: 'egreso', concept: `Comisión ${advisor?.name || 'N/A'} (${aff.name})`, amount: expense, date: new Date(aff.startDate) }); } } }); const all = [...autoTransactions, ...manualTransactions]; all.sort((a, b) => new Date(b.date) - new Date(a.date)); return all; }
-    function renderTransactionsTable(transactions) { const tbody = document.getElementById('transactions-table-body'); if (transactions.length === 0) { tbody.innerHTML = `<tr class="no-data-row"><td colspan="3" class="text-center p-4 text-slate-500 bg-white rounded-xl shadow-lg">No hay transacciones.</td></tr>`; return; } tbody.innerHTML = transactions.map(t => `<tr><td data-label="Fecha:" class="p-3">${new Date(t.date).toLocaleDateString('es-CO')}</td><td data-label="Concepto:" class="p-3">${t.concept}</td><td data-label="Monto:" class="p-3 font-semibold ${t.type === 'ingreso' ? 'text-emerald-600' : 'text-rose-600'}">${t.type === 'ingreso' ? '+' : '-'}${formatCurrency(t.amount)}</td></tr>`).join(''); }
+    function renderFlujoCajaSection() { const container = document.getElementById('flujo-caja'); container.innerHTML = `<div class="bg-white p-6 rounded-xl shadow-lg mb-8"><div class="flex flex-col md:flex-row justify-between md:items-center gap-4"><div><h2 class="text-2xl font-bold">Flujo de Caja</h2><p class="text-slate-500">Gestión de ingresos y egresos.</p></div><div class="flex items-center gap-4"><button id="add-expense-btn" class="w-full md:w-auto bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 px-4 rounded-lg flex items-center"><i data-lucide="minus" class="w-5 h-5 mr-2"></i>Egreso</button><button id="add-income-btn" class="w-full md:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg flex items-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i>Ingreso</button></div></div></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8"><div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg"><div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center"><div class="bg-emerald-50 text-emerald-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Ingresos(Mes)</h3><p id="cashflow-income" class="text-3xl font-bold mt-1">$0</p></div><div class="bg-rose-50 text-rose-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Egresos(Mes)</h3><p id="cashflow-expenses" class="text-3xl font-bold mt-1">$0</p></div><div class="bg-sky-50 text-sky-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Balance(Mes)</h3><p id="cashflow-profit" class="text-3xl font-bold mt-1">$0</p></div></div></div><div class="lg:col-span-3"><div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b pb-4 mb-4 bg-white p-4 rounded-xl shadow-lg"><h3 class="text-lg font-semibold">Historial de Transacciones</h3><div class="flex flex-col sm:flex-row gap-4 items-center w-full sm:w-auto"><input type="date" id="report-start-date" class="w-full sm:w-auto p-2 border rounded-lg"><span class="text-slate-500 hidden sm:block">a</span><input type="date" id="report-end-date" class="w-full sm:w-auto p-2 border rounded-lg"><button id="generate-report-btn" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center"><i data-lucide="file-text" class="w-5 h-5 mr-2"></i>PDF</button></div></div><div class="overflow-x-auto"><table class="w-full text-sm responsive-table"><thead class="bg-slate-100"><tr><th class="p-3 text-xs font-semibold uppercase">Fecha</th><th class="p-3 text-xs font-semibold uppercase">Concepto</th><th class="p-3 text-right text-xs font-semibold uppercase">Monto</th></tr></thead><tbody id="transactions-table-body"></tbody></table></div></div></div>`; const today = new Date(); const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1); document.getElementById('report-start-date').value = firstDayOfMonth.toISOString().split('T')[0]; document.getElementById('report-end-date').value = today.toISOString().split('T')[0]; const allTransactions = getAllTransactions(); const currentMonthTransactions = allTransactions.filter(t => { const tDate = t.date; return tDate.getMonth() === today.getMonth() && tDate.getFullYear() === today.getFullYear(); }); const monthlyIncome = currentMonthTransactions.filter(t => t.type === 'ingreso').reduce((sum, t) => sum + t.amount, 0); const monthlyExpenses = currentMonthTransactions.filter(t => t.type === 'egreso').reduce((sum, t) => sum + t.amount, 0); document.getElementById('cashflow-income').textContent = formatCurrency(monthlyIncome); document.getElementById('cashflow-expenses').textContent = formatCurrency(monthlyExpenses); document.getElementById('cashflow-profit').textContent = formatCurrency(monthlyIncome - monthlyExpenses); renderTransactionsTable(allTransactions); lucide.createIcons(); }
+    function getAllTransactions() { const autoTransactions = []; affiliates.forEach(aff => { if (aff.status === 'Activo') { const income = getAffiliateCommissionBase(aff); autoTransactions.push({ id: `auto-i-${aff.id}`, type: 'ingreso', concept: `Pago afiliado: ${aff.name}`, amount: income, date: new Date(aff.startDate) }); const expense = getAdvisorCommissionForAffiliate(aff); if (expense > 0) { const advisor = advisors.find(v => v.id === aff.advisorId); autoTransactions.push({ id: `auto-e-${aff.id}`, type: 'egreso', concept: `Comisión ${advisor?.name || 'N/A'} (${aff.name})`, amount: expense, date: new Date(aff.startDate) }); } } }); const all = [...autoTransactions, ...manualTransactions]; all.sort((a, b) => b.date - a.date); return all; }
+    function renderTransactionsTable(transactions) { const tbody = document.getElementById('transactions-table-body'); if (transactions.length === 0) { tbody.innerHTML = `<tr class="no-data-row"><td colspan="3" class="text-center p-4 text-slate-500 bg-white rounded-xl shadow-lg">No hay transacciones.</td></tr>`; return; } tbody.innerHTML = transactions.map(t => `<tr><td data-label="Fecha:" class="p-3">${t.date.toLocaleDateString('es-CO')}</td><td data-label="Concepto:" class="p-3">${t.concept}</td><td data-label="Monto:" class="p-3 font-semibold ${t.type === 'ingreso' ? 'text-emerald-600' : 'text-rose-600'}">${t.type === 'ingreso' ? '+' : '-'}${formatCurrency(t.amount)}</td></tr>`).join(''); }
     function renderNovedadesSection() {
         const container = document.getElementById('novedades');
         container.innerHTML = `<div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-4xl mx-auto"><h2 class="text-2xl font-bold text-slate-800 mb-6">Última Actividad</h2><div id="novedades-feed" class="space-y-4"></div></div>`;
@@ -1249,78 +896,83 @@
         markAllNovedadesAsRead();
     }
     
+    // --- UTILITY FUNCTIONS ---
     function showToast(message, type = 'success') { const toast = document.getElementById('toast'); if (!toast) return; toast.textContent = message; toast.className = `fixed top-5 right-5 z-[100] text-white py-2 px-4 rounded-lg shadow-xl transition-all duration-300 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`; toast.classList.remove('opacity-0', 'translate-y-2'); setTimeout(() => toast.classList.add('opacity-0', 'translate-y-2'), 3000); }
     function formatCurrency(value, minimumFractionDigits = 0) { return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits }).format(value || 0); }
     function exportToCSV(headers, data, filename) { const csvRows = [headers.join(',')]; for (const row of data) { const values = headers.map(header => `"${('' + row[header]).replace(/"/g, '\\"')}"`); csvRows.push(values.join(',')); } const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.setAttribute('href', url); a.setAttribute('download', filename); document.body.appendChild(a); a.click(); document.body.removeChild(a); }
-    function generatePDFReport() { const { jsPDF } = window.jspdf; const doc = new jsPDF(); const startDate = new Date(document.getElementById('report-start-date').value + 'T00:00:00'); const endDate = new Date(document.getElementById('report-end-date').value + 'T23:59:59'); if (isNaN(startDate) || isNaN(endDate)) { showToast('Fechas inválidas.', 'error'); return; } const filteredTransactions = getAllTransactions().filter(t => new Date(t.date) >= startDate && new Date(t.date) <= endDate); const totalIncome = filteredTransactions.filter(t => t.type === 'ingreso').reduce((sum, t) => sum + t.amount, 0); const totalExpenses = filteredTransactions.filter(t => t.type === 'egreso').reduce((sum, t) => sum + t.amount, 0); const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim().split(' ').map(Number); doc.setFontSize(18); doc.text(companyProfile.name, 14, 22); doc.setFontSize(11); doc.text(`NIT: ${companyProfile.nit}`, 14, 30); doc.text(`Reporte de Flujo de Caja`, 120, 22); doc.setFontSize(10); doc.text(`Periodo: ${startDate.toLocaleDateString('es-CO')} - ${endDate.toLocaleDateString('es-CO')}`, 120, 30); doc.autoTable({ startY: 45, head: [['Concepto', 'Total']], body: [['Ingresos', formatCurrency(totalIncome)], ['Egresos', formatCurrency(totalExpenses)], [{ content: 'Balance', styles: { fontStyle: 'bold' } }, { content: formatCurrency(totalIncome - totalExpenses), styles: { fontStyle: 'bold' } }]], theme: 'grid', headStyles: { fillColor: themeColor } }); doc.autoTable({ startY: doc.lastAutoTable.finalY + 10, head: [['Fecha', 'Concepto', 'Tipo', 'Monto']], body: filteredTransactions.map(t => [new Date(t.date).toLocaleDateString('es-CO'), t.concept, t.type, formatCurrency(t.amount)]), theme: 'striped', headStyles: { fillColor: [45, 55, 72] } }); doc.save(`Reporte_Flujo_Caja.pdf`); }
+    function generatePDFReport() { const { jsPDF } = window.jspdf; const doc = new jsPDF(); const startDate = new Date(document.getElementById('report-start-date').value + 'T00:00:00'); const endDate = new Date(document.getElementById('report-end-date').value + 'T23:59:59'); if (isNaN(startDate) || isNaN(endDate)) { showToast('Fechas inválidas.', 'error'); return; } const filteredTransactions = getAllTransactions().filter(t => t.date >= startDate && t.date <= endDate); const totalIncome = filteredTransactions.filter(t => t.type === 'ingreso').reduce((sum, t) => sum + t.amount, 0); const totalExpenses = filteredTransactions.filter(t => t.type === 'egreso').reduce((sum, t) => sum + t.amount, 0); const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim().split(' ').map(Number); doc.setFontSize(18); doc.text(companyProfile.name, 14, 22); doc.setFontSize(11); doc.text(`NIT: ${companyProfile.nit}`, 14, 30); doc.text(`Reporte de Flujo de Caja`, 120, 22); doc.setFontSize(10); doc.text(`Periodo: ${startDate.toLocaleDateString('es-CO')} - ${endDate.toLocaleDateString('es-CO')}`, 120, 30); doc.autoTable({ startY: 45, head: [['Concepto', 'Total']], body: [['Ingresos', formatCurrency(totalIncome)], ['Egresos', formatCurrency(totalExpenses)], [{ content: 'Balance', styles: { fontStyle: 'bold' } }, { content: formatCurrency(totalIncome - totalExpenses), styles: { fontStyle: 'bold' } }]], theme: 'grid', headStyles: { fillColor: themeColor } }); doc.autoTable({ startY: doc.lastAutoTable.finalY + 10, head: [['Fecha', 'Concepto', 'Tipo', 'Monto']], body: filteredTransactions.map(t => [t.date.toLocaleDateString('es-CO'), t.concept, t.type, formatCurrency(t.amount)]), theme: 'striped', headStyles: { fillColor: [45, 55, 72] } }); doc.save(`Reporte_Flujo_Caja.pdf`); }
     function countUnreadNovedades() { return novedades.filter(n => n.isRead === false).length; }
     function updateNovedadesBadge() { const badgeSidebar = document.getElementById('novedades-badge-sidebar'); const badgeMobile = document.getElementById('novedades-badge-mobile'); if (!badgeSidebar || !badgeMobile) return; const count = countUnreadNovedades(); if (count > 0) { badgeSidebar.textContent = count; badgeMobile.textContent = count; badgeSidebar.classList.remove('hidden'); badgeMobile.classList.remove('hidden'); } else { badgeSidebar.classList.add('hidden'); badgeMobile.classList.add('hidden'); } }
-    function formatTimeAgo(date) { if (!date) return 'hace un momento'; const seconds = Math.floor((new Date() - new Date(date)) / 1000); let interval = seconds / 31536000; if (interval > 1) return `hace ${Math.floor(interval)} años`; interval = seconds / 2592000; if (interval > 1) return `hace ${Math.floor(interval)} meses`; interval = seconds / 86400; if (interval > 1) return `hace ${Math.floor(interval)} días`; interval = seconds / 3600; if (interval > 1) return `hace ${Math.floor(interval)} horas`; interval = seconds / 60; if (interval > 1) return `hace ${Math.floor(interval)} minutos`; return `hace ${Math.floor(seconds)} segundos`; }
+    function formatTimeAgo(date) { const seconds = Math.floor((new Date() - date) / 1000); let interval = seconds / 31536000; if (interval > 1) return `hace ${Math.floor(interval)} años`; interval = seconds / 2592000; if (interval > 1) return `hace ${Math.floor(interval)} meses`; interval = seconds / 86400; if (interval > 1) return `hace ${Math.floor(interval)} días`; interval = seconds / 3600; if (interval > 1) return `hace ${Math.floor(interval)} horas`; interval = seconds / 60; if (interval > 1) return `hace ${Math.floor(interval)} minutos`; return `hace ${Math.floor(seconds)} segundos`; }
     function getNovedadIcon(type) { const icons = { creation: 'user-plus', status_change: 'alert-triangle', deletion: 'user-x', reminder: 'calendar-clock' }; return `<i data-lucide="${icons[type] || 'bell'}" class="h-6 w-6"></i>`; }
+    async function markAllNovedadesAsRead() { let itemsWereUpdated = false; const batch = db.batch(); novedades.forEach(novedad => { if (novedad.isRead === false) { const docRef = db.collection('novedades').doc(novedad.id); batch.update(docRef, { isRead: true }); novedad.isRead = true; itemsWereUpdated = true; } }); if (itemsWereUpdated) { await batch.commit(); setTimeout(updateNovedadesBadge, 500); } }
+
+    // --- EVENT & FORM HANDLERS ---
+    async function handleLogin(e) { e.preventDefault(); const email = e.target['login-identifier'].value; const password = e.target['login-password'].value; const errorDiv = document.getElementById('auth-error'); errorDiv.textContent = ''; try { await auth.signInWithEmailAndPassword(email, password); } catch (error) { errorDiv.textContent = 'Credenciales incorrectas o el usuario no existe.'; console.error("Login error:", error); } }
+    async function handleRegister(e) { e.preventDefault(); const email = e.target['register-email'].value; const password = e.target['register-password'].value; const errorDiv = document.getElementById('auth-error'); errorDiv.textContent = ''; try { const userCredential = await auth.createUserWithEmailAndPassword(email, password); await db.collection('users').doc(userCredential.user.uid).set({ email: userCredential.user.email, role: 'admin', uid: userCredential.user.uid, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); } catch (error) { errorDiv.textContent = error.message; console.error("Register error:", error); } }
+    function handleLogout() { auth.signOut(); }
     
-    function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme); const themeSelector = document.querySelector(`#theme-selector input[value="${theme}"]`); if (themeSelector) themeSelector.checked = true; }
+    async function handleSaveAffiliate(e) { 
+        e.preventDefault();
+        const form = e.target; 
+        const selectedPlan = form.querySelector('input[name="health-plan"]:checked'); 
+        if (!selectedPlan && healthPlans.length > 0) { showToast('Debe seleccionar un plan de salud.', 'error'); return; } 
+        const affiliateData = { name: form['affiliate-name'].value.trim(), documentId: form['affiliate-id'].value.trim(), email: form['affiliate-email'].value.trim(), phone: form['affiliate-phone'].value.trim(), address: form['affiliate-address'].value.trim(), healthPlan: selectedPlan ? selectedPlan.value : null, pensionPlan: form['pension-plan'].value, arlPlan: form['arl-plan'].value, ccfPlan: form['ccf-plan'].value, advisorId: form['advisor-select-list'].value, startDate: form['affiliate-start-date'].value, status: form['affiliate-status'].value, notes: form['affiliate-notes'].value.trim(), manualCosts: null, manualCommission: null }; 
+        if (form['manual-override-checkbox'].checked) { affiliateData.manualCosts = { health: Number(form['manual-cost-health'].value) || 0, pension: Number(form['manual-cost-pension'].value) || 0, arl: Number(form['manual-cost-arl'].value) || 0, ccf: Number(form['manual-cost-ccf'].value) || 0 }; affiliateData.manualCommission = Number(form['manual-commission'].value) || null; } 
+        const existingId = form['affiliate-doc-id'].value; 
+        try {
+            if (existingId) { 
+                const originalAffiliate = affiliates.find(a => a.id === existingId);
+                if (originalAffiliate && originalAffiliate.status !== affiliateData.status) {
+                    await createNovedad(existingId, affiliateData.name, 'status_change', `El estado de ${affiliateData.name} cambió de '${originalAffiliate.status}' a '${affiliateData.status}'.`);
+                }
+                await db.collection('affiliates').doc(existingId).update(affiliateData);
+            } else { 
+                affiliateData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                const docRef = await db.collection('affiliates').add(affiliateData);
+                await createNovedad(docRef.id, affiliateData.name, 'creation', `Se ha registrado al nuevo afiliado ${affiliateData.name}.`);
+            } 
+            await loadDataFromFirebase();
+            renderContent('afiliados'); 
+            modalManager.close('affiliate-modal'); 
+            showToast('Afiliado guardado.'); 
+        } catch(error) {
+            console.error("Error saving affiliate:", error);
+            showToast('Error al guardar. Revise la consola.', 'error');
+        }
+    }
+    async function handleSaveAdvisor(e) { e.preventDefault(); const form = e.target; const id = form['advisor-doc-id'].value; const advisorData = { name: form['advisor-name'].value, commissionRate: Number(form['advisor-commission'].value) }; try { if (id) { await db.collection('advisors').doc(id).update(advisorData); } else { await db.collection('advisors').add(advisorData); } await loadDataFromFirebase(); populateAdvisorSelect(); renderContent('asesores'); modalManager.close('advisor-modal'); showToast('Asesor guardado.'); } catch (error) { console.error(error); showToast('Error al guardar.', 'error'); }}
+    async function handleSavePlan(e) { e.preventDefault(); const form = e.target; const id = form['plan-doc-id'].value; const planData = { name: form['plan-name'].value, price: Number(form['plan-price'].value), features: form['plan-features'].value }; try { if (id) { await db.collection('healthPlans').doc(id).update(planData); } else { await db.collection('healthPlans').add(planData); } await loadHealthPlans(); renderPlansList(); modalManager.close('plan-modal'); showToast('Plan guardado.'); } catch (error) { console.error(error); showToast('Error al guardar.', 'error'); } }
+    async function handleSaveTransaction(e) { e.preventDefault(); const form = e.target; const newTransaction = { type: form['transaction-type'].value, concept: form['transaction-concept'].value, amount: parseFloat(form['transaction-amount'].value), date: new Date(form['transaction-date'].value + 'T12:00:00.000Z') }; try { await db.collection('manualTransactions').add(newTransaction); await loadManualTransactions(); renderFlujoCajaSection(); modalManager.close('transaction-modal'); showToast('Transacción guardada.'); } catch (error) { console.error(error); showToast('Error al guardar.', 'error'); } }
+    async function handleSaveCompanyProfile(e) { e.preventDefault(); companyProfile.name = document.getElementById('company-name').value; companyProfile.nit = document.getElementById('company-nit').value; companyProfile.address = document.getElementById('company-address').value; companyProfile.phone = document.getElementById('company-phone').value; companyProfile.email = document.getElementById('company-email').value; companyProfile.theme = document.querySelector('#theme-selector input:checked').value; applyTheme(companyProfile.theme); await saveCompanyProfile(); showToast('Perfil actualizado.'); }
+    async function handleSaveSettings(e) { e.preventDefault(); const form = e.target; const newSettings = { SMMLV: Number(form['setting-smmlv'].value), CONTRIBUTION_RATES: { ...settings.CONTRIBUTION_RATES, health: parseFloat(form['setting-health'].value), pension: parseFloat(form['setting-pension'].value), independiente_ccf: parseFloat(form['setting-ccf-ind'].value), employer_ccf: parseFloat(form['setting-ccf-emp'].value) }, ARL_RATES: { '1': parseFloat(form['setting-arl-1'].value), '2': parseFloat(form['setting-arl-2'].value), '3': parseFloat(form['setting-arl-3'].value), '4': parseFloat(form['setting-arl-4'].value), '5': parseFloat(form['setting-arl-5'].value), }}; try { await db.collection('_config').doc('appSettings').set(newSettings); settings = newSettings; modalManager.close('settings-modal'); showToast('Configuración guardada.'); } catch (error) { console.error(error); showToast('Error al guardar.', 'error'); } }
+    async function handleSaveUser(e) {
+        e.preventDefault(); const form = e.target; const id = form['user-doc-id'].value; const email = form['user-email'].value; const password = form['user-password'].value; const role = form['user-role'].value; const appDataId = form['user-link'].value;
+        if (!appDataId) { showToast(`Debe seleccionar un ${role} para vincular.`, 'error'); return; }
+        showToast('Esta función requiere un backend (Cloud Functions) para crear usuarios de forma segura. Implementación no incluida en este script.', 'error');
+        // NOTA: Crear/editar usuarios desde el cliente de esta manera es inseguro y no es soportado por Firebase Auth.
+        // Se necesitaría una Cloud Function para manejar la creación y edición de usuarios de forma segura.
+    }
     function handleExportAffiliates() { const headers = ['Nombre', 'Documento', 'Email', 'Telefono', 'Asesor', 'Estado', 'Fecha de Inicio', 'Plan de Salud']; const dataToExport = affiliates.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const plan = healthPlans.find(p=> p.id === aff.healthPlan); return { 'Nombre': aff.name, 'Documento': aff.documentId, 'Email': aff.email, 'Telefono': aff.phone, 'Asesor': advisor?.name || 'N/A', 'Estado': aff.status, 'Fecha de Inicio': aff.startDate, 'Plan de Salud': plan?.name || 'N/A' }; }); exportToCSV(headers, dataToExport, 'afiliados.csv'); }
     function handleExportAdvisors() { const headers = ['Nombre', 'Comision (%)', 'Total Afiliados', 'Comision Total']; const dataToExport = advisors.map(advisor => ({ 'Nombre': advisor.name, 'Comision (%)': advisor.commissionRate, 'Total Afiliados': affiliates.filter(a => a.advisorId === advisor.id).length, 'Comision Total': affiliates.filter(a => a.advisorId === advisor.id).reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0) })); exportToCSV(headers, dataToExport, 'asesores.csv'); }
     function handleCotizadorCalculation(e) {
         e.preventDefault();
         const resultsContainer = document.getElementById('cotizador-results');
-        
         let ibc = parseFloat(document.getElementById('cotizador-ibc').value);
         const arlRisk = document.getElementById('cotizador-arl-risk').value;
         const calcPension = document.getElementById('cotizador-pension-check').checked;
         const calcCcf = document.getElementById('cotizador-ccf-check').checked;
-
-        if (isNaN(ibc) || ibc <= 0) {
-            ibc = settings.SMMLV;
-        }
-        
-        if (ibc < settings.SMMLV) {
-            showToast(`El IBC no puede ser menor al salario mínimo (${formatCurrency(settings.SMMLV)}). Se ajustará al mínimo.`, 'error');
-            ibc = settings.SMMLV;
-            document.getElementById('cotizador-ibc').value = ibc;
-        }
-
+        if (isNaN(ibc) || ibc <= 0) { ibc = settings.SMMLV; }
+        if (ibc < settings.SMMLV) { showToast(`El IBC no puede ser menor al salario mínimo (${formatCurrency(settings.SMMLV)}). Se ajustará al mínimo.`, 'error'); ibc = settings.SMMLV; document.getElementById('cotizador-ibc').value = ibc; }
         const healthCost = ibc * (settings.CONTRIBUTION_RATES.health / 100);
         const pensionCost = calcPension ? ibc * (settings.CONTRIBUTION_RATES.pension / 100) : 0;
         const arlCost = ibc * (settings.ARL_RATES[arlRisk] / 100);
         const ccfCost = calcCcf ? ibc * (settings.CONTRIBUTION_RATES.independiente_ccf / 100) : 0;
         const total = healthCost + pensionCost + arlCost + ccfCost;
-
-        resultsContainer.innerHTML = `
-            <div class="bg-slate-50 p-4 rounded-lg">
-                <div class="flex justify-between items-center">
-                    <span class="font-medium text-slate-600">Ingreso Base (IBC)</span>
-                    <span class="font-bold text-slate-800">${formatCurrency(ibc)}</span>
-                </div>
-            </div>
-            <div class="border-t pt-4 space-y-3">
-                <div class="flex justify-between items-center text-sm">
-                    <span class="text-slate-500">Salud (${settings.CONTRIBUTION_RATES.health}%)</span>
-                    <span class="font-semibold text-slate-700">${formatCurrency(healthCost)}</span>
-                </div>
-                ${calcPension ? `
-                <div class="flex justify-between items-center text-sm">
-                    <span class="text-slate-500">Pensión (${settings.CONTRIBUTION_RATES.pension}%)</span>
-                    <span class="font-semibold text-slate-700">${formatCurrency(pensionCost)}</span>
-                </div>` : ''}
-                <div class="flex justify-between items-center text-sm">
-                    <span class="text-slate-500">ARL Riesgo ${arlRisk} (${settings.ARL_RATES[arlRisk]}%)</span>
-                    <span class="font-semibold text-slate-700">${formatCurrency(arlCost)}</span>
-                </div>
-                ${calcCcf ? `
-                <div class="flex justify-between items-center text-sm">
-                    <span class="text-slate-500">Caja de Compensación (${settings.CONTRIBUTION_RATES.independiente_ccf}%)</span>
-                    <span class="font-semibold text-slate-700">${formatCurrency(ccfCost)}</span>
-                </div>` : ''}
-            </div>
-            <div class="border-t mt-4 pt-4">
-                <div class="flex justify-between items-center text-lg">
-                    <span class="font-bold text-primary-600">TOTAL A PAGAR</span>
-                    <span class="font-extrabold text-primary-600">${formatCurrency(total)}</span>
-                </div>
-            </div>
-        `;
+        resultsContainer.innerHTML = `<div class="bg-slate-50 p-4 rounded-lg"><div class="flex justify-between items-center"><span class="font-medium text-slate-600">Ingreso Base (IBC)</span><span class="font-bold text-slate-800">${formatCurrency(ibc)}</span></div></div><div class="border-t pt-4 space-y-3"><div class="flex justify-between items-center text-sm"><span class="text-slate-500">Salud (${settings.CONTRIBUTION_RATES.health}%)</span><span class="font-semibold text-slate-700">${formatCurrency(healthCost)}</span></div>${calcPension ? `<div class="flex justify-between items-center text-sm"><span class="text-slate-500">Pensión (${settings.CONTRIBUTION_RATES.pension}%)</span><span class="font-semibold text-slate-700">${formatCurrency(pensionCost)}</span></div>` : ''}<div class="flex justify-between items-center text-sm"><span class="text-slate-500">ARL Riesgo ${arlRisk} (${settings.ARL_RATES[arlRisk]}%)</span><span class="font-semibold text-slate-700">${formatCurrency(arlCost)}</span></div>${calcCcf ? `<div class="flex justify-between items-center text-sm"><span class="text-slate-500">Caja de Compensación (${settings.CONTRIBUTION_RATES.independiente_ccf}%)</span><span class="font-semibold text-slate-700">${formatCurrency(ccfCost)}</span></div>` : ''}</div><div class="border-t mt-4 pt-4"><div class="flex justify-between items-center text-lg"><span class="font-bold text-primary-600">TOTAL A PAGAR</span><span class="font-extrabold text-primary-600">${formatCurrency(total)}</span></div></div>`;
     }
+
+    // --- APPLICATION SETUP & FLOW ---
     function setupAppEventListeners() {
         document.body.addEventListener('submit', e => {
             const form = e.target.closest('form'); if (!form || !form.id) return;
@@ -1335,21 +987,15 @@
             if (dataset.target) {
                 e.preventDefault();
                 const targetId = target.dataset.target;
-                renderContent(targetId, true);
+                renderContent(targetId);
                 document.querySelectorAll('[data-target]').forEach(l => l.classList.remove('active'));
                 document.querySelectorAll(`[data-target="${targetId}"]`).forEach(l => l.classList.add('active'));
                 const title = target.textContent.trim().split('\n')[0].trim() || targetId;
                 document.getElementById('header-title').textContent = title.charAt(0).toUpperCase() + title.slice(1);
-                
                 document.getElementById('main-content').scrollTo(0, 0);
-
-                if (window.innerWidth < 768 && target.closest('#sidebar')) {
-                    toggleSidebar();
-                }
+                if (window.innerWidth < 768 && target.closest('#sidebar')) { toggleSidebar(); }
             }
-            if (target.id === 'menu-toggle' || target.id === 'sidebar-overlay') {
-                toggleSidebar();
-            }
+            if (target.id === 'menu-toggle' || target.id === 'sidebar-overlay') { toggleSidebar(); }
 
             if (target.id === 'logout-btn' || target.id === 'modal-logout-btn') handleLogout();
             if (dataset.closeModal) modalManager.close(dataset.closeModal); 
@@ -1365,10 +1011,10 @@
             if (target.matches('.edit-affiliate-btn')) modalManager.open('affiliate-modal', affiliates.find(a => a.id === dataset.id)); if (target.matches('.edit-advisor-btn')) modalManager.open('advisor-modal', advisors.find(v => v.id === dataset.id)); if (target.matches('.edit-plan-btn')) modalManager.open('plan-modal', healthPlans.find(p => p.id === dataset.id)); if (target.matches('.edit-user-btn')) modalManager.open('user-modal', allUsers.find(u => u.id === dataset.id));
             if (target.matches('[data-toggle-details]')) { const card = target.closest('.bg-white'); if (card) { card.querySelector('.details-section').classList.toggle('hidden'); target.classList.toggle('details-shown'); } }
             if (target.matches('[data-toggle-stats]')) { const statsContainer = document.getElementById(`advisor-stats-${dataset.toggleStats}`); const buttonText = target.querySelector('.button-text'); if (statsContainer) { statsContainer.classList.toggle('hidden'); target.classList.toggle('stats-shown'); buttonText.textContent = statsContainer.classList.contains('hidden') ? 'Ver Desglose' : 'Ocultar Desglose'; } }
-            if (target.matches('.delete-affiliate-btn')) { showConfirmation('¿Seguro que deseas eliminar este afiliado?', async () => { try { await deleteDoc(doc(db, "affiliates", dataset.id)); showToast('Afiliado eliminado.'); } catch(e) { showToast('Error al eliminar.', 'error'); console.error(e); } }); }
-            if (target.matches('.delete-advisor-btn')) { showConfirmation('¿Seguro que deseas eliminar este asesor?', async () => { try { await deleteDoc(doc(db, "advisors", dataset.id)); showToast('Asesor eliminado.'); } catch(e) { showToast('Error al eliminar.', 'error'); console.error(e); } }); }
-            if (target.matches('.delete-plan-btn')) { if (affiliates.some(aff => aff.healthPlan === dataset.id)) { showToast('Plan en uso, no se puede eliminar.', 'error'); return; } showConfirmation('¿Seguro que deseas eliminar este plan?', async () => { try { await deleteDoc(doc(db, "healthPlans", dataset.id)); showToast('Plan eliminado.'); } catch(e) { showToast('Error al eliminar.', 'error'); console.error(e); } }); }
-            if (target.matches('.delete-user-btn')) { showConfirmation('¿Seguro que deseas eliminar este usuario?', async () => { showToast("La eliminación de usuarios debe hacerse desde una Función Cloud por seguridad.", "error"); }); }
+            if (target.matches('.delete-affiliate-btn')) { showConfirmation('¿Seguro que deseas eliminar este afiliado?', async () => { try { const affiliateToDelete = affiliates.find(a => a.id === dataset.id); await db.collection('affiliates').doc(dataset.id).delete(); if (affiliateToDelete) { await createNovedad(affiliateToDelete.id, affiliateToDelete.name, 'deletion', `El afiliado ${affiliateToDelete.name} ha sido eliminado.`); } await loadDataFromFirebase(); renderAffiliatesList(); showToast('Afiliado eliminado.'); } catch(e){ console.error(e); showToast("Error al eliminar", "error");} }); }
+            if (target.matches('.delete-advisor-btn')) { showConfirmation('¿Seguro que deseas eliminar este asesor?', async () => { try { await db.collection('advisors').doc(dataset.id).delete(); await loadDataFromFirebase(); populateAdvisorSelect(); renderAdvisorsSection(); showToast('Asesor eliminado.'); } catch(e){ console.error(e); showToast("Error al eliminar", "error");} }); }
+            if (target.matches('.delete-plan-btn')) { if (affiliates.some(aff => aff.healthPlan === dataset.id)) { showToast('Plan en uso, no se puede eliminar.', 'error'); return; } showConfirmation('¿Seguro que deseas eliminar este plan?', async () => { try { await db.collection('healthPlans').doc(dataset.id).delete(); await loadHealthPlans(); renderPlansList(); showToast('Plan eliminado.'); } catch(e){ console.error(e); showToast("Error al eliminar", "error");} }); }
+            if (target.matches('.delete-user-btn')) { showConfirmation('¿Seguro que deseas eliminar este usuario? Esta acción requiere Cloud Functions.', () => { showToast("Función no implementada. Requiere backend.", "error"); }); }
             if (target.id === 'view-as-cards-btn') { affiliatesViewMode = 'card'; updateViewToggleButtons(); displayFilteredAffiliates(affiliates.filter(a => currentUser.role === 'admin' || a.advisorId === currentUser.appDataId)); }
             if (target.id === 'view-as-table-btn') { affiliatesViewMode = 'table'; updateViewToggleButtons(); displayFilteredAffiliates(affiliates.filter(a => currentUser.role === 'admin' || a.advisorId === currentUser.appDataId)); }
         });
@@ -1390,6 +1036,16 @@
         document.getElementById('login-form').addEventListener('submit', handleLogin);
         document.getElementById('register-form').addEventListener('submit', handleRegister);
     }
+    function showAuthForm(formToShow) {
+        const loginForm = document.getElementById('login-form'); const registerForm = document.getElementById('register-form'); const title = document.getElementById('auth-title'); const subtitle = document.getElementById('auth-subtitle');
+        if (formToShow === 'register') {
+            loginForm.classList.add('hidden'); registerForm.classList.remove('hidden');
+            title.textContent = 'Crear Cuenta de Administrador'; subtitle.textContent = 'Bienvenido. Completa el registro para iniciar.';
+        } else {
+            loginForm.classList.remove('hidden'); registerForm.classList.add('hidden');
+            title.textContent = 'Iniciar Sesión'; subtitle.textContent = 'Bienvenido de nuevo';
+        }
+    }
     function configureUIForRole(role) {
         renderNavigation(role); 
         let userName = currentUser.email;
@@ -1398,6 +1054,7 @@
         
         document.getElementById('user-display-name').textContent = userName; 
         document.getElementById('user-display-role').textContent = role;
+
         document.getElementById('modal-user-display-name').textContent = userName; 
         document.getElementById('modal-user-display-role').textContent = role;
 
@@ -1405,19 +1062,88 @@
         populateAdvisorSelect();
         lucide.createIcons();
     }
+    function checkAndCreateReminders() {
+        const today = new Date();
+        const oneMonthAgo = new Date();
+        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+        affiliates.forEach(aff => {
+            if (aff.status !== 'Activo' || !aff.startDate) return;
+
+            const startDate = new Date(aff.startDate);
+            const renewalDay = startDate.getDate();
+            const daysUntilRenewal = renewalDay - today.getDate();
+
+            if (daysUntilRenewal > 0 && daysUntilRenewal <= 7) {
+                const hasRecentReminder = novedades.some(n =>
+                    n.affiliateId === aff.id &&
+                    n.type === 'reminder' &&
+                    n.timestamp > oneMonthAgo
+                );
+
+                if (!hasRecentReminder) {
+                    createNovedad(aff.id, aff.name, 'reminder', `Recordatorio: El pago mensual para ${aff.name} vence pronto (día ${renewalDay} de cada mes).`);
+                }
+            }
+        });
+    }
+    async function initializeApp(user) {
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        if (!userDoc.exists) { console.error("User document not found in Firestore!"); handleLogout(); return; }
+        currentUser = { auth: user, ...userDoc.data() };
+        
+        document.getElementById('auth-container').classList.add('hidden');
+        document.getElementById('app-container').classList.remove('hidden');
+        
+        await Promise.all([ loadSettings(), loadCompanyProfile(), loadManualTransactions(), loadHealthPlans(), loadDataFromFirebase(), loadNovedades(), loadAllUsers() ]);
+        
+        checkAndCreateReminders();
+        buildMainContentHTML();
+        configureUIForRole(currentUser.role);
+        setupAppEventListeners();
+        
+        const initialView = navLinksConfig[currentUser.role][0].id;
+        renderContent(initialView);
+        document.querySelector(`#main-nav [data-target="${initialView}"]`)?.classList.add('active');
+        document.querySelector(`#mobile-nav [data-target="${initialView}"]`)?.classList.add('active');
+        document.getElementById('header-title').textContent = navLinksConfig[currentUser.role][0].text;
+    }
+    
+    // --- APP INITIALIZATION ---
+    let confirmCallback = null;
+    function showConfirmation(message, onConfirm) {
+        document.getElementById('confirmation-message').textContent = message;
+        confirmCallback = onConfirm;
+        modalManager.open('confirmation-modal');
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
         try {
-            setupAppEventListeners();
             setupAuthEventListeners();
             lucide.createIcons();
+
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    await initializeApp(user);
+                } else {
+                    currentUser = null;
+                    document.getElementById('app-container').classList.add('hidden');
+                    document.getElementById('auth-container').classList.remove('hidden');
+                    
+                    const usersQuery = await db.collection('users').limit(1).get();
+                    if (usersQuery.empty) {
+                        showAuthForm('register');
+                    } else {
+                        showAuthForm('login');
+                    }
+                }
+            });
+
         } catch (error) {
             console.error("Error fatal:", error);
             document.body.innerHTML = `<div class="p-8 text-center text-red-500"><h1>Error Crítico</h1><p>La aplicación no pudo iniciarse. Revisa la consola (F12).</p></div>`;
         }
     });
-
 </script>
 </body>
 </html>
-
