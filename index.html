@@ -457,6 +457,14 @@
             const form = modal.querySelector('form');
             if (form) this.resetForm(form.id);
 
+            // --- CORRECCIÓN AÑADIDA ---
+            // Si es el modal de usuario y es para crear (no hay 'data'),
+            // poblamos la lista de vínculos con el rol por defecto.
+            if (modalId === 'user-modal' && !data) {
+                const defaultRole = document.getElementById('user-role').value;
+                populateUserLinkForm(defaultRole);
+            }
+
             if (data) {
                 if (modalId === 'affiliate-modal') this.populateAffiliateForm(data);
                 if (modalId === 'advisor-modal') this.populateAdvisorForm(data);
@@ -753,6 +761,7 @@
     function handleRegister(e) { e.preventDefault(); const email = e.target['register-email'].value; const password = e.target['register-password'].value; const errorDiv = document.getElementById('auth-error'); errorDiv.textContent = ''; if (allUsers.find(u => u.email === email)) { errorDiv.textContent = 'Este correo ya está registrado.'; return; } const newUser = { id: 'admin-' + Date.now(), email, password: mockAuth.hash(password), role: 'admin' }; allUsers.push(newUser); saveAllUsers(); localStorage.setItem('sebSalud_currentUser', JSON.stringify(newUser)); initializeApp(newUser); }
     function handleLogout() { localStorage.removeItem('sebSalud_currentUser'); currentUser = null; window.location.reload(); }
     function handleSaveAffiliate(e) { 
+        e.preventDefault();
         const form = e.target; 
         const selectedPlan = form.querySelector('input[name="health-plan"]:checked'); 
         if (!selectedPlan && healthPlans.length > 0) { showToast('Debe seleccionar un plan de salud.', 'error'); return; } 
