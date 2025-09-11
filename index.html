@@ -32,7 +32,6 @@
         [data-theme="verano-tropical"] { --color-primary-400: 190 242 100; --color-primary-500: 163 230 53; --color-primary-600: 219 39 119; --color-primary-700: 190 24 93; }
         [data-theme="apple"] { --color-primary-400: 229 231 235; --color-primary-500: 255 255 255; --color-primary-600: 243 244 246; --color-primary-700: 209 213 219; }
         [data-theme="neon-amarillo"] { --color-primary-400: 234 255 102; --color-primary-500: 227 255 0; --color-primary-600: 204 255 0; --color-primary-700: 170 204 0; }
-        /* --- INICIO MEJORA: Definición de colores para el tema Spotify --- */
         [data-theme="spotify"] { --color-primary-400: 30 215 96; --color-primary-500: 29 185 84; --color-primary-600: 29 185 84; --color-primary-700: 25 158 71; }
 
 
@@ -111,7 +110,6 @@
         [data-theme="apple"] .shimmer-button::after { background-image: linear-gradient( to right, transparent, rgba(255, 255, 255, 0.6), transparent ); }
         [data-theme="apple"] .chat-bubble.bot-message { background-color: #2C2C2E; color: #FFF; }
 
-        /* --- INICIO MEJORA: Estilos para el tema Spotify --- */
         [data-theme="spotify"] body.bg-slate-50 { background-color: #121212; color: #FFFFFF; }
         [data-theme="spotify"] .bg-white, [data-theme="spotify"] .bg-white\/80 { background-color: #181818 !important; }
         [data-theme="spotify"] header { background-color: #181818/80 !important; border-bottom-color: #282828 !important; }
@@ -126,8 +124,8 @@
         [data-theme="spotify"] .bg-slate-50, [data-theme="spotify"] .hover\:bg-slate-50:hover, [data-theme="spotify"] .bg-gray-50\/50 { background-color: #181818 !important; }
         [data-theme="spotify"] .bg-slate-800 { background-color: #282828; }
         [data-theme="spotify"] .chat-bubble.bot-message { background-color: #282828; color: #FFF; }
+        [data-theme="spotify"] .suggestion-chip { border-color: #404040; color: #b3b3b3; }
         [data-theme="spotify"] .suggestion-chip:hover { background-color: #282828; }
-        /* --- FIN MEJORA: Estilos para el tema Spotify --- */
 
         /* --- NUEVAS ANIMACIONES Y ESTILOS --- */
         .auth-banner { animation: fadeInBanner 0.5s ease-out; }
@@ -148,7 +146,6 @@
         .typing-indicator span:nth-child(2) { animation-delay: -1.0s; }
         .typing-indicator span:nth-child(3) { animation-delay: -0.8s; }
         @keyframes typing-bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
-        /* --- INICIO MEJORA: Estilos para las sugerencias del chat --- */
         .suggestion-chip {
             cursor: pointer;
             padding: 6px 12px;
@@ -318,8 +315,8 @@
                     <section id="chat" class="content-section">
                         <div class="bg-white rounded-xl shadow-lg h-[calc(100vh-10rem)] max-w-4xl mx-auto flex flex-col">
                             <div class="p-4 border-b flex items-center flex-shrink-0">
-                                <i data-lucide="sparkles" class="w-6 h-6 mr-3 text-primary-600"></i>
-                                <h2 class="text-xl font-bold text-slate-800">Asistente IA Seb Salud</h2>
+                                <i data-lucide="message-square" class="w-6 h-6 mr-3 text-primary-600"></i>
+                                <h2 class="text-xl font-bold text-slate-800">Asistente Virtual Seb Salud</h2>
                             </div>
                             <div id="chat-messages" class="flex-grow p-4 space-y-4 overflow-y-auto">
                                 </div>
@@ -327,7 +324,7 @@
                                 </div>
                             <div class="p-4 border-t flex-shrink-0 bg-slate-50">
                                 <form id="chat-form" class="flex items-center gap-3">
-                                    <input type="text" id="chat-input" placeholder="Pregúntame sobre seguridad social en Colombia..." class="w-full px-4 py-2 border border-slate-300 rounded-full focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none">
+                                    <input type="text" id="chat-input" placeholder="Escribe tu pregunta aquí..." class="w-full px-4 py-2 border border-slate-300 rounded-full focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none">
                                     <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white p-3 rounded-full flex-shrink-0 shadow-md transform hover:scale-110 transition-transform">
                                         <i data-lucide="send" class="w-5 h-5"></i>
                                     </button>
@@ -444,18 +441,24 @@
     function getNovedadIcon(e){return{creation:'<i data-lucide="user-plus" class="h-6 w-6 text-green-500"></i>',status_change:'<i data-lucide="shuffle" class="h-6 w-6 text-yellow-500"></i>',payment_reminder:'<i data-lucide="calendar-clock" class="h-6 w-6 text-red-500"></i>',commission_earned:'<i data-lucide="award" class="h-6 w-6 text-blue-500"></i>',admin_profit:'<i data-lucide="trending-up" class="h-6 w-6 text-indigo-500"></i>',deletion:'<i data-lucide="user-x" class="h-6 w-6 text-red-500"></i>'}[e]||'<i data-lucide="alert-triangle" class="h-6 w-6 text-yellow-500"></i>'}
     function formatTimeAgo(e){if(!e) return "hace un momento"; const t=Math.floor((new Date-e)/1e3);let a=t/31536e3;if(1<a)return`hace ${Math.floor(a)} años`;if(1<(a=t/2592e3))return`hace ${Math.floor(a)} meses`;if(1<(a=t/86400))return`hace ${Math.floor(a)} días`;if(1<(a=t/3600))return`hace ${Math.floor(a)} horas`;if(1<(a=t/60))return`hace ${Math.floor(a)} minutos`;return`hace ${Math.floor(t)} segundos`}
     
-    // --- INICIO MEJORA: LÓGICA DEL CHATBOT CON GEMINI ---
+    // --- LÓGICA DEL CHATBOT CON RESPUESTAS PREDEFINIDAS ---
+    const chatBotQA = [
+        { keywords: ['hola', 'saludos', 'buenas'], answer: '¡Hola! Soy el asistente virtual de Seb Salud. ¿En qué puedo ayudarte hoy?' },
+        { keywords: ['afiliado', 'buscar', 'encontrar', 'cliente'], answer: 'Para buscar, ver o editar un afiliado, dirígete a la sección "Afiliados" en el menú lateral. Puedes usar la barra de búsqueda por nombre o documento.' },
+        { keywords: ['plan', 'crear', 'nuevo plan'], answer: 'Puedes crear y administrar todos los planes de salud desde la sección "Planes de Salud". Haz clic allí para empezar.' },
+        { keywords: ['ranking', 'vendedores', 'asesores'], answer: 'El "Ranking de Vendedores" muestra el rendimiento de tus asesores basado en las comisiones generadas. ¡Es una gran herramienta para motivar a tu equipo!' },
+        { keywords: ['cotizador', 'calcular', 'aportes'], answer: 'Usa el "Cotizador" para calcular los aportes a seguridad social de un posible cliente. ¡Solo necesitas su ingreso mensual!' },
+        { keywords: ['qué es el ibc', 'ibc'], answer: 'El IBC es el "Ingreso Base de Cotización". Es el monto sobre el cual se calculan los aportes a seguridad social. Para independientes, corresponde al 40% de tus ingresos mensuales, sin ser menor a 1 SMMLV.' },
+        { keywords: ['flujo de caja', 'ingresos', 'egresos', 'reporte'], answer: 'Puedes ver un resumen de tus finanzas en la sección "Flujo de Caja". Allí puedes registrar ingresos, egresos y generar reportes en PDF.' },
+        { keywords: ['ayuda', 'soporte', 'contacto'], answer: 'Si necesitas ayuda personalizada, puedes contactar a soporte al correo de tu proveedor de software. ¡Estamos para ayudarte!' },
+        { keywords: ['gracias', 'adios', 'chao'], answer: '¡De nada! Estoy aquí para ayudarte cuando lo necesites. ¡Que tengas un excelente día!' }
+    ];
 
-    // ADVERTENCIA DE SEGURIDAD: NO USES TU API KEY AQUÍ EN PRODUCCIÓN.
-    // Cualquiera puede robarla. Usa un servidor intermedio (proxy) o Cloud Functions.
-    const GEMINI_API_KEY = "AIzaSyAb6RZJkvWXEc_RaSrjgsKf_aSXmRUno2g"; // <-- REEMPLAZA ESTO CON TU LLAVE
-    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
-    
     const suggestedQuestions = [
+        "¿Cómo creo un nuevo plan?",
         "¿Qué es el IBC?",
-        "Explícame los niveles de riesgo ARL",
-        "¿Cuánto es el aporte a pensión para un independiente?",
-        "¿Qué pasa si no pago mi seguridad social a tiempo?"
+        "¿Dónde veo el ranking de vendedores?",
+        "¿Cómo busco un afiliado?"
     ];
 
     function displayChatMessage(message, type) {
@@ -465,7 +468,7 @@
         
         const messageEl = document.createElement('div');
         messageEl.className = `chat-bubble ${type === 'user' ? 'user-message' : 'bot-message'}`;
-        messageEl.innerHTML = message; // Se usa innerHTML para renderizar posibles formatos como listas o negritas
+        messageEl.textContent = message;
         
         messageWrapper.appendChild(messageEl);
         chatMessages.appendChild(messageWrapper);
@@ -483,69 +486,40 @@
         });
     }
 
-    async function getGeminiResponse(userInput) {
-        const prompt = `Eres un asistente experto en el sistema de seguridad social de Colombia. Tu nombre es Seb, el asistente de Seb Salud. Responde a la siguiente pregunta de manera clara, concisa y profesional. Si la pregunta no está relacionada con seguridad social, finanzas o temas laborales en Colombia, amablemente indica que tu especialidad es otra. Pregunta del usuario: "${userInput}"`;
-
-        try {
-            const response = await fetch(GEMINI_API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }],
-                    generationConfig: {
-                        temperature: 0.7,
-                        maxOutputTokens: 500,
-                    }
-                })
-            });
-
-            if (!response.ok) {
-                console.error("Error en la API de Gemini:", response);
-                return "Lo siento, estoy teniendo problemas para conectarme con mi cerebro de IA en este momento. Por favor, intenta de nuevo más tarde.";
-            }
-
-            const data = await response.json();
-            // Limpieza básica de la respuesta de la IA para un formato más legible
-            let textResponse = data.candidates[0].content.parts[0].text;
-            textResponse = textResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Negrita
-            textResponse = textResponse.replace(/\*(.*?)\*/g, '<li>$1</li>'); // Viñetas
-            return textResponse;
-
-        } catch (error) {
-            console.error("Error al llamar a la API de Gemini:", error);
-            return "Hubo un error de conexión. Verifica tu conexión a internet o la configuración de la API.";
-        }
-    }
-
-    async function handleUserQuery(userInput) {
+    function getBotResponse(userInput) {
         const chatMessages = document.getElementById('chat-messages');
-        document.getElementById('chat-suggestions').innerHTML = ''; // Ocultar sugerencias al enviar
-        
-        // Muestra el indicador de "escribiendo"
+        const lowerInput = userInput.toLowerCase();
+
         const typingIndicatorWrapper = document.createElement('div');
         typingIndicatorWrapper.className = 'w-full flex justify-start';
         typingIndicatorWrapper.id = 'typing-indicator';
         typingIndicatorWrapper.innerHTML = `<div class="chat-bubble bot-message"><div class="typing-indicator"><span></span><span></span><span></span></div></div>`;
-        chatMessages.appendChild(typingIndicatorWrapper);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-
-        const response = await getGeminiResponse(userInput);
         
-        // Quita el indicador y muestra la respuesta
-        const indicator = document.getElementById('typing-indicator');
-        if (indicator) { indicator.remove(); }
-        displayChatMessage(response, 'bot');
-        displaySuggestedQuestions(); // Muestra nuevas sugerencias
+        // No mostrar indicador para el saludo inicial
+        if (userInput !== 'hola-inicial') { 
+            chatMessages.appendChild(typingIndicatorWrapper);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        setTimeout(() => {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) { indicator.remove(); }
+
+            let response = 'No he entendido tu pregunta. ¿Puedes intentar con otras palabras? Prueba preguntando por "afiliados", "planes" o "cotizador".';
+            for (const qa of chatBotQA) {
+                if (qa.keywords.some(keyword => lowerInput.includes(keyword))) {
+                    response = qa.answer;
+                    break;
+                }
+            }
+            displayChatMessage(response, 'bot');
+            displaySuggestedQuestions(); // Mostrar sugerencias después de la respuesta
+        }, userInput === 'hola-inicial' ? 500 : 1200);
     }
 
     function getBotInitialResponse() {
-        setTimeout(() => {
-            displayChatMessage('¡Hola! Soy Seb, tu asistente de IA experto en seguridad social. ¿En qué puedo ayudarte hoy?', 'bot');
-            displaySuggestedQuestions();
-        }, 500);
+        getBotResponse('hola-inicial');
     }
-
-    // --- FIN MEJORA: LÓGICA DEL CHATBOT CON GEMINI ---
     
     // --- LÓGICA DE NOVEDADES AUTOMÁTICAS ---
     function checkAndGenerateNovedades(newData, oldData) {
@@ -609,7 +583,6 @@
         document.getElementById('register-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { const userCredential = await window.firebase.createUserWithEmailAndPassword(auth, e.target['register-email'].value, e.target['register-password'].value); await setupNewUserDocument(userCredential.user); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('license-form').addEventListener('submit', e => { e.preventDefault(); handleLicenseActivation(); });
         
-        // --- INICIO MEJORA: Lógica del cotizador reiniciable ---
         const calculatorForm = document.getElementById('calculator-form');
         const calculateBtn = document.getElementById('calculate-btn');
         const newQuoteBtn = document.getElementById('new-quote-btn');
@@ -622,22 +595,19 @@
             lastQuoteResult = results;
             renderCalculatorResults(results);
 
-            // Ocultar botón de cotizar y mostrar el de nueva cotización
             calculateBtn.style.display = 'none';
             newQuoteBtn.style.display = 'flex';
         });
 
         newQuoteBtn.addEventListener('click', () => {
-            calculatorForm.reset(); // Resetea los campos del formulario
-            renderCalculatorResults(null); // Limpia el panel de resultados
+            calculatorForm.reset();
+            renderCalculatorResults(null);
             lastQuoteResult = null;
 
-            // Ocultar botón de nueva cotización y mostrar el de cotizar
             newQuoteBtn.style.display = 'none';
             calculateBtn.style.display = 'flex';
-            document.getElementById('select-all-components').checked = true; // Re-seleccionar todos
+            document.getElementById('select-all-components').checked = true;
         });
-        // --- FIN MEJORA: Lógica del cotizador reiniciable ---
 
         document.getElementById('select-all-components').addEventListener('change', e => { document.querySelectorAll('.component-checkbox').forEach(cb => { cb.checked = e.target.checked; }); });
         document.getElementById('affiliate-form').addEventListener('submit', async (e) => { e.preventDefault(); const form = e.target; const selectedPlan = form.querySelector('input[name="health-plan"]:checked'); const manualOverride = form['manual-override-checkbox'].checked; if (!selectedPlan && !manualOverride && healthPlans.length > 0) { return showToast('Debe seleccionar un plan o ingresar costos manuales.', 'error'); } const affiliateData = { name: form['affiliate-name'].value.trim(), documentId: form['affiliate-id'].value.trim(), email: form['affiliate-email'].value.trim(), phone: form['affiliate-phone'].value.trim(), address: form['affiliate-address'].value.trim(), healthPlan: selectedPlan ? selectedPlan.value : null, pensionPlan: form['pension-plan'].value, arlPlan: form['arl-plan'].value, ccfPlan: form['ccf-plan'].value, advisorId: form['advisor-select-list'].value, startDate: form['affiliate-start-date'].value, endDate: form['affiliate-end-date'].value, status: form['affiliate-status'].value, notes: form['affiliate-notes'].value.trim(), manualCosts: null, manualCommission: null }; if (manualOverride) { affiliateData.manualCosts = { health: Number(form['manual-cost-health'].value) || 0, pension: Number(form['manual-cost-pension'].value) || 0, arl: Number(form['manual-cost-arl'].value) || 0, ccf: Number(form['manual-cost-ccf'].value) || 0 }; affiliateData.manualCommission = Number(form['manual-commission'].value) || null; } const existingId = form['affiliate-doc-id'].value; if (existingId) { affiliateData.id = existingId; await saveDataToFirestore('affiliates', affiliateData); } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${currentUser.uid}/affiliates`)); affiliateData.id = docRef.id; affiliateData.createdAt = new Date(); await saveDataToFirestore('affiliates', affiliateData); } modalManager.close('affiliate-modal'); showToast('Afiliado guardado.'); });
@@ -647,7 +617,7 @@
         document.getElementById('company-profile-form').addEventListener('submit', async e => { e.preventDefault(); companyProfile.name = document.getElementById('company-name').value; companyProfile.nit = document.getElementById('company-nit').value; companyProfile.address = document.getElementById('company-address').value; companyProfile.phone = document.getElementById('company-phone').value; companyProfile.email = document.getElementById('company-email').value; companyProfile.theme = document.querySelector('#theme-selector input:checked').value; companyProfile.sidebarTheme = document.querySelector('#sidebar-theme-selector input:checked').value; companyProfile.bottomNavTheme = document.querySelector('#bottom-nav-theme-selector input:checked').value; const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { companyProfile }, { merge: true }); showToast('Perfil actualizado.'); });
         document.getElementById('settings-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; settings.SMMLV = Number(form['setting-smmlv'].value); settings.ADMIN_FEE_PER_AFFILIATE = Number(form['setting-admin-fee'].value); settings.CONTRIBUTION_RATES.health = parseFloat(form['setting-health'].value); settings.CONTRIBUTION_RATES.pension = parseFloat(form['setting-pension'].value); settings.CONTRIBUTION_RATES.independiente_ccf = parseFloat(form['setting-ccf-ind'].value); settings.CONTRIBUTION_RATES.employer_ccf = parseFloat(form['setting-ccf-emp'].value); for (let i = 1; i <= 5; i++) { settings.ARL_RATES[i] = parseFloat(form[`setting-arl-${i}`].value); } const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { settings }, { merge: true }); modalManager.close('settings-modal'); showToast('Configuración guardada.'); });
         document.getElementById('manual-override-checkbox').addEventListener('change', (e) => { document.getElementById('manual-override-container').classList.toggle('hidden', !e.target.checked); });
-        document.getElementById('chat-form').addEventListener('submit', (e) => { e.preventDefault(); const chatInput = document.getElementById('chat-input'); const message = chatInput.value.trim(); if (message) { displayChatMessage(message, 'user'); handleUserQuery(message); chatInput.value = ''; } });
+        document.getElementById('chat-form').addEventListener('submit', (e) => { e.preventDefault(); const chatInput = document.getElementById('chat-input'); const message = chatInput.value.trim(); if (message) { displayChatMessage(message, 'user'); document.getElementById('chat-suggestions').innerHTML = ''; getBotResponse(message); chatInput.value = ''; } });
     });
     
     // --- FUNCIONES AUXILIARES ---
@@ -678,5 +648,3 @@
 </script>
 </body>
 </html>
-
-
