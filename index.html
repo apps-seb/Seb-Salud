@@ -586,38 +586,19 @@
     // --- LÓGICA DE DATOS CON FIRESTORE ---
     async function setupNewUserDocument(user) { const userDocRef = window.firebase.doc(db, "users", user.uid); const batch = window.firebase.writeBatch(db); batch.set(userDocRef, { email: user.email, createdAt: window.firebase.serverTimestamp(), licenseActivated: false, companyProfile: defaultCompanyProfile, settings: defaultSettings }); const advisorRef = window.firebase.doc(window.firebase.collection(userDocRef, "advisors")); batch.set(advisorRef, { id: advisorRef.id, name: 'Asesor Inicial', commissionRate: 10 }); const planRef = window.firebase.doc(window.firebase.collection(userDocRef, "healthPlans")); batch.set(planRef, { id: planRef.id, name: 'Plan de Ejemplo', price: 100000, features: 'Característica 1\nCaracterística 2' }); await batch.commit(); }
     
-    // *******************************************************************
-    // FUNCIÓN DE ACTIVACIÓN DE LICENCIA CON DEPURACIÓN
-    // Esta es la versión que incluye `console.log` para ayudarnos a ver qué está pasando.
-    // *******************************************************************
     async function handleLicenseActivation() {
-        const licenseKey = document.getElementById('license-key-input').value.trim(); // Se modificó para no convertir a mayúsculas
+        const licenseKey = document.getElementById('license-key-input').value.trim();
         const errorMsgElement = document.getElementById('license-error-message');
         const activateBtn = document.getElementById('activate-license-btn');
-
-        // <-- LÍNEA DE DEPURACIÓN 1: Mostramos exactamente lo que vamos a buscar.
-        console.log("--- INICIANDO VERIFICACIÓN DE LICENCIA ---");
-        console.log(`Valor que se está buscando en el campo 'code': "${licenseKey}"`);
-        
         activateBtn.disabled = true;
         activateBtn.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i> Verificando...';
         lucide.createIcons();
-
         try {
             const { getDocs, query, collection, where, writeBatch, doc, serverTimestamp } = window.firebase;
             const licensesRef = collection(db, 'licences');
-            
-            // La consulta exacta que hace la app
             const q = query(licensesRef, where("code", "==", licenseKey), where("status", "==", "available"));
-            
-            console.log("Ejecutando consulta en Firestore..."); // <-- LÍNEA DE DEPURACIÓN 2
             const querySnapshot = await getDocs(q);
-
             if (querySnapshot.empty) {
-                // <-- LÍNEA DE DEPURACIÓN 3: Si entra aquí, es que no encontró nada.
-                console.error("La consulta no encontró ningún documento que coincida con code='" + licenseKey + "' Y status='available'.");
-                console.log("Por favor, verifica OTRA VEZ que los datos en Firestore son idénticos a esto.");
-
                 setTimeout(() => {
                     errorMsgElement.textContent = 'Código de licencia inválido o ya utilizado.';
                     activateBtn.disabled = false;
@@ -625,10 +606,6 @@
                 }, 500);
                 return;
             }
-
-            // Si llega hasta aquí, ¡significa que SÍ encontró la licencia!
-            console.log("¡ÉXITO! Se encontró una licencia válida:", querySnapshot.docs[0].data()); // <-- LÍNEA DE DEPURACIÓN 4
-
             const licenseDoc = querySnapshot.docs[0];
             const batch = writeBatch(db);
             const licenseDocRef = doc(db, 'licences', licenseDoc.id);
@@ -636,14 +613,12 @@
             const userDocRef = doc(db, "users", currentUser.uid);
             batch.set(userDocRef, { licenseActivated: true }, { merge: true });
             await batch.commit();
-
             showToast('¡Licencia activada con éxito!', 'success');
             modalManager.close('license-modal');
             await initializeAppForUser();
             showView(appContainer);
-            
         } catch (error) {
-            console.error("ERROR TÉCNICO durante la activación de la licencia:", error); // <-- LÍNEA DE DEPURACIÓN 5
+            console.error("ERROR TÉCNICO durante la activación de la licencia:", error);
             errorMsgElement.textContent = 'Ocurrió un error al verificar. Intenta de nuevo.';
             activateBtn.disabled = false;
             activateBtn.textContent = 'Activar';
@@ -768,20 +743,39 @@
         getBotInitialResponse();
     }
 
+    // --- NUEVO: Lógica de visibilidad de UI mejorada ---
     function updateUIVisibilityByRole() {
-        const sidebarNav = document.getElementById('sidebar-nav');
-        const bottomNav = document.querySelector('.bottom-nav');
-        
-        sidebarNav.querySelectorAll('[data-role]').forEach(el => el.style.display = 'none');
-        bottomNav.querySelectorAll('[data-role]').forEach(el => el.style.display = 'none');
-        
+        const allSidebarLinks = document.querySelectorAll('#sidebar-nav .nav-link');
+        const allBottomNavLinks = document.querySelectorAll('.bottom-nav > a');
+
+        // Ocultar todos los enlaces primero
+        allSidebarLinks.forEach(el => el.style.display = 'none');
+        allBottomNavLinks.forEach(el => el.style.display = 'none');
+
+        let visibleTargets = [];
+
         if (currentUserRole === 'admin') {
-            sidebarNav.querySelectorAll('[data-role="admin"]').forEach(el => el.style.display = 'flex');
-            bottomNav.querySelectorAll('[data-role="admin"]').forEach(el => el.style.display = 'flex');
+            // El admin ve todo
+            visibleTargets = ['dashboard', 'novedades', 'empresa', 'calendario', 'flujo-caja', 'afiliados', 'asesores', 'ranking-vendedores', 'planes', 'cotizador', 'chat', 'gestion-roles'];
+        } else if (currentUserRole === 'asesor') {
+            // El asesor ve un conjunto limitado
+             visibleTargets = ['dashboard', 'afiliados', 'novedades', 'cotizador', 'chat'];
         } else if (currentUserRole === 'afiliado') {
-            sidebarNav.querySelectorAll('[data-role="afiliado"]').forEach(el => el.style.display = 'flex');
-            bottomNav.querySelectorAll('[data-role="afiliado"]').forEach(el => el.style.display = 'flex');
+            // El afiliado ve solo lo esencial
+            visibleTargets = ['perfil-afiliado', 'cotizador', 'chat'];
         }
+
+        // Mostrar los enlaces permitidos
+        allSidebarLinks.forEach(el => {
+            if (visibleTargets.includes(el.dataset.target)) {
+                el.style.display = 'flex';
+            }
+        });
+        allBottomNavLinks.forEach(el => {
+            if (visibleTargets.includes(el.dataset.target)) {
+                el.style.display = 'flex';
+            }
+        });
     }
     
     function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme); }
@@ -858,27 +852,84 @@
     function renderPlansList(){const e=document.getElementById("plans-list");if(!e)return;if(0===healthPlans.length){e.innerHTML='<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay planes de salud creados. ¡Añade el primero!</p></div>';return}e.innerHTML=healthPlans.map(e=>` <div class="bg-white rounded-xl shadow-lg flex flex-col"> <div class="p-5 flex-grow"> <div class="flex justify-between items-start"><h3 class="font-bold text-lg text-slate-800">${e.name}</h3><p class="text-xl font-extrabold text-primary-600">${formatCurrency(e.price)}</p></div> <ul class="text-sm text-slate-600 space-y-1 mt-4"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check-circle-2" class="w-4 h-4 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> <div class="border-t p-3 flex justify-end items-center bg-gray-50/50 rounded-b-xl"> <button class="edit-plan-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button> <button class="delete-plan-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button> </div> </div>`).join("");}
     function populateAdvisorSelect(){const e=document.getElementById("advisor-select-list");e&&(e.innerHTML='<option value="" disabled selected>Asignar Asesor</option>'+advisors.map(e=>`<option value="${e.id}">${e.name}</option>`).join(""))}
     
+    // --- NUEVO: Función de renderizado de Dashboard separada para Asesor ---
+    function renderAsesorDashboard() {
+        if (!userRoleData.linkedAdvisorId) return;
+
+        // 1. Filtrar los afiliados que pertenecen a este asesor
+        const relevantAffiliates = affiliates.filter(a => a.advisorId === userRoleData.linkedAdvisorId);
+        const activeAffiliates = relevantAffiliates.filter(a => a.status === 'Activo');
+
+        // 2. Calcular las métricas
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth();
+        const currentYear = currentDate.getFullYear();
+
+        // Ingresos generados por nuevos afiliados este mes
+        const monthlyIncome = activeAffiliates
+            .filter(aff => {
+                const createdAt = aff.createdAt;
+                return createdAt && createdAt.getMonth() === currentMonth && createdAt.getFullYear() === currentYear;
+            })
+            .reduce((sum, aff) => sum + getAffiliateCommissionBase(aff), 0);
+        
+        // Comisiones totales de todos los afiliados activos este mes
+        const monthlyCommissions = activeAffiliates
+            .reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0);
+            
+        // Total de afiliados
+        const totalAffiliates = relevantAffiliates.length;
+
+        // 3. Actualizar la UI del Dashboard
+        const kpiIncome = document.getElementById('kpi-monthly-income');
+        const kpiCommission = document.getElementById('kpi-net-profit');
+        const kpiTotalAffiliates = document.getElementById('kpi-new-affiliates');
+        
+        // Reproporcionar los títulos de las tarjetas
+        kpiIncome.parentElement.querySelector('h3').textContent = 'Ingresos Generados (Mes)';
+        kpiCommission.parentElement.querySelector('h3').textContent = 'Comisiones del Mes';
+        kpiTotalAffiliates.parentElement.querySelector('h3').textContent = 'Mis Afiliados (Total)';
+
+        // Actualizar los valores
+        kpiIncome.textContent = formatCurrency(monthlyIncome);
+        kpiCommission.textContent = formatCurrency(monthlyCommissions);
+        kpiTotalAffiliates.textContent = totalAffiliates;
+
+        // Ocultar las tarjetas no utilizadas
+        document.getElementById('kpi-active-affiliates').closest('.bg-white').style.display = 'none';
+        document.getElementById('kpi-overdue-payments').closest('.bg-white').style.display = 'none';
+    }
+
+    // --- DASHBOARD ADAPTADO A ROLES ---
     function renderDashboard() {
-        let relevantAffiliates = affiliates;
+        // Mostrar todas las tarjetas por si se ocultaron en la vista de asesor
+        document.querySelectorAll('#dashboard .bg-white').forEach(card => card.style.display = 'flex');
+
         if (currentUserRole === 'asesor') {
-            relevantAffiliates = affiliates.filter(a => a.advisorId === userRoleData.linkedAdvisorId);
-            document.getElementById('kpi-net-profit').closest('div').style.display = 'none';
-            document.getElementById('kpi-overdue-payments').closest('div').style.display = 'none';
-        } else {
-            document.getElementById('kpi-net-profit').closest('div').style.display = 'flex';
-            document.getElementById('kpi-overdue-payments').closest('div').style.display = 'flex';
+            renderAsesorDashboard();
+            return;
         }
 
+        // Lógica original para el Admin
+        const kpiIncome = document.getElementById('kpi-monthly-income');
+        const kpiNetProfit = document.getElementById('kpi-net-profit');
+        const kpiNewAffiliates = document.getElementById('kpi-new-affiliates');
+
+        kpiIncome.parentElement.querySelector('h3').textContent = 'Ingresos del Mes';
+        kpiNetProfit.parentElement.querySelector('h3').textContent = 'Admin. / Ganancia Neta (Mes)';
+        kpiNewAffiliates.parentElement.querySelector('h3').textContent = 'Nuevos Afiliados (Mes)';
+        
         const e=new Date,t=e.getMonth(),a=e.getFullYear();
-        const n=relevantAffiliates.filter(e=>"Activo"===e.status);
+        const n=affiliates.filter(e=>"Activo"===e.status);
         const o=n.reduce((e,t)=>e+getAffiliateCommissionBase(t),0);
-        const s=relevantAffiliates.filter(e=>{const n=e.createdAt;return n&&n.getMonth()===t&&n.getFullYear()===a}).length;
+        const s=affiliates.filter(e=>{const n=e.createdAt;return n&&n.getMonth()===t&&n.getFullYear()===a}).length;
         const i=n.length*(settings.ADMIN_FEE_PER_AFFILIATE||0);
         
         document.getElementById("kpi-monthly-income").textContent=formatCurrency(o);
         document.getElementById("kpi-new-affiliates").textContent=s;
         document.getElementById("kpi-active-affiliates").textContent=n.length;
         document.getElementById("kpi-net-profit").textContent=formatCurrency(i);
+        document.getElementById("kpi-overdue-payments").textContent = '$0'; // Lógica de cartera vencida pendiente
     }
     
     function calculateContributions(income, contractType, arlLevel, selectedComponents) { if (!settings.SMMLV || !income || income <= 0) return null; const ibc = Math.max(0.4 * income, settings.SMMLV); let results = { ibc: ibc, grandTotal: 0, health: null, pension: null, arl: null, ccf: null }; const rates = settings.CONTRIBUTION_RATES; const arlRates = settings.ARL_RATES; if (selectedComponents.health) { results.health = { total: ibc * (rates.health / 100) }; if (contractType === 'independiente') { results.health.details = `Aporte total (${rates.health}%)`; } else { results.health.details = `Empleado (${rates.employee_health}%): ${formatCurrency(ibc * (rates.employee_health / 100))} | Empleador (${rates.employer_health}%): ${formatCurrency(ibc * (rates.employer_health / 100))}`; } results.grandTotal += results.health.total; } if (selectedComponents.pension) { results.pension = { total: ibc * (rates.pension / 100) }; if (contractType === 'independiente') { results.pension.details = `Aporte total (${rates.pension}%)`; } else { results.pension.details = `Empleado (${rates.employee_pension}%): ${formatCurrency(ibc * (rates.employee_pension / 100))} | Empleador (${rates.employer_pension}%): ${formatCurrency(ibc * (rates.employer_pension / 100))}`; } results.grandTotal += results.pension.total; } if (selectedComponents.arl) { results.arl = { total: ibc * (arlRates[arlLevel] / 100), details: `A cargo del contratante/empleador (${arlRates[arlLevel]}%)` }; results.grandTotal += results.arl.total; } if (selectedComponents.ccf) { const ccfRate = contractType === 'independiente' ? rates.independiente_ccf : rates.employer_ccf; results.ccf = { total: ibc * (ccfRate / 100), details: contractType === 'independiente' ? `Aporte voluntario (${ccfRate}%)` : `A cargo del empleador (${ccfRate}%)` }; results.grandTotal += results.ccf.total; } return results; }
