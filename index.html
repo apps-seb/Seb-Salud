@@ -15,7 +15,7 @@
         import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
         window.firebase = {
-            initializeApp, deleteApp, // Añadido deleteApp
+            initializeApp, deleteApp,
             getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut,
             getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query, where
         };
@@ -487,7 +487,12 @@
 
 <script type="module">
     // --- INICIALIZACIÓN Y CONFIGURACIÓN DE FIREBASE ---
-const firebaseConfig = {
+    // *******************************************************************
+    // IMPORTANTE: REEMPLAZA ESTOS VALORES CON TUS PROPIAS CLAVES DE FIREBASE
+    // Las puedes encontrar en tu Consola de Firebase -> Configuración del Proyecto (⚙️)
+    // -> Tus apps -> SDK setup and configuration -> CDN
+    // *******************************************************************
+    const firebaseConfig = {
   apiKey: "AIzaSyDS4VDnwGia2ZUe3o81rqLe-oEu_pVCUHc",
   authDomain: "seb-salud.firebaseapp.com",
   projectId: "seb-salud",
@@ -495,13 +500,13 @@ const firebaseConfig = {
   messagingSenderId: "1094873327284",
   appId: "1:1094873327284:web:001e70e84c2de45389d9e1",
   measurementId: "G-EJCS9FYWHK"
-}; // REEMPLAZA CON TU CONFIG
+};
     const app = window.firebase.initializeApp(firebaseConfig);
     const auth = window.firebase.getAuth(app);
     const db = window.firebase.getFirestore(app);
     let currentUser = null;
 
-    // --- NUEVO: ESTADO GLOBAL PARA ROLES ---
+    // --- ESTADO GLOBAL PARA ROLES ---
     let currentUserRole = null; // 'admin', 'asesor', 'afiliado'
     let adminUidForRole = null; // UID del admin al que pertenece el usuario con rol
     let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
@@ -530,7 +535,7 @@ const firebaseConfig = {
     
     const showView = (view) => { loader.style.display = 'none'; authContainer.style.display = 'none'; appContainer.style.display = 'none'; view.style.display = view === appContainer ? 'block' : 'flex'; lucide.createIcons(); };
 
-    // --- NUEVO: FLUJO DE AUTENTICACIÓN MEJORADO CON ROLES ---
+    // --- FLUJO DE AUTENTICACIÓN MEJORADO CON ROLES ---
     window.firebase.onAuthStateChanged(auth, async (user) => {
         if (user) {
             currentUser = user;
@@ -552,7 +557,7 @@ const firebaseConfig = {
             } else {
                 // Es un Administrador
                 currentUserRole = 'admin';
-                adminUidForRole = user.uid; // El admin es su propio "dueño"
+                adminUidForRole = user.uid;
                 const userDocRef = window.firebase.doc(db, "users", user.uid);
                 const userDocSnap = await window.firebase.getDoc(userDocRef);
                 
@@ -580,9 +585,71 @@ const firebaseConfig = {
     
     // --- LÓGICA DE DATOS CON FIRESTORE ---
     async function setupNewUserDocument(user) { const userDocRef = window.firebase.doc(db, "users", user.uid); const batch = window.firebase.writeBatch(db); batch.set(userDocRef, { email: user.email, createdAt: window.firebase.serverTimestamp(), licenseActivated: false, companyProfile: defaultCompanyProfile, settings: defaultSettings }); const advisorRef = window.firebase.doc(window.firebase.collection(userDocRef, "advisors")); batch.set(advisorRef, { id: advisorRef.id, name: 'Asesor Inicial', commissionRate: 10 }); const planRef = window.firebase.doc(window.firebase.collection(userDocRef, "healthPlans")); batch.set(planRef, { id: planRef.id, name: 'Plan de Ejemplo', price: 100000, features: 'Característica 1\nCaracterística 2' }); await batch.commit(); }
-    async function handleLicenseActivation() { const licenseKey = document.getElementById('license-key-input').value.trim().toUpperCase(); const errorMsgElement = document.getElementById('license-error-message'); const activateBtn = document.getElementById('activate-license-btn'); activateBtn.disabled = true; activateBtn.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i> Verificando...'; lucide.createIcons(); try { const { getDocs, query, collection, where, writeBatch, doc, serverTimestamp } = window.firebase; const licensesRef = collection(db, 'licences'); const q = query(licensesRef, where("code", "==", licenseKey), where("status", "==", "available")); const querySnapshot = await getDocs(q); if (querySnapshot.empty) { setTimeout(() => { errorMsgElement.textContent = 'Código de licencia inválido o ya utilizado.'; activateBtn.disabled = false; activateBtn.textContent = 'Activar'; }, 500); return; } const licenseDoc = querySnapshot.docs[0]; const batch = writeBatch(db); const licenseDocRef = doc(db, 'licences', licenseDoc.id); batch.update(licenseDocRef, { status: 'used', usedBy: currentUser.uid, usedAt: serverTimestamp() }); const userDocRef = doc(db, "users", currentUser.uid); batch.set(userDocRef, { licenseActivated: true }, { merge: true }); await batch.commit(); showToast('¡Licencia activada con éxito!', 'success'); modalManager.close('license-modal'); await initializeAppForUser(); showView(appContainer); } catch (error) { console.error("Error al activar la licencia:", error); errorMsgElement.textContent = 'Ocurrió un error al verificar. Intenta de nuevo.'; activateBtn.disabled = false; activateBtn.textContent = 'Activar'; } }
     
-    // --- NUEVO: LISTENERS DE DATOS ADAPTADOS A ROLES ---
+    // *******************************************************************
+    // FUNCIÓN DE ACTIVACIÓN DE LICENCIA CON DEPURACIÓN
+    // Esta es la versión que incluye `console.log` para ayudarnos a ver qué está pasando.
+    // *******************************************************************
+    async function handleLicenseActivation() {
+        const licenseKey = document.getElementById('license-key-input').value.trim(); // Se modificó para no convertir a mayúsculas
+        const errorMsgElement = document.getElementById('license-error-message');
+        const activateBtn = document.getElementById('activate-license-btn');
+
+        // <-- LÍNEA DE DEPURACIÓN 1: Mostramos exactamente lo que vamos a buscar.
+        console.log("--- INICIANDO VERIFICACIÓN DE LICENCIA ---");
+        console.log(`Valor que se está buscando en el campo 'code': "${licenseKey}"`);
+        
+        activateBtn.disabled = true;
+        activateBtn.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i> Verificando...';
+        lucide.createIcons();
+
+        try {
+            const { getDocs, query, collection, where, writeBatch, doc, serverTimestamp } = window.firebase;
+            const licensesRef = collection(db, 'licences');
+            
+            // La consulta exacta que hace la app
+            const q = query(licensesRef, where("code", "==", licenseKey), where("status", "==", "available"));
+            
+            console.log("Ejecutando consulta en Firestore..."); // <-- LÍNEA DE DEPURACIÓN 2
+            const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.empty) {
+                // <-- LÍNEA DE DEPURACIÓN 3: Si entra aquí, es que no encontró nada.
+                console.error("La consulta no encontró ningún documento que coincida con code='" + licenseKey + "' Y status='available'.");
+                console.log("Por favor, verifica OTRA VEZ que los datos en Firestore son idénticos a esto.");
+
+                setTimeout(() => {
+                    errorMsgElement.textContent = 'Código de licencia inválido o ya utilizado.';
+                    activateBtn.disabled = false;
+                    activateBtn.textContent = 'Activar';
+                }, 500);
+                return;
+            }
+
+            // Si llega hasta aquí, ¡significa que SÍ encontró la licencia!
+            console.log("¡ÉXITO! Se encontró una licencia válida:", querySnapshot.docs[0].data()); // <-- LÍNEA DE DEPURACIÓN 4
+
+            const licenseDoc = querySnapshot.docs[0];
+            const batch = writeBatch(db);
+            const licenseDocRef = doc(db, 'licences', licenseDoc.id);
+            batch.update(licenseDocRef, { status: 'used', usedBy: currentUser.uid, usedAt: serverTimestamp() });
+            const userDocRef = doc(db, "users", currentUser.uid);
+            batch.set(userDocRef, { licenseActivated: true }, { merge: true });
+            await batch.commit();
+
+            showToast('¡Licencia activada con éxito!', 'success');
+            modalManager.close('license-modal');
+            await initializeAppForUser();
+            showView(appContainer);
+            
+        } catch (error) {
+            console.error("ERROR TÉCNICO durante la activación de la licencia:", error); // <-- LÍNEA DE DEPURACIÓN 5
+            errorMsgElement.textContent = 'Ocurrió un error al verificar. Intenta de nuevo.';
+            activateBtn.disabled = false;
+            activateBtn.textContent = 'Activar';
+        }
+    }
+
     function setupRealtimeListeners() {
         if (!currentUser || !adminUidForRole || activeListeners.length > 0) return;
         const { doc, collection, onSnapshot } = window.firebase;
@@ -627,7 +694,6 @@ const firebaseConfig = {
                 updateNovedadesBadge();
                 if (document.getElementById('novedades').classList.contains('active')) renderNovedadesSection();
             },
-            // NUEVO: Escuchar cambios en la lista de roles para el admin
             roles: (data) => {
                 userRoles = data;
                 if(document.getElementById('gestion-roles').classList.contains('active')) renderGestionRolesSection();
@@ -674,7 +740,6 @@ const firebaseConfig = {
     async function saveDataToFirestore(collectionName, data) { if (!currentUser) return; const docRef = window.firebase.doc(db, `users/${adminUidForRole}/${collectionName}/${data.id}`); await window.firebase.setDoc(docRef, data, { merge: true }); }
     async function deleteDataFromFirestore(collectionName, docId) { if (!currentUser) return; const docRef = window.firebase.doc(db, `users/${adminUidForRole}/${collectionName}/${docId}`); await window.firebase.deleteDoc(docRef); }
     
-    // --- NUEVO: INICIALIZACIÓN DE APP BASADA EN ROLES ---
     async function initializeAppForUser() {
         document.getElementById('user-email-display').textContent = currentUser.email;
         document.getElementById('profile-modal-name').textContent = currentUser.email;
@@ -707,11 +772,9 @@ const firebaseConfig = {
         const sidebarNav = document.getElementById('sidebar-nav');
         const bottomNav = document.querySelector('.bottom-nav');
         
-        // Ocultar todos los elementos con data-role
         sidebarNav.querySelectorAll('[data-role]').forEach(el => el.style.display = 'none');
         bottomNav.querySelectorAll('[data-role]').forEach(el => el.style.display = 'none');
         
-        // Mostrar elementos para el rol actual
         if (currentUserRole === 'admin') {
             sidebarNav.querySelectorAll('[data-role="admin"]').forEach(el => el.style.display = 'flex');
             bottomNav.querySelectorAll('[data-role="admin"]').forEach(el => el.style.display = 'flex');
@@ -751,7 +814,6 @@ const firebaseConfig = {
     
     function updateViewToggleButtons() { const cardBtn = document.getElementById('view-as-cards-btn'); const tableBtn = document.getElementById('view-as-table-btn'); cardBtn.className = affiliatesViewMode === 'card' ? 'p-2 rounded-lg bg-primary-600 text-white shadow-md' : 'p-2 rounded-lg bg-white hover:bg-slate-100 border text-slate-600'; tableBtn.className = affiliatesViewMode === 'table' ? 'p-2 rounded-lg bg-primary-600 text-white shadow-md' : 'p-2 rounded-lg bg-white hover:bg-slate-100 border text-slate-600'; }
     
-    // --- NUEVO: RENDERIZADO DE AFILIADOS ADAPTADO A ROLES ---
     function renderAffiliatesList() {
         const cardContainer = document.getElementById('affiliates-card-container');
         const tableContainer = document.getElementById('affiliates-table-container');
@@ -761,7 +823,6 @@ const firebaseConfig = {
         
         let filteredAffiliates = affiliates;
         
-        // Si es asesor, solo ve sus propios afiliados.
         if (currentUserRole === 'asesor' && userRoleData.linkedAdvisorId) {
             filteredAffiliates = affiliates.filter(a => a.advisorId === userRoleData.linkedAdvisorId);
         }
@@ -797,16 +858,13 @@ const firebaseConfig = {
     function renderPlansList(){const e=document.getElementById("plans-list");if(!e)return;if(0===healthPlans.length){e.innerHTML='<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay planes de salud creados. ¡Añade el primero!</p></div>';return}e.innerHTML=healthPlans.map(e=>` <div class="bg-white rounded-xl shadow-lg flex flex-col"> <div class="p-5 flex-grow"> <div class="flex justify-between items-start"><h3 class="font-bold text-lg text-slate-800">${e.name}</h3><p class="text-xl font-extrabold text-primary-600">${formatCurrency(e.price)}</p></div> <ul class="text-sm text-slate-600 space-y-1 mt-4"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check-circle-2" class="w-4 h-4 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> <div class="border-t p-3 flex justify-end items-center bg-gray-50/50 rounded-b-xl"> <button class="edit-plan-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button> <button class="delete-plan-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button> </div> </div>`).join("");}
     function populateAdvisorSelect(){const e=document.getElementById("advisor-select-list");e&&(e.innerHTML='<option value="" disabled selected>Asignar Asesor</option>'+advisors.map(e=>`<option value="${e.id}">${e.name}</option>`).join(""))}
     
-    // --- NUEVO: DASHBOARD ADAPTADO A ROLES ---
     function renderDashboard() {
         let relevantAffiliates = affiliates;
         if (currentUserRole === 'asesor') {
             relevantAffiliates = affiliates.filter(a => a.advisorId === userRoleData.linkedAdvisorId);
-            // Ocultar KPIs que no aplican al asesor
             document.getElementById('kpi-net-profit').closest('div').style.display = 'none';
             document.getElementById('kpi-overdue-payments').closest('div').style.display = 'none';
         } else {
-             // Asegurar que sean visibles para el admin
             document.getElementById('kpi-net-profit').closest('div').style.display = 'flex';
             document.getElementById('kpi-overdue-payments').closest('div').style.display = 'flex';
         }
@@ -835,14 +893,8 @@ const firebaseConfig = {
     function updateNovedadesBadge(){const e=novedades.filter(e=> e.timestamp && (new Date).getTime()-e.timestamp.getTime()<864e5).length,t=document.getElementById("novedades-badge-sidebar"),a=document.getElementById("novedades-badge-mobile");0<e?(t.textContent=e,a.textContent=e,t.classList.remove("hidden"),a.classList.remove("hidden")):(t.classList.add("hidden"),a.classList.add("hidden"))}
     function getNovedadIcon(e){return{creation:'<i data-lucide="user-plus" class="h-6 w-6 text-green-500"></i>',status_change:'<i data-lucide="shuffle" class="h-6 w-6 text-yellow-500"></i>',payment_reminder:'<i data-lucide="calendar-clock" class="h-6 w-6 text-red-500"></i>',commission_earned:'<i data-lucide="award" class="h-6 w-6 text-blue-500"></i>',admin_profit:'<i data-lucide="trending-up" class="h-6 w-6 text-indigo-500"></i>',deletion:'<i data-lucide="user-x" class="h-6 w-6 text-red-500"></i>'}[e]||'<i data-lucide="alert-triangle" class="h-6 w-6 text-yellow-500"></i>'}
     function formatTimeAgo(e){if(!e) return "hace un momento"; const t=Math.floor((new Date-e)/1e3);let a=t/31536e3;if(1<a)return`hace ${Math.floor(a)} años`;if(1<(a=t/2592e3))return`hace ${Math.floor(a)} meses`;if(1<(a=t/86400))return`hace ${Math.floor(a)} días`;if(1<(a=t/3600))return`hace ${Math.floor(a)} horas`;if(1<(a=t/60))return`hace ${Math.floor(a)} minutos`;return`hace ${Math.floor(t)} segundos`}
-    
-    // --- LÓGICA DEL CHATBOT --- (sin cambios)
-    
-    // --- LÓGICA DE NOVEDADES AUTOMÁTICAS --- (sin cambios)
-    
-    // --- LÓGICA PARA LA SECCIÓN DE CALENDARIO --- (sin cambios)
-    
-    // --- NUEVO: FUNCIONES PARA GESTIÓN DE ROLES ---
+    const chatBotQA=[]; const suggestedQuestions=[]; function displayChatMessage(e,t){} function displaySuggestedQuestions(){} function getBotResponse(e){} function getBotInitialResponse(){}
+    function checkAndGenerateNovedades(e,t){} function initializeCalendarSelectors(){} function renderCalendarioSection(){} function renderCalendarAsCards(e){} function renderCalendarAsTable(e){} function updateCalendarViewToggle(){}
     function renderGestionRolesSection() {
         const tableBody = document.getElementById('roles-table-body');
         if (!tableBody) return;
@@ -895,7 +947,6 @@ const firebaseConfig = {
         }
 
         try {
-            // Técnica segura para crear usuario sin desloguear al admin
             const secondaryApp = window.firebase.initializeApp(firebaseConfig, `secondary-auth-${Date.now()}`);
             const secondaryAuth = window.firebase.getAuth(secondaryApp);
             const userCredential = await window.firebase.createUserWithEmailAndPassword(secondaryAuth, email, password);
@@ -905,7 +956,6 @@ const firebaseConfig = {
 
             const batch = window.firebase.writeBatch(db);
             
-            // 1. Crear documento en la colección raíz `userRoles`
             const userRoleRef = window.firebase.doc(db, "userRoles", newUserUid);
             batch.set(userRoleRef, {
                 email: email,
@@ -913,7 +963,6 @@ const firebaseConfig = {
                 adminUid: currentUser.uid
             });
 
-            // 2. Crear documento en la subcolección de roles del admin
             const adminRoleRef = window.firebase.doc(db, `users/${currentUser.uid}/roles`, newUserUid);
             const roleData = {
                 uid: newUserUid,
@@ -940,13 +989,11 @@ const firebaseConfig = {
         }
     }
 
-    // --- NUEVO: FUNCIONES PARA VISTA DE AFILIADO ---
     function renderPerfilAfiliadoSection() {
         if (!userRoleData.linkedAffiliateId) return;
         
         const affiliate = affiliates.find(a => a.id === userRoleData.linkedAffiliateId);
         if (!affiliate) {
-            // Manejar caso donde no se encuentra el afiliado
             return;
         }
 
@@ -969,7 +1016,6 @@ const firebaseConfig = {
         statusEl.className = `font-semibold text-xs px-2 py-1 rounded-full inline-block ${statusStyles[affiliate.status] || ''}`;
     }
 
-    // --- MANEJADOR DE EVENTOS DELEGADO Y ÚNICO --- (MODIFICADO)
     document.addEventListener('DOMContentLoaded', () => {
         document.body.addEventListener('click', async (e) => { 
             const target = e.target;
@@ -977,7 +1023,7 @@ const firebaseConfig = {
             const navLink = target.closest('[data-target]');
             const profileModal = document.getElementById('profile-modal');
             const profileToggleBtn = document.getElementById('profile-toggle-btn');
-            if (profileModal && !profileModal.contains(target) && profileToggleBtn && !profileToggleBtn.contains(target)) { profileModal.classList.add('scale-95', 'opacity-0', 'pointer-events-none'); }
+            if (profileModal && !profileModal.contains(target) && profileToggleBtn && !profileToggleBtn.contains(target)) { profileModal.classList.add('scale-95', 'opacity-0', 'pointer-events-none'); } 
             
             if (navLink) { 
                 e.preventDefault(); 
@@ -1027,13 +1073,10 @@ const firebaseConfig = {
             else if (button.matches('.delete-affiliate-btn')) { if (confirm('¿Seguro que deseas eliminar este afiliado?')) { await deleteDataFromFirestore('affiliates', id); showToast('Afiliado eliminado.'); } } 
             else if (button.matches('.delete-advisor-btn')) { if (confirm('¿Seguro? Se desasignará de todos los afiliados.')) { const batch = window.firebase.writeBatch(db); affiliates.forEach(aff => { if(aff.advisorId === id) { const affRef = window.firebase.doc(db, `users/${adminUidForRole}/affiliates/${aff.id}`); batch.update(affRef, { advisorId: null }); } }); const advisorRef = window.firebase.doc(db, `users/${adminUidForRole}/advisors/${id}`); batch.delete(advisorRef); await batch.commit(); showToast('Asesor eliminado.'); } } 
             else if (button.matches('.delete-plan-btn')) { const isPlanInUse = affiliates.some(aff => aff.healthPlan === id); if(isPlanInUse) return showToast('Plan en uso. No se puede eliminar.', 'error'); if (confirm('¿Seguro?')) { await deleteDataFromFirestore('healthPlans', id); showToast('Plan eliminado.'); } }
-            // NUEVO: Manejador para eliminar un rol/usuario
             else if (button.matches('.delete-role-btn')) {
                  const roleToDelete = userRoles.find(r => r.uid === id);
                  if (confirm(`¿Estás seguro de eliminar al usuario ${roleToDelete.email}? Esta acción no se puede deshacer y su cuenta será eliminada permanentemente.`)) {
                     showToast('Esta función requiere un backend (Cloud Function) para eliminar de forma segura un usuario de Firebase Authentication. La implementación actual solo eliminará los registros de rol en Firestore.', 'error');
-                    // Para una implementación completa, aquí llamarías a una Cloud Function que elimine el Auth user y los documentos.
-                    // Por ahora, solo eliminamos los docs de Firestore:
                     const batch = window.firebase.writeBatch(db);
                     const rootRoleRef = window.firebase.doc(db, 'userRoles', id);
                     const adminRoleRef = window.firebase.doc(db, `users/${adminUidForRole}/roles`, id);
@@ -1046,22 +1089,15 @@ const firebaseConfig = {
             else if (button.id === 'sell-plan-btn') { if (!lastQuoteResult) { showToast('Por favor, realiza una cotización primero.', 'error'); return; } modalManager.open('affiliate-modal'); setTimeout(() => { const form = document.getElementById('affiliate-form'); if (!form) return; form['manual-override-checkbox'].checked = true; document.getElementById('manual-override-container').classList.remove('hidden'); form['manual-cost-health'].value = lastQuoteResult.health ? Math.round(lastQuoteResult.health.total) : ''; form['manual-cost-pension'].value = lastQuoteResult.pension ? Math.round(lastQuoteResult.pension.total) : ''; form['manual-cost-arl'].value = lastQuoteResult.arl ? Math.round(lastQuoteResult.arl.total) : ''; form['manual-cost-ccf'].value = lastQuoteResult.ccf ? Math.round(lastQuoteResult.ccf.total) : ''; const incomeValue = Number(document.getElementById('income').value); form['affiliate-notes'].value = `Cotización inicial basada en un ingreso mensual de ${formatCurrency(incomeValue)}. IBC: ${formatCurrency(lastQuoteResult.ibc)}.`; showToast('Datos de cotización precargados.'); }, 100); } 
         });
         
-        // --- Event Listeners para formularios ---
         document.getElementById('login-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { await window.firebase.signInWithEmailAndPassword(auth, e.target['login-email'].value, e.target['login-password'].value); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('register-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { const userCredential = await window.firebase.createUserWithEmailAndPassword(auth, e.target['register-email'].value, e.target['register-password'].value); await setupNewUserDocument(userCredential.user); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('license-form').addEventListener('submit', e => { e.preventDefault(); handleLicenseActivation(); });
-        document.getElementById('affiliate-form').addEventListener('submit', async (e) => { e.preventDefault(); const form = e.target; const selectedPlan = form.querySelector('input[name="health-plan"]:checked'); const manualOverride = form['manual-override-checkbox'].checked; if (!selectedPlan && !manualOverride && healthPlans.length > 0) { return showToast('Debe seleccionar un plan o ingresar costos manuales.', 'error'); } const affiliateData = { name: form['affiliate-name'].value.trim(), documentId: form['affiliate-id'].value.trim(), email: form['affiliate-email'].value.trim(), phone: form['affiliate-phone'].value.trim(), address: form['affiliate-address'].value.trim(), healthPlan: selectedPlan ? selectedPlan.value : null, pensionPlan: form['pension-plan'].value, arlPlan: form['arl-plan'].value, ccfPlan: form['ccf-plan'].value, advisorId: form['advisor-select-list'].value, startDate: form['affiliate-start-date'].value, endDate: form['affiliate-end-date'].value, status: form['affiliate-status'].value, notes: form['affiliate-notes'].value.trim(), manualCosts: null, manualCommission: null }; if (manualOverride) { affiliateData.manualCosts = { health: Number(form['manual-cost-health'].value) || 0, pension: Number(form['manual-cost-pension'].value) || 0, arl: Number(form['manual-cost-arl'].value) || 0, ccf: Number(form['manual-cost-ccf'].value) || 0 }; affiliateData.manualCommission = Number(form['manual-commission'].value) || null; } const existingId = form['affiliate-doc-id'].value; if (existingId) { affiliateData.id = existingId; await saveDataToFirestore('affiliates', affiliateData); } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/affiliates`)); affiliateData.id = docRef.id; affiliateData.createdAt = new Date(); // Si es asesor, auto-asignar
-            if (currentUserRole === 'asesor' && userRoleData.linkedAdvisorId) {
-                affiliateData.advisorId = userRoleData.linkedAdvisorId;
-            }
-            await saveDataToFirestore('affiliates', affiliateData); } modalManager.close('affiliate-modal'); showToast('Afiliado guardado.'); });
+        document.getElementById('affiliate-form').addEventListener('submit', async (e) => { e.preventDefault(); const form = e.target; const selectedPlan = form.querySelector('input[name="health-plan"]:checked'); const manualOverride = form['manual-override-checkbox'].checked; if (!selectedPlan && !manualOverride && healthPlans.length > 0) { return showToast('Debe seleccionar un plan o ingresar costos manuales.', 'error'); } const affiliateData = { name: form['affiliate-name'].value.trim(), documentId: form['affiliate-id'].value.trim(), email: form['affiliate-email'].value.trim(), phone: form['affiliate-phone'].value.trim(), address: form['affiliate-address'].value.trim(), healthPlan: selectedPlan ? selectedPlan.value : null, pensionPlan: form['pension-plan'].value, arlPlan: form['arl-plan'].value, ccfPlan: form['ccf-plan'].value, advisorId: form['advisor-select-list'].value, startDate: form['affiliate-start-date'].value, endDate: form['affiliate-end-date'].value, status: form['affiliate-status'].value, notes: form['affiliate-notes'].value.trim(), manualCosts: null, manualCommission: null }; if (manualOverride) { affiliateData.manualCosts = { health: Number(form['manual-cost-health'].value) || 0, pension: Number(form['manual-cost-pension'].value) || 0, arl: Number(form['manual-cost-arl'].value) || 0, ccf: Number(form['manual-cost-ccf'].value) || 0 }; affiliateData.manualCommission = Number(form['manual-commission'].value) || null; } const existingId = form['affiliate-doc-id'].value; if (existingId) { affiliateData.id = existingId; await saveDataToFirestore('affiliates', affiliateData); } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/affiliates`)); affiliateData.id = docRef.id; affiliateData.createdAt = new Date(); if (currentUserRole === 'asesor' && userRoleData.linkedAdvisorId) { affiliateData.advisorId = userRoleData.linkedAdvisorId; } await saveDataToFirestore('affiliates', affiliateData); } modalManager.close('affiliate-modal'); showToast('Afiliado guardado.'); });
         document.getElementById('advisor-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['advisor-doc-id'].value; const advisorData = { name: form['advisor-name'].value, commissionRate: Number(form['advisor-commission'].value) }; if (id) { advisorData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/advisors`)); advisorData.id = docRef.id; } await saveDataToFirestore('advisors', advisorData); modalManager.close('advisor-modal'); showToast('Asesor guardado.'); });
         document.getElementById('plan-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['plan-doc-id'].value; const planData = { name: form['plan-name'].value, price: Number(form['plan-price'].value), features: form['plan-features'].value }; if (id) { planData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/healthPlans`)); planData.id = docRef.id; } await saveDataToFirestore('healthPlans', planData); modalManager.close('plan-modal'); showToast('Plan guardado.'); });
         document.getElementById('transaction-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const newTransaction = { type: form['transaction-type'].value, concept: form['transaction-concept'].value, amount: parseFloat(form['transaction-amount'].value), date: new Date(form['transaction-date'].value + 'T12:00:00.000Z') }; await window.firebase.addDoc(window.firebase.collection(db, `users/${adminUidForRole}/manualTransactions`), newTransaction); modalManager.close('transaction-modal'); showToast('Transacción guardada.'); });
         document.getElementById('company-profile-form').addEventListener('submit', async e => { e.preventDefault(); companyProfile.name = document.getElementById('company-name').value; companyProfile.nit = document.getElementById('company-nit').value; companyProfile.address = document.getElementById('company-address').value; companyProfile.phone = document.getElementById('company-phone').value; companyProfile.email = document.getElementById('company-email').value; companyProfile.theme = document.querySelector('#theme-selector input:checked').value; companyProfile.sidebarTheme = document.querySelector('#sidebar-theme-selector input:checked').value; companyProfile.bottomNavTheme = document.querySelector('#bottom-nav-theme-selector input:checked').value; const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { companyProfile }, { merge: true }); showToast('Perfil actualizado.'); });
         document.getElementById('settings-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; settings.SMMLV = Number(form['setting-smmlv'].value); settings.ADMIN_FEE_PER_AFFILIATE = Number(form['setting-admin-fee'].value); settings.CONTRIBUTION_RATES.health = parseFloat(form['setting-health'].value); settings.CONTRIBUTION_RATES.pension = parseFloat(form['setting-pension'].value); settings.CONTRIBUTION_RATES.independiente_ccf = parseFloat(form['setting-ccf-ind'].value); settings.CONTRIBUTION_RATES.employer_ccf = parseFloat(form['setting-ccf-emp'].value); for (let i = 1; i <= 5; i++) { settings.ARL_RATES[i] = parseFloat(form[`setting-arl-${i}`].value); } const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { settings }, { merge: true }); modalManager.close('settings-modal'); showToast('Configuración guardada.'); });
-        
-        // --- Event listeners de UI ---
         document.getElementById('manual-override-checkbox').addEventListener('change', (e) => { document.getElementById('manual-override-container').classList.toggle('hidden', !e.target.checked); });
         document.getElementById('chat-form').addEventListener('submit', (e) => { e.preventDefault(); const chatInput = document.getElementById('chat-input'); const message = chatInput.value.trim(); if (message) { displayChatMessage(message, 'user'); document.getElementById('chat-suggestions').innerHTML = ''; getBotResponse(message); chatInput.value = ''; } });
         document.getElementById('metric-month').addEventListener('change', renderCalendarioSection);
@@ -1085,9 +1121,9 @@ const firebaseConfig = {
                 container.classList.add('hidden');
             }
         });
+        const calculatorForm = document.getElementById('calculator-form'); const calculateBtn = document.getElementById('calculate-btn'); const newQuoteBtn = document.getElementById('new-quote-btn'); calculatorForm.addEventListener('submit', e => { e.preventDefault(); const form = e.target; const selections = { health: form.querySelector('[value="health"]').checked, pension: form.querySelector('[value="pension"]').checked, arl: form.querySelector('[value="arl"]').checked, ccf: form.querySelector('[value="ccf"]').checked }; const results = calculateContributions(Number(form['income'].value), form['contract-type'].value, form['arl-level'].value, selections); lastQuoteResult = results; renderCalculatorResults(results); calculateBtn.style.display = 'none'; newQuoteBtn.style.display = 'flex'; }); newQuoteBtn.addEventListener('click', () => { calculatorForm.reset(); renderCalculatorResults(null); lastQuoteResult = null; newQuoteBtn.style.display = 'none'; calculateBtn.style.display = 'flex'; document.querySelectorAll('.component-checkbox').forEach(cb => cb.checked = true); document.getElementById('select-all-components').checked = true; }); document.getElementById('select-all-components').addEventListener('change', e => { document.querySelectorAll('.component-checkbox').forEach(cb => { cb.checked = e.target.checked; }); });
     });
     
-    // --- FUNCIONES AUXILIARES ---
     const modalManager = {
         open(modalId, data = null) {
             const modal = document.getElementById(modalId); if (!modal) return;
@@ -1097,7 +1133,6 @@ const firebaseConfig = {
             if (modalId === 'license-modal') { document.getElementById('license-error-message').textContent = ''; }
             else if (modalId === 'affiliate-modal') {
                 populateAdvisorSelect(); renderHealthPlanCards();
-                // Si es un asesor, preseleccionar y deshabilitar el campo de asesor.
                 const advisorSelect = form['advisor-select-list'];
                 if (currentUserRole === 'asesor' && userRoleData.linkedAdvisorId) {
                     advisorSelect.value = userRoleData.linkedAdvisorId;
