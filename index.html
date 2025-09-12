@@ -577,8 +577,8 @@
     let activeListeners = [];
 
     const defaultSettings = { 
-        SMMLV: 1430000, 
-        ADMIN_FEE_PER_AFFILIATE: 15000,
+        SMMLV: 1300000, 
+        ADMIN_FEE_PER_AFFILIATE: 29000,
         CONTRIBUTION_RATES: { health: 12.5, pension: 16, employee_health: 4, employer_health: 8.5, employee_pension: 4, employer_pension: 12, independiente_ccf: 2, employer_ccf: 4 }, 
         ARL_RATES: { 1: 0.522, 2: 1.044, 3: 2.436, 4: 4.350, 5: 6.960 } 
     };
@@ -1060,8 +1060,162 @@
     function renderFlujoCajaSection(){const e=new Date,t=new Date(e.getFullYear(),e.getMonth(),1);document.getElementById("report-start-date").value=t.toISOString().split("T")[0],document.getElementById("report-end-date").value=e.toISOString().split("T")[0];const a=getAllTransactions(),n=a.filter(t=>{const a=new Date(t.date);return a.getMonth()===e.getMonth()&&a.getFullYear()===e.getFullYear()}),o=n.filter(e=>"ingreso"===e.type).reduce((e,t)=>e+t.amount,0),s=n.filter(e=>"egreso"===e.type).reduce((e,t)=>e+t.amount,0);document.getElementById("cashflow-incomes").textContent=formatCurrency(o),document.getElementById("cashflow-expenses").textContent=formatCurrency(s),document.getElementById("cashflow-profits").textContent=formatCurrency(o-s),renderTransactionsTable(a)}
     function getAllTransactions(){const e=[];return affiliates.forEach(t=>{if("Activo"===t.status){const a=getAffiliateCommissionBase(t);e.push({id:`auto-i-${t.id}`,type:"ingreso",concept:`Pago afiliado: ${t.name}`,amount:a,date:t.startDate});const n=getAdvisorCommissionForAffiliate(t);if(0<n){const o=advisors.find(e=>e.id===t.advisorId);e.push({id:`auto-e-${t.id}`,type:"egreso",concept:`Comisión ${o?.name||"N/A"} (Afiliado: ${t.name})`,amount:n,date:t.startDate})}}}),[...e,...manualTransactions].sort((e,t)=>new Date(t.date)-new Date(e.date))}
     function renderTransactionsTable(e){const t=document.getElementById("transactions-table-body");if(0===e.length){t.innerHTML='<tr><td colspan="3" class="text-center p-4 text-slate-500">No hay transacciones registradas.</td></tr>';return}t.innerHTML=e.map(e=>{const t="ingreso"===e.type;return`<tr class="border-b"><td class="p-3">${new Date(e.date).toLocaleDateString("es-CO")}</td><td class="p-3 text-slate-700">${e.concept}</td><td class="p-3 text-right font-semibold ${t?"text-emerald-600":"text-rose-600"}">${t?"+":"-"}${formatCurrency(e.amount)}</td></tr>`}).join("")}
-    function generatePDFReport(){const{jsPDF:e}=window.jspdf,t=new e,a=new Date(document.getElementById("report-start-date").value+"T00:00:00"),n=new Date(document.getElementById("report-end-date").value+"T23:59:59");if(isNaN(a)||isNaN(n))return void showToast("Por favor, seleccione un rango de fechas válido.","error");const o=getAllTransactions().filter(e=>new Date(e.date)>=a&&new Date(e.date)<=n),s=o.filter(e=>"ingreso"===e.type).reduce((e,t)=>e+t.amount,0),i=o.filter(e=>"egreso"===e.type).reduce((e,t)=>e+t.amount,0),l=getComputedStyle(document.documentElement).getPropertyValue("--color-primary-600").trim().split(" ").map(Number);t.setFontSize(18),t.text(companyProfile.name,14,22),t.setFontSize(11),t.text(`NIT: ${companyProfile.nit}`,14,30),t.text(companyProfile.address,14,36),t.text("Reporte de Flujo de Caja",120,22),t.setFontSize(10),t.text(`Periodo: ${a.toLocaleDateString("es-CO")} - ${n.toLocaleDateString("es-CO")}`,120,30),t.autoTable({startY:45,head:[["Concepto","Total"]],body:[["Ingresos Totales",formatCurrency(s)],["Egresos Totales",formatCurrency(i)],[{content:"Saldo del Periodo",styles:{fontStyle:"bold"}},{content:formatCurrency(s-i),styles:{fontStyle:"bold"}}]],theme:"grid",headStyles:{fillColor:l}}),t.autoTable({startY:t.lastAutoTable.finalY+10,head:[["Fecha","Concepto","Tipo","Monto"]],body:o.map(e=>[new Date(e.date).toLocaleDateString("es-CO"),e.concept,"ingreso"===e.type?"Ingreso":"Egreso",formatCurrency(e.amount)]),theme:"striped",headStyles:{fillColor:[45,55,72]}}),t.save(`Reporte_Flujo_Caja_${a.toLocaleDateString("es-CO").replace(/\//g,"-")}.pdf`),showToast("Generando informe PDF.")}
     
+    function generatePDFReport() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const startDate = new Date(document.getElementById('report-start-date').value + 'T00:00:00');
+        const endDate = new Date(document.getElementById('report-end-date').value + 'T23:59:59');
+
+        if (isNaN(startDate) || isNaN(endDate)) {
+            showToast("Por favor, seleccione un rango de fechas válido.", "error");
+            return;
+        }
+
+        const allTransactions = getAllTransactions();
+        const filteredTransactions = allTransactions.filter(t => {
+            const transactionDate = new Date(t.date);
+            return transactionDate >= startDate && transactionDate <= endDate;
+        });
+
+        // --- Financial Calculations ---
+        const totalIncomes = filteredTransactions
+            .filter(t => t.type === 'ingreso')
+            .reduce((sum, t) => sum + t.amount, 0);
+        
+        const commissionExpenses = filteredTransactions.filter(t => t.id.startsWith('auto-e-'));
+        const manualExpenses = filteredTransactions.filter(t => t.type === 'egreso' && !t.id.startsWith('auto-e-'));
+
+        const totalCommissionExpenses = commissionExpenses.reduce((sum, t) => sum + t.amount, 0);
+        const totalManualExpenses = manualExpenses.reduce((sum, t) => sum + t.amount, 0);
+        const totalExpenses = totalCommissionExpenses + totalManualExpenses;
+        
+        const netProfit = totalIncomes - totalExpenses;
+
+        // --- Administrative Profit Calculation (Dashboard Logic) ---
+        const affiliateIncomeTransactions = filteredTransactions.filter(t => t.id.startsWith('auto-i-'));
+        const uniqueAffiliateIdsInPeriod = [...new Set(affiliateIncomeTransactions.map(t => t.id.replace('auto-i-', '')))];
+        const activeAffiliateCountInPeriod = uniqueAffiliateIdsInPeriod.length;
+        const administrativeProfit = activeAffiliateCountInPeriod * (settings.ADMIN_FEE_PER_AFFILIATE || 0);
+
+        // --- Advisor Commission Breakdown ---
+        const commissionsByAdvisor = commissionExpenses.reduce((acc, curr) => {
+            const match = curr.concept.match(/Comisión (.*?)\s\(/);
+            const advisorName = match ? match[1] : 'Desconocido';
+            if (!acc[advisorName]) {
+                acc[advisorName] = { totalCommission: 0, count: 0 };
+            }
+            acc[advisorName].totalCommission += curr.amount;
+            acc[advisorName].count += 1;
+            return acc;
+        }, {});
+
+        const advisorCommissionBody = Object.entries(commissionsByAdvisor).map(([name, data]) => [
+            name,
+            data.count,
+            formatCurrency(data.totalCommission)
+        ]);
+
+        // --- PDF Generation ---
+        const primaryColorRGB = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim().split(' ').map(Number);
+
+        // Header
+        doc.setFontSize(18);
+        doc.text(companyProfile.name || 'Seb Salud', 14, 22);
+        doc.setFontSize(11);
+        doc.setTextColor(100);
+        doc.text(`NIT: ${companyProfile.nit || 'N/A'}`, 14, 30);
+        doc.text(companyProfile.address || '', 14, 36);
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.text("Reporte Financiero Detallado", 205, 22, { align: 'right' });
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(100);
+        doc.text(`Periodo: ${startDate.toLocaleDateString('es-CO')} - ${endDate.toLocaleDateString('es-CO')}`, 205, 30, { align: 'right' });
+
+        // Summary Table
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.text("Resumen Financiero", 14, 50);
+        doc.autoTable({
+            startY: 55,
+            head: [['Concepto Financiero', 'Valor']],
+            body: [
+                ['Ingresos Totales', formatCurrency(totalIncomes)],
+                ['Egresos Totales', formatCurrency(totalExpenses)],
+                [{ content: `   - Total Comisiones a Asesores`, styles: { textColor: [100, 116, 139] } }, formatCurrency(totalCommissionExpenses)],
+                [{ content: `   - Otros Egresos (Manuales)`, styles: { textColor: [100, 116, 139] } }, formatCurrency(totalManualExpenses)],
+                [{
+                    content: 'Ganancia por Administración (Afiliados Activos x Tarifa)',
+                    styles: { fontStyle: 'bold', fillColor: [240, 253, 244] }
+                }, {
+                    content: `${activeAffiliateCountInPeriod} x ${formatCurrency(settings.ADMIN_FEE_PER_AFFILIATE)} = ${formatCurrency(administrativeProfit)}`,
+                    styles: { fontStyle: 'bold', fillColor: [240, 253, 244] }
+                }],
+                [{
+                    content: 'Ganancia Neta (Saldo Real en Caja)',
+                    styles: { fontStyle: 'bold', fillColor: [241, 245, 249] }
+                }, {
+                    content: formatCurrency(netProfit),
+                    styles: { fontStyle: 'bold', fillColor: [241, 245, 249] }
+                }]
+            ],
+            theme: 'grid',
+            headStyles: { fillColor: primaryColorRGB, textColor: 255 }
+        });
+
+        let finalY = doc.lastAutoTable.finalY;
+
+        // Advisor Commissions Table
+        if (advisorCommissionBody.length > 0) {
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.text("Desglose de Comisiones por Asesor", 14, finalY + 15);
+            doc.autoTable({
+                startY: finalY + 20,
+                head: [['Asesor', 'N° de Comisiones Pagadas', 'Comisión Total']],
+                body: advisorCommissionBody,
+                foot: [[
+                    { content: 'TOTAL COMISIONES', colSpan: 2, styles: { halign: 'right', fontStyle: 'bold' } },
+                    { content: formatCurrency(totalCommissionExpenses), styles: { fontStyle: 'bold' } }
+                ]],
+                theme: 'striped',
+                headStyles: { fillColor: [45, 55, 72] }
+            });
+            finalY = doc.lastAutoTable.finalY;
+        }
+
+        // Detailed Transactions Table
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.text("Historial Detallado de Transacciones", 14, finalY + 15);
+        doc.autoTable({
+            startY: finalY + 20,
+            head: [['Fecha', 'Concepto', 'Tipo', 'Monto']],
+            body: filteredTransactions.map(t => [
+                new Date(t.date).toLocaleDateString('es-CO'),
+                t.concept,
+                t.type === 'ingreso' ? 'Ingreso' : 'Egreso',
+                (t.type === 'ingreso' ? '+' : '-') + formatCurrency(t.amount)
+            ]),
+            theme: 'striped',
+            headStyles: { fillColor: [45, 55, 72] },
+            didParseCell: function(data) {
+                if (data.column.dataKey === 3) {
+                    if (data.cell.raw.toString().startsWith('+')) {
+                        data.cell.styles.textColor = [22, 163, 74];
+                    } else if (data.cell.raw.toString().startsWith('-')) {
+                        data.cell.styles.textColor = [225, 29, 72];
+                    }
+                }
+            }
+        });
+
+        doc.save(`Reporte_Financiero_${startDate.toLocaleDateString('es-CO').replace(/\//g, "-")}_a_${endDate.toLocaleDateString('es-CO').replace(/\//g, "-")}.pdf`);
+        showToast("Generando informe PDF detallado.");
+    }
+
     // --- CALENDAR LOGIC ---
     function initializeCalendarSelectors() {
         const monthSelect = document.getElementById('metric-month');
@@ -1493,17 +1647,17 @@
             else if (button.matches('.delete-advisor-btn')) { if (confirm('¿Seguro? Se desasignará de todos los afiliados.')) { const batch = window.firebase.writeBatch(db); affiliates.forEach(aff => { if(aff.advisorId === id) { const affRef = window.firebase.doc(db, `users/${adminUidForRole}/affiliates/${aff.id}`); batch.update(affRef, { advisorId: null }); } }); const advisorRef = window.firebase.doc(db, `users/${adminUidForRole}/advisors/${id}`); batch.delete(advisorRef); await batch.commit(); showToast('Asesor eliminado.'); } } 
             else if (button.matches('.delete-plan-btn')) { const isPlanInUse = affiliates.some(aff => aff.healthPlan === id); if(isPlanInUse) return showToast('Plan en uso. No se puede eliminar.', 'error'); if (confirm('¿Seguro?')) { await deleteDataFromFirestore('healthPlans', id); showToast('Plan eliminado.'); } }
             else if (button.matches('.delete-role-btn')) {
-                 const roleToDelete = userRoles.find(r => r.uid === id);
-                 if (confirm(`¿Estás seguro de eliminar al usuario ${roleToDelete.email}? Esta acción no se puede deshacer y su cuenta será eliminada permanentemente.`)) {
-                     showToast('Esta función requiere un backend (Cloud Function) para eliminar de forma segura un usuario de Firebase Authentication. La implementación actual solo eliminará los registros de rol en Firestore.', 'error');
-                     const batch = window.firebase.writeBatch(db);
-                     const rootRoleRef = window.firebase.doc(db, 'userRoles', id);
-                     const adminRoleRef = window.firebase.doc(db, `users/${adminUidForRole}/roles`, id);
-                     batch.delete(rootRoleRef);
-                     batch.delete(adminRoleRef);
-                     await batch.commit();
-                     showToast('Registros de rol eliminados.', 'success');
-                 }
+                  const roleToDelete = userRoles.find(r => r.uid === id);
+                  if (confirm(`¿Estás seguro de eliminar al usuario ${roleToDelete.email}? Esta acción no se puede deshacer y su cuenta será eliminada permanentemente.`)) {
+                      showToast('Esta función requiere un backend (Cloud Function) para eliminar de forma segura un usuario de Firebase Authentication. La implementación actual solo eliminará los registros de rol en Firestore.', 'error');
+                      const batch = window.firebase.writeBatch(db);
+                      const rootRoleRef = window.firebase.doc(db, 'userRoles', id);
+                      const adminRoleRef = window.firebase.doc(db, `users/${adminUidForRole}/roles`, id);
+                      batch.delete(rootRoleRef);
+                      batch.delete(adminRoleRef);
+                      await batch.commit();
+                      showToast('Registros de rol eliminados.', 'success');
+                  }
             }
             else if (button.id === 'sell-plan-btn') { if (!lastQuoteResult) { showToast('Por favor, realiza una cotización primero.', 'error'); return; } modalManager.open('affiliate-modal'); setTimeout(() => { const form = document.getElementById('affiliate-form'); if (!form) return; form['manual-override-checkbox'].checked = true; document.getElementById('manual-override-container').classList.remove('hidden'); form['manual-cost-health'].value = lastQuoteResult.health ? Math.round(lastQuoteResult.health.total) : ''; form['manual-cost-pension'].value = lastQuoteResult.pension ? Math.round(lastQuoteResult.pension.total) : ''; form['manual-cost-arl'].value = lastQuoteResult.arl ? Math.round(lastQuoteResult.arl.total) : ''; form['manual-cost-ccf'].value = lastQuoteResult.ccf ? Math.round(lastQuoteResult.ccf.total): ''; const incomeValue = Number(document.getElementById('income').value); form['affiliate-notes'].value = `Cotización inicial basada en un ingreso mensual de ${formatCurrency(incomeValue)}. IBC: ${formatCurrency(lastQuoteResult.ibc)}.`; showToast('Datos de cotización precargados.'); }, 100); } 
         });
@@ -1615,19 +1769,19 @@
     function handleExportAdvisors() { const headers = ['Nombre', 'Comisión (%)', 'Total Afiliados', 'Comisión Total Generada']; const dataToExport = advisors.map(advisor => { const advisorAffiliates = affiliates.filter(a => a.advisorId === advisor.id); const totalCommission = advisorAffiliates.reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0); return { 'Nombre': advisor.name, 'Comisión (%)': advisor.commissionRate, 'Total Afiliados': advisorAffiliates.length, 'Comisión Total Generada': totalCommission }; }); exportToCSV(headers, dataToExport, 'asesores_seb_salud.csv'); showToast('Exportando asesores a CSV.'); }
     function getFirebaseAuthErrorMessage(error) { switch (error.code) { case 'auth/invalid-email': return 'El correo es inválido.'; case 'auth/user-not-found': return 'Usuario no encontrado.'; case 'auth/wrong-password': return 'Contraseña incorrecta.'; case 'auth/email-already-in-use': return 'El correo ya está en uso.'; case 'auth/weak-password': return 'La contraseña es muy débil (mínimo 6 caracteres).'; default: return 'Ocurrió un error inesperado. Intenta de nuevo.'; } }
     function formatTimeAgo(date) {
-      if (!date) return "hace un momento";
-      const seconds = Math.floor((new Date() - date) / 1000);
-      let interval = seconds / 31536000;
-      if (interval > 1) return `hace ${Math.floor(interval)} años`;
-      interval = seconds / 2592000;
-      if (interval > 1) return `hace ${Math.floor(interval)} meses`;
-      interval = seconds / 86400;
-      if (interval > 1) return `hace ${Math.floor(interval)} días`;
-      interval = seconds / 3600;
-      if (interval > 1) return `hace ${Math.floor(interval)} horas`;
-      interval = seconds / 60;
-      if (interval > 1) return `hace ${Math.floor(interval)} minutos`;
-      return `hace ${Math.floor(seconds)} segundos`;
+        if (!date) return "hace un momento";
+        const seconds = Math.floor((new Date() - date) / 1000);
+        let interval = seconds / 31536000;
+        if (interval > 1) return `hace ${Math.floor(interval)} años`;
+        interval = seconds / 2592000;
+        if (interval > 1) return `hace ${Math.floor(interval)} meses`;
+        interval = seconds / 86400;
+        if (interval > 1) return `hace ${Math.floor(interval)} días`;
+        interval = seconds / 3600;
+        if (interval > 1) return `hace ${Math.floor(interval)} horas`;
+        interval = seconds / 60;
+        if (interval > 1) return `hace ${Math.floor(interval)} minutos`;
+        return `hace ${Math.floor(seconds)} segundos`;
     }
 </script>
 </body>
