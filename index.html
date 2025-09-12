@@ -64,7 +64,7 @@
         .details-section.hidden, #manual-override-container.hidden { display: none; }
         .details-toggle-icon, .stats-toggle-icon { transition: transform 0.3s; }
         .details-shown .details-toggle-icon, .stats-shown .stats-toggle-icon { transform: rotate(180deg); }
-        .novedades-badge { position: absolute; top: 1px; right: 1px; background-color: #ef4444; color: white; font-size: 0.65rem; font-weight: bold; height: 16px; width: 16px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; line-height: 1; pointer-events: none; transition: transform 0.2s; }
+        .novedades-badge { position: absolute; top: 2px; right: 2px; background-color: #ef4444; color: white; font-size: 0.65rem; font-weight: bold; height: 16px; width: 16px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; line-height: 1; pointer-events: none; transition: transform 0.2s; }
         .novedades-badge.hidden { transform: scale(0); }
         .health-plan-card { border: 2px solid #e2e8f0; transition: border-color 0.2s, box-shadow 0.2s; }
         .health-plan-card:has(input:checked) { border-color: rgb(var(--color-primary-600)); box-shadow: 0 0 0 2px rgb(var(--color-primary-600) / 0.5); }
@@ -181,6 +181,7 @@
             <aside id="sidebar" class="sidebar w-64 fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 z-40 flex flex-col"><div class="flex items-center justify-center h-16 border-b flex-shrink-0"><i data-lucide="shield-check" class="h-8 w-8 text-primary-500 logo-icon"></i><span class="ml-3 text-xl font-bold">Seb Salud</span></div>
                 <nav id="sidebar-nav" class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
                     <a href="#" data-target="dashboard" class="nav-link active flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>Dashboard</a>
+                    <a href="#" data-target="novedades" class="nav-link relative flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="bell" class="w-5 h-5 mr-3"></i>Novedades<span id="novedades-badge-sidebar" class="novedades-badge hidden"></span></a>
                     <a href="#" data-target="empresa" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="building-2" class="w-5 h-5 mr-3"></i>Perfil Empresa</a>
                     <a href="#" data-target="calendario" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="calendar-days" class="w-5 h-5 mr-3"></i>Calendario</a>
                     <a href="#" data-target="flujo-caja" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="wallet" class="w-5 h-5 mr-3"></i>Flujo de Caja</a>
@@ -194,49 +195,9 @@
                 </nav>
             <div class="px-4 py-4 border-t flex-shrink-0"><p class="text-xs text-slate-400 uppercase tracking-wider">Usuario Conectado</p><p id="user-email-display" class="font-mono rounded p-1 text-xs break-words mt-1"></p><button id="logout-btn" class="w-full mt-3 text-left text-sm flex items-center"><i data-lucide="log-out" class="w-4 h-4 mr-2"></i>Cerrar Sesión</button></div></aside>
             <div class="flex-1 flex flex-col md:ml-64 relative">
-                <header class="fixed top-0 inset-x-0 md:left-64 bg-white/80 backdrop-blur-md shadow-sm h-16 flex items-center justify-between px-4 z-20 border-b border-slate-200/75">
-                    <div class="flex items-center">
-                        <h1 id="header-title" class="text-xl font-semibold text-slate-700 hidden md:block">Dashboard</h1>
-                        <div class="flex items-center md:hidden">
-                            <i data-lucide="shield-check" class="h-6 w-6 text-primary-500 logo-icon"></i>
-                            <span class="ml-2 text-lg font-bold">Seb Salud</span>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button id="novedades-toggle-btn" class="relative text-slate-600 focus:outline-none p-2 rounded-full hover:bg-slate-200">
-                            <i data-lucide="bell" class="h-6 w-6 pointer-events-none"></i>
-                            <span id="novedades-header-badge" class="novedades-badge hidden"></span>
-                        </button>
-                        <button id="profile-toggle-btn" class="relative text-slate-600 focus:outline-none p-2 rounded-full hover:bg-slate-200">
-                            <i data-lucide="user-circle-2" class="h-6 w-6 pointer-events-none"></i>
-                        </button>
-                        <button id="menu-toggle" class="text-slate-600 focus:outline-none md:hidden p-2 rounded-full hover:bg-slate-200">
-                            <i data-lucide="menu" class="h-6 w-6 pointer-events-none"></i>
-                        </button>
-                    </div>
-                </header>
-
-                <div id="profile-modal" class="absolute top-[68px] right-4 z-30 w-64 bg-white rounded-xl shadow-2xl border border-slate-200/50 p-1.5 origin-top-right transition-transform duration-200 ease-out transform scale-95 opacity-0 pointer-events-none">
-                    <div class="p-2">
-                        <p id="profile-modal-name" class="font-semibold text-slate-800 text-sm truncate" title="email del usuario">email@usuario.com</p>
-                        <p id="profile-modal-role" class="text-xs text-slate-500 mb-2">Administrador</p>
-                        <span id="profile-modal-license" class="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Licencia Activa</span>
-                    </div>
-                    <div class="border-t border-slate-200/80 my-1"></div>
-                    <button id="profile-modal-logout-btn" class="w-full text-left flex items-center gap-2 p-2 text-sm text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
-                        <i data-lucide="log-out" class="w-4 h-4"></i><span>Cerrar Sesión</span>
-                    </button>
-                </div>
-
-                <div id="novedades-modal" class="absolute top-[68px] right-4 z-30 w-96 bg-white rounded-xl shadow-2xl border border-slate-200/50 flex flex-col origin-top-right transition-transform duration-200 ease-out transform scale-95 opacity-0 pointer-events-none">
-                    <div class="p-4 border-b flex justify-between items-center">
-                        <h3 class="font-semibold text-slate-800">Notificaciones</h3>
-                        <button id="mark-novedades-read" class="text-xs font-medium text-primary-600 hover:text-primary-700 disabled:opacity-50 disabled:cursor-not-allowed">Marcar todo como leído</button>
-                    </div>
-                    <div id="novedades-list" class="flex-1 overflow-y-auto max-h-96 p-2 space-y-1">
-                        </div>
-                </div>
-
+                <header class="fixed top-0 inset-x-0 md:left-64 bg-white/80 backdrop-blur-md shadow-sm h-16 flex items-center justify-between px-4 z-20 border-b border-slate-200/75"><div class="flex items-center"><h1 id="header-title" class="text-xl font-semibold text-slate-700 hidden md:block">Dashboard</h1><div class="flex items-center md:hidden"><i data-lucide="shield-check" class="h-6 w-6 text-primary-500 logo-icon"></i><span class="ml-2 text-lg font-bold">Seb Salud</span></div></div><div class="flex items-center gap-2"><button id="profile-toggle-btn" class="relative text-slate-600 focus:outline-none p-2 rounded-full hover:bg-slate-200"><i data-lucide="user-circle-2" class="h-6 w-6 pointer-events-none"></i></button><button id="menu-toggle" class="text-slate-600 focus:outline-none md:hidden p-2 rounded-full hover:bg-slate-200"><i data-lucide="menu" class="h-6 w-6 pointer-events-none"></i></button></div></header>
+                <div id="profile-modal" class="absolute top-[68px] right-4 z-30 w-64 bg-white rounded-xl shadow-2xl border border-slate-200/50 p-1.5 origin-top-right transition-transform duration-200 ease-out transform scale-95 opacity-0 pointer-events-none"><div class="p-2"><p id="profile-modal-name" class="font-semibold text-slate-800 text-sm truncate" title="email del usuario">email@usuario.com</p><p id="profile-modal-role" class="text-xs text-slate-500 mb-2">Administrador</p><span id="profile-modal-license" class="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Licencia Activa</span></div><div class="border-t border-slate-200/80 my-1"></div><button id="profile-modal-logout-btn" class="w-full text-left flex items-center gap-2 p-2 text-sm text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"><i data-lucide="log-out" class="w-4 h-4"></i><span>Cerrar Sesión</span></button></div>
+                
                 <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8 mt-16">
                     <section id="dashboard" class="content-section active">
                         <h1 class="text-2xl font-bold text-slate-800 mb-6">Resumen General y Métricas Clave</h1>
@@ -248,6 +209,7 @@
                             <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Cartera Vencida</h3><p id="kpi-overdue-payments" class="text-3xl font-bold text-rose-500 mt-2">$0</p></div><div class="bg-rose-100 text-rose-600 p-2 rounded-full"><i data-lucide="clock" class="h-6 w-6"></i></div></div>
                         </div>
                     </section>
+                    <section id="novedades" class="content-section"><div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-4xl mx-auto"><h2 class="text-2xl font-bold text-slate-800 mb-6">Última Actividad</h2><div id="novedades-feed" class="space-y-6"></div></div></section>
 
                     <section id="empresa" class="content-section">
                         <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-3xl mx-auto">
@@ -325,7 +287,7 @@
                                 <h2 class="text-2xl font-bold text-slate-800">Cotizador de Aportes a Seguridad Social</h2>
                                 <p class="text-slate-500 mt-1">Calcula los aportes de forma rápida y precisa.</p>
                             </div>
-                            <button id="open-settings-btn" data-role="admin" class="text-slate-500 hover:text-primary-600 p-2 rounded-full bg-slate-100 hover:bg-slate-200"><i data-lucide="settings" class="w-6 h-6"></i></button>
+                            <button id="open-settings-btn" class="text-slate-500 hover:text-primary-600 p-2 rounded-full bg-slate-100 hover:bg-slate-200"><i data-lucide="settings" class="w-6 h-6"></i></button>
                         </div>
                         <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
                             <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg lg:col-span-2">
@@ -539,10 +501,11 @@
         <div id="transaction-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="transaction-modal-title" class="text-2xl font-bold"></h2><button data-close-modal="transaction-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="transaction-form" class="p-6"><input type="hidden" id="transaction-type"><div class="space-y-4"><div><label for="transaction-concept" class="block text-sm font-medium text-slate-600">Concepto</label><input type="text" id="transaction-concept" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-amount" class="block text-sm font-medium text-slate-600">Monto</label><input type="number" id="transaction-amount" min="0" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-date" class="block text-sm font-medium text-slate-600">Fecha</label><input type="date" id="transaction-date" class="w-full mt-1 p-2 border rounded-lg" required></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar</button></div></form></div></div>
         
         <nav class="bottom-nav md:hidden fixed bottom-0 inset-x-0 flex justify-around p-2 border-t z-40">
-            <a href="#" data-target="dashboard" class="bottom-nav-link active flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="text-[10px] mt-1">Dashboard</span></a>
-            <a href="#" data-target="afiliados" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="users" class="w-5 h-5"></i><span class="text-[10px] mt-1">Afiliados</span></a>
+            <a href="#" data-target="afiliados" class="bottom-nav-link active flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="users" class="w-5 h-5"></i><span class="text-[10px] mt-1">Afiliados</span></a>
             <a href="#" data-target="asesores" data-role="admin" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="user-circle" class="w-5 h-5"></i><span class="text-[10px] mt-1">Asesores</span></a>
+            <a href="#" data-target="calendario" data-role="admin" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="calendar-days" class="w-5 h-5"></i><span class="text-[10px] mt-1">Calendario</span></a>
             <a href="#" data-target="cotizador" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="calculator" class="w-5 h-5"></i><span class="text-[10px] mt-1">Cotizador</span></a>
+            <a href="#" data-target="novedades" class="bottom-nav-link relative flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="bell" class="w-5 h-5"></i><span class="text-[10px] mt-1">Novedades</span><span id="novedades-badge-mobile" class="novedades-badge hidden"></span></a>
             <a href="#" data-target="perfil-afiliado" data-role="afiliado" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="user" class="w-5 h-5"></i><span class="text-[10px] mt-1">Mi Perfil</span></a>
         </nav>
     </div>
@@ -578,13 +541,11 @@
     let activeListeners = [];
 
     const defaultSettings = { 
-        SMMLV: 1300000, 
+        SMMLV: 1430000, 
         ADMIN_FEE_PER_AFFILIATE: 15000,
         CONTRIBUTION_RATES: { health: 12.5, pension: 16, employee_health: 4, employer_health: 8.5, employee_pension: 4, employer_pension: 12, independiente_ccf: 2, employer_ccf: 4 }, 
         ARL_RATES: { 1: 0.522, 2: 1.044, 3: 2.436, 4: 4.350, 5: 6.960 } 
     };
-    // El tema aquí definido ('spotify') es el que se asignará a los NUEVOS usuarios al registrarse.
-    // Los usuarios existentes cargarán el tema guardado en su perfil.
     const defaultCompanyProfile = { name: 'Mi Empresa de Seguridad Social', nit: '900.123.456-7', address: 'Calle 123 # 45-67, Bogotá', phone: '3001234567', email: 'contacto@empresa.com', theme: 'spotify', sidebarTheme: 'dark', bottomNavTheme: 'dark' };
     
     // --- MANEJO DE VISTAS Y ESTADO DE CARGA ---
@@ -636,7 +597,6 @@
             adminUidForRole = null;
             unsubscribeAllListeners();
             resetLocalData();
-            applyTheme('spotify'); // Regresar al tema spotify al cerrar sesión para la pantalla de login
             showView(authContainer);
             document.getElementById('login-view').style.display = 'block';
             document.getElementById('register-view').style.display = 'none';
@@ -690,26 +650,11 @@
         const { doc, collection, onSnapshot } = window.firebase;
         const basePath = `users/${adminUidForRole}`;
 
-        // Este listener se activa para TODOS los roles (admin, asesor, afiliado).
-        // Escucha los cambios en el documento del administrador principal.
-        // Así, cuando el admin cambia el tema, se propaga a todos los usuarios vinculados.
         const unsubUser = onSnapshot(doc(db, basePath), (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 companyProfile = data.companyProfile || defaultCompanyProfile;
-                // Lógica de carga de settings robusta
-                settings = {
-                    ...defaultSettings,
-                    ...(data.settings || {}),
-                    CONTRIBUTION_RATES: {
-                        ...defaultSettings.CONTRIBUTION_RATES,
-                        ...(data.settings?.CONTRIBUTION_RATES || {})
-                    },
-                    ARL_RATES: {
-                        ...defaultSettings.ARL_RATES,
-                        ...(data.settings?.ARL_RATES || {})
-                    }
-                };
+                settings = { ...defaultSettings, ...data.settings };
                 applyTheme(companyProfile.theme);
                 applySidebarTheme(companyProfile.sidebarTheme);
                 applyBottomNavTheme(companyProfile.bottomNavTheme);
@@ -721,12 +666,11 @@
 
         const collectionsToListen = {
             affiliates: (data) => {
-                const oldAffiliates = [...affiliates];
+                if (currentUserRole === 'admin') {
+                   checkAndGenerateNovedades(data, affiliates); 
+                }
                 affiliates = data;
                 renderAllDependentOnAffiliates();
-                if (currentUserRole === 'admin') {
-                   checkAndGenerateNovedades(data, oldAffiliates); 
-                }
             },
             advisors: (data) => {
                 advisors = data;
@@ -741,9 +685,9 @@
                 if (document.getElementById('flujo-caja').classList.contains('active')) renderFlujoCajaSection();
             },
             novedades: (data) => {
-                novedades = data.sort((a,b) => (b.timestamp?.toDate() || 0) - (a.timestamp?.toDate() || 0));
+                novedades = data;
                 updateNovedadesBadge();
-                renderNovedadesDropdown();
+                if (document.getElementById('novedades').classList.contains('active')) renderNovedadesSection();
             },
             roles: (data) => {
                 userRoles = data;
@@ -756,10 +700,13 @@
 
             const colRef = collection(db, `${basePath}/${colName}`);
             const unsub = onSnapshot(colRef, (snapshot) => {
-                const data = snapshot.docs.map(d => ({
-                    id: d.id, // <-- Importante: Incluir el ID del documento
-                    ...d.data()
-                }));
+                const data = snapshot.docs.map(d => {
+                    const docData = d.data();
+                    if (docData.createdAt && docData.createdAt.toDate) docData.createdAt = docData.createdAt.toDate();
+                    if (docData.date && docData.date.toDate) docData.date = docData.date.toDate().toISOString();
+                    if (docData.timestamp && docData.timestamp.toDate) docData.timestamp = docData.timestamp.toDate();
+                    return docData;
+                });
                 callback(data);
             });
             activeListeners.push(unsub);
@@ -816,32 +763,38 @@
     }
 
     function updateUIVisibilityByRole() {
-        // Ocultar todos los elementos con data-role y links de navegación primero
-        document.querySelectorAll('[data-role]').forEach(el => el.style.display = 'none');
-        document.querySelectorAll('#sidebar-nav .nav-link, .bottom-nav > a').forEach(el => el.style.display = 'none');
+        const allSidebarLinks = document.querySelectorAll('#sidebar-nav .nav-link');
+        const allBottomNavLinks = document.querySelectorAll('.bottom-nav > a');
+
+        allSidebarLinks.forEach(el => el.style.display = 'none');
+        allBottomNavLinks.forEach(el => el.style.display = 'none');
 
         let visibleTargets = [];
+
         if (currentUserRole === 'admin') {
-            visibleTargets = ['dashboard', 'empresa', 'calendario', 'flujo-caja', 'afiliados', 'asesores', 'ranking-vendedores', 'planes', 'cotizador', 'gestion-roles'];
-            document.querySelectorAll('[data-role="admin"]').forEach(el => el.style.display = ''); // Re-mostrar elementos admin
+            visibleTargets = ['dashboard', 'novedades', 'empresa', 'calendario', 'flujo-caja', 'afiliados', 'asesores', 'ranking-vendedores', 'planes', 'cotizador', 'gestion-roles'];
         } else if (currentUserRole === 'asesor') {
-             visibleTargets = ['dashboard', 'afiliados', 'cotizador'];
+             visibleTargets = ['dashboard', 'afiliados', 'novedades', 'cotizador'];
         } else if (currentUserRole === 'afiliado') {
             visibleTargets = ['perfil-afiliado', 'cotizador'];
         }
 
-        // Mostrar links de navegación basados en los targets visibles
-        document.querySelectorAll('.nav-link, .bottom-nav-link').forEach(el => {
-             if (visibleTargets.includes(el.dataset.target)) {
-                 el.style.display = 'flex';
-             }
+        allSidebarLinks.forEach(el => {
+            if (visibleTargets.includes(el.dataset.target)) {
+                el.style.display = 'flex';
+            }
+        });
+        allBottomNavLinks.forEach(el => {
+            if (visibleTargets.includes(el.dataset.target)) {
+                el.style.display = 'flex';
+            }
         });
     }
     
     function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme); }
     function applySidebarTheme(theme) { document.body.setAttribute('data-sidebar-theme', theme || 'dark'); }
     function applyBottomNavTheme(theme) { document.body.setAttribute('data-bottom-nav-theme', theme || 'dark'); }
-    async function createNovedad(type, description) { if (!currentUser || currentUserRole !== 'admin') return; const novedad = { type, description, read: false, timestamp: window.firebase.serverTimestamp() }; const collectionRef = window.firebase.collection(db, `users/${adminUidForRole}/novedades`); await window.firebase.addDoc(collectionRef, novedad); }
+    async function createNovedad(affiliateId, affiliateName, type, description) { if (!currentUser || currentUserRole !== 'admin') return; const novedad = { affiliateId, affiliateName, type, description, timestamp: new Date() }; const collectionRef = window.firebase.collection(db, `users/${adminUidForRole}/novedades`); await window.firebase.addDoc(collectionRef, novedad); }
     function getAffiliateCommissionBase(affiliate) { if (affiliate.manualCosts && Object.values(affiliate.manualCosts).some(cost => cost > 0)) { return Object.values(affiliate.manualCosts).reduce((sum, cost) => sum + (Number(cost) || 0), 0); } const plan = healthPlans.find(p => p.id === affiliate.healthPlan); return plan ? plan.price : 0; }
     function getAdvisorCommissionForAffiliate(affiliate) { if (affiliate.manualCommission && affiliate.manualCommission > 0) { return affiliate.manualCommission; } const advisor = advisors.find(v => v.id === affiliate.advisorId); if (!advisor) return 0; return getAffiliateCommissionBase(affiliate) * (advisor.commissionRate / 100); }
     
@@ -855,7 +808,7 @@
                     'dashboard': renderDashboard, 'afiliados': renderAffiliatesList, 
                     'asesores': renderAdvisorsSection, 'ranking-vendedores': renderRankingSection, 
                     'empresa': renderEmpresaSection, 'flujo-caja': renderFlujoCajaSection, 
-                    'planes': renderPlansList, 
+                    'novedades': renderNovedadesSection, 'planes': renderPlansList, 
                     'calendario': renderCalendarioSection, 'gestion-roles': renderGestionRolesSection,
                     'perfil-afiliado': renderPerfilAfiliadoSection,
                     'cotizador': () => {}
@@ -1053,53 +1006,16 @@
     }
 
     function renderHealthPlanCards(){const e=document.getElementById("health-plan-selector");if(!e)return;if(0===healthPlans.length){e.innerHTML='<p class="text-slate-500 md:col-span-4">No hay planes de salud definidos. Por favor, cree un plan en la sección "Planes de Salud".</p>';return}e.innerHTML=healthPlans.map((e,t)=>` <label class="health-plan-card cursor-pointer rounded-lg p-4 flex flex-col justify-between"> <div> <div class="flex justify-between items-center"><h4 class="font-bold text-md text-slate-800">${e.name}</h4><input type="radio" name="health-plan" value="${e.id}" class="h-4 w-4 text-primary-600"></div> <p class="text-xl font-extrabold text-primary-600 my-2">${formatCurrency(e.price)}<span class="text-sm font-medium text-slate-500">/mes</span></p> <ul class="text-xs text-slate-600 space-y-1 mt-3"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check" class="w-3.5 h-3.5 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> </label>`).join("");}
-    
-    function renderNovedadesDropdown(){
-        const container = document.getElementById("novedades-list");
-        if (!container) return;
-
-        if (novedades.length === 0) {
-            container.innerHTML = '<p class="text-center text-sm text-slate-500 p-4">No hay notificaciones.</p>';
-            return;
-        }
-
-        container.innerHTML = novedades.map(novedad => `
-            <div class="flex items-start gap-3 p-2 rounded-lg hover:bg-slate-50">
-                ${novedad.read === false ? '<div class="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0"></div>' : '<div class="w-2 h-2"></div>'}
-                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">${getNovedadIcon(novedad.type)}</div>
-                <div class="flex-grow">
-                    <p class="text-sm text-slate-800 leading-tight">${novedad.description}</p>
-                    <p class="text-xs text-slate-400 mt-1">${formatTimeAgo(novedad.timestamp?.toDate())}</p>
-                </div>
-            </div>
-        `).join("");
-        lucide.createIcons();
-    }
-
+    function renderNovedadesSection(){const e=document.getElementById("novedades-feed");if(!e)return;const t=[...novedades].sort((e,t)=>(t.timestamp || 0)-(e.timestamp || 0));if(0===t.length){e.innerHTML='<p class="text-center text-slate-500">No hay actividad reciente.</p>';return}e.innerHTML=t.map(e=>`<div class="flex items-start gap-4"><div class="flex-shrink-0 w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">${getNovedadIcon(e.type)}</div><div> <p class="text-sm text-slate-800">${e.description}</p> <p class="text-xs text-slate-500"> ${e.affiliateName ? `Para: <strong class="font-medium">${e.affiliateName}</strong> -` : ''} ${formatTimeAgo(e.timestamp)} </p> </div></div>`).join("");lucide.createIcons();}
     function renderEmpresaSection(){if(!companyProfile.name) return;document.getElementById("company-name").value=companyProfile.name;document.getElementById("company-nit").value=companyProfile.nit;document.getElementById("company-address").value=companyProfile.address;document.getElementById("company-phone").value=companyProfile.phone;document.getElementById("company-email").value=companyProfile.email;document.querySelector(`#theme-selector input[value="${companyProfile.theme||"default"}"]`).checked=!0;document.querySelector(`#sidebar-theme-selector input[value="${companyProfile.sidebarTheme||"dark"}"]`).checked=!0;document.querySelector(`#bottom-nav-theme-selector input[value="${companyProfile.bottomNavTheme||"dark"}"]`).checked=!0}
     function renderFlujoCajaSection(){const e=new Date,t=new Date(e.getFullYear(),e.getMonth(),1);document.getElementById("report-start-date").value=t.toISOString().split("T")[0],document.getElementById("report-end-date").value=e.toISOString().split("T")[0];const a=getAllTransactions(),n=a.filter(t=>{const a=new Date(t.date);return a.getMonth()===e.getMonth()&&a.getFullYear()===e.getFullYear()}),o=n.filter(e=>"ingreso"===e.type).reduce((e,t)=>e+t.amount,0),s=n.filter(e=>"egreso"===e.type).reduce((e,t)=>e+t.amount,0);document.getElementById("cashflow-income").textContent=formatCurrency(o),document.getElementById("cashflow-expenses").textContent=formatCurrency(s),document.getElementById("cashflow-profit").textContent=formatCurrency(o-s),renderTransactionsTable(a)}
     function getAllTransactions(){const e=[];return affiliates.forEach(t=>{if("Activo"===t.status){const a=getAffiliateCommissionBase(t);e.push({id:`auto-i-${t.id}`,type:"ingreso",concept:`Pago afiliado: ${t.name}`,amount:a,date:t.startDate});const n=getAdvisorCommissionForAffiliate(t);if(0<n){const o=advisors.find(e=>e.id===t.advisorId);e.push({id:`auto-e-${t.id}`,type:"egreso",concept:`Comisión ${o?.name||"N/A"} (Afiliado: ${t.name})`,amount:n,date:t.startDate})}}}),[...e,...manualTransactions].sort((e,t)=>new Date(t.date)-new Date(e.date))}
     function renderTransactionsTable(e){const t=document.getElementById("transactions-table-body");if(0===e.length){t.innerHTML='<tr><td colspan="3" class="text-center p-4 text-slate-500">No hay transacciones registradas.</td></tr>';return}t.innerHTML=e.map(e=>{const t="ingreso"===e.type;return`<tr class="border-b"><td class="p-3">${new Date(e.date).toLocaleDateString("es-CO")}</td><td class="p-3 text-slate-700">${e.concept}</td><td class="p-3 text-right font-semibold ${t?"text-emerald-600":"text-rose-600"}">${t?"+":"-"}${formatCurrency(e.amount)}</td></tr>`}).join("")}
     function generatePDFReport(){const{jsPDF:e}=window.jspdf,t=new e,a=new Date(document.getElementById("report-start-date").value+"T00:00:00"),n=new Date(document.getElementById("report-end-date").value+"T23:59:59");if(isNaN(a)||isNaN(n))return void showToast("Por favor, selecciona un rango de fechas válido.","error");const o=getAllTransactions().filter(e=>new Date(e.date)>=a&&new Date(e.date)<=n),s=o.filter(e=>"ingreso"===e.type).reduce((e,t)=>e+t.amount,0),i=o.filter(e=>"egreso"===e.type).reduce((e,t)=>e+t.amount,0),l=getComputedStyle(document.documentElement).getPropertyValue("--color-primary-600").trim().split(" ").map(Number);t.setFontSize(18),t.text(companyProfile.name,14,22),t.setFontSize(11),t.text(`NIT: ${companyProfile.nit}`,14,30),t.text(companyProfile.address,14,36),t.text("Reporte de Flujo de Caja",120,22),t.setFontSize(10),t.text(`Periodo: ${a.toLocaleDateString("es-CO")} - ${n.toLocaleDateString("es-CO")}`,120,30),t.autoTable({startY:45,head:[["Concepto","Total"]],body:[["Ingresos Totales",formatCurrency(s)],["Egresos Totales",formatCurrency(i)],[{content:"Balance del Periodo",styles:{fontStyle:"bold"}},{content:formatCurrency(s-i),styles:{fontStyle:"bold"}}]],theme:"grid",headStyles:{fillColor:l}}),t.autoTable({startY:t.lastAutoTable.finalY+10,head:[["Fecha","Concepto","Tipo","Monto"]],body:o.map(e=>[new Date(e.date).toLocaleDateString("es-CO"),e.concept,"ingreso"===e.type?"Ingreso":"Egreso",formatCurrency(e.amount)]),theme:"striped",headStyles:{fillColor:[45,55,72]}}),t.save(`Reporte_Flujo_Caja_${a.toLocaleDateString("es-CO").replace(/\//g,"-")}.pdf`),showToast("Generando reporte PDF.")}
-    
-    function updateNovedadesBadge(){
-        const unreadCount = novedades.filter(n => n.read === false).length;
-        const badge = document.getElementById("novedades-header-badge");
-        const markAsReadBtn = document.getElementById("mark-novedades-read");
-
-        if (unreadCount > 0) {
-            badge.textContent = unreadCount;
-            badge.classList.remove("hidden");
-            markAsReadBtn.disabled = false;
-        } else {
-            badge.classList.add("hidden");
-            markAsReadBtn.disabled = true;
-        }
-    }
-
-    function getNovedadIcon(e){return{creation:'<i data-lucide="user-plus" class="h-5 w-5 text-green-500"></i>',status_change:'<i data-lucide="shuffle" class="h-5 w-5 text-yellow-500"></i>',payment_reminder:'<i data-lucide="calendar-clock" class="h-5 w-5 text-red-500"></i>',commission_earned:'<i data-lucide="award" class="h-5 w-5 text-blue-500"></i>',admin_profit:'<i data-lucide="trending-up" class="h-5 w-5 text-indigo-500"></i>',deletion:'<i data-lucide="user-x" class="h-5 w-5 text-red-500"></i>'}[e]||'<i data-lucide="alert-triangle" class="h-5 w-5 text-yellow-500"></i>'}
+    function updateNovedadesBadge(){const e=novedades.filter(e=> e.timestamp && (new Date).getTime()-e.timestamp.getTime()<864e5).length,t=document.getElementById("novedades-badge-sidebar"),a=document.getElementById("novedades-badge-mobile");0<e?(t.textContent=e,a.textContent=e,t.classList.remove("hidden"),a.classList.remove("hidden")):(t.classList.add("hidden"),a.classList.add("hidden"))}
+    function getNovedadIcon(e){return{creation:'<i data-lucide="user-plus" class="h-6 w-6 text-green-500"></i>',status_change:'<i data-lucide="shuffle" class="h-6 w-6 text-yellow-500"></i>',payment_reminder:'<i data-lucide="calendar-clock" class="h-6 w-6 text-red-500"></i>',commission_earned:'<i data-lucide="award" class="h-6 w-6 text-blue-500"></i>',admin_profit:'<i data-lucide="trending-up" class="h-6 w-6 text-indigo-500"></i>',deletion:'<i data-lucide="user-x" class="h-6 w-6 text-red-500"></i>'}[e]||'<i data-lucide="alert-triangle" class="h-6 w-6 text-yellow-500"></i>'}
     function formatTimeAgo(e){if(!e) return "hace un momento"; const t=Math.floor((new Date-e)/1e3);let a=t/31536e3;if(1<a)return`hace ${Math.floor(a)} años`;if(1<(a=t/2592e3))return`hace ${Math.floor(a)} meses`;if(1<(a=t/86400))return`hace ${Math.floor(a)} días`;if(1<(a=t/3600))return`hace ${Math.floor(a)} horas`;if(1<(a=t/60))return`hace ${Math.floor(a)} minutos`;return`hace ${Math.floor(t)} segundos`}
-    function checkAndGenerateNovedades(newAffiliates, oldAffiliates){}
+    function checkAndGenerateNovedades(e,t){}
     
     // --- LÓGICA DEL CALENDARIO ---
     function initializeCalendarSelectors() {
@@ -1222,7 +1138,7 @@
                     <td class="p-3"><span class="font-semibold text-xs px-2 py-1 rounded-full ${role.role === 'asesor' ? 'bg-sky-100 text-sky-800' : 'bg-lime-100 text-lime-800'}">${role.role}</span></td>
                     <td class="p-3 text-slate-600">${linkedName}</td>
                     <td class="p-3">
-                        <button class="delete-role-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${role.id}" title="Eliminar Usuario y Rol (irreversible)"><i data-lucide="trash-2" class="h-4 w-4 pointer-events-none"></i></button>
+                        <button class="delete-role-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${role.uid}" title="Eliminar Usuario y Rol (irreversible)"><i data-lucide="trash-2" class="h-4 w-4 pointer-events-none"></i></button>
                     </td>
                 </tr>
             `;
@@ -1349,12 +1265,7 @@
             const navLink = target.closest('[data-target]');
             const profileModal = document.getElementById('profile-modal');
             const profileToggleBtn = document.getElementById('profile-toggle-btn');
-            const novedadesModal = document.getElementById('novedades-modal');
-            const novedadesToggleBtn = document.getElementById('novedades-toggle-btn');
-
             if (profileModal && !profileModal.contains(target) && profileToggleBtn && !profileToggleBtn.contains(target)) { profileModal.classList.add('scale-95', 'opacity-0', 'pointer-events-none'); } 
-            if (novedadesModal && !novedadesModal.contains(target) && novedadesToggleBtn && !novedadesToggleBtn.contains(target)) { novedadesModal.classList.add('scale-95', 'opacity-0', 'pointer-events-none'); } 
-
             
             if (navLink) { 
                 e.preventDefault(); 
@@ -1376,8 +1287,7 @@
                 case 'show-login': document.getElementById('register-view').style.display = 'none'; document.getElementById('login-view').style.display = 'block'; return; 
                 case 'logout-btn': case 'profile-modal-logout-btn': window.firebase.signOut(auth); return; 
                 case 'menu-toggle': document.getElementById('sidebar').classList.toggle('-translate-x-full'); const overlay = document.getElementById('sidebar-overlay'); overlay.classList.toggle('opacity-0'); overlay.classList.toggle('pointer-events-none'); return; 
-                case 'profile-toggle-btn': document.getElementById('profile-modal').classList.toggle('scale-95'); document.getElementById('profile-modal').classList.toggle('opacity-0'); document.getElementById('profile-modal').classList.toggle('pointer-events-none'); return; 
-                case 'novedades-toggle-btn': document.getElementById('novedades-modal').classList.toggle('scale-95'); document.getElementById('novedades-modal').classList.toggle('opacity-0'); document.getElementById('novedades-modal').classList.toggle('pointer-events-none'); return;
+                case 'profile-toggle-btn': const modal = document.getElementById('profile-modal'); modal.classList.toggle('scale-95'); modal.classList.toggle('opacity-0'); modal.classList.toggle('pointer-events-none'); return; 
                 case 'sidebar-overlay': document.getElementById('menu-toggle').click(); return; 
                 case 'add-affiliate-btn': modalManager.open('affiliate-modal'); return; 
                 case 'add-advisor-btn': modalManager.open('advisor-modal'); return; 
@@ -1404,7 +1314,7 @@
             else if (button.matches('.delete-advisor-btn')) { if (confirm('¿Seguro? Se desasignará de todos los afiliados.')) { const batch = window.firebase.writeBatch(db); affiliates.forEach(aff => { if(aff.advisorId === id) { const affRef = window.firebase.doc(db, `users/${adminUidForRole}/affiliates/${aff.id}`); batch.update(affRef, { advisorId: null }); } }); const advisorRef = window.firebase.doc(db, `users/${adminUidForRole}/advisors/${id}`); batch.delete(advisorRef); await batch.commit(); showToast('Asesor eliminado.'); } } 
             else if (button.matches('.delete-plan-btn')) { const isPlanInUse = affiliates.some(aff => aff.healthPlan === id); if(isPlanInUse) return showToast('Plan en uso. No se puede eliminar.', 'error'); if (confirm('¿Seguro?')) { await deleteDataFromFirestore('healthPlans', id); showToast('Plan eliminado.'); } }
             else if (button.matches('.delete-role-btn')) {
-                  const roleToDelete = userRoles.find(r => r.id === id);
+                  const roleToDelete = userRoles.find(r => r.uid === id);
                   if (confirm(`¿Estás seguro de eliminar al usuario ${roleToDelete.email}? Esta acción no se puede deshacer y su cuenta será eliminada permanentemente.`)) {
                       showToast('Esta función requiere un backend (Cloud Function) para eliminar de forma segura un usuario de Firebase Authentication. La implementación actual solo eliminará los registros de rol en Firestore.', 'error');
                       const batch = window.firebase.writeBatch(db);
@@ -1422,12 +1332,12 @@
         document.getElementById('login-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { await window.firebase.signInWithEmailAndPassword(auth, e.target['login-email'].value, e.target['login-password'].value); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('register-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { const userCredential = await window.firebase.createUserWithEmailAndPassword(auth, e.target['register-email'].value, e.target['register-password'].value); await setupNewUserDocument(userCredential.user); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('license-form').addEventListener('submit', e => { e.preventDefault(); handleLicenseActivation(); });
-        document.getElementById('affiliate-form').addEventListener('submit', async (e) => { e.preventDefault(); const form = e.target; const selectedPlan = form.querySelector('input[name="health-plan"]:checked'); const manualOverride = form['manual-override-checkbox'].checked; if (!selectedPlan && !manualOverride && healthPlans.length > 0) { return showToast('Debe seleccionar un plan o ingresar costos manuales.', 'error'); } const affiliateData = { name: form['affiliate-name'].value.trim(), documentId: form['affiliate-id'].value.trim(), email: form['affiliate-email'].value.trim(), phone: form['affiliate-phone'].value.trim(), address: form['affiliate-address'].value.trim(), healthPlan: selectedPlan ? selectedPlan.value : null, pensionPlan: form['pension-plan'].value, arlPlan: form['arl-plan'].value, ccfPlan: form['ccf-plan'].value, advisorId: form['advisor-select-list'].value, startDate: form['affiliate-start-date'].value, endDate: form['affiliate-end-date'].value, status: form['affiliate-status'].value, notes: form['affiliate-notes'].value.trim(), manualCosts: null, manualCommission: null }; if (manualOverride) { affiliateData.manualCosts = { health: Number(form['manual-cost-health'].value) || 0, pension: Number(form['manual-cost-pension'].value) || 0, arl: Number(form['manual-cost-arl'].value) || 0, ccf: Number(form['manual-cost-ccf'].value) || 0 }; affiliateData.manualCommission = Number(form['manual-commission'].value) || null; } const existingId = form['affiliate-doc-id'].value; if (existingId) { affiliateData.id = existingId; const oldAffiliate = affiliates.find(a => a.id === existingId); if (oldAffiliate && oldAffiliate.status !== affiliateData.status) { createNovedad('status_change', `El estado de ${affiliateData.name} cambió de ${oldAffiliate.status} a ${affiliateData.status}.`); } await saveDataToFirestore('affiliates', affiliateData); } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/affiliates`)); affiliateData.id = docRef.id; affiliateData.createdAt = new Date(); if (currentUserRole === 'asesor' && userRoleData.linkedAdvisorId) { affiliateData.advisorId = userRoleData.linkedAdvisorId; } await saveDataToFirestore('affiliates', affiliateData); createNovedad('creation', `Nuevo afiliado registrado: ${affiliateData.name}.`); } modalManager.close('affiliate-modal'); showToast('Afiliado guardado.'); });
-        document.getElementById('advisor-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['advisor-doc-id'].value; const advisorData = { name: form['advisor-name'].value, commissionRate: Number(form['advisor-commission'].value) }; if (id) { advisorData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/advisors`)); advisorData.id = docRef.id; createNovedad('creation', `Nuevo asesor añadido: ${advisorData.name}.`); } await saveDataToFirestore('advisors', advisorData); modalManager.close('advisor-modal'); showToast('Asesor guardado.'); });
+        document.getElementById('affiliate-form').addEventListener('submit', async (e) => { e.preventDefault(); const form = e.target; const selectedPlan = form.querySelector('input[name="health-plan"]:checked'); const manualOverride = form['manual-override-checkbox'].checked; if (!selectedPlan && !manualOverride && healthPlans.length > 0) { return showToast('Debe seleccionar un plan o ingresar costos manuales.', 'error'); } const affiliateData = { name: form['affiliate-name'].value.trim(), documentId: form['affiliate-id'].value.trim(), email: form['affiliate-email'].value.trim(), phone: form['affiliate-phone'].value.trim(), address: form['affiliate-address'].value.trim(), healthPlan: selectedPlan ? selectedPlan.value : null, pensionPlan: form['pension-plan'].value, arlPlan: form['arl-plan'].value, ccfPlan: form['ccf-plan'].value, advisorId: form['advisor-select-list'].value, startDate: form['affiliate-start-date'].value, endDate: form['affiliate-end-date'].value, status: form['affiliate-status'].value, notes: form['affiliate-notes'].value.trim(), manualCosts: null, manualCommission: null }; if (manualOverride) { affiliateData.manualCosts = { health: Number(form['manual-cost-health'].value) || 0, pension: Number(form['manual-cost-pension'].value) || 0, arl: Number(form['manual-cost-arl'].value) || 0, ccf: Number(form['manual-cost-ccf'].value) || 0 }; affiliateData.manualCommission = Number(form['manual-commission'].value) || null; } const existingId = form['affiliate-doc-id'].value; if (existingId) { affiliateData.id = existingId; await saveDataToFirestore('affiliates', affiliateData); } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/affiliates`)); affiliateData.id = docRef.id; affiliateData.createdAt = new Date(); if (currentUserRole === 'asesor' && userRoleData.linkedAdvisorId) { affiliateData.advisorId = userRoleData.linkedAdvisorId; } await saveDataToFirestore('affiliates', affiliateData); } modalManager.close('affiliate-modal'); showToast('Afiliado guardado.'); });
+        document.getElementById('advisor-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['advisor-doc-id'].value; const advisorData = { name: form['advisor-name'].value, commissionRate: Number(form['advisor-commission'].value) }; if (id) { advisorData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/advisors`)); advisorData.id = docRef.id; } await saveDataToFirestore('advisors', advisorData); modalManager.close('advisor-modal'); showToast('Asesor guardado.'); });
         document.getElementById('plan-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['plan-doc-id'].value; const planData = { name: form['plan-name'].value, price: Number(form['plan-price'].value), features: form['plan-features'].value }; if (id) { planData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/healthPlans`)); planData.id = docRef.id; } await saveDataToFirestore('healthPlans', planData); modalManager.close('plan-modal'); showToast('Plan guardado.'); });
         document.getElementById('transaction-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const newTransaction = { type: form['transaction-type'].value, concept: form['transaction-concept'].value, amount: parseFloat(form['transaction-amount'].value), date: new Date(form['transaction-date'].value + 'T12:00:00.000Z') }; await window.firebase.addDoc(window.firebase.collection(db, `users/${adminUidForRole}/manualTransactions`), newTransaction); modalManager.close('transaction-modal'); showToast('Transacción guardada.'); });
         document.getElementById('company-profile-form').addEventListener('submit', async e => { e.preventDefault(); companyProfile.name = document.getElementById('company-name').value; companyProfile.nit = document.getElementById('company-nit').value; companyProfile.address = document.getElementById('company-address').value; companyProfile.phone = document.getElementById('company-phone').value; companyProfile.email = document.getElementById('company-email').value; companyProfile.theme = document.querySelector('#theme-selector input:checked').value; companyProfile.sidebarTheme = document.querySelector('#sidebar-theme-selector input:checked').value; companyProfile.bottomNavTheme = document.querySelector('#bottom-nav-theme-selector input:checked').value; const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { companyProfile }, { merge: true }); showToast('Perfil actualizado.'); });
-        document.getElementById('settings-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const newSettings = { SMMLV: Number(form['setting-smmlv'].value), ADMIN_FEE_PER_AFFILIATE: Number(form['setting-admin-fee'].value), CONTRIBUTION_RATES: { health: parseFloat(form['setting-health'].value), pension: parseFloat(form['setting-pension'].value), independiente_ccf: parseFloat(form['setting-ccf-ind'].value), employer_ccf: parseFloat(form['setting-ccf-emp'].value), employee_health: defaultSettings.CONTRIBUTION_RATES.employee_health, employer_health: defaultSettings.CONTRIBUTION_RATES.employer_health, employee_pension: defaultSettings.CONTRIBUTION_RATES.employee_pension, employer_pension: defaultSettings.CONTRIBUTION_RATES.employer_pension }, ARL_RATES: { 1: parseFloat(form['setting-arl-1'].value), 2: parseFloat(form['setting-arl-2'].value), 3: parseFloat(form['setting-arl-3'].value), 4: parseFloat(form['setting-arl-4'].value), 5: parseFloat(form['setting-arl-5'].value), } }; const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { settings: newSettings }, { merge: true }); modalManager.close('settings-modal'); showToast('Configuración guardada.'); });
+        document.getElementById('settings-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; settings.SMMLV = Number(form['setting-smmlv'].value); settings.ADMIN_FEE_PER_AFFILIATE = Number(form['setting-admin-fee'].value); settings.CONTRIBUTION_RATES.health = parseFloat(form['setting-health'].value); settings.CONTRIBUTION_RATES.pension = parseFloat(form['setting-pension'].value); settings.CONTRIBUTION_RATES.independiente_ccf = parseFloat(form['setting-ccf-ind'].value); settings.CONTRIBUTION_RATES.employer_ccf = parseFloat(form['setting-ccf-emp'].value); for (let i = 1; i <= 5; i++) { settings.ARL_RATES[i] = parseFloat(form[`setting-arl-${i}`].value); } const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { settings }, { merge: true }); modalManager.close('settings-modal'); showToast('Configuración guardada.'); });
         document.getElementById('manual-override-checkbox').addEventListener('change', (e) => { document.getElementById('manual-override-container').classList.toggle('hidden', !e.target.checked); });
         document.getElementById('metric-month').addEventListener('change', renderCalendarioSection);
         document.getElementById('metric-year').addEventListener('change', renderCalendarioSection);
@@ -1449,20 +1359,6 @@
             } else {
                 container.classList.add('hidden');
             }
-        });
-
-        document.getElementById('mark-novedades-read').addEventListener('click', async () => {
-            const unreadNovedades = novedades.filter(n => n.read === false);
-            if (unreadNovedades.length === 0) return;
-
-            const batch = window.firebase.writeBatch(db);
-            unreadNovedades.forEach(novedad => {
-                const docRef = window.firebase.doc(db, `users/${adminUidForRole}/novedades`, novedad.id);
-                batch.update(docRef, { read: true });
-            });
-
-            await batch.commit();
-            showToast('Notificaciones marcadas como leídas.');
         });
         
         const calculatorForm = document.getElementById('calculator-form');
@@ -1524,19 +1420,7 @@
                 form['affiliate-doc-id'].value = data?.id || ''; form['affiliate-name'].value = data?.name || ''; form['affiliate-id'].value = data?.documentId || ''; form['affiliate-email'].value = data?.email || ''; form['affiliate-phone'].value = data?.phone || ''; form['affiliate-address'].value = data?.address || ''; if(data?.healthPlan) { const planInput = form.querySelector(`input[name="health-plan"][value="${data.healthPlan}"]`); if (planInput) planInput.checked = true; } form['pension-plan'].value = data?.pensionPlan || ''; form['arl-plan'].value = data?.arlPlan || ''; form['ccf-plan'].value = data?.ccfPlan || ''; form['affiliate-start-date'].value = data?.startDate || new Date().toISOString().split('T')[0]; form['affiliate-end-date'].value = data?.endDate || ''; form['affiliate-status'].value = data?.status || 'Pendiente'; form['affiliate-notes'].value = data?.notes || ''; const manualContainer = form.querySelector('#manual-override-container'); form['manual-override-checkbox'].checked = !!(data?.manualCosts || data?.manualCommission); manualContainer.classList.toggle('hidden', !form['manual-override-checkbox'].checked); form['manual-cost-health'].value = data?.manualCosts?.health || ''; form['manual-cost-pension'].value = data?.manualCosts?.pension || ''; form['manual-cost-arl'].value = data?.manualCosts?.arl || ''; form['manual-cost-ccf'].value = data?.manualCosts?.ccf || ''; form['manual-commission'].value = data?.manualCommission || '';
             } else if (modalId === 'advisor-modal') { form['advisor-doc-id'].value = data?.id || ''; form['advisor-name'].value = data?.name || ''; form['advisor-commission'].value = data?.commissionRate || ''; } 
             else if (modalId === 'plan-modal') { form['plan-doc-id'].value = data?.id || ''; form['plan-name'].value = data?.name || ''; form['plan-price'].value = data?.price || ''; form['plan-features'].value = data?.features || ''; } 
-            else if (modalId === 'settings-modal') { 
-                const s = settings || {}; // Safety check
-                const ds = defaultSettings;
-                form['setting-smmlv'].value = s.SMMLV ?? ds.SMMLV; 
-                form['setting-admin-fee'].value = s.ADMIN_FEE_PER_AFFILIATE ?? ds.ADMIN_FEE_PER_AFFILIATE;
-                form['setting-health'].value = s.CONTRIBUTION_RATES?.health ?? ds.CONTRIBUTION_RATES.health;
-                form['setting-pension'].value = s.CONTRIBUTION_RATES?.pension ?? ds.CONTRIBUTION_RATES.pension;
-                form['setting-ccf-ind'].value = s.CONTRIBUTION_RATES?.independiente_ccf ?? ds.CONTRIBUTION_RATES.independiente_ccf;
-                form['setting-ccf-emp'].value = s.CONTRIBUTION_RATES?.employer_ccf ?? ds.CONTRIBUTION_RATES.employer_ccf;
-                for (let i = 1; i <= 5; i++) { 
-                    form[`setting-arl-${i}`].value = s.ARL_RATES?.[i] ?? ds.ARL_RATES[i]; 
-                } 
-            } 
+            else if (modalId === 'settings-modal' && settings.SMMLV) { form['setting-smmlv'].value = settings.SMMLV; form['setting-admin-fee'].value = settings.ADMIN_FEE_PER_AFFILIATE; form['setting-health'].value = settings.CONTRIBUTION_RATES.health; form['setting-pension'].value = settings.CONTRIBUTION_RATES.pension; form['setting-ccf-ind'].value = settings.CONTRIBUTION_RATES.independiente_ccf; form['setting-ccf-emp'].value = settings.CONTRIBUTION_RATES.employer_ccf; for (let i = 1; i <= 5; i++) { form[`setting-arl-${i}`].value = settings.ARL_RATES[i]; } } 
             else if (modalId === 'transaction-modal') { document.getElementById('transaction-type').value = data.type; document.getElementById('transaction-date').value = new Date().toISOString().split('T')[0]; }
             modal.classList.remove('opacity-0', 'pointer-events-none');
             modal.querySelector('.modal-content').classList.remove('scale-95');
