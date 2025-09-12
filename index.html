@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es" class="scroll-smooth" data-theme="spotify">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -127,6 +127,11 @@
         [data-theme="spotify"] .chat-bubble.bot-message { background-color: #282828; color: #FFF; }
         [data-theme="spotify"] .suggestion-chip { border-color: #404040; color: #b3b3b3; }
         [data-theme="spotify"] .suggestion-chip:hover { background-color: #282828; }
+        [data-theme="spotify"] ::-webkit-scrollbar-track { background: #181818; }
+        [data-theme="spotify"] ::-webkit-scrollbar-thumb { background: #535353; }
+        [data-theme="spotify"] ::-webkit-scrollbar-thumb:hover { background: #b3b3b3; }
+        [data-theme="spotify"] .health-plan-card { border-color: #404040; }
+
 
         /* --- NUEVAS ANIMACIONES Y ESTILOS --- */
         .auth-banner { animation: fadeInBanner 0.5s ease-out; }
@@ -138,29 +143,6 @@
         .shimmer-button { position: relative; overflow: hidden; }
         .shimmer-button::after { content: ''; position: absolute; top: 0; left: -150%; width: 100%; height: 100%; background-image: linear-gradient( to right, transparent, rgba(255, 255, 255, 0.4), transparent ); transform: skewX(-25deg); animation: shimmer-effect 3.5s infinite linear; }
         @keyframes shimmer-effect { from { left: -150%; } to { left: 150%; } }
-
-        /* Estilos para el Chat */
-        .chat-bubble { max-width: 85%; padding: 0.75rem 1rem; border-radius: 1.25rem; line-height: 1.5; word-wrap: break-word; }
-        .chat-bubble.user-message { background-color: rgb(var(--color-primary-600)); color: white; border-bottom-right-radius: 0.25rem; }
-        .chat-bubble.bot-message { background-color: #e5e7eb; color: #1f2937; border-bottom-left-radius: 0.25rem; }
-        .typing-indicator span { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: #9ca3af; animation: typing-bounce 1.2s infinite ease-in-out; }
-        .typing-indicator span:nth-child(2) { animation-delay: -1.0s; }
-        .typing-indicator span:nth-child(3) { animation-delay: -0.8s; }
-        @keyframes typing-bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
-        .suggestion-chip {
-            cursor: pointer;
-            padding: 6px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 9999px;
-            font-size: 0.8rem;
-            color: #4b5563;
-            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-        }
-        .suggestion-chip:hover {
-            background-color: #f3f4f6;
-            border-color: rgb(var(--color-primary-600));
-            color: rgb(var(--color-primary-600));
-        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased" data-sidebar-theme="dark" data-bottom-nav-theme="dark">
@@ -199,7 +181,6 @@
                     <a href="#" data-target="ranking-vendedores" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="award" class="w-5 h-5 mr-3"></i>Ranking Vendedores</a>
                     <a href="#" data-target="planes" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="shield-plus" class="w-5 h-5 mr-3"></i>Planes de Salud</a>
                     <a href="#" data-target="cotizador" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="calculator" class="w-5 h-5 mr-3"></i>Cotizador</a>
-                    <a href="#" data-target="chat" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="message-square" class="w-5 h-5 mr-3"></i>Chat</a>
                     <a href="#" data-target="gestion-roles" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="users-2" class="w-5 h-5 mr-3"></i>Gestión de Roles</a>
                     <a href="#" data-target="perfil-afiliado" data-role="afiliado" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="user" class="w-5 h-5 mr-3"></i>Mi Perfil</a>
                 </nav>
@@ -254,7 +235,7 @@
                         <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg mb-6">
                             <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                                 <div>
-                                    <h2 class="text-2xl font-bold text-slate-800">Métricas Mensuales</h2>
+                                    <h2 class="text-2xl font-bold text-slate-800">Rendimiento Mensual de Asesores</h2>
                                     <p class="text-slate-500">Nuevos afiliados por asesor en el periodo seleccionado.</p>
                                 </div>
                                 <div class="flex items-center gap-2">
@@ -293,94 +274,86 @@
                     
                     <section id="cotizador" class="content-section">
                         <div class="flex justify-between items-center mb-6">
-                            <h2 class="text-2xl font-bold text-slate-800">Cotizador de Seguridad Social</h2>
+                            <div>
+                                <h2 class="text-2xl font-bold text-slate-800">Cotizador de Aportes a Seguridad Social</h2>
+                                <p class="text-slate-500 mt-1">Calcula los aportes de forma rápida y precisa.</p>
+                            </div>
                             <button id="open-settings-btn" class="text-slate-500 hover:text-primary-600 p-2 rounded-full bg-slate-100 hover:bg-slate-200"><i data-lucide="settings" class="w-6 h-6"></i></button>
                         </div>
                         <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
-                            <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg lg:col-span-3">
+                            <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg lg:col-span-2">
                                 <form id="calculator-form" class="space-y-6">
-                                    <div>
-                                        <label for="income" class="block text-sm font-medium text-slate-600 mb-1">Ingreso Mensual Real (COP)</label>
-                                        <div class="relative">
-                                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"><span class="text-gray-500 sm:text-sm">$</span></div>
-                                            <input type="number" id="income" placeholder="2000000" class="w-full pl-7 pr-4 py-2 border border-slate-300 rounded-lg" required>
+                                    <fieldset id="calculator-fieldset-1">
+                                        <legend class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">1. Ingresos y Tipo</legend>
+                                        <div class="space-y-5">
+                                            <div>
+                                                <label for="income" class="block text-sm font-medium text-slate-600 mb-1">Ingreso Mensual Real (COP)</label>
+                                                <div class="relative">
+                                                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"><span class="text-gray-500 sm:text-sm">$</span></div>
+                                                    <input type="number" id="income" placeholder="2000000" class="w-full pl-7 pr-4 py-2 border border-slate-300 rounded-lg" required>
+                                                </div>
+                                                <p class="text-xs text-slate-500 mt-1">El sistema calculará el IBC (40% del ingreso).</p>
+                                            </div>
+                                            <div>
+                                                <label for="contract-type" class="block text-sm font-medium text-slate-600 mb-1">Tipo de Cotizante</label>
+                                                <select id="contract-type" class="w-full px-4 py-2 border border-slate-300 rounded-lg" required>
+                                                    <option value="independiente">Independiente</option>
+                                                    <option value="dependiente">Dependiente (Empleado)</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label for="arl-level" class="block text-sm font-medium text-slate-600 mb-1">Nivel de Riesgo ARL</label>
+                                                <select id="arl-level" class="w-full px-4 py-2 border border-slate-300 rounded-lg" required>
+                                                    <option value="1">Nivel 1 (0.522%) - Riesgo Mínimo</option>
+                                                    <option value="2">Nivel 2 (1.044%) - Riesgo Bajo</option>
+                                                    <option value="3">Nivel 3 (2.436%) - Riesgo Medio</option>
+                                                    <option value="4">Nivel 4 (4.350%) - Riesgo Alto</option>
+                                                    <option value="5">Nivel 5 (6.960%) - Riesgo Máximo</option>
+                                                </select>
+                                            </div>
                                         </div>
-                                        <p class="text-xs text-slate-500 mt-1">El sistema calculará el IBC (40% del ingreso) como base para los aportes.</p>
-                                    </div>
-                                    <div>
-                                        <label for="contract-type" class="block text-sm font-medium text-slate-600 mb-1">Tipo de Cotizante</label>
-                                        <select id="contract-type" class="w-full px-4 py-2 border border-slate-300 rounded-lg" required>
-                                            <option value="independiente">Independiente</option>
-                                            <option value="dependiente">Dependiente (Empleado)</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label for="arl-level" class="block text-sm font-medium text-slate-600 mb-1">Nivel de Riesgo ARL</label>
-                                        <select id="arl-level" class="w-full px-4 py-2 border border-slate-300 rounded-lg" required>
-                                            <option value="1">Nivel 1 (0.522%)</option>
-                                            <option value="2">Nivel 2 (1.044%)</option>
-                                            <option value="3">Nivel 3 (2.436%)</option>
-                                            <option value="4">Nivel 4 (4.350%)</option>
-                                            <option value="5">Nivel 5 (6.960%)</option>
-                                        </select>
-                                    </div>
-                                    <fieldset>
-                                        <legend class="block text-sm font-medium text-slate-600 mb-2">Componentes a Cotizar</legend>
+                                    </fieldset>
+                                    <fieldset id="calculator-fieldset-2">
+                                        <legend class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">2. Componentes a Cotizar</legend>
                                         <div class="grid grid-cols-2 gap-4">
                                             <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="health" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>Salud</span></label>
                                             <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="pension" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>Pensión</span></label>
                                             <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="arl" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>ARL</span></label>
-                                            <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="ccf" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>Caja de Comp.</span></label>
+                                            <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="ccf" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>Caja Comp.</span></label>
                                         </div>
                                         <div class="mt-3">
                                             <label class="flex items-center space-x-2"><input type="checkbox" id="select-all-components" class="h-4 w-4 text-primary-600 rounded" checked><span>Seleccionar Todo</span></label>
                                         </div>
                                     </fieldset>
                                     <div class="pt-4 mt-4 border-t" id="cotizador-actions">
-                                        <button type="submit" id="calculate-btn" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg shadow-md flex items-center justify-center"><i data-lucide="calculator" class="w-5 h-5 mr-2"></i>Cotizar Aportes</button>
+                                        <button type="submit" id="calculate-btn" class="w-full shimmer-button bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-px flex items-center justify-center transition-all duration-200"><i data-lucide="calculator" class="w-5 h-5 mr-2"></i>Cotizar Aportes</button>
                                         <button type="button" id="new-quote-btn" style="display: none;" class="w-full bg-slate-600 hover:bg-slate-700 text-white font-bold py-3 px-6 rounded-lg shadow-md flex items-center justify-center"><i data-lucide="rotate-cw" class="w-5 h-5 mr-2"></i>Hacer Nueva Cotización</button>
                                     </div>
                                 </form>
                             </div>
-                            <div class="bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg text-white lg:col-span-2">
-                                <h3 class="text-2xl font-bold mb-2">Resumen de Aportes</h3>
-                                <p class="text-sm text-slate-400 mb-6">Calculado sobre un IBC de <strong id="ibc-value" class="text-primary-400">$0</strong></p>
-                                <div id="calculator-results" class="space-y-4">
-                                    <div id="quote-placeholder" class="text-center py-10 text-slate-400">
-                                        <i data-lucide="scan-line" class="h-12 w-12 mx-auto mb-4"></i>
-                                        <p>Presione Cotizar para ver los resultados.</p>
+                            <div id="calculator-results-container" class="bg-white p-6 sm:p-8 rounded-xl shadow-lg lg:col-span-3">
+                                <div id="quote-summary" class="hidden grid grid-cols-2 gap-4 mb-6 border-b pb-6">
+                                    <div>
+                                        <p class="text-sm font-medium text-slate-500">Ingreso Base de Cotización (IBC)</p>
+                                        <p id="ibc-value" class="text-2xl font-bold text-slate-800">$0</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm font-medium text-slate-500">Total Aportes Mensuales</p>
+                                        <p id="grand-total" class="text-3xl font-extrabold text-primary-600">$0</p>
                                     </div>
                                 </div>
-                                <div id="quote-total-container" class="mt-8 pt-6 border-t border-slate-600 hidden">
-                                    <div class="flex justify-between items-center">
-                                        <p class="text-xl font-bold">TOTAL APORTES</p>
-                                        <p id="grand-total" class="text-2xl font-extrabold text-primary-400">$0</p>
+                                <div id="calculator-results-breakdown" class="space-y-4">
                                     </div>
-                                    <button id="sell-plan-btn" class="shimmer-button mt-6 w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg shadow-md flex items-center justify-center transition-transform transform hover:scale-105">
+                                <div id="quote-placeholder" class="text-center py-16 text-slate-400">
+                                    <i data-lucide="scan-line" class="h-16 w-16 mx-auto mb-4 text-slate-300"></i>
+                                    <h3 class="font-semibold text-slate-600">Esperando cálculo</h3>
+                                    <p class="text-sm">Completa el formulario y presiona "Cotizar" para ver los resultados.</p>
+                                </div>
+                                <div id="quote-actions-container" class="mt-8 pt-6 border-t border-slate-200 hidden">
+                                    <button id="sell-plan-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg shadow-md flex items-center justify-center transition-transform transform hover:scale-105">
                                         <i data-lucide="user-plus" class="w-5 h-5 mr-2"></i>Registrar Afiliado con esta Cotización
                                     </button>
                                 </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section id="chat" class="content-section">
-                        <div class="bg-white rounded-xl shadow-lg h-[calc(100vh-10rem)] max-w-4xl mx-auto flex flex-col">
-                            <div class="p-4 border-b flex items-center flex-shrink-0">
-                                <i data-lucide="message-square" class="w-6 h-6 mr-3 text-primary-600"></i>
-                                <h2 class="text-xl font-bold text-slate-800">Asistente Virtual Seb Salud</h2>
-                            </div>
-                            <div id="chat-messages" class="flex-grow p-4 space-y-4 overflow-y-auto">
-                            </div>
-                            <div id="chat-suggestions" class="p-4 pt-0 flex flex-wrap gap-2 justify-center border-t">
-                            </div>
-                            <div class="p-4 border-t flex-shrink-0 bg-slate-50">
-                                <form id="chat-form" class="flex items-center gap-3">
-                                    <input type="text" id="chat-input" placeholder="Escribe tu pregunta aquí..." class="w-full px-4 py-2 border border-slate-300 rounded-full focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none">
-                                    <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white p-3 rounded-full flex-shrink-0 shadow-md transform hover:scale-110 transition-transform">
-                                        <i data-lucide="send" class="w-5 h-5"></i>
-                                    </button>
-                                </form>
                             </div>
                         </div>
                     </section>
@@ -436,35 +409,79 @@
                     </section>
 
                     <section id="perfil-afiliado" class="content-section">
-                        <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-3xl mx-auto">
-                             <h2 class="text-2xl font-bold text-slate-800 mb-6">Mi Perfil y Plan de Salud</h2>
-                             <div class="space-y-6">
-                                <div>
-                                    <h3 class="font-semibold text-slate-700">Información Personal</h3>
-                                    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 border rounded-lg bg-slate-50">
-                                        <p><strong class="text-slate-500">Nombre:</strong> <span id="afiliado-profile-name"></span></p>
-                                        <p><strong class="text-slate-500">Documento:</strong> <span id="afiliado-profile-id"></span></p>
-                                        <p><strong class="text-slate-500">Email:</strong> <span id="afiliado-profile-email"></span></p>
-                                        <p><strong class="text-slate-500">Teléfono:</strong> <span id="afiliado-profile-phone"></span></p>
+                         <h2 class="text-2xl font-bold text-slate-800 mb-6">Mi Perfil y Plan de Salud</h2>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                            
+                            <div class="bg-white rounded-xl shadow-lg p-6 lg:col-span-1">
+                                <div class="flex flex-col items-center text-center">
+                                    <div class="w-24 h-24 rounded-full bg-primary-600/10 flex items-center justify-center mb-4">
+                                        <i data-lucide="user-circle-2" class="w-12 h-12 text-primary-500"></i>
+                                    </div>
+                                    <h3 id="afiliado-profile-name" class="text-2xl font-bold text-slate-800">Cargando Nombre...</h3>
+                                    <p class="text-sm text-slate-500">Doc: <span id="afiliado-profile-id">...</span></p>
+                                </div>
+
+                                <div class="border-t my-6"></div>
+
+                                <div class="space-y-4 text-sm">
+                                    <h4 class="font-semibold text-slate-700 mb-2">Información de Contacto</h4>
+                                    <div class="flex items-center gap-3">
+                                        <i data-lucide="mail" class="w-5 h-5 text-slate-400 flex-shrink-0"></i>
+                                        <span id="afiliado-profile-email" class="text-slate-600 break-all">...</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <i data-lucide="phone" class="w-5 h-5 text-slate-400 flex-shrink-0"></i>
+                                        <span id="afiliado-profile-phone" class="text-slate-600">...</span>
                                     </div>
                                 </div>
-                                <div>
-                                    <h3 class="font-semibold text-slate-700">Detalles del Plan de Salud</h3>
-                                    <div class="mt-2 p-4 border rounded-lg">
-                                        <p class="text-xl font-bold text-primary-600" id="afiliado-profile-plan-name">Cargando...</p>
-                                        <p class="font-bold text-2xl mt-1" id="afiliado-profile-plan-price">$0</p>
-                                        <div class="mt-4 pt-4 border-t">
-                                            <p><strong class="text-slate-500">Fecha de Inicio:</strong> <span id="afiliado-profile-start-date"></span></p>
-                                            <p><strong class="text-slate-500">Próximo Pago / Vencimiento:</strong> <span id="afiliado-profile-end-date" class="font-bold text-rose-600"></span></p>
-                                            <p><strong class="text-slate-500">Estado:</strong> <span id="afiliado-profile-status"></span></p>
+                            </div>
+
+                            <div class="bg-white rounded-xl shadow-lg lg:col-span-2">
+                                <div class="p-6 border-b flex flex-col sm:flex-row justify-between sm:items-start gap-4">
+                                    <div>
+                                        <p class="text-sm font-medium text-slate-500">Plan de Salud Actual</p>
+                                        <h3 id="afiliado-profile-plan-name" class="text-xl font-bold text-primary-600 mt-1">Cargando Plan...</h3>
+                                        <div class="mt-2" id="afiliado-profile-status-container">
+                                            </div>
+                                    </div>
+                                    <div class="text-left sm:text-right flex-shrink-0">
+                                        <p class="text-sm font-medium text-slate-500">Valor Mensual</p>
+                                        <p id="afiliado-profile-plan-price" class="text-4xl font-extrabold text-slate-800">$0</p>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div>
+                                            <h4 class="font-semibold text-slate-700 mb-3">Características Incluidas</h4>
+                                            <ul id="afiliado-profile-plan-features" class="space-y-2 text-sm text-slate-600">
+                                                <li>Cargando características...</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-slate-700 mb-3">Fechas Clave</h4>
+                                            <div class="space-y-4">
+                                                <div class="flex items-start gap-3">
+                                                    <i data-lucide="calendar-check" class="w-5 h-5 text-green-500 mt-0.5"></i>
+                                                    <div>
+                                                        <p class="font-medium text-slate-800">Fecha de Inicio</p>
+                                                        <p id="afiliado-profile-start-date" class="text-sm text-slate-500">--/--/----</p>
+                                                    </div>
+                                                </div>
+                                                 <div class="flex items-start gap-3">
+                                                    <i data-lucide="calendar-clock" class="w-5 h-5 text-red-500 mt-0.5"></i>
+                                                    <div>
+                                                        <p class="font-medium text-slate-800">Próximo Pago / Vencimiento</p>
+                                                        <p id="afiliado-profile-end-date" class="text-sm font-semibold text-red-600">--/--/----</p>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                             </div>
+                            </div>
                         </div>
                     </section>
-
-                </main>
+                    </main>
             </div>
         </div>
         
@@ -480,27 +497,21 @@
             <a href="#" data-target="calendario" data-role="admin" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="calendar-days" class="w-5 h-5"></i><span class="text-[10px] mt-1">Calendario</span></a>
             <a href="#" data-target="cotizador" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="calculator" class="w-5 h-5"></i><span class="text-[10px] mt-1">Cotizador</span></a>
             <a href="#" data-target="novedades" class="bottom-nav-link relative flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="bell" class="w-5 h-5"></i><span class="text-[10px] mt-1">Novedades</span><span id="novedades-badge-mobile" class="novedades-badge hidden"></span></a>
-            <a href="#" data-target="chat" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="message-square" class="w-5 h-5"></i><span class="text-[10px] mt-1">Chat</span></a>
             <a href="#" data-target="perfil-afiliado" data-role="afiliado" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="user" class="w-5 h-5"></i><span class="text-[10px] mt-1">Mi Perfil</span></a>
         </nav>
     </div>
 
 <script type="module">
     // --- INICIALIZACIÓN Y CONFIGURACIÓN DE FIREBASE ---
-    // *******************************************************************
-    // IMPORTANTE: REEMPLAZA ESTOS VALORES CON TUS PROPIAS CLAVES DE FIREBASE
-    // Las puedes encontrar en tu Consola de Firebase -> Configuración del Proyecto (⚙️)
-    // -> Tus apps -> SDK setup and configuration -> CDN
-    // *******************************************************************
     const firebaseConfig = {
-  apiKey: "AIzaSyDS4VDnwGia2ZUe3o81rqLe-oEu_pVCUHc",
-  authDomain: "seb-salud.firebaseapp.com",
-  projectId: "seb-salud",
-  storageBucket: "seb-salud.firebasestorage.app",
-  messagingSenderId: "1094873327284",
-  appId: "1:1094873327284:web:001e70e84c2de45389d9e1",
-  measurementId: "G-EJCS9FYWHK"
-};
+        apiKey: "AIzaSyDS4VDnwGia2ZUe3o81rqLe-oEu_pVCUHc",
+        authDomain: "seb-salud.firebaseapp.com",
+        projectId: "seb-salud",
+        storageBucket: "seb-salud.firebasestorage.app",
+        messagingSenderId: "1094873327284",
+        appId: "1:1094873327284:web:001e70e84c2de45389d9e1",
+        measurementId: "G-EJCS9FYWHK"
+    };
     const app = window.firebase.initializeApp(firebaseConfig);
     const auth = window.firebase.getAuth(app);
     const db = window.firebase.getFirestore(app);
@@ -526,7 +537,7 @@
         CONTRIBUTION_RATES: { health: 12.5, pension: 16, employee_health: 4, employer_health: 8.5, employee_pension: 4, employer_pension: 12, independiente_ccf: 2, employer_ccf: 4 }, 
         ARL_RATES: { 1: 0.522, 2: 1.044, 3: 2.436, 4: 4.350, 5: 6.960 } 
     };
-    const defaultCompanyProfile = { name: 'Mi Empresa de Seguridad Social', nit: '900.123.456-7', address: 'Calle 123 # 45-67, Bogotá', phone: '3001234567', email: 'contacto@empresa.com', theme: 'default', sidebarTheme: 'dark', bottomNavTheme: 'dark' };
+    const defaultCompanyProfile = { name: 'Mi Empresa de Seguridad Social', nit: '900.123.456-7', address: 'Calle 123 # 45-67, Bogotá', phone: '3001234567', email: 'contacto@empresa.com', theme: 'spotify', sidebarTheme: 'dark', bottomNavTheme: 'dark' };
     
     // --- MANEJO DE VISTAS Y ESTADO DE CARGA ---
     const loader = document.getElementById('loader');
@@ -740,32 +751,25 @@
                 renderContent('perfil-afiliado');
                 break;
         }
-        getBotInitialResponse();
     }
 
-    // --- NUEVO: Lógica de visibilidad de UI mejorada ---
     function updateUIVisibilityByRole() {
         const allSidebarLinks = document.querySelectorAll('#sidebar-nav .nav-link');
         const allBottomNavLinks = document.querySelectorAll('.bottom-nav > a');
 
-        // Ocultar todos los enlaces primero
         allSidebarLinks.forEach(el => el.style.display = 'none');
         allBottomNavLinks.forEach(el => el.style.display = 'none');
 
         let visibleTargets = [];
 
         if (currentUserRole === 'admin') {
-            // El admin ve todo
-            visibleTargets = ['dashboard', 'novedades', 'empresa', 'calendario', 'flujo-caja', 'afiliados', 'asesores', 'ranking-vendedores', 'planes', 'cotizador', 'chat', 'gestion-roles'];
+            visibleTargets = ['dashboard', 'novedades', 'empresa', 'calendario', 'flujo-caja', 'afiliados', 'asesores', 'ranking-vendedores', 'planes', 'cotizador', 'gestion-roles'];
         } else if (currentUserRole === 'asesor') {
-            // El asesor ve un conjunto limitado
-             visibleTargets = ['dashboard', 'afiliados', 'novedades', 'cotizador', 'chat'];
+             visibleTargets = ['dashboard', 'afiliados', 'novedades', 'cotizador'];
         } else if (currentUserRole === 'afiliado') {
-            // El afiliado ve solo lo esencial
-            visibleTargets = ['perfil-afiliado', 'cotizador', 'chat'];
+            visibleTargets = ['perfil-afiliado', 'cotizador'];
         }
 
-        // Mostrar los enlaces permitidos
         allSidebarLinks.forEach(el => {
             if (visibleTargets.includes(el.dataset.target)) {
                 el.style.display = 'flex';
@@ -798,7 +802,7 @@
                     'novedades': renderNovedadesSection, 'planes': renderPlansList, 
                     'calendario': renderCalendarioSection, 'gestion-roles': renderGestionRolesSection,
                     'perfil-afiliado': renderPerfilAfiliadoSection,
-                    'cotizador': () => {}, 'chat': () => {} 
+                    'cotizador': () => {}
                 }; 
                 if(renderMap[targetId]) renderMap[targetId](); 
                 lucide.createIcons(); 
@@ -852,88 +856,146 @@
     function renderPlansList(){const e=document.getElementById("plans-list");if(!e)return;if(0===healthPlans.length){e.innerHTML='<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay planes de salud creados. ¡Añade el primero!</p></div>';return}e.innerHTML=healthPlans.map(e=>` <div class="bg-white rounded-xl shadow-lg flex flex-col"> <div class="p-5 flex-grow"> <div class="flex justify-between items-start"><h3 class="font-bold text-lg text-slate-800">${e.name}</h3><p class="text-xl font-extrabold text-primary-600">${formatCurrency(e.price)}</p></div> <ul class="text-sm text-slate-600 space-y-1 mt-4"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check-circle-2" class="w-4 h-4 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> <div class="border-t p-3 flex justify-end items-center bg-gray-50/50 rounded-b-xl"> <button class="edit-plan-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button> <button class="delete-plan-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button> </div> </div>`).join("");}
     function populateAdvisorSelect(){const e=document.getElementById("advisor-select-list");e&&(e.innerHTML='<option value="" disabled selected>Asignar Asesor</option>'+advisors.map(e=>`<option value="${e.id}">${e.name}</option>`).join(""))}
     
-    // --- NUEVO: Función de renderizado de Dashboard separada para Asesor ---
     function renderAsesorDashboard() {
         if (!userRoleData.linkedAdvisorId) return;
-
-        // 1. Filtrar los afiliados que pertenecen a este asesor
         const relevantAffiliates = affiliates.filter(a => a.advisorId === userRoleData.linkedAdvisorId);
         const activeAffiliates = relevantAffiliates.filter(a => a.status === 'Activo');
-
-        // 2. Calcular las métricas
         const currentDate = new Date();
         const currentMonth = currentDate.getMonth();
         const currentYear = currentDate.getFullYear();
-
-        // Ingresos generados por nuevos afiliados este mes
         const monthlyIncome = activeAffiliates
             .filter(aff => {
                 const createdAt = aff.createdAt;
                 return createdAt && createdAt.getMonth() === currentMonth && createdAt.getFullYear() === currentYear;
             })
             .reduce((sum, aff) => sum + getAffiliateCommissionBase(aff), 0);
-        
-        // Comisiones totales de todos los afiliados activos este mes
         const monthlyCommissions = activeAffiliates
             .reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0);
-            
-        // Total de afiliados
         const totalAffiliates = relevantAffiliates.length;
-
-        // 3. Actualizar la UI del Dashboard
         const kpiIncome = document.getElementById('kpi-monthly-income');
         const kpiCommission = document.getElementById('kpi-net-profit');
         const kpiTotalAffiliates = document.getElementById('kpi-new-affiliates');
-        
-        // Reproporcionar los títulos de las tarjetas
         kpiIncome.parentElement.querySelector('h3').textContent = 'Ingresos Generados (Mes)';
         kpiCommission.parentElement.querySelector('h3').textContent = 'Comisiones del Mes';
         kpiTotalAffiliates.parentElement.querySelector('h3').textContent = 'Mis Afiliados (Total)';
-
-        // Actualizar los valores
         kpiIncome.textContent = formatCurrency(monthlyIncome);
         kpiCommission.textContent = formatCurrency(monthlyCommissions);
         kpiTotalAffiliates.textContent = totalAffiliates;
-
-        // Ocultar las tarjetas no utilizadas
         document.getElementById('kpi-active-affiliates').closest('.bg-white').style.display = 'none';
         document.getElementById('kpi-overdue-payments').closest('.bg-white').style.display = 'none';
     }
 
-    // --- DASHBOARD ADAPTADO A ROLES ---
     function renderDashboard() {
-        // Mostrar todas las tarjetas por si se ocultaron en la vista de asesor
         document.querySelectorAll('#dashboard .bg-white').forEach(card => card.style.display = 'flex');
-
         if (currentUserRole === 'asesor') {
             renderAsesorDashboard();
             return;
         }
-
-        // Lógica original para el Admin
         const kpiIncome = document.getElementById('kpi-monthly-income');
         const kpiNetProfit = document.getElementById('kpi-net-profit');
         const kpiNewAffiliates = document.getElementById('kpi-new-affiliates');
-
         kpiIncome.parentElement.querySelector('h3').textContent = 'Ingresos del Mes';
         kpiNetProfit.parentElement.querySelector('h3').textContent = 'Admin. / Ganancia Neta (Mes)';
         kpiNewAffiliates.parentElement.querySelector('h3').textContent = 'Nuevos Afiliados (Mes)';
-        
         const e=new Date,t=e.getMonth(),a=e.getFullYear();
         const n=affiliates.filter(e=>"Activo"===e.status);
         const o=n.reduce((e,t)=>e+getAffiliateCommissionBase(t),0);
         const s=affiliates.filter(e=>{const n=e.createdAt;return n&&n.getMonth()===t&&n.getFullYear()===a}).length;
         const i=n.length*(settings.ADMIN_FEE_PER_AFFILIATE||0);
-        
         document.getElementById("kpi-monthly-income").textContent=formatCurrency(o);
         document.getElementById("kpi-new-affiliates").textContent=s;
         document.getElementById("kpi-active-affiliates").textContent=n.length;
         document.getElementById("kpi-net-profit").textContent=formatCurrency(i);
-        document.getElementById("kpi-overdue-payments").textContent = '$0'; // Lógica de cartera vencida pendiente
+        document.getElementById("kpi-overdue-payments").textContent = '$0';
     }
     
     function calculateContributions(income, contractType, arlLevel, selectedComponents) { if (!settings.SMMLV || !income || income <= 0) return null; const ibc = Math.max(0.4 * income, settings.SMMLV); let results = { ibc: ibc, grandTotal: 0, health: null, pension: null, arl: null, ccf: null }; const rates = settings.CONTRIBUTION_RATES; const arlRates = settings.ARL_RATES; if (selectedComponents.health) { results.health = { total: ibc * (rates.health / 100) }; if (contractType === 'independiente') { results.health.details = `Aporte total (${rates.health}%)`; } else { results.health.details = `Empleado (${rates.employee_health}%): ${formatCurrency(ibc * (rates.employee_health / 100))} | Empleador (${rates.employer_health}%): ${formatCurrency(ibc * (rates.employer_health / 100))}`; } results.grandTotal += results.health.total; } if (selectedComponents.pension) { results.pension = { total: ibc * (rates.pension / 100) }; if (contractType === 'independiente') { results.pension.details = `Aporte total (${rates.pension}%)`; } else { results.pension.details = `Empleado (${rates.employee_pension}%): ${formatCurrency(ibc * (rates.employee_pension / 100))} | Empleador (${rates.employer_pension}%): ${formatCurrency(ibc * (rates.employer_pension / 100))}`; } results.grandTotal += results.pension.total; } if (selectedComponents.arl) { results.arl = { total: ibc * (arlRates[arlLevel] / 100), details: `A cargo del contratante/empleador (${arlRates[arlLevel]}%)` }; results.grandTotal += results.arl.total; } if (selectedComponents.ccf) { const ccfRate = contractType === 'independiente' ? rates.independiente_ccf : rates.employer_ccf; results.ccf = { total: ibc * (ccfRate / 100), details: contractType === 'independiente' ? `Aporte voluntario (${ccfRate}%)` : `A cargo del empleador (${ccfRate}%)` }; results.grandTotal += results.ccf.total; } return results; }
-    function renderCalculatorResults(results){const resultsContainer=document.getElementById("calculator-results"),placeholder=document.getElementById("quote-placeholder"),totalContainer=document.getElementById("quote-total-container");if(!results){document.getElementById("ibc-value").textContent=formatCurrency(0);resultsContainer.innerHTML="";placeholder.style.display="block";totalContainer.classList.add("hidden");return}placeholder.style.display="none";totalContainer.classList.remove("hidden");document.getElementById("ibc-value").textContent=formatCurrency(results.ibc);document.getElementById("grand-total").textContent=formatCurrency(results.grandTotal);const componentMap={health:{title:"Salud (EPS)",icon:"heart-pulse",color:"rose"},pension:{title:"Pensión",icon:"landmark",color:"amber"},arl:{title:"Riesgos Laborales (ARL)",icon:"hard-hat",color:"sky"},ccf:{title:"Caja de Compensación",icon:"boxes",color:"indigo"}},htmlOutput=[];for(const[key,config]of Object.entries(componentMap))results[key]&&htmlOutput.push(`<div class="flex items-start gap-4 p-4 bg-slate-700/50 rounded-lg"><div class="flex-shrink-0 w-10 h-10 rounded-full bg-${config.color}-500/20 text-${config.color}-400 flex items-center justify-center"><i data-lucide="${config.icon}" class="h-5 w-5"></i></div><div class="flex-grow"><p class="font-semibold">${config.title}</p><p class="text-xs text-slate-400">${results[key].details}</p></div><p class="font-bold text-lg whitespace-nowrap">${formatCurrency(results[key].total)}</p></div>`);resultsContainer.innerHTML=htmlOutput.join("");lucide.createIcons()}
+
+    function renderCalculatorResults(results) {
+        const breakdownContainer = document.getElementById("calculator-results-breakdown");
+        const placeholder = document.getElementById("quote-placeholder");
+        const summaryContainer = document.getElementById("quote-summary");
+        const actionsContainer = document.getElementById('quote-actions-container');
+
+        if (!results) {
+            resetCalculatorState();
+            return;
+        }
+
+        placeholder.style.display = 'none';
+        summaryContainer.classList.remove('hidden');
+        summaryContainer.classList.add('grid');
+
+        // Conditionally show actions based on role
+        if (currentUserRole === 'admin' || currentUserRole === 'asesor') {
+            actionsContainer.classList.remove('hidden');
+        } else {
+            actionsContainer.classList.add('hidden');
+        }
+
+
+        document.getElementById("ibc-value").textContent = formatCurrency(results.ibc);
+        document.getElementById("grand-total").textContent = formatCurrency(results.grandTotal);
+
+        const componentMap = {
+            health:  { title: "Salud (EPS)", icon: "heart-pulse", color: "rose" },
+            pension: { title: "Pensión", icon: "landmark", color: "amber" },
+            arl:     { title: "Riesgos Laborales (ARL)", icon: "hard-hat", color: "sky" },
+            ccf:     { title: "Caja de Compensación", icon: "boxes", color: "indigo" }
+        };
+
+        let htmlOutput = [];
+        for (const [key, config] of Object.entries(componentMap)) {
+            if (results[key]) {
+                htmlOutput.push(`
+                    <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-lg border">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-${config.color}-100 text-${config.color}-600 flex items-center justify-center">
+                            <i data-lucide="${config.icon}" class="h-5 w-5"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <p class="font-semibold text-slate-700">${config.title}</p>
+                            <p class="text-xs text-slate-500">${results[key].details}</p>
+                        </div>
+                        <p class="font-bold text-lg text-slate-800 whitespace-nowrap">${formatCurrency(results[key].total)}</p>
+                    </div>
+                `);
+            }
+        }
+        breakdownContainer.innerHTML = htmlOutput.join('');
+        lucide.createIcons();
+    }
+    
+    function resetCalculatorState() {
+        const calculatorForm = document.getElementById('calculator-form');
+        const calculateBtn = document.getElementById('calculate-btn');
+        const newQuoteBtn = document.getElementById('new-quote-btn');
+        const breakdownContainer = document.getElementById("calculator-results-breakdown");
+        const placeholder = document.getElementById("quote-placeholder");
+        const summaryContainer = document.getElementById("quote-summary");
+        const actionsContainer = document.getElementById('quote-actions-container');
+
+        lastQuoteResult = null;
+        calculatorForm.reset();
+        
+        document.querySelectorAll('#calculator-fieldset-1, #calculator-fieldset-2').forEach(fs => fs.disabled = false);
+        
+        newQuoteBtn.style.display = 'none';
+        calculateBtn.style.display = 'flex';
+        calculateBtn.disabled = false;
+        calculateBtn.innerHTML = '<i data-lucide="calculator" class="w-5 h-5 mr-2"></i>Cotizar Aportes';
+        
+        breakdownContainer.innerHTML = '';
+        placeholder.style.display = 'block';
+        summaryContainer.classList.add('hidden');
+        summaryContainer.classList.remove('grid');
+        actionsContainer.classList.add('hidden');
+        
+        document.querySelectorAll('.component-checkbox').forEach(cb => cb.checked = true);
+        document.getElementById('select-all-components').checked = true;
+
+        lucide.createIcons();
+    }
+
     function renderHealthPlanCards(){const e=document.getElementById("health-plan-selector");if(!e)return;if(0===healthPlans.length){e.innerHTML='<p class="text-slate-500 md:col-span-4">No hay planes de salud definidos. Por favor, cree un plan en la sección "Planes de Salud".</p>';return}e.innerHTML=healthPlans.map((e,t)=>` <label class="health-plan-card cursor-pointer rounded-lg p-4 flex flex-col justify-between"> <div> <div class="flex justify-between items-center"><h4 class="font-bold text-md text-slate-800">${e.name}</h4><input type="radio" name="health-plan" value="${e.id}" class="h-4 w-4 text-primary-600"></div> <p class="text-xl font-extrabold text-primary-600 my-2">${formatCurrency(e.price)}<span class="text-sm font-medium text-slate-500">/mes</span></p> <ul class="text-xs text-slate-600 space-y-1 mt-3"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check" class="w-3.5 h-3.5 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> </label>`).join("");}
     function renderNovedadesSection(){const e=document.getElementById("novedades-feed");if(!e)return;const t=[...novedades].sort((e,t)=>(t.timestamp || 0)-(e.timestamp || 0));if(0===t.length){e.innerHTML='<p class="text-center text-slate-500">No hay actividad reciente.</p>';return}e.innerHTML=t.map(e=>`<div class="flex items-start gap-4"><div class="flex-shrink-0 w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">${getNovedadIcon(e.type)}</div><div> <p class="text-sm text-slate-800">${e.description}</p> <p class="text-xs text-slate-500"> ${e.affiliateName ? `Para: <strong class="font-medium">${e.affiliateName}</strong> -` : ''} ${formatTimeAgo(e.timestamp)} </p> </div></div>`).join("");lucide.createIcons();}
     function renderEmpresaSection(){if(!companyProfile.name) return;document.getElementById("company-name").value=companyProfile.name;document.getElementById("company-nit").value=companyProfile.nit;document.getElementById("company-address").value=companyProfile.address;document.getElementById("company-phone").value=companyProfile.phone;document.getElementById("company-email").value=companyProfile.email;document.querySelector(`#theme-selector input[value="${companyProfile.theme||"default"}"]`).checked=!0;document.querySelector(`#sidebar-theme-selector input[value="${companyProfile.sidebarTheme||"dark"}"]`).checked=!0;document.querySelector(`#bottom-nav-theme-selector input[value="${companyProfile.bottomNavTheme||"dark"}"]`).checked=!0}
@@ -944,8 +1006,105 @@
     function updateNovedadesBadge(){const e=novedades.filter(e=> e.timestamp && (new Date).getTime()-e.timestamp.getTime()<864e5).length,t=document.getElementById("novedades-badge-sidebar"),a=document.getElementById("novedades-badge-mobile");0<e?(t.textContent=e,a.textContent=e,t.classList.remove("hidden"),a.classList.remove("hidden")):(t.classList.add("hidden"),a.classList.add("hidden"))}
     function getNovedadIcon(e){return{creation:'<i data-lucide="user-plus" class="h-6 w-6 text-green-500"></i>',status_change:'<i data-lucide="shuffle" class="h-6 w-6 text-yellow-500"></i>',payment_reminder:'<i data-lucide="calendar-clock" class="h-6 w-6 text-red-500"></i>',commission_earned:'<i data-lucide="award" class="h-6 w-6 text-blue-500"></i>',admin_profit:'<i data-lucide="trending-up" class="h-6 w-6 text-indigo-500"></i>',deletion:'<i data-lucide="user-x" class="h-6 w-6 text-red-500"></i>'}[e]||'<i data-lucide="alert-triangle" class="h-6 w-6 text-yellow-500"></i>'}
     function formatTimeAgo(e){if(!e) return "hace un momento"; const t=Math.floor((new Date-e)/1e3);let a=t/31536e3;if(1<a)return`hace ${Math.floor(a)} años`;if(1<(a=t/2592e3))return`hace ${Math.floor(a)} meses`;if(1<(a=t/86400))return`hace ${Math.floor(a)} días`;if(1<(a=t/3600))return`hace ${Math.floor(a)} horas`;if(1<(a=t/60))return`hace ${Math.floor(a)} minutos`;return`hace ${Math.floor(t)} segundos`}
-    const chatBotQA=[]; const suggestedQuestions=[]; function displayChatMessage(e,t){} function displaySuggestedQuestions(){} function getBotResponse(e){} function getBotInitialResponse(){}
-    function checkAndGenerateNovedades(e,t){} function initializeCalendarSelectors(){} function renderCalendarioSection(){} function renderCalendarAsCards(e){} function renderCalendarAsTable(e){} function updateCalendarViewToggle(){}
+    function checkAndGenerateNovedades(e,t){}
+    
+    // --- LÓGICA DEL CALENDARIO ---
+    function initializeCalendarSelectors() {
+        const monthSelect = document.getElementById('metric-month');
+        const yearSelect = document.getElementById('metric-year');
+        const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        const currentYear = new Date().getFullYear();
+        const currentMonth = new Date().getMonth();
+
+        monthSelect.innerHTML = months.map((month, i) => `<option value="${i}" ${i === currentMonth ? 'selected' : ''}>${month}</option>`).join('');
+        
+        let yearOptions = '';
+        for (let year = currentYear; year >= currentYear - 5; year--) {
+            yearOptions += `<option value="${year}" ${year === currentYear ? 'selected' : ''}>${year}</option>`;
+        }
+        yearSelect.innerHTML = yearOptions;
+    }
+
+    function renderCalendarioSection() {
+        if (currentUserRole !== 'admin') return;
+        const selectedMonth = parseInt(document.getElementById('metric-month').value, 10);
+        const selectedYear = parseInt(document.getElementById('metric-year').value, 10);
+
+        const newAffiliatesThisMonth = affiliates.filter(aff => {
+            const createdAt = aff.createdAt;
+            return createdAt && createdAt.getMonth() === selectedMonth && createdAt.getFullYear() === selectedYear;
+        });
+
+        const dataByAdvisor = advisors.map(advisor => {
+            return {
+                advisor,
+                newAffiliates: newAffiliatesThisMonth.filter(aff => aff.advisorId === advisor.id)
+            };
+        }).filter(item => item.newAffiliates.length > 0);
+
+        if (calendarViewMode === 'card') {
+            document.getElementById('calendar-card-container').style.display = 'grid';
+            document.getElementById('calendar-table-container').style.display = 'none';
+            renderCalendarAsCards(dataByAdvisor);
+        } else {
+            document.getElementById('calendar-card-container').style.display = 'none';
+            document.getElementById('calendar-table-container').style.display = 'block';
+            renderCalendarAsTable(dataByAdvisor);
+        }
+        updateCalendarViewToggle();
+        lucide.createIcons();
+    }
+
+    function renderCalendarAsCards(data) {
+        const container = document.getElementById('calendar-card-container');
+        if (data.length === 0) {
+            container.innerHTML = '<p class="col-span-full text-center text-slate-500 bg-white p-6 rounded-lg shadow">No se registraron nuevos afiliados en este periodo.</p>';
+            return;
+        }
+        container.innerHTML = data.map(({ advisor, newAffiliates }) => `
+            <div class="bg-white rounded-xl shadow-lg p-5">
+                <h3 class="font-bold text-lg text-slate-800">${advisor.name}</h3>
+                <p class="text-sm text-slate-500">Nuevos Afiliados: <span class="font-bold text-primary-600">${newAffiliates.length}</span></p>
+                <div class="mt-4 pt-4 border-t">
+                    <ul class="space-y-2 text-sm max-h-48 overflow-y-auto pr-2">
+                        ${newAffiliates.map(aff => `
+                            <li class="flex justify-between items-center hover:bg-slate-50 p-1 rounded">
+                                <span class="text-slate-700">${aff.name}</span>
+                                <span class="text-xs text-slate-400">${new Date(aff.startDate).toLocaleDateString('es-CO')}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderCalendarAsTable(data) {
+        const tableBody = document.getElementById('calendar-table-body');
+        if (data.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="3" class="text-center p-6 text-slate-500">No se registraron nuevos afiliados en este periodo.</td></tr>';
+            return;
+        }
+        tableBody.innerHTML = data.map(({ advisor, newAffiliates }) => `
+            <tr class="hover:bg-slate-50">
+                <td class="p-3 font-semibold text-slate-800">${advisor.name}</td>
+                <td class="p-3 text-center text-lg font-bold text-primary-600">${newAffiliates.length}</td>
+                <td class="p-3">
+                    <ul class="space-y-1 text-sm">
+                        ${newAffiliates.map(aff => `<li>${aff.name} <span class="text-xs text-slate-400">(${new Date(aff.startDate).toLocaleDateString('es-CO')})</span></li>`).join('')}
+                    </ul>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function updateCalendarViewToggle() {
+        const cardBtn = document.getElementById('calendar-view-cards-btn');
+        const tableBtn = document.getElementById('calendar-view-table-btn');
+        cardBtn.className = calendarViewMode === 'card' ? 'p-2 rounded-lg bg-primary-600 text-white shadow-md' : 'p-2 rounded-lg bg-white hover:bg-slate-100 border text-slate-600';
+        tableBtn.className = calendarViewMode === 'table' ? 'p-2 rounded-lg bg-primary-600 text-white shadow-md' : 'p-2 rounded-lg bg-white hover:bg-slate-100 border text-slate-600';
+    }
+
     function renderGestionRolesSection() {
         const tableBody = document.getElementById('roles-table-body');
         if (!tableBody) return;
@@ -1044,28 +1203,51 @@
         if (!userRoleData.linkedAffiliateId) return;
         
         const affiliate = affiliates.find(a => a.id === userRoleData.linkedAffiliateId);
-        if (!affiliate) {
-            return;
-        }
+        if (!affiliate) { return; }
 
         const plan = healthPlans.find(p => p.id === affiliate.healthPlan);
-        const statusStyles = { 'Activo': 'bg-green-100 text-green-800', 'Pendiente': 'bg-yellow-100 text-yellow-800', 'Inactivo': 'bg-red-100 text-red-800' };
+        const statusStyles = { 
+            'Activo': { bg: 'bg-green-100', text: 'text-green-800', icon: 'check-circle' },
+            'Pendiente': { bg: 'bg-yellow-100', text: 'text-yellow-800', icon: 'clock' },
+            'Inactivo': { bg: 'bg-red-100', text: 'text-red-800', icon: 'x-circle' }
+        };
 
+        // Rellenar tarjeta de perfil
         document.getElementById('afiliado-profile-name').textContent = affiliate.name;
         document.getElementById('afiliado-profile-id').textContent = affiliate.documentId;
         document.getElementById('afiliado-profile-email').textContent = affiliate.email;
         document.getElementById('afiliado-profile-phone').textContent = affiliate.phone;
         
+        // Rellenar tarjeta de plan
         document.getElementById('afiliado-profile-plan-name').textContent = plan ? plan.name : "Plan no especificado";
         document.getElementById('afiliado-profile-plan-price').textContent = plan ? formatCurrency(plan.price) : "$0";
-
-        document.getElementById('afiliado-profile-start-date').textContent = affiliate.startDate;
+        document.getElementById('afiliado-profile-start-date').textContent = affiliate.startDate || '--/--/----';
         document.getElementById('afiliado-profile-end-date').textContent = affiliate.endDate || "Indefinido";
         
-        const statusEl = document.getElementById('afiliado-profile-status');
-        statusEl.textContent = affiliate.status;
-        statusEl.className = `font-semibold text-xs px-2 py-1 rounded-full inline-block ${statusStyles[affiliate.status] || ''}`;
+        const statusContainer = document.getElementById('afiliado-profile-status-container');
+        const currentStatus = statusStyles[affiliate.status] || statusStyles['Pendiente'];
+        statusContainer.innerHTML = `
+            <span class="inline-flex items-center gap-1.5 font-semibold text-xs px-2 py-1 rounded-full ${currentStatus.bg} ${currentStatus.text}">
+                <i data-lucide="${currentStatus.icon}" class="w-3.5 h-3.5"></i>
+                ${affiliate.status}
+            </span>`;
+
+        // Rellenar características del plan
+        const featuresList = document.getElementById('afiliado-profile-plan-features');
+        if (plan && plan.features) {
+            featuresList.innerHTML = plan.features.split('\n').map(feature => `
+                <li class="flex items-start gap-2">
+                    <i data-lucide="check-circle-2" class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0"></i>
+                    <span>${feature}</span>
+                </li>
+            `).join('');
+        } else {
+            featuresList.innerHTML = '<li>No hay características detalladas para este plan.</li>';
+        }
+
+        lucide.createIcons();
     }
+
 
     document.addEventListener('DOMContentLoaded', () => {
         document.body.addEventListener('click', async (e) => { 
@@ -1087,8 +1269,6 @@
                 if (window.innerWidth < 768) { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('sidebar-overlay').classList.add('opacity-0', 'pointer-events-none'); } 
                 return; 
             } 
-            
-            if (target.matches('.suggestion-chip')) { const question = target.textContent; document.getElementById('chat-input').value = question; document.getElementById('chat-form').dispatchEvent(new Event('submit', { bubbles: true })); return; } 
             
             if (!button) return; 
             const id = button.dataset.id; 
@@ -1125,17 +1305,17 @@
             else if (button.matches('.delete-advisor-btn')) { if (confirm('¿Seguro? Se desasignará de todos los afiliados.')) { const batch = window.firebase.writeBatch(db); affiliates.forEach(aff => { if(aff.advisorId === id) { const affRef = window.firebase.doc(db, `users/${adminUidForRole}/affiliates/${aff.id}`); batch.update(affRef, { advisorId: null }); } }); const advisorRef = window.firebase.doc(db, `users/${adminUidForRole}/advisors/${id}`); batch.delete(advisorRef); await batch.commit(); showToast('Asesor eliminado.'); } } 
             else if (button.matches('.delete-plan-btn')) { const isPlanInUse = affiliates.some(aff => aff.healthPlan === id); if(isPlanInUse) return showToast('Plan en uso. No se puede eliminar.', 'error'); if (confirm('¿Seguro?')) { await deleteDataFromFirestore('healthPlans', id); showToast('Plan eliminado.'); } }
             else if (button.matches('.delete-role-btn')) {
-                 const roleToDelete = userRoles.find(r => r.uid === id);
-                 if (confirm(`¿Estás seguro de eliminar al usuario ${roleToDelete.email}? Esta acción no se puede deshacer y su cuenta será eliminada permanentemente.`)) {
-                    showToast('Esta función requiere un backend (Cloud Function) para eliminar de forma segura un usuario de Firebase Authentication. La implementación actual solo eliminará los registros de rol en Firestore.', 'error');
-                    const batch = window.firebase.writeBatch(db);
-                    const rootRoleRef = window.firebase.doc(db, 'userRoles', id);
-                    const adminRoleRef = window.firebase.doc(db, `users/${adminUidForRole}/roles`, id);
-                    batch.delete(rootRoleRef);
-                    batch.delete(adminRoleRef);
-                    await batch.commit();
-                    showToast('Registros de rol eliminados.', 'success');
-                 }
+                  const roleToDelete = userRoles.find(r => r.uid === id);
+                  if (confirm(`¿Estás seguro de eliminar al usuario ${roleToDelete.email}? Esta acción no se puede deshacer y su cuenta será eliminada permanentemente.`)) {
+                      showToast('Esta función requiere un backend (Cloud Function) para eliminar de forma segura un usuario de Firebase Authentication. La implementación actual solo eliminará los registros de rol en Firestore.', 'error');
+                      const batch = window.firebase.writeBatch(db);
+                      const rootRoleRef = window.firebase.doc(db, 'userRoles', id);
+                      const adminRoleRef = window.firebase.doc(db, `users/${adminUidForRole}/roles`, id);
+                      batch.delete(rootRoleRef);
+                      batch.delete(adminRoleRef);
+                      await batch.commit();
+                      showToast('Registros de rol eliminados.', 'success');
+                  }
             }
             else if (button.id === 'sell-plan-btn') { if (!lastQuoteResult) { showToast('Por favor, realiza una cotización primero.', 'error'); return; } modalManager.open('affiliate-modal'); setTimeout(() => { const form = document.getElementById('affiliate-form'); if (!form) return; form['manual-override-checkbox'].checked = true; document.getElementById('manual-override-container').classList.remove('hidden'); form['manual-cost-health'].value = lastQuoteResult.health ? Math.round(lastQuoteResult.health.total) : ''; form['manual-cost-pension'].value = lastQuoteResult.pension ? Math.round(lastQuoteResult.pension.total) : ''; form['manual-cost-arl'].value = lastQuoteResult.arl ? Math.round(lastQuoteResult.arl.total) : ''; form['manual-cost-ccf'].value = lastQuoteResult.ccf ? Math.round(lastQuoteResult.ccf.total) : ''; const incomeValue = Number(document.getElementById('income').value); form['affiliate-notes'].value = `Cotización inicial basada en un ingreso mensual de ${formatCurrency(incomeValue)}. IBC: ${formatCurrency(lastQuoteResult.ibc)}.`; showToast('Datos de cotización precargados.'); }, 100); } 
         });
@@ -1150,7 +1330,6 @@
         document.getElementById('company-profile-form').addEventListener('submit', async e => { e.preventDefault(); companyProfile.name = document.getElementById('company-name').value; companyProfile.nit = document.getElementById('company-nit').value; companyProfile.address = document.getElementById('company-address').value; companyProfile.phone = document.getElementById('company-phone').value; companyProfile.email = document.getElementById('company-email').value; companyProfile.theme = document.querySelector('#theme-selector input:checked').value; companyProfile.sidebarTheme = document.querySelector('#sidebar-theme-selector input:checked').value; companyProfile.bottomNavTheme = document.querySelector('#bottom-nav-theme-selector input:checked').value; const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { companyProfile }, { merge: true }); showToast('Perfil actualizado.'); });
         document.getElementById('settings-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; settings.SMMLV = Number(form['setting-smmlv'].value); settings.ADMIN_FEE_PER_AFFILIATE = Number(form['setting-admin-fee'].value); settings.CONTRIBUTION_RATES.health = parseFloat(form['setting-health'].value); settings.CONTRIBUTION_RATES.pension = parseFloat(form['setting-pension'].value); settings.CONTRIBUTION_RATES.independiente_ccf = parseFloat(form['setting-ccf-ind'].value); settings.CONTRIBUTION_RATES.employer_ccf = parseFloat(form['setting-ccf-emp'].value); for (let i = 1; i <= 5; i++) { settings.ARL_RATES[i] = parseFloat(form[`setting-arl-${i}`].value); } const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { settings }, { merge: true }); modalManager.close('settings-modal'); showToast('Configuración guardada.'); });
         document.getElementById('manual-override-checkbox').addEventListener('change', (e) => { document.getElementById('manual-override-container').classList.toggle('hidden', !e.target.checked); });
-        document.getElementById('chat-form').addEventListener('submit', (e) => { e.preventDefault(); const chatInput = document.getElementById('chat-input'); const message = chatInput.value.trim(); if (message) { displayChatMessage(message, 'user'); document.getElementById('chat-suggestions').innerHTML = ''; getBotResponse(message); chatInput.value = ''; } });
         document.getElementById('metric-month').addEventListener('change', renderCalendarioSection);
         document.getElementById('metric-year').addEventListener('change', renderCalendarioSection);
         document.getElementById('invite-user-form').addEventListener('submit', handleInviteUser);
@@ -1172,7 +1351,44 @@
                 container.classList.add('hidden');
             }
         });
-        const calculatorForm = document.getElementById('calculator-form'); const calculateBtn = document.getElementById('calculate-btn'); const newQuoteBtn = document.getElementById('new-quote-btn'); calculatorForm.addEventListener('submit', e => { e.preventDefault(); const form = e.target; const selections = { health: form.querySelector('[value="health"]').checked, pension: form.querySelector('[value="pension"]').checked, arl: form.querySelector('[value="arl"]').checked, ccf: form.querySelector('[value="ccf"]').checked }; const results = calculateContributions(Number(form['income'].value), form['contract-type'].value, form['arl-level'].value, selections); lastQuoteResult = results; renderCalculatorResults(results); calculateBtn.style.display = 'none'; newQuoteBtn.style.display = 'flex'; }); newQuoteBtn.addEventListener('click', () => { calculatorForm.reset(); renderCalculatorResults(null); lastQuoteResult = null; newQuoteBtn.style.display = 'none'; calculateBtn.style.display = 'flex'; document.querySelectorAll('.component-checkbox').forEach(cb => cb.checked = true); document.getElementById('select-all-components').checked = true; }); document.getElementById('select-all-components').addEventListener('change', e => { document.querySelectorAll('.component-checkbox').forEach(cb => { cb.checked = e.target.checked; }); });
+        
+        const calculatorForm = document.getElementById('calculator-form');
+        const calculateBtn = document.getElementById('calculate-btn');
+        const newQuoteBtn = document.getElementById('new-quote-btn');
+
+        calculatorForm.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            calculateBtn.disabled = true;
+            calculateBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 mr-2 animate-spin"></i>Calculando...';
+            lucide.createIcons();
+            
+            setTimeout(() => {
+                const form = e.target;
+                const selections = {
+                    health: form.querySelector('[value="health"]').checked,
+                    pension: form.querySelector('[value="pension"]').checked,
+                    arl: form.querySelector('[value="arl"]').checked,
+                    ccf: form.querySelector('[value="ccf"]').checked
+                };
+                const results = calculateContributions(Number(form['income'].value), form['contract-type'].value, form['arl-level'].value, selections);
+                lastQuoteResult = results;
+                renderCalculatorResults(results);
+                calculateBtn.style.display = 'none';
+                newQuoteBtn.style.display = 'flex';
+                document.querySelectorAll('#calculator-fieldset-1, #calculator-fieldset-2').forEach(fs => fs.disabled = true);
+            }, 300);
+        });
+
+        newQuoteBtn.addEventListener('click', () => {
+            resetCalculatorState();
+        });
+
+        document.getElementById('select-all-components').addEventListener('change', e => {
+            document.querySelectorAll('.component-checkbox').forEach(cb => {
+                cb.checked = e.target.checked;
+            });
+        });
     });
     
     const modalManager = {
