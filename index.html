@@ -25,15 +25,17 @@
     <style>
         :root {
             --color-primary-400: 165 180 252; --color-primary-500: 129 140 248; --color-primary-600: 79 70 229; --color-primary-700: 67 56 202;
+            --auth-gradient-from: rgb(var(--color-primary-600));
+            --auth-gradient-to: rgb(56 189 248);
         }
-        [data-theme="bosque"] { --color-primary-400: 163 230 53; --color-primary-500: 132 204 22; --color-primary-600: 6 182 212; --color-primary-700: 8 145 178; }
-        [data-theme="atardecer"] { --color-primary-400: 253 224 71; --color-primary-500: 251 146 60; --color-primary-600: 249 115 22; --color-primary-700: 239 68 68; }
-        [data-theme="elegant"] { --color-primary-400: 251 191 36; --color-primary-500: 245 158 11; --color-primary-600: 14 165 233; --color-primary-700: 2 132 199; }
-        [data-theme="espacial"] { --color-primary-400: 125 211 252; --color-primary-500: 56 189 248; --color-primary-600: 139 92 246; --color-primary-700: 124 58 237; }
-        [data-theme="verano-tropical"] { --color-primary-400: 190 242 100; --color-primary-500: 163 230 53; --color-primary-600: 219 39 119; --color-primary-700: 190 24 93; }
-        [data-theme="apple"] { --color-primary-400: 229 231 235; --color-primary-500: 255 255 255; --color-primary-600: 243 244 246; --color-primary-700: 209 213 219; }
-        [data-theme="neon-amarillo"] { --color-primary-400: 234 255 102; --color-primary-500: 227 255 0; --color-primary-600: 204 255 0; --color-primary-700: 170 204 0; }
-        [data-theme="spotify"] { --color-primary-400: 30 215 96; --color-primary-500: 29 185 84; --color-primary-600: 29 185 84; --color-primary-700: 25 158 71; }
+        [data-theme="bosque"] { --color-primary-400: 163 230 53; --color-primary-500: 132 204 22; --color-primary-600: 6 182 212; --color-primary-700: 8 145 178; --auth-gradient-from: #a3e635; --auth-gradient-to: #06b6d4;}
+        [data-theme="atardecer"] { --color-primary-400: 253 224 71; --color-primary-500: 251 146 60; --color-primary-600: 249 115 22; --color-primary-700: 239 68 68; --auth-gradient-from: #fde047; --auth-gradient-to: #ef4444;}
+        [data-theme="elegant"] { --color-primary-400: 251 191 36; --color-primary-500: 245 158 11; --color-primary-600: 14 165 233; --color-primary-700: 2 132 199; --auth-gradient-from: #f59e0b; --auth-gradient-to: #0ea5e9;}
+        [data-theme="espacial"] { --color-primary-400: 125 211 252; --color-primary-500: 56 189 248; --color-primary-600: 139 92 246; --color-primary-700: 124 58 237; --auth-gradient-from: #38bdf8; --auth-gradient-to: #8b5cf6;}
+        [data-theme="verano-tropical"] { --color-primary-400: 190 242 100; --color-primary-500: 163 230 53; --color-primary-600: 219 39 119; --color-primary-700: 190 24 93; --auth-gradient-from: #a3e635; --auth-gradient-to: #ec4899;}
+        [data-theme="apple"] { --color-primary-400: 229 231 235; --color-primary-500: 255 255 255; --color-primary-600: 243 244 246; --color-primary-700: 209 213 219; --auth-gradient-from: #374151; --auth-gradient-to: #000000;}
+        [data-theme="neon-amarillo"] { --color-primary-400: 234 255 102; --color-primary-500: 227 255 0; --color-primary-600: 204 255 0; --color-primary-700: 170 204 0; --auth-gradient-from: #eaff66; --auth-gradient-to: #aacc00;}
+        [data-theme="spotify"] { --color-primary-400: 30 215 96; --color-primary-500: 29 185 84; --color-primary-600: 29 185 84; --color-primary-700: 25 158 71; --auth-gradient-from: rgb(var(--color-primary-500)); --auth-gradient-to: #054120;}
 
 
         body { font-family: 'Inter', sans-serif; }
@@ -134,7 +136,10 @@
 
 
         /* --- NUEVAS ANIMACIONES Y ESTILOS --- */
-        .auth-banner { animation: fadeInBanner 0.5s ease-out; }
+        .auth-banner {
+            animation: fadeInBanner 0.5s ease-out;
+            background-image: linear-gradient(to bottom right, var(--auth-gradient-from), var(--auth-gradient-to));
+        }
         @keyframes fadeInBanner { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         .auth-form { animation: fadeInForm 0.6s ease-in-out 0.1s; animation-fill-mode: backwards; }
         @keyframes fadeInForm { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -154,7 +159,11 @@
 
     <div id="auth-container" style="display: none;" class="min-h-screen bg-slate-100 flex items-center justify-center p-4">
         <div class="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden grid md:grid-cols-2">
-            <div class="auth-banner p-6 md:p-8 lg:p-12 text-white bg-gradient-to-br from-indigo-600 to-sky-500 flex flex-col justify-center items-center text-center"><i data-lucide="shield-check" class="h-16 w-16 md:h-20 md:w-20 text-white/80 mb-6"></i><h2 class="text-2xl md:text-3xl font-bold mb-4">Bienvenido a Seb Salud</h2><p class="text-indigo-100 max-w-sm">Tu plataforma de gestión de salud todo en uno. Administra afiliados, asesores y finanzas de forma eficiente y segura.</p></div>
+            <div class="auth-banner p-6 md:p-8 lg:p-12 text-white flex flex-col justify-center items-center text-center">
+                <i data-lucide="shield-check" class="h-16 w-16 md:h-20 md:w-20 text-white/80 mb-6"></i>
+                <h2 class="text-2xl md:text-3xl font-bold mb-4">Bienvenido a Seb Salud</h2>
+                <p class="text-white/80 max-w-sm">Tu plataforma de gestión de salud todo en uno. Administra afiliados, asesores y finanzas de forma eficiente y segura.</p>
+            </div>
             <div class="p-8 lg:p-12 flex flex-col justify-center">
                 <div class="w-full max-w-md mx-auto">
                     <div id="login-view" class="auth-form"><h2 class="text-3xl font-bold text-slate-800 mb-2">Iniciar Sesión</h2><p class="text-slate-500 mb-8">Ingresa a tu cuenta para continuar.</p><form id="login-form"><div class="space-y-5"><div class="relative"><i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i><input type="email" id="login-email" placeholder="Correo Electrónico" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required></div><div class="relative"><i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i><input type="password" id="login-password" placeholder="Contraseña" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required></div></div><div class="mt-8"><button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">Ingresar</button></div></form><p class="text-center text-sm text-slate-600 mt-8">¿No tienes una cuenta? <button id="show-register" class="font-semibold text-primary-600 hover:underline">Regístrate aquí</button></p></div>
@@ -278,7 +287,7 @@
                                 <h2 class="text-2xl font-bold text-slate-800">Cotizador de Aportes a Seguridad Social</h2>
                                 <p class="text-slate-500 mt-1">Calcula los aportes de forma rápida y precisa.</p>
                             </div>
-                            <button id="open-settings-btn" class="text-slate-500 hover:text-primary-600 p-2 rounded-full bg-slate-100 hover:bg-slate-200"><i data-lucide="settings" class="w-6 h-6"></i></button>
+                            <button id="open-settings-btn" data-role="admin" class="text-slate-500 hover:text-primary-600 p-2 rounded-full bg-slate-100 hover:bg-slate-200"><i data-lucide="settings" class="w-6 h-6"></i></button>
                         </div>
                         <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
                             <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg lg:col-span-2">
@@ -641,11 +650,14 @@
         const { doc, collection, onSnapshot } = window.firebase;
         const basePath = `users/${adminUidForRole}`;
 
+        // Este listener se activa para TODOS los roles (admin, asesor, afiliado).
+        // Escucha los cambios en el documento del administrador principal.
+        // Así, cuando el admin cambia el tema, se propaga a todos los usuarios vinculados.
         const unsubUser = onSnapshot(doc(db, basePath), (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 companyProfile = data.companyProfile || defaultCompanyProfile;
-                settings = { ...defaultSettings, ...data.settings };
+                settings = data.settings || defaultSettings;
                 applyTheme(companyProfile.theme);
                 applySidebarTheme(companyProfile.sidebarTheme);
                 applyBottomNavTheme(companyProfile.bottomNavTheme);
@@ -754,31 +766,30 @@
     }
 
     function updateUIVisibilityByRole() {
-        const allSidebarLinks = document.querySelectorAll('#sidebar-nav .nav-link');
-        const allBottomNavLinks = document.querySelectorAll('.bottom-nav > a');
-
-        allSidebarLinks.forEach(el => el.style.display = 'none');
-        allBottomNavLinks.forEach(el => el.style.display = 'none');
+        // Ocultar todos los elementos con data-role por defecto
+        document.querySelectorAll('[data-role]').forEach(el => el.style.display = 'none');
 
         let visibleTargets = [];
-
         if (currentUserRole === 'admin') {
             visibleTargets = ['dashboard', 'novedades', 'empresa', 'calendario', 'flujo-caja', 'afiliados', 'asesores', 'ranking-vendedores', 'planes', 'cotizador', 'gestion-roles'];
+            // Mostrar elementos específicos para admin
+            document.querySelectorAll('[data-role="admin"]').forEach(el => el.style.display = '');
         } else if (currentUserRole === 'asesor') {
              visibleTargets = ['dashboard', 'afiliados', 'novedades', 'cotizador'];
+             // Mostrar elementos específicos para asesor
+             document.querySelectorAll('[data-role="asesor"]').forEach(el => el.style.display = '');
         } else if (currentUserRole === 'afiliado') {
             visibleTargets = ['perfil-afiliado', 'cotizador'];
+            // Mostrar elementos específicos para afiliado
+            document.querySelectorAll('[data-role="afiliado"]').forEach(el => el.style.display = '');
         }
 
-        allSidebarLinks.forEach(el => {
-            if (visibleTargets.includes(el.dataset.target)) {
-                el.style.display = 'flex';
-            }
+        // Mostrar/Ocultar links de navegación
+        document.querySelectorAll('#sidebar-nav .nav-link').forEach(el => {
+            el.style.display = visibleTargets.includes(el.dataset.target) ? 'flex' : 'none';
         });
-        allBottomNavLinks.forEach(el => {
-            if (visibleTargets.includes(el.dataset.target)) {
-                el.style.display = 'flex';
-            }
+        document.querySelectorAll('.bottom-nav > a').forEach(el => {
+            el.style.display = visibleTargets.includes(el.dataset.target) ? 'flex' : 'none';
         });
     }
     
@@ -1328,7 +1339,7 @@
         document.getElementById('plan-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['plan-doc-id'].value; const planData = { name: form['plan-name'].value, price: Number(form['plan-price'].value), features: form['plan-features'].value }; if (id) { planData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/healthPlans`)); planData.id = docRef.id; } await saveDataToFirestore('healthPlans', planData); modalManager.close('plan-modal'); showToast('Plan guardado.'); });
         document.getElementById('transaction-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const newTransaction = { type: form['transaction-type'].value, concept: form['transaction-concept'].value, amount: parseFloat(form['transaction-amount'].value), date: new Date(form['transaction-date'].value + 'T12:00:00.000Z') }; await window.firebase.addDoc(window.firebase.collection(db, `users/${adminUidForRole}/manualTransactions`), newTransaction); modalManager.close('transaction-modal'); showToast('Transacción guardada.'); });
         document.getElementById('company-profile-form').addEventListener('submit', async e => { e.preventDefault(); companyProfile.name = document.getElementById('company-name').value; companyProfile.nit = document.getElementById('company-nit').value; companyProfile.address = document.getElementById('company-address').value; companyProfile.phone = document.getElementById('company-phone').value; companyProfile.email = document.getElementById('company-email').value; companyProfile.theme = document.querySelector('#theme-selector input:checked').value; companyProfile.sidebarTheme = document.querySelector('#sidebar-theme-selector input:checked').value; companyProfile.bottomNavTheme = document.querySelector('#bottom-nav-theme-selector input:checked').value; const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { companyProfile }, { merge: true }); showToast('Perfil actualizado.'); });
-        document.getElementById('settings-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; settings.SMMLV = Number(form['setting-smmlv'].value); settings.ADMIN_FEE_PER_AFFILIATE = Number(form['setting-admin-fee'].value); settings.CONTRIBUTION_RATES.health = parseFloat(form['setting-health'].value); settings.CONTRIBUTION_RATES.pension = parseFloat(form['setting-pension'].value); settings.CONTRIBUTION_RATES.independiente_ccf = parseFloat(form['setting-ccf-ind'].value); settings.CONTRIBUTION_RATES.employer_ccf = parseFloat(form['setting-ccf-emp'].value); for (let i = 1; i <= 5; i++) { settings.ARL_RATES[i] = parseFloat(form[`setting-arl-${i}`].value); } const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { settings }, { merge: true }); modalManager.close('settings-modal'); showToast('Configuración guardada.'); });
+        document.getElementById('settings-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const newSettings = { SMMLV: Number(form['setting-smmlv'].value), ADMIN_FEE_PER_AFFILIATE: Number(form['setting-admin-fee'].value), CONTRIBUTION_RATES: { ...settings.CONTRIBUTION_RATES, health: parseFloat(form['setting-health'].value), pension: parseFloat(form['setting-pension'].value), independiente_ccf: parseFloat(form['setting-ccf-ind'].value), employer_ccf: parseFloat(form['setting-ccf-emp'].value) }, ARL_RATES: { 1: parseFloat(form['setting-arl-1'].value), 2: parseFloat(form['setting-arl-2'].value), 3: parseFloat(form['setting-arl-3'].value), 4: parseFloat(form['setting-arl-4'].value), 5: parseFloat(form['setting-arl-5'].value), } }; const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { settings: newSettings }, { merge: true }); modalManager.close('settings-modal'); showToast('Configuración guardada.'); });
         document.getElementById('manual-override-checkbox').addEventListener('change', (e) => { document.getElementById('manual-override-container').classList.toggle('hidden', !e.target.checked); });
         document.getElementById('metric-month').addEventListener('change', renderCalendarioSection);
         document.getElementById('metric-year').addEventListener('change', renderCalendarioSection);
@@ -1411,7 +1422,17 @@
                 form['affiliate-doc-id'].value = data?.id || ''; form['affiliate-name'].value = data?.name || ''; form['affiliate-id'].value = data?.documentId || ''; form['affiliate-email'].value = data?.email || ''; form['affiliate-phone'].value = data?.phone || ''; form['affiliate-address'].value = data?.address || ''; if(data?.healthPlan) { const planInput = form.querySelector(`input[name="health-plan"][value="${data.healthPlan}"]`); if (planInput) planInput.checked = true; } form['pension-plan'].value = data?.pensionPlan || ''; form['arl-plan'].value = data?.arlPlan || ''; form['ccf-plan'].value = data?.ccfPlan || ''; form['affiliate-start-date'].value = data?.startDate || new Date().toISOString().split('T')[0]; form['affiliate-end-date'].value = data?.endDate || ''; form['affiliate-status'].value = data?.status || 'Pendiente'; form['affiliate-notes'].value = data?.notes || ''; const manualContainer = form.querySelector('#manual-override-container'); form['manual-override-checkbox'].checked = !!(data?.manualCosts || data?.manualCommission); manualContainer.classList.toggle('hidden', !form['manual-override-checkbox'].checked); form['manual-cost-health'].value = data?.manualCosts?.health || ''; form['manual-cost-pension'].value = data?.manualCosts?.pension || ''; form['manual-cost-arl'].value = data?.manualCosts?.arl || ''; form['manual-cost-ccf'].value = data?.manualCosts?.ccf || ''; form['manual-commission'].value = data?.manualCommission || '';
             } else if (modalId === 'advisor-modal') { form['advisor-doc-id'].value = data?.id || ''; form['advisor-name'].value = data?.name || ''; form['advisor-commission'].value = data?.commissionRate || ''; } 
             else if (modalId === 'plan-modal') { form['plan-doc-id'].value = data?.id || ''; form['plan-name'].value = data?.name || ''; form['plan-price'].value = data?.price || ''; form['plan-features'].value = data?.features || ''; } 
-            else if (modalId === 'settings-modal' && settings.SMMLV) { form['setting-smmlv'].value = settings.SMMLV; form['setting-admin-fee'].value = settings.ADMIN_FEE_PER_AFFILIATE; form['setting-health'].value = settings.CONTRIBUTION_RATES.health; form['setting-pension'].value = settings.CONTRIBUTION_RATES.pension; form['setting-ccf-ind'].value = settings.CONTRIBUTION_RATES.independiente_ccf; form['setting-ccf-emp'].value = settings.CONTRIBUTION_RATES.employer_ccf; for (let i = 1; i <= 5; i++) { form[`setting-arl-${i}`].value = settings.ARL_RATES[i]; } } 
+            else if (modalId === 'settings-modal') { 
+                form['setting-smmlv'].value = settings?.SMMLV ?? defaultSettings.SMMLV; 
+                form['setting-admin-fee'].value = settings?.ADMIN_FEE_PER_AFFILIATE ?? defaultSettings.ADMIN_FEE_PER_AFFILIATE;
+                form['setting-health'].value = settings?.CONTRIBUTION_RATES?.health ?? defaultSettings.CONTRIBUTION_RATES.health;
+                form['setting-pension'].value = settings?.CONTRIBUTION_RATES?.pension ?? defaultSettings.CONTRIBUTION_RATES.pension;
+                form['setting-ccf-ind'].value = settings?.CONTRIBUTION_RATES?.independiente_ccf ?? defaultSettings.CONTRIBUTION_RATES.independiente_ccf;
+                form['setting-ccf-emp'].value = settings?.CONTRIBUTION_RATES?.employer_ccf ?? defaultSettings.CONTRIBUTION_RATES.employer_ccf;
+                for (let i = 1; i <= 5; i++) { 
+                    form[`setting-arl-${i}`].value = settings?.ARL_RATES?.[i] ?? defaultSettings.ARL_RATES[i]; 
+                } 
+            } 
             else if (modalId === 'transaction-modal') { document.getElementById('transaction-type').value = data.type; document.getElementById('transaction-date').value = new Date().toISOString().split('T')[0]; }
             modal.classList.remove('opacity-0', 'pointer-events-none');
             modal.querySelector('.modal-content').classList.remove('scale-95');
