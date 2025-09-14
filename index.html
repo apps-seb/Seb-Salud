@@ -1932,6 +1932,57 @@ inviteRoleSelect.addEventListener('change', (e) => {
             }
         });
 
+        // --- MANEJO PARA GUARDAR INGRESO/EGRESO SIN RECARGAR ---
+    document.getElementById('transaction-form').addEventListener('submit', async (e) => {
+        // 1. Prevenir la recarga de la página
+        e.preventDefault();
+        const saveButton = e.target.querySelector('button[type="submit"]');
+        saveButton.disabled = true;
+        saveButton.textContent = 'Guardando...';
+
+        try {
+            const form = e.target;
+            const transactionType = form['transaction-type'].value; // 'ingreso' o 'egreso'
+
+            // 2. Recolectar los datos del formulario del modal
+            const transactionData = {
+                concept: form['transaction-concept'].value.trim(),
+                amount: Number(form['transaction-amount'].value),
+                date: form['transaction-date'].value,
+                type: transactionType,
+            };
+
+            // 3. Validar que los datos importantes no estén vacíos
+            if (!transactionData.concept || transactionData.amount <= 0 || !transactionData.date) {
+                showToast('Por favor, completa todos los campos correctamente.', 'error');
+                // Devolvemos el botón a su estado original y detenemos la ejecución
+                saveButton.disabled = false;
+                saveButton.textContent = 'Guardar';
+                return; 
+            }
+
+            // 4. Crear una referencia para un nuevo documento en la colección 'manualTransactions'
+            const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/manualTransactions`));
+            transactionData.id = docRef.id;
+
+            // 5. Guardar los datos en Firestore usando la función que ya existe
+            await saveDataToFirestore('manualTransactions', transactionData);
+
+            // 6. Mostrar mensaje de éxito y cerrar el modal
+            showToast(`El ${transactionType} se guardó correctamente.`, 'success');
+            modalManager.close('transaction-modal');
+
+        } catch (error) {
+            console.error("Error al guardar la transacción:", error);
+            showToast('Hubo un error al guardar la transacción.', 'error');
+        } finally {
+            // 7. Reactivar el botón (esto se ejecuta si todo sale bien después de cerrar el modal)
+            saveButton.disabled = false;
+            saveButton.textContent = 'Guardar';
+        }
+    });
+    // --- FIN DEL CÓDIGO PARA TRANSACCIONES ---
+
         document.getElementById('mark-novedades-read').addEventListener('click', async () => {
             const unreadNovedades = novedades.filter(n => n.read === false);
             if (unreadNovedades.length === 0) return;
@@ -2139,5 +2190,6 @@ inviteRoleSelect.addEventListener('change', (e) => {
 </script>
 </body>
 </html>
+
 
 
