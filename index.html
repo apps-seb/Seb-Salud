@@ -1886,6 +1886,51 @@ inviteRoleSelect.addEventListener('change', (e) => {
                 showToast('Hubo un error al guardar el plan.', 'error');
             }
         });
+        
+        // --- MANEJO PARA GUARDAR PERFIL DE EMPRESA SIN RECARGAR ---
+        document.getElementById('company-profile-form').addEventListener('submit', async (e) => {
+            // 1. Prevenir que la página se recargue (la parte más importante)
+            e.preventDefault();
+            const saveButton = e.target.querySelector('button[type="submit"]');
+            saveButton.disabled = true;
+            saveButton.textContent = 'Guardando...';
+
+            try {
+                // 2. Recolectar todos los datos del formulario
+                const profileData = {
+                    name: document.getElementById('company-name').value,
+                    nit: document.getElementById('company-nit').value,
+                    address: document.getElementById('company-address').value,
+                    phone: document.getElementById('company-phone').value,
+                    email: document.getElementById('company-email').value,
+                    theme: document.querySelector('#theme-selector input[name="theme"]:checked').value,
+                    sidebarTheme: document.querySelector('#sidebar-theme-selector input[name="sidebar-theme"]:checked').value,
+                    bottomNavTheme: document.querySelector('#bottom-nav-theme-selector input[name="bottom-nav-theme"]:checked').value,
+                };
+
+                // 3. Apuntar al documento correcto del usuario en Firestore
+                // 'adminUidForRole' es la variable global que ya tienes y que apunta al UID del admin
+                const userDocRef = window.firebase.doc(db, `users/${adminUidForRole}`);
+                
+                // 4. Actualizar el documento del usuario con los nuevos datos del perfil
+                // Usamos { merge: true } para no sobrescribir otros campos importantes como 'settings'
+                await window.firebase.setDoc(userDocRef, {
+                    companyProfile: profileData
+                }, { merge: true });
+
+                // 5. Mostrar un mensaje de éxito al usuario
+                showToast('Perfil de la empresa guardado con éxito.', 'success');
+
+            } catch (error) {
+                // En caso de un error, notificar al usuario
+                console.error("Error al guardar el perfil de la empresa:", error);
+                showToast('Error al guardar los cambios. Intenta de nuevo.', 'error');
+            } finally {
+                // 6. Reactivar el botón, sin importar si hubo éxito o error
+                saveButton.disabled = false;
+                saveButton.textContent = 'Guardar Cambios';
+            }
+        });
 
         document.getElementById('mark-novedades-read').addEventListener('click', async () => {
             const unreadNovedades = novedades.filter(n => n.read === false);
@@ -2094,4 +2139,5 @@ inviteRoleSelect.addEventListener('change', (e) => {
 </script>
 </body>
 </html>
+
 
