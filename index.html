@@ -1938,21 +1938,22 @@ document.getElementById('plan-form').addEventListener('submit', async (e) => {
     const doc = new jsPDF();
 
     // --- 1. CONFIGURACIÓN DE BRANDING Y ESTILOS ---
-    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--auth-gradient-from').trim();
+// OBTENEMOS EL COLOR PRIMARIO COMO NÚMEROS [R, G, B]
+const primaryColorRGB = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim().split(' ').map(Number);
     const formatDate = (dateString) => dateString ? new Date(dateString + 'T00:00:00').toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
     const generationDate = new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
     // --- 2. ENCABEZADO DEL DOCUMENTO ---
     doc.setFontSize(20);
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(primaryColor);
+    doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
     doc.text(companyProfileData.name || "Seb Salud", 20, 25);
     doc.setFontSize(14);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(40);
     doc.text("Recibo de Afiliación", 20, 35);
     doc.setLineWidth(0.5);
-    doc.setDrawColor(primaryColor);
+    doc.setDrawColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
     doc.line(20, 38, 190, 38);
     doc.setFontSize(10);
     doc.setTextColor(100);
@@ -1993,7 +1994,7 @@ document.getElementById('plan-form').addEventListener('submit', async (e) => {
     doc.autoTable({
         startY: finalY + 3,
         theme: 'grid',
-        headStyles: { fillColor: primaryColor, textColor: 255 },
+        headStyles: { fillColor: primaryColorRGB, textColor: 255 },
         head: [['Concepto', 'Detalle']],
         body: [
             ['Plan Adquirido', plan.name || 'No especificado (Costos Manuales)'],
@@ -2087,6 +2088,7 @@ const modalManager = {
 </script>
 </body>
 </html>
+
 
 
 
