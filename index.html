@@ -1806,6 +1806,124 @@
     function handleExportAffiliates() { const headers = ['Nombre', 'Documento', 'Email', 'Telefono', 'Direccion', 'Asesor', 'Estado', 'Fecha de Inicio', 'Plan de Salud', 'Fondo Pension', 'ARL', 'Caja Comp.']; const dataToExport = affiliates.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const plan = healthPlans.find(p=> p.id === aff.healthPlan); return { 'Nombre': aff.name, 'Documento': aff.documentId, 'Email': aff.email, 'Telefono': aff.phone, 'Direccion': aff.address, 'Asesor': advisor ? advisor.name : 'N/A', 'Estado': aff.status, 'Fecha de Inicio': aff.startDate, 'Plan de Salud': plan ? plan.name : 'N/A', 'Fondo Pension': aff.pensionPlan, 'ARL': aff.arlPlan, 'Caja Comp.': aff.ccfPlan }; }); exportToCSV(headers, dataToExport, 'afiliados_seb_salud.csv'); showToast('Exportando afiliados a CSV.'); }
     function handleExportAdvisors() { const headers = ['Nombre', 'Comision (%)', 'Total Afiliados', 'Comision Total Generada']; const dataToExport = advisors.map(advisor => { const advisorAffiliates = affiliates.filter(a => a.advisorId === advisor.id); const totalCommission = advisorAffiliates.reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0); return { 'Nombre': advisor.name, 'Comision (%)': advisor.commissionRate, 'Total Afiliados': advisorAffiliates.length, 'Comision Total Generada': totalCommission }; }); exportToCSV(headers, dataToExport, 'asesores_seb_salud.csv'); showToast('Exportando asesores a CSV.'); }
     function getFirebaseAuthErrorMessage(error) { switch (error.code) { case 'auth/invalid-email': return 'El correo es inválido.'; case 'auth/user-not-found': return 'Usuario no encontrado.'; case 'auth/wrong-password': return 'Contraseña incorrecta.'; case 'auth/email-already-in-use': return 'El correo ya está en uso.'; case 'auth/weak-password': return 'La contraseña es muy débil (mínimo 6 caracteres).'; default: return 'Ocurrió un error inesperado. Intenta de nuevo.'; } }
+ function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, companyProfileData) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // --- 1. CONFIGURACIÓN DE BRANDING Y ESTILOS ---
+        
+        // Obtener el color primario del tema actual dinámicamente
+        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--auth-gradient-from').trim();
+        
+        // Formato de fechas
+        const formatDate = (dateString) => dateString ? new Date(dateString + 'T00:00:00').toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
+        const generationDate = new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+        // --- 2. ENCABEZADO DEL DOCUMENTO ---
+        doc.setFontSize(20);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(primaryColor);
+        doc.text(companyProfileData.name || "Seb Salud", 20, 25);
+
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(40);
+        doc.text("Recibo de Afiliación", 20, 35);
+        
+        doc.setLineWidth(0.5);
+        doc.setDrawColor(primaryColor);
+        doc.line(20, 38, 190, 38);
+
+        // Información de la empresa y del recibo
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text(`NIT: ${companyProfileData.nit || 'N/D'}`, 190, 25, { align: 'right' });
+        doc.text(`Contacto: ${companyProfileData.phone || companyProfileData.email || 'N/D'}`, 190, 30, { align: 'right' });
+
+        doc.setFont("helvetica", "bold");
+        doc.text(`Recibo N°: ${affiliateData.id.slice(-7).toUpperCase()}`, 190, 45, { align: 'right' });
+        doc.setFont("helvetica", "normal");
+        doc.text(`Fecha de Emisión: ${generationDate}`, 190, 50, { align: 'right' });
+
+
+        // --- 3. SECCIÓN: DATOS DEL AFILIADO ---
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(primaryColor);
+        doc.text("Datos del Afiliado", 20, 60);
+        doc.autoTable({
+            startY: 63,
+            theme: 'plain',
+            body: [
+                ['Nombre Completo:', affiliateData.name],
+                ['Documento de Identidad:', affiliateData.documentId],
+                ['Correo Electrónico:', affiliateData.email],
+                ['Teléfono de Contacto:', affiliateData.phone],
+                ['Dirección:', affiliateData.address],
+            ],
+            styles: { fontSize: 10, cellPadding: 1.5 },
+            columnStyles: { 0: { fontStyle: 'bold' } }
+        });
+
+        // --- 4. SECCIÓN: DETALLES DEL PLAN Y AFILIACIÓN ---
+        let finalY = doc.lastAutoTable.finalY + 10;
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(primaryColor);
+        doc.text("Detalles del Plan de Salud", 20, finalY);
+        
+        const plan = planData || {};
+        const advisor = advisorData || {};
+
+        doc.autoTable({
+            startY: finalY + 3,
+            theme: 'grid',
+            headStyles: { fillColor: primaryColor, textColor: 255 },
+            head: [['Concepto', 'Detalle']],
+            body: [
+                ['Plan Adquirido', plan.name || 'No especificado (Costos Manuales)'],
+                ['Valor Mensual del Plan', plan.price ? formatCurrency(plan.price) : 'Según costos manuales'],
+                ['Asesor Asignado', advisor.name || 'No asignado'],
+                ['Fecha de Inicio de Cobertura', formatDate(affiliateData.startDate)],
+                ['Próximo Pago / Vencimiento', formatDate(affiliateData.endDate) || 'Indefinido'],
+            ],
+            styles: { fontSize: 10 },
+        });
+
+        // --- 5. SECCIÓN: CARACTERÍSTICAS DEL PLAN ---
+        if (plan.features) {
+            finalY = doc.lastAutoTable.finalY + 10;
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(primaryColor);
+            doc.text("Características Incluidas en el Plan", 20, finalY);
+            
+            const features = plan.features.split('\n').map(feature => [feature.trim()]);
+            doc.autoTable({
+                startY: finalY + 3,
+                theme: 'striped',
+                head: [['Beneficios']],
+                body: features,
+                styles: { fontSize: 9 },
+                headStyles: { fillColor: [241, 245, 249], textColor: [51, 65, 85] } // slate-100, slate-700
+            });
+        }
+        
+        // --- 6. PIE DE PÁGINA ---
+        finalY = doc.internal.pageSize.height - 30;
+        doc.setLineWidth(0.2);
+        doc.setDrawColor(primaryColor);
+        doc.line(20, finalY, 190, finalY);
+        doc.setFontSize(9);
+        doc.setTextColor(150);
+        doc.text("Gracias por confiar en nuestros servicios. Este documento es un comprobante de su afiliación.", doc.internal.pageSize.width / 2, finalY + 8, { align: 'center' });
+        doc.text("Para cualquier consulta, no dude en contactarnos.", doc.internal.pageSize.width / 2, finalY + 13, { align: 'center' });
+
+        // --- 7. GUARDAR EL DOCUMENTO ---
+        doc.save(`Recibo_Afiliacion_${affiliateData.name.replace(/\s/g, '_')}.pdf`);
+    }
+
 </script>
 </body>
 </html>
+
