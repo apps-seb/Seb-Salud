@@ -1677,35 +1677,85 @@
         document.getElementById('login-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { await window.firebase.signInWithEmailAndPassword(auth, e.target['login-email'].value, e.target['login-password'].value); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('register-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { const userCredential = await window.firebase.createUserWithEmailAndPassword(auth, e.target['register-email'].value, e.target['register-password'].value); await setupNewUserDocument(userCredential.user); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('license-form').addEventListener('submit', e => { e.preventDefault(); handleLicenseActivation(); });
-        document.getElementById('affiliate-form').addEventListener('submit', async (e) => { e.preventDefault(); const form = e.target; const selectedPlan = form.querySelector('input[name="health-plan"]:checked'); const manualOverride = form['manual-override-checkbox'].checked; if (!selectedPlan && !manualOverride && healthPlans.length > 0) { return showToast('Debe seleccionar un plan o ingresar costos manuales.', 'error'); } const affiliateData = { name: form['affiliate-name'].value.trim(), documentId: form['affiliate-id'].value.trim(), email: form['affiliate-email'].value.trim(), phone: form['affiliate-phone'].value.trim(), address: form['affiliate-address'].value.trim(), healthPlan: selectedPlan ? selectedPlan.value : null, pensionPlan: form['pension-plan'].value, arlPlan: form['arl-plan'].value, ccfPlan: form['ccf-plan'].value, advisorId: form['advisor-select-list'].value, startDate: form['affiliate-start-date'].value, endDate: form['affiliate-end-date'].value, status: form['affiliate-status'].value, notes: form['affiliate-notes'].value.trim(), manualCosts: null, manualCommission: null }; if (manualOverride) { affiliateData.manualCosts = { health: Number(form['manual-cost-health'].value) || 0, pension: Number(form['manual-cost-pension'].value) || 0, arl: Number(form['manual-cost-arl'].value) || 0, ccf: Number(form['manual-cost-ccf'].value) || 0 }; affiliateData.manualCommission = Number(form['manual-commission'].value) || null; } const existingId = form['affiliate-doc-id'].value; if (existingId) { affiliateData.id = existingId; const oldAffiliate = affiliates.find(a => a.id === existingId); if (oldAffiliate && oldAffiliate.status !== affiliateData.status) { createNovedad('status_change', `El estado de ${affiliateData.name} cambió de ${oldAffiliate.status} a ${affiliateData.status}.`); } await saveDataToFirestore('affiliates', affiliateData); } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/affiliates`)); affiliateData.id = docRef.id; affiliateData.createdAt = window.firebase.serverTimestamp(); if (currentUserRole === 'asesor' && userRoleData.linkedAdvisorId) { affiliateData.advisorId = userRoleData.linkedAdvisorId; } await saveDataToFirestore('affiliates', affiliateData); createNovedad('creation', `Nuevo afiliado registrado: ${affiliateData.name}.`); } modalManager.close('affiliate-modal'); showToast('Afiliado guardado.'); });
-        document.getElementById('advisor-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['advisor-doc-id'].value; const advisorData = { name: form['advisor-name'].value, commissionRate: Number(form['advisor-commission'].value) }; if (id) { advisorData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/advisors`)); advisorData.id = docRef.id; createNovedad('creation', `Nuevo asesor añadido: ${advisorData.name}.`); } await saveDataToFirestore('advisors', advisorData); modalManager.close('advisor-modal'); showToast('Asesor guardado.'); });
-        document.getElementById('plan-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['plan-doc-id'].value; const planData = { name: form['plan-name'].value, price: Number(form['plan-price'].value), features: form['plan-features'].value }; if (id) { planData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/healthPlans`)); planData.id = docRef.id; } await saveDataToFirestore('healthPlans', planData); modalManager.close('plan-modal'); showToast('Plan guardado.'); });
-        document.getElementById('transaction-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const newTransaction = { type: form['transaction-type'].value, concept: form['transaction-concept'].value, amount: parseFloat(form['transaction-amount'].value), date: new Date(form['transaction-date'].value + 'T12:00:00.000Z') }; await window.firebase.addDoc(window.firebase.collection(db, `users/${adminUidForRole}/manualTransactions`), newTransaction); modalManager.close('transaction-modal'); showToast('Transacción guardada.'); });
-        document.getElementById('company-profile-form').addEventListener('submit', async e => { e.preventDefault(); companyProfile.name = document.getElementById('company-name').value; companyProfile.nit = document.getElementById('company-nit').value; companyProfile.address = document.getElementById('company-address').value; companyProfile.phone = document.getElementById('company-phone').value; companyProfile.email = document.getElementById('company-email').value; companyProfile.theme = document.querySelector('#theme-selector input:checked').value; companyProfile.sidebarTheme = document.querySelector('#sidebar-theme-selector input:checked').value; companyProfile.bottomNavTheme = document.querySelector('#bottom-nav-theme-selector input:checked').value; const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { companyProfile }, { merge: true }); showToast('Perfil actualizado.'); });
-        document.getElementById('settings-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const newSettings = { SMMLV: Number(form['setting-smmlv'].value), ADMIN_FEE_PER_AFFILIATE: Number(form['setting-admin-fee'].value), CONTRIBUTION_RATES: { health: parseFloat(form['setting-health'].value), pension: parseFloat(form['setting-pension'].value), independiente_ccf: parseFloat(form['setting-ccf-ind'].value), employer_ccf: parseFloat(form['setting-ccf-emp'].value), employee_health: defaultSettings.CONTRIBUTION_RATES.employee_health, employer_health: defaultSettings.CONTRIBUTION_RATES.employer_health, employee_pension: defaultSettings.CONTRIBUTION_RATES.employee_pension, employer_pension: defaultSettings.CONTRIBUTION_RATES.employer_pension }, ARL_RATES: { 1: parseFloat(form['setting-arl-1'].value), 2: parseFloat(form['setting-arl-2'].value), 3: parseFloat(form['setting-arl-3'].value), 4: parseFloat(form['setting-arl-4'].value), 5: parseFloat(form['setting-arl-5'].value), } }; const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { settings: newSettings }, { merge: true }); modalManager.close('settings-modal'); showToast('Configuración guardada.'); });
-        document.getElementById('manual-override-checkbox').addEventListener('change', (e) => { document.getElementById('manual-override-container').classList.toggle('hidden', !e.target.checked); });
-        document.getElementById('metric-month').addEventListener('change', renderCalendarioSection);
-        document.getElementById('metric-year').addEventListener('change', renderCalendarioSection);
-        document.getElementById('calendar-list-range-filter').addEventListener('change', renderCalendarioSection);
-        document.getElementById('invite-user-form').addEventListener('submit', handleInviteUser);
-        document.getElementById('invite-role').addEventListener('change', (e) => {
-            const role = e.target.value;
-            const container = document.getElementById('invite-link-container');
-            const label = document.getElementById('invite-link-label');
-            const select = document.getElementById('invite-link-select');
+        document.getElementById('affiliate-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const selectedPlan = form.querySelector('input[name="health-plan"]:checked');
+    const manualOverride = form['manual-override-checkbox'].checked;
+    if (!selectedPlan && !manualOverride && healthPlans.length > 0) {
+        return showToast('Debe seleccionar un plan o ingresar costos manuales.', 'error');
+    }
+    const affiliateData = {
+        name: form['affiliate-name'].value.trim(),
+        documentId: form['affiliate-id'].value.trim(),
+        email: form['affiliate-email'].value.trim(),
+        phone: form['affiliate-phone'].value.trim(),
+        address: form['affiliate-address'].value.trim(),
+        healthPlan: selectedPlan ? selectedPlan.value : null,
+        pensionPlan: form['pension-plan'].value,
+        arlPlan: form['arl-plan'].value,
+        ccfPlan: form['ccf-plan'].value,
+        advisorId: form['advisor-select-list'].value,
+        startDate: form['affiliate-start-date'].value,
+        endDate: form['affiliate-end-date'].value,
+        status: form['affiliate-status'].value,
+        notes: form['affiliate-notes'].value.trim(),
+        manualCosts: null,
+        manualCommission: null
+    };
+    if (manualOverride) {
+        affiliateData.manualCosts = {
+            health: Number(form['manual-cost-health'].value) || 0,
+            pension: Number(form['manual-cost-pension'].value) || 0,
+            arl: Number(form['manual-cost-arl'].value) || 0,
+            ccf: Number(form['manual-cost-ccf'].value) || 0
+        };
+        affiliateData.manualCommission = Number(form['manual-commission'].value) || null;
+    }
+    const existingId = form['affiliate-doc-id'].value;
+
+    if (existingId) {
+        // --- Lógica para ACTUALIZAR un afiliado existente ---
+        affiliateData.id = existingId;
+        const oldAffiliate = affiliates.find(a => a.id === existingId);
+        if (oldAffiliate && oldAffiliate.status !== affiliateData.status) {
+            createNovedad('status_change', `El estado de ${affiliateData.name} cambió de ${oldAffiliate.status} a ${affiliateData.status}.`);
+        }
+        await saveDataToFirestore('affiliates', affiliateData);
+        modalManager.close('affiliate-modal');
+        showToast('Afiliado actualizado correctamente.');
+
+    } else {
+        // --- Lógica para CREAR un nuevo afiliado y generar el RECIBO ---
+        const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/affiliates`));
+        affiliateData.id = docRef.id;
+        affiliateData.createdAt = window.firebase.serverTimestamp();
+
+        if (currentUserRole === 'asesor' && userRoleData.linkedAdvisorId) {
+            affiliateData.advisorId = userRoleData.linkedAdvisorId;
+        }
+        
+        await saveDataToFirestore('affiliates', affiliateData);
+        modalManager.close('affiliate-modal');
+        showToast('Afiliado guardado. Generando recibo...', 'success');
+        createNovedad('creation', `Nuevo afiliado registrado: ${affiliateData.name}.`);
+        
+        // --- LÓGICA PARA GENERAR PDF ---
+        try {
+            const planSeleccionado = healthPlans.find(p => p.id === affiliateData.healthPlan) || {};
+            const asesorAsignado = advisors.find(a => a.id === affiliateData.advisorId) || {};
             
-            if (role === 'asesor') {
-                label.textContent = 'Vincular con Asesor:';
-                select.innerHTML = advisors.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
-                container.classList.remove('hidden');
-            } else if (role === 'afiliado') {
-                label.textContent = 'Vincular con Afiliado:';
-                select.innerHTML = affiliates.map(a => `<option value="${a.id}">${a.name} (${a.documentId})</option>`).join('');
-                container.classList.remove('hidden');
-            } else {
-                container.classList.add('hidden');
-            }
-        });
+            setTimeout(() => {
+                generarReciboAfiliacionPDF(affiliateData, planSeleccionado, asesorAsignado, companyProfile);
+            }, 500);
+
+        } catch (pdfError) {
+            console.error("Error al generar el recibo PDF:", pdfError);
+            showToast("Afiliado guardado, pero hubo un error al generar el recibo.", "error");
+        }
+    }
+});
+
 
         document.getElementById('mark-novedades-read').addEventListener('click', async () => {
             const unreadNovedades = novedades.filter(n => n.read === false);
@@ -1760,44 +1810,150 @@
         });
     });
     
-    const modalManager = {
-        open(modalId, data = null) {
-            const modal = document.getElementById(modalId); if (!modal) return;
-            const form = modal.querySelector('form'); if(form) form.reset();
-            const titles = { 'affiliate-modal': 'Afiliado', 'advisor-modal': 'Asesor', 'settings-modal': 'Configuración', 'plan-modal': 'Plan de Salud', 'transaction-modal': 'Transacción', 'license-modal': 'Activar Licencia' };
-            modal.querySelector('h2').textContent = data?.id ? `Editar ${titles[modalId]}` : (data?.title || `Nuevo ${titles[modalId]}`);
-            if (modalId === 'license-modal') { document.getElementById('license-error-message').textContent = ''; }
-            else if (modalId === 'affiliate-modal') {
-                populateAdvisorSelect(); renderHealthPlanCards();
-                const advisorSelect = form['advisor-select-list'];
-                if (currentUserRole === 'asesor' && userRoleData.linkedAdvisorId) {
-                    advisorSelect.value = userRoleData.linkedAdvisorId;
-                    advisorSelect.disabled = true;
-                } else {
-                    advisorSelect.disabled = false;
-                    advisorSelect.value = data?.advisorId || '';
-                }
-                form['affiliate-doc-id'].value = data?.id || ''; form['affiliate-name'].value = data?.name || ''; form['affiliate-id'].value = data?.documentId || ''; form['affiliate-email'].value = data?.email || ''; form['affiliate-phone'].value = data?.phone || ''; form['affiliate-address'].value = data?.address || ''; if(data?.healthPlan) { const planInput = form.querySelector(`input[name="health-plan"][value="${data.healthPlan}"]`); if (planInput) planInput.checked = true; } form['pension-plan'].value = data?.pensionPlan || ''; form['arl-plan'].value = data?.arlPlan || ''; form['ccf-plan'].value = data?.ccfPlan || ''; form['affiliate-start-date'].value = data?.startDate || new Date().toISOString().split('T')[0]; form['affiliate-end-date'].value = data?.endDate || ''; form['affiliate-status'].value = data?.status || 'Pendiente'; form['affiliate-notes'].value = data?.notes || ''; const manualContainer = form.querySelector('#manual-override-container'); form['manual-override-checkbox'].checked = !!(data?.manualCosts || data?.manualCommission); manualContainer.classList.toggle('hidden', !form['manual-override-checkbox'].checked); form['manual-cost-health'].value = data?.manualCosts?.health || ''; form['manual-cost-pension'].value = data?.manualCosts?.pension || ''; form['manual-cost-arl'].value = data?.manualCosts?.arl || ''; form['manual-cost-ccf'].value = data?.manualCosts?.ccf || ''; form['manual-commission'].value = data?.manualCommission || '';
-            } else if (modalId === 'advisor-modal') { form['advisor-doc-id'].value = data?.id || ''; form['advisor-name'].value = data?.name || ''; form['advisor-commission'].value = data?.commissionRate || ''; } 
-            else if (modalId === 'plan-modal') { form['plan-doc-id'].value = data?.id || ''; form['plan-name'].value = data?.name || ''; form['plan-price'].value = data?.price || ''; form['plan-features'].value = data?.features || ''; } 
-            else if (modalId === 'settings-modal') { 
-                const s = settings || {}; // Safety check
-                const ds = defaultSettings;
-                form['setting-smmlv'].value = s.SMMLV ?? ds.SMMLV; 
-                form['setting-admin-fee'].value = s.ADMIN_FEE_PER_AFFILIATE ?? ds.ADMIN_FEE_PER_AFFILIATE;
-                form['setting-health'].value = s.CONTRIBUTION_RATES?.health ?? ds.CONTRIBUTION_RATES.health;
-                form['setting-pension'].value = s.CONTRIBUTION_RATES?.pension ?? ds.CONTRIBUTION_RATES.pension;
-                form['setting-ccf-ind'].value = s.CONTRIBUTION_RATES?.independiente_ccf ?? ds.CONTRIBUTION_RATES.independiente_ccf;
-                form['setting-ccf-emp'].value = s.CONTRIBUTION_RATES?.employer_ccf ?? ds.CONTRIBUTION_RATES.employer_ccf;
-                for (let i = 1; i <= 5; i++) { 
-                    form[`setting-arl-${i}`].value = s.ARL_RATES?.[i] ?? ds.ARL_RATES[i]; 
-                } 
+    function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, companyProfileData) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // --- 1. CONFIGURACIÓN DE BRANDING Y ESTILOS ---
+    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--auth-gradient-from').trim();
+    const formatDate = (dateString) => dateString ? new Date(dateString + 'T00:00:00').toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
+    const generationDate = new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+    // --- 2. ENCABEZADO DEL DOCUMENTO ---
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(primaryColor);
+    doc.text(companyProfileData.name || "Seb Salud", 20, 25);
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(40);
+    doc.text("Recibo de Afiliación", 20, 35);
+    doc.setLineWidth(0.5);
+    doc.setDrawColor(primaryColor);
+    doc.line(20, 38, 190, 38);
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text(`NIT: ${companyProfileData.nit || 'N/D'}`, 190, 25, { align: 'right' });
+    doc.text(`Contacto: ${companyProfileData.phone || companyProfileData.email || 'N/D'}`, 190, 30, { align: 'right' });
+    doc.setFont("helvetica", "bold");
+    doc.text(`Recibo N°: ${affiliateData.id.slice(-7).toUpperCase()}`, 190, 45, { align: 'right' });
+    doc.setFont("helvetica", "normal");
+    doc.text(`Fecha de Emisión: ${generationDate}`, 190, 50, { align: 'right' });
+
+    // --- 3. SECCIÓN: DATOS DEL AFILIADO ---
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(primaryColor);
+    doc.text("Datos del Afiliado", 20, 60);
+    doc.autoTable({
+        startY: 63,
+        theme: 'plain',
+        body: [
+            ['Nombre Completo:', affiliateData.name],
+            ['Documento de Identidad:', affiliateData.documentId],
+            ['Correo Electrónico:', affiliateData.email],
+            ['Teléfono de Contacto:', affiliateData.phone],
+            ['Dirección:', affiliateData.address],
+        ],
+        styles: { fontSize: 10, cellPadding: 1.5 },
+        columnStyles: { 0: { fontStyle: 'bold' } }
+    });
+
+    // --- 4. SECCIÓN: DETALLES DEL PLAN Y AFILIACIÓN ---
+    let finalY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(primaryColor);
+    doc.text("Detalles del Plan de Salud", 20, finalY);
+    const plan = planData || {};
+    const advisor = advisorData || {};
+    doc.autoTable({
+        startY: finalY + 3,
+        theme: 'grid',
+        headStyles: { fillColor: primaryColor, textColor: 255 },
+        head: [['Concepto', 'Detalle']],
+        body: [
+            ['Plan Adquirido', plan.name || 'No especificado (Costos Manuales)'],
+            ['Valor Mensual del Plan', plan.price ? formatCurrency(plan.price) : 'Según costos manuales'],
+            ['Asesor Asignado', advisor.name || 'No asignado'],
+            ['Fecha de Inicio de Cobertura', formatDate(affiliateData.startDate)],
+            ['Próximo Pago / Vencimiento', formatDate(affiliateData.endDate) || 'Indefinido'],
+        ],
+        styles: { fontSize: 10 },
+    });
+
+    // --- 5. SECCIÓN: CARACTERÍSTICAS DEL PLAN ---
+    if (plan.features) {
+        finalY = doc.lastAutoTable.finalY + 10;
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(primaryColor);
+        doc.text("Características Incluidas en el Plan", 20, finalY);
+        const features = plan.features.split('\n').map(feature => [feature.trim()]);
+        doc.autoTable({
+            startY: finalY + 3,
+            theme: 'striped',
+            head: [['Beneficios']],
+            body: features,
+            styles: { fontSize: 9 },
+            headStyles: { fillColor: [241, 245, 249], textColor: [51, 65, 85] }
+        });
+    }
+    
+    // --- 6. PIE DE PÁGINA ---
+    finalY = doc.internal.pageSize.height - 30;
+    doc.setLineWidth(0.2);
+    doc.setDrawColor(primaryColor);
+    doc.line(20, finalY, 190, finalY);
+    doc.setFontSize(9);
+    doc.setTextColor(150);
+    doc.text("Gracias por confiar en nuestros servicios. Este documento es un comprobante de su afiliación.", doc.internal.pageSize.width / 2, finalY + 8, { align: 'center' });
+    doc.text("Para cualquier consulta, no dude en contactarnos.", doc.internal.pageSize.width / 2, finalY + 13, { align: 'center' });
+
+    // --- 7. GUARDAR EL DOCUMENTO ---
+    doc.save(`Recibo_Afiliacion_${affiliateData.name.replace(/\s/g, '_')}.pdf`);
+}
+
+const modalManager = {
+    open(modalId, data = null) {
+        const modal = document.getElementById(modalId); if (!modal) return;
+        const form = modal.querySelector('form'); if(form) form.reset();
+        const titles = { 'affiliate-modal': 'Afiliado', 'advisor-modal': 'Asesor', 'settings-modal': 'Configuración', 'plan-modal': 'Plan de Salud', 'transaction-modal': 'Transacción', 'license-modal': 'Activar Licencia' };
+        modal.querySelector('h2').textContent = data?.id ? `Editar ${titles[modalId]}` : (data?.title || `Nuevo ${titles[modalId]}`);
+        if (modalId === 'license-modal') { document.getElementById('license-error-message').textContent = ''; }
+        else if (modalId === 'affiliate-modal') {
+            populateAdvisorSelect(); renderHealthPlanCards();
+            const advisorSelect = form['advisor-select-list'];
+            if (currentUserRole === 'asesor' && userRoleData.linkedAdvisorId) {
+                advisorSelect.value = userRoleData.linkedAdvisorId;
+                advisorSelect.disabled = true;
+            } else {
+                advisorSelect.disabled = false;
+                advisorSelect.value = data?.advisorId || '';
+            }
+            form['affiliate-doc-id'].value = data?.id || ''; form['affiliate-name'].value = data?.name || ''; form['affiliate-id'].value = data?.documentId || ''; form['affiliate-email'].value = data?.email || ''; form['affiliate-phone'].value = data?.phone || ''; form['affiliate-address'].value = data?.address || ''; if(data?.healthPlan) { const planInput = form.querySelector(`input[name="health-plan"][value="${data.healthPlan}"]`); if (planInput) planInput.checked = true; } form['pension-plan'].value = data?.pensionPlan || ''; form['arl-plan'].value = data?.arlPlan || ''; form['ccf-plan'].value = data?.ccfPlan || ''; form['affiliate-start-date'].value = data?.startDate || new Date().toISOString().split('T')[0]; form['affiliate-end-date'].value = data?.endDate || ''; form['affiliate-status'].value = data?.status || 'Pendiente'; form['affiliate-notes'].value = data?.notes || ''; const manualContainer = form.querySelector('#manual-override-container'); form['manual-override-checkbox'].checked = !!(data?.manualCosts || data?.manualCommission); manualContainer.classList.toggle('hidden', !form['manual-override-checkbox'].checked); form['manual-cost-health'].value = data?.manualCosts?.health || ''; form['manual-cost-pension'].value = data?.manualCosts?.pension || ''; form['manual-cost-arl'].value = data?.manualCosts?.arl || ''; form['manual-cost-ccf'].value = data?.manualCosts?.ccf || ''; form['manual-commission'].value = data?.manualCommission || '';
+        } else if (modalId === 'advisor-modal') { form['advisor-doc-id'].value = data?.id || ''; form['advisor-name'].value = data?.name || ''; form['advisor-commission'].value = data?.commissionRate || ''; } 
+        else if (modalId === 'plan-modal') { form['plan-doc-id'].value = data?.id || ''; form['plan-name'].value = data?.name || ''; form['plan-price'].value = data?.price || ''; form['plan-features'].value = data?.features || ''; } 
+        else if (modalId === 'settings-modal') { 
+            const s = settings || {};
+            const ds = defaultSettings;
+            form['setting-smmlv'].value = s.SMMLV ?? ds.SMMLV; 
+            form['setting-admin-fee'].value = s.ADMIN_FEE_PER_AFFILIATE ?? ds.ADMIN_FEE_PER_AFFILIATE;
+            form['setting-health'].value = s.CONTRIBUTION_RATES?.health ?? ds.CONTRIBUTION_RATES.health;
+            form['setting-pension'].value = s.CONTRIBUTION_RATES?.pension ?? ds.CONTRIBUTION_RATES.pension;
+            form['setting-ccf-ind'].value = s.CONTRIBUTION_RATES?.independent_ccf ?? ds.CONTRIBUTION_RATES.independent_ccf;
+            form['setting-ccf-emp'].value = s.CONTRIBUTION_RATES?.employer_ccf ?? ds.CONTRIBUTION_RATES.employer_ccf;
+            for (let i = 1; i <= 5; i++) { 
+                form[`setting-arl-${i}`].value = s.ARL_RATES?.[i] ?? ds.ARL_RATES[i]; 
             } 
-            else if (modalId === 'transaction-modal') { document.getElementById('transaction-type').value = data.type; document.getElementById('transaction-date').value = new Date().toISOString().split('T')[0]; }
-            modal.classList.remove('opacity-0', 'pointer-events-none');
-            modal.querySelector('.modal-content').classList.remove('scale-95');
-            lucide.createIcons();
-        },
+        } 
+        else if (modalId === 'transaction-modal') { document.getElementById('transaction-type').value = data.type; document.getElementById('transaction-date').value = new Date().toISOString().split('T')[0]; }
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.querySelector('.modal-content').classList.remove('scale-95');
+        lucide.createIcons();
+    },
+    close(modalId) { const modal = document.getElementById(modalId); if (!modal) return; modal.classList.add('opacity-0'); modal.querySelector('.modal-content').classList.add('scale-95'); setTimeout(() => modal.classList.add('pointer-events-none'), 250); }
+};
         close(modalId) { const modal = document.getElementById(modalId); if (!modal) return; modal.classList.add('opacity-0'); modal.querySelector('.modal-content').classList.add('scale-95'); setTimeout(() => modal.classList.add('pointer-events-none'), 250); }
     };
     function showToast(message, type = 'success') { const toast = document.getElementById('toast'); if (!toast) return; toast.textContent = message; toast.className = `fixed top-5 right-5 z-[100] text-white py-2 px-4 rounded-lg shadow-xl transition-all duration-300 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`; toast.classList.remove('opacity-0', 'translate-y-2'); setTimeout(() => toast.classList.add('opacity-0', 'translate-y-2'), 3000); }
@@ -1809,3 +1965,4 @@
 </script>
 </body>
 </html>
+
