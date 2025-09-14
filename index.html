@@ -11,7 +11,8 @@
     
     <script type="module">
         import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, createU
+                serWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
         window.firebase = {
@@ -1677,8 +1678,54 @@
         document.getElementById('login-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { await window.firebase.signInWithEmailAndPassword(auth, e.target['login-email'].value, e.target['login-password'].value); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('register-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { const userCredential = await window.firebase.createUserWithEmailAndPassword(auth, e.target['register-email'].value, e.target['register-password'].value); await setupNewUserDocument(userCredential.user); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('license-form').addEventListener('submit', e => { e.preventDefault(); handleLicenseActivation(); });
-        document.getElementById('affiliate-form').addEventListener('submit', async (e) => { e.preventDefault(); const form = e.target; const selectedPlan = form.querySelector('input[name="health-plan"]:checked'); const manualOverride = form['manual-override-checkbox'].checked; if (!selectedPlan && !manualOverride && healthPlans.length > 0) { return showToast('Debe seleccionar un plan o ingresar costos manuales.', 'error'); } const affiliateData = { name: form['affiliate-name'].value.trim(), documentId: form['affiliate-id'].value.trim(), email: form['affiliate-email'].value.trim(), phone: form['affiliate-phone'].value.trim(), address: form['affiliate-address'].value.trim(), healthPlan: selectedPlan ? selectedPlan.value : null, pensionPlan: form['pension-plan'].value, arlPlan: form['arl-plan'].value, ccfPlan: form['ccf-plan'].value, advisorId: form['advisor-select-list'].value, startDate: form['affiliate-start-date'].value, endDate: form['affiliate-end-date'].value, status: form['affiliate-status'].value, notes: form['affiliate-notes'].value.trim(), manualCosts: null, manualCommission: null }; if (manualOverride) { affiliateData.manualCosts = { health: Number(form['manual-cost-health'].value) || 0, pension: Number(form['manual-cost-pension'].value) || 0, arl: Number(form['manual-cost-arl'].value) || 0, ccf: Number(form['manual-cost-ccf'].value) || 0 }; affiliateData.manualCommission = Number(form['manual-commission'].value) || null; } const existingId = form['affiliate-doc-id'].value; if (existingId) { affiliateData.id = existingId; const oldAffiliate = affiliates.find(a => a.id === existingId); if (oldAffiliate && oldAffiliate.status !== affiliateData.status) { createNovedad('status_change', `El estado de ${affiliateData.name} cambió de ${oldAffiliate.status} a ${affiliateData.status}.`); } await saveDataToFirestore('affiliates', affiliateData); } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/affiliates`)); affiliateData.id = docRef.id; affiliateData.createdAt = window.firebase.serverTimestamp(); if (currentUserRole === 'asesor' && userRoleData.linkedAdvisorId) { affiliateData.advisorId = userRoleData.linkedAdvisorId; } await saveDataToFirestore('affiliates', affiliateData); createNovedad('creation', `Nuevo afiliado registrado: ${affiliateData.name}.`); } modalManager.close('affiliate-modal'); showToast('Afiliado guardado.'); });
-        document.getElementById('advisor-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['advisor-doc-id'].value; const advisorData = { name: form['advisor-name'].value, commissionRate: Number(form['advisor-commission'].value) }; if (id) { advisorData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/advisors`)); advisorData.id = docRef.id; createNovedad('creation', `Nuevo asesor añadido: ${advisorData.name}.`); } await saveDataToFirestore('advisors', advisorData); modalManager.close('advisor-modal'); showToast('Asesor guardado.'); });
+        document.getElementById('affiliate-form').addEventListener('submit', async (e) => { e.preventDefault(); const form = e.target; const selectedPlan = form.querySelector('input[name="health-plan"]:checked'); const manualOverride = form['manual-override-checkbox'].checked; if (!selectedPlan && !manualOverride && healthPlans.length > 0) { return showToast('Debe seleccionar un plan o ingresar costos manuales.', 'error'); } const affiliateData = { name: form['affiliate-name'].value.trim(), documentId: form['affiliate-id'].value.trim(), email: form['affiliate-email'].value.trim(), phone: form['affiliate-phone'].value.trim(), address: form['affiliate-address'].value.trim(), healthPlan: selectedPlan ? selectedPlan.value : null, pensionPlan: form['pension-plan'].value, arlPlan: form['arl-plan'].value, ccfPlan: form['ccf-plan'].value, advisorId: form['advisor-select-list'].value, startDate: form['affiliate-start-date'].value, endDate: form['affiliate-end-date'].value, status: form['affiliate-status'].value, notes: form['affiliate-notes'].value.trim(), manualCosts: null, manualCommission: null }; if (manualOverride) { affiliateData.manualCosts = { health: Number(form['manual-cost-health'].value) || 0, pension: Number(form['manual-cost-pension'].value) || 0, arl: Number(form['manual-cost-arl'].value) || 0, ccf: Number(form['manual-cost-ccf'].value) || 0 }; affiliateData.manualCommission = Number(form['manual-commission'].value) || null; } 
+const existingId = form['affiliate-doc-id'].value;
+if (existingId) {
+    affiliateData.id = existingId;
+    const oldAffiliate = affiliates.find(a => a.id === existingId);
+    if (oldAffiliate && oldAffiliate.status !== affiliateData.status) {
+        createNovedad('status_change', `El estado de ${affiliateData.name} cambió de ${oldAffiliate.status} a ${affiliateData.status}.`);
+    }
+    await saveDataToFirestore('affiliates', affiliateData);
+    modalManager.close('affiliate-modal');
+    showToast('Afiliado actualizado correctamente.');
+
+} else {
+    // --- Lógica para crear un NUEVO afiliado ---
+    const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/affiliates`));
+    affiliateData.id = docRef.id;
+    affiliateData.createdAt = window.firebase.serverTimestamp();
+
+    if (currentUserRole === 'asesor' && userRoleData.linkedAdvisorId) {
+        affiliateData.advisorId = userRoleData.linkedAdvisorId;
+    }
+    
+    // Guardamos los datos en la base de datos
+    await saveDataToFirestore('affiliates', affiliateData);
+
+    // Cerramos el modal y mostramos la notificación primero para una mejor experiencia de usuario
+    modalManager.close('affiliate-modal');
+    showToast('Afiliado guardado con éxito. Generando recibo...');
+    createNovedad('creation', `Nuevo afiliado registrado: ${affiliateData.name}.`);
+    
+    // --- INICIO DE LA NUEVA LÓGICA PARA GENERAR PDF ---
+    try {
+        // Buscamos los datos completos del plan y del asesor para el recibo
+        const planSeleccionado = healthPlans.find(p => p.id === affiliateData.healthPlan) || {};
+        const asesorAsignado = advisors.find(a => a.id === affiliateData.advisorId) || {};
+        
+        // Llamamos a la función para generar y descargar el PDF
+        // Usamos un pequeño delay para que el usuario vea el toast antes de la descarga
+        setTimeout(() => {
+            generarReciboAfiliacionPDF(affiliateData, planSeleccionado, asesorAsignado, companyProfile);
+        }, 500);
+
+    } catch (pdfError) {
+        console.error("Error al generar el recibo PDF:", pdfError);
+        showToast("Afiliado guardado, pero hubo un error al generar el recibo.", "error");
+    }
+    // --- FIN DE LA NUEVA LÓGICA ---
+}        document.getElementById('advisor-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['advisor-doc-id'].value; const advisorData = { name: form['advisor-name'].value, commissionRate: Number(form['advisor-commission'].value) }; if (id) { advisorData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/advisors`)); advisorData.id = docRef.id; createNovedad('creation', `Nuevo asesor añadido: ${advisorData.name}.`); } await saveDataToFirestore('advisors', advisorData); modalManager.close('advisor-modal'); showToast('Asesor guardado.'); });
         document.getElementById('plan-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const id = form['plan-doc-id'].value; const planData = { name: form['plan-name'].value, price: Number(form['plan-price'].value), features: form['plan-features'].value }; if (id) { planData.id = id; } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/healthPlans`)); planData.id = docRef.id; } await saveDataToFirestore('healthPlans', planData); modalManager.close('plan-modal'); showToast('Plan guardado.'); });
         document.getElementById('transaction-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.target; const newTransaction = { type: form['transaction-type'].value, concept: form['transaction-concept'].value, amount: parseFloat(form['transaction-amount'].value), date: new Date(form['transaction-date'].value + 'T12:00:00.000Z') }; await window.firebase.addDoc(window.firebase.collection(db, `users/${adminUidForRole}/manualTransactions`), newTransaction); modalManager.close('transaction-modal'); showToast('Transacción guardada.'); });
         document.getElementById('company-profile-form').addEventListener('submit', async e => { e.preventDefault(); companyProfile.name = document.getElementById('company-name').value; companyProfile.nit = document.getElementById('company-nit').value; companyProfile.address = document.getElementById('company-address').value; companyProfile.phone = document.getElementById('company-phone').value; companyProfile.email = document.getElementById('company-email').value; companyProfile.theme = document.querySelector('#theme-selector input:checked').value; companyProfile.sidebarTheme = document.querySelector('#sidebar-theme-selector input:checked').value; companyProfile.bottomNavTheme = document.querySelector('#bottom-nav-theme-selector input:checked').value; const userDocRef = window.firebase.doc(db, "users", currentUser.uid); await window.firebase.setDoc(userDocRef, { companyProfile }, { merge: true }); showToast('Perfil actualizado.'); });
@@ -1926,4 +1973,5 @@
 </script>
 </body>
 </html>
+
 
