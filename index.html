@@ -1611,6 +1611,34 @@
 
 
     document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('invite-user-form').addEventListener('submit', handleInviteUser);
+        const inviteRoleSelect = document.getElementById('invite-role');
+const inviteLinkContainer = document.getElementById('invite-link-container');
+const inviteLinkSelect = document.getElementById('invite-link-select');
+const inviteLinkLabel = document.getElementById('invite-link-label');
+
+inviteRoleSelect.addEventListener('change', (e) => {
+    const selectedRole = e.target.value;
+
+    if (selectedRole === 'asesor' || selectedRole === 'afiliado') {
+        let options = '<option value="" disabled selected>Seleccionar para vincular...</option>';
+
+        if (selectedRole === 'asesor') {
+            inviteLinkLabel.textContent = 'Vincular con Asesor Existente:';
+            // La variable 'advisors' ya la tienes disponible globalmente
+            options += advisors.map(advisor => `<option value="${advisor.id}">${advisor.name}</option>`).join('');
+        } else { // es 'afiliado'
+            inviteLinkLabel.textContent = 'Vincular con Afiliado Existente:';
+            // La variable 'affiliates' ya la tienes disponible globalmente
+            options += affiliates.map(aff => `<option value="${aff.id}">${aff.name} (${aff.documentId})</option>`).join('');
+        }
+
+        inviteLinkSelect.innerHTML = options;
+        inviteLinkContainer.classList.remove('hidden'); // Muestra el contenedor
+    } else {
+        inviteLinkContainer.classList.add('hidden'); // Oculta si no se selecciona nada
+    }
+});
         document.body.addEventListener('click', async (e) => { 
             const target = e.target;
             const button = target.closest('button');
@@ -2066,3 +2094,4 @@
 </script>
 </body>
 </html>
+
