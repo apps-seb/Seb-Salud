@@ -1983,6 +1983,27 @@ inviteRoleSelect.addEventListener('change', (e) => {
     });
     // --- FIN DEL CÓDIGO PARA TRANSACCIONES ---
 
+        // --- MANEJO PARA CAMBIAR TEMAS EN TIEMPO REAL (VISTA PREVIA) ---
+    const setupThemePreview = (selectorId, applyFunction) => {
+        const selectorContainer = document.getElementById(selectorId);
+        if (selectorContainer) {
+            selectorContainer.addEventListener('change', (e) => {
+                // Nos aseguramos de que el clic fue en un botón de radio
+                if (e.target.type === 'radio' && e.target.name) {
+                    const selectedValue = e.target.value;
+                    // Llamamos a la función correspondiente para aplicar el tema
+                    applyFunction(selectedValue);
+                }
+            });
+        }
+    };
+
+    // Usamos nuestra función para los 3 selectores de tema
+    setupThemePreview('theme-selector', applyTheme);
+    setupThemePreview('sidebar-theme-selector', applySidebarTheme);
+    setupThemePreview('bottom-nav-theme-selector', applyBottomNavTheme);
+    // --- FIN DEL CÓDIGO PARA TEMAS EN TIEMPO REAL ---
+
         document.getElementById('mark-novedades-read').addEventListener('click', async () => {
             const unreadNovedades = novedades.filter(n => n.read === false);
             if (unreadNovedades.length === 0) return;
@@ -2190,6 +2211,7 @@ inviteRoleSelect.addEventListener('change', (e) => {
 </script>
 </body>
 </html>
+
 
 
 
