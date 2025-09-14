@@ -1498,154 +1498,24 @@
         lucide.createIcons();
     }
 
-// --- FUNCIONES PARA MANEJAR EVENTOS DE FORMULARIOS ---
+    async function handleInviteUser(e) {
+        e.preventDefault();
+        const btn = document.getElementById('invite-user-btn');
+        btn.disabled = true;
+        btn.innerHTML = `<i class="animate-spin" data-lucide="loader-2"></i> Creando...`;
+        lucide.createIcons();
 
-async function handleInviteUser(e) {
-    e.preventDefault();
-    const btn = document.getElementById('invite-user-btn');
-    btn.disabled = true;
-    btn.innerHTML = `<i class="animate-spin" data-lucide="loader-2"></i> Creando...`;
-    lucide.createIcons();
-
-    const email = document.getElementById('invite-email').value;
-    const password = document.getElementById('invite-password').value;
-    const role = document.getElementById('invite-role').value;
-    const linkedId = document.getElementById('invite-link-select').value;
-    
-    if (!email || !password || !role || !linkedId) {
-        showToast('Todos los campos son requeridos.', 'error');
-        btn.disabled = false;
-        btn.textContent = 'Crear y Vincular Usuario';
-        return;
-    }
-
-    try {
-        const secondaryApp = window.firebase.initializeApp(firebaseConfig, `secondary-auth-${Date.now()}`);
-        const secondaryAuth = window.firebase.getAuth(secondaryApp);
-        const userCredential = await window.firebase.createUserWithEmailAndPassword(secondaryAuth, email, password);
-        const newUserUid = userCredential.user.uid;
-        await window.firebase.signOut(secondaryAuth);
-        await window.firebase.deleteApp(secondaryApp);
-
-        const batch = window.firebase.writeBatch(db);
+        const email = document.getElementById('invite-email').value;
+        const password = document.getElementById('invite-password').value;
+        const role = document.getElementById('invite-role').value;
+        const linkedId = document.getElementById('invite-link-select').value;
         
-        const userRoleRef = window.firebase.doc(db, "userRoles", newUserUid);
-        batch.set(userRoleRef, {
-            email: email,
-            role: role,
-            adminUid: currentUser.uid
-        });
-
-        const adminRoleRef = window.firebase.doc(db, `users/${currentUser.uid}/roles`, newUserUid);
-        const roleData = {
-            uid: newUserUid,
-            email: email,
-            role: role,
-            createdAt: window.firebase.serverTimestamp()
-        };
-        if (role === 'asesor') roleData.linkedAdvisorId = linkedId;
-        if (role === 'afiliado') roleData.linkedAffiliateId = linkedId;
-        batch.set(adminRoleRef, roleData);
-
-        await batch.commit();
-
-        showToast('Usuario creado y vinculado exitosamente.', 'success');
-        e.target.reset();
-        document.getElementById('invite-link-container').classList.add('hidden');
-
-    } catch (error) {
-        console.error("Error creando usuario:", error);
-        showToast(getFirebaseAuthErrorMessage(error), 'error');
-    } finally {
-        btn.disabled = false;
-        btn.textContent = 'Crear y Vincular Usuario';
-    }
-}
-
-async function handleTransactionSubmit(e) {
-    e.preventDefault();
-    const form = e.target;
-    const transactionData = {
-        type: form['transaction-type'].value,
-        concept: form['transaction-concept'].value.trim(),
-        amount: Number(form['transaction-amount'].value),
-        date: form['transaction-date'].value,
-    };
-
-    if (!transactionData.concept || !transactionData.amount || !transactionData.date) {
-        showToast('Todos los campos son obligatorios.', 'error');
-        return;
-    }
-
-    try {
-        const collectionRef = window.firebase.collection(db, `users/${adminUidForRole}/manualTransactions`);
-        await window.firebase.addDoc(collectionRef, transactionData);
-        showToast(`'${transactionData.type === 'ingreso' ? 'Ingreso' : 'Egreso'}' guardado correctamente.`, 'success');
-        modalManager.close('transaction-modal');
-    } catch (error) {
-        console.error("Error guardando la transacción:", error);
-        showToast('No se pudo guardar la transacción.', 'error');
-    }
-}
-
-async function handleCompanyProfileSave(e) {
-    e.preventDefault();
-    const form = e.target;
-    const updatedProfile = {
-        name: form['company-name'].value,
-        nit: form['company-nit'].value,
-        address: form['company-address'].value,
-        phone: form['company-phone'].value,
-        email: form['company-email'].value,
-        theme: form.querySelector('input[name="theme"]:checked').value,
-        sidebarTheme: form.querySelector('input[name="sidebar-theme"]:checked').value,
-        bottomNavTheme: form.querySelector('input[name="bottom-nav-theme"]:checked').value,
-    };
-
-    try {
-        const userDocRef = window.firebase.doc(db, "users", currentUser.uid);
-        await window.firebase.setDoc(userDocRef, { companyProfile: updatedProfile }, { merge: true });
-        showToast('Perfil de la empresa actualizado con éxito.', 'success');
-    } catch (error) {
-        console.error("Error al actualizar el perfil:", error);
-        showToast('No se pudo guardar los cambios.', 'error');
-    }
-}
-
-async function handleSettingsSave(e) {
-    e.preventDefault();
-    const form = e.target;
-    const newSettings = {
-        SMMLV: Number(form['setting-smmlv'].value),
-        ADMIN_FEE_PER_AFFILIATE: Number(form['setting-admin-fee'].value),
-        CONTRIBUTION_RATES: {
-            ...settings.CONTRIBUTION_RATES, // Mantener valores no editables
-            health: Number(form['setting-health'].value),
-            pension: Number(form['setting-pension'].value),
-            independiente_ccf: Number(form['setting-ccf-ind'].value),
-            employer_ccf: Number(form['setting-ccf-emp'].value),
-        },
-        ARL_RATES: {
-            1: Number(form['setting-arl-1'].value),
-            2: Number(form['setting-arl-2'].value),
-            3: Number(form['setting-arl-3'].value),
-            4: Number(form['setting-arl-4'].value),
-            5: Number(form['setting-arl-5'].value),
+        if (!email || !password || !role || !linkedId) {
+            showToast('Todos los campos son requeridos.', 'error');
+            btn.disabled = false;
+            btn.textContent = 'Crear y Vincular Usuario';
+            return;
         }
-    };
-
-    try {
-        const userDocRef = window.firebase.doc(db, "users", currentUser.uid);
-        await window.firebase.setDoc(userDocRef, { settings: newSettings }, { merge: true });
-        showToast('Configuración guardada correctamente.', 'success');
-        modalManager.close('settings-modal');
-    } catch (error) {
-        console.error("Error al guardar la configuración:", error);
-        showToast('No se pudo guardar la configuración.', 'error');
-    }
-}
-
-
 
         try {
             const secondaryApp = window.firebase.initializeApp(firebaseConfig, `secondary-auth-${Date.now()}`);
@@ -1740,139 +1610,7 @@ async function handleSettingsSave(e) {
     }
 
 
-    // --- EVENT LISTENERS ---
-document.addEventListener('DOMContentLoaded', () => {
-    // Listener de clics generales (delegación de eventos)
-    document.body.addEventListener('click', async (e) => {
-        const target = e.target;
-        const button = target.closest('button');
-        const navLink = target.closest('[data-target]');
-        const profileModal = document.getElementById('profile-modal');
-        const profileToggleBtn = document.getElementById('profile-toggle-btn');
-        const novedadesModal = document.getElementById('novedades-modal');
-        const novedadesToggleBtn = document.getElementById('novedades-toggle-btn');
-
-        if (profileModal && !profileModal.contains(target) && profileToggleBtn && !profileToggleBtn.contains(target)) { profileModal.classList.add('scale-95', 'opacity-0', 'pointer-events-none'); }
-        if (novedadesModal && !novedadesModal.contains(target) && novedadesToggleBtn && !novedadesToggleBtn.contains(target)) { novedadesModal.classList.add('scale-95', 'opacity-0', 'pointer-events-none'); }
-
-        if (navLink) {
-            e.preventDefault();
-            const targetId = navLink.dataset.target;
-            renderContent(targetId);
-            document.querySelectorAll('[data-target]').forEach(l => l.classList.remove('active'));
-            document.querySelectorAll(`[data-target="${targetId}"]`).forEach(l => l.classList.add('active'));
-            const title = navLink.querySelector('span')?.textContent.trim() || navLink.textContent.trim().split('\n')[0].trim() || targetId;
-            document.getElementById('header-title').textContent = title.charAt(0).toUpperCase() + title.slice(1);
-            if (window.innerWidth < 768) { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('sidebar-overlay').classList.add('opacity-0', 'pointer-events-none'); }
-            return;
-        }
-
-        if (!button) return;
-        const id = button.dataset.id;
-
-        switch (button.id) {
-            case 'show-register': document.getElementById('login-view').style.display = 'none'; document.getElementById('register-view').style.display = 'block'; return;
-            case 'show-login': document.getElementById('register-view').style.display = 'none'; document.getElementById('login-view').style.display = 'block'; return;
-            case 'logout-btn': case 'profile-modal-logout-btn': window.firebase.signOut(auth); return;
-            case 'menu-toggle': document.getElementById('sidebar').classList.toggle('-translate-x-full'); const overlay = document.getElementById('sidebar-overlay'); overlay.classList.toggle('opacity-0'); overlay.classList.toggle('pointer-events-none'); return;
-            case 'profile-toggle-btn': document.getElementById('profile-modal').classList.toggle('scale-95'); document.getElementById('profile-modal').classList.toggle('opacity-0'); document.getElementById('profile-modal').classList.toggle('pointer-events-none'); return;
-            case 'novedades-toggle-btn': document.getElementById('novedades-modal').classList.toggle('scale-95'); document.getElementById('novedades-modal').classList.toggle('opacity-0'); document.getElementById('novedades-modal').classList.toggle('pointer-events-none'); return;
-            case 'sidebar-overlay': document.getElementById('menu-toggle').click(); return;
-            case 'add-affiliate-btn': modalManager.open('affiliate-modal'); return;
-            case 'add-advisor-btn': modalManager.open('advisor-modal'); return;
-            case 'add-plan-btn': modalManager.open('plan-modal'); return;
-            case 'add-income-btn': modalManager.open('transaction-modal', { type: 'ingreso', title: 'Nuevo Ingreso' }); return;
-            case 'add-expense-btn': modalManager.open('transaction-modal', { type: 'egreso', title: 'Nuevo Egreso' }); return;
-            case 'open-settings-btn': modalManager.open('settings-modal'); return;
-            case 'export-affiliates-btn': handleExportAffiliates(); return;
-            case 'export-advisors-btn': handleExportAdvisors(); return;
-            case 'generate-report-btn': generatePDFReport(); return;
-            case 'view-as-cards-btn': affiliatesViewMode = 'card'; updateViewToggleButtons(); renderAffiliatesList(); return;
-            case 'view-as-table-btn': affiliatesViewMode = 'table'; updateViewToggleButtons(); renderAffiliatesList(); return;
-            case 'calendar-view-cards-btn': calendarViewMode = 'card'; renderCalendarioSection(); return;
-            case 'calendar-view-table-btn': calendarViewMode = 'table'; renderCalendarioSection(); return;
-            case 'calendar-view-list-btn': calendarViewMode = 'list'; renderCalendarioSection(); return;
-        }
-
-        if (button.dataset.closeModal) modalManager.close(button.dataset.closeModal);
-        else if (button.matches('.edit-affiliate-btn')) modalManager.open('affiliate-modal', affiliates.find(a => a.id === id));
-        else if (button.matches('.edit-advisor-btn')) modalManager.open('advisor-modal', advisors.find(v => v.id === id));
-        else if (button.matches('.edit-plan-btn')) modalManager.open('plan-modal', healthPlans.find(p => p.id === id));
-        else if (button.matches('[data-toggle-details]')) { const card = button.closest('.bg-white'); if (card) { card.querySelector('.details-section').classList.toggle('hidden'); button.classList.toggle('details-shown'); } }
-        else if (button.matches('[data-toggle-stats]')) { const statsContainer = document.getElementById(`advisor-stats-${button.dataset.toggleStats}`); if (statsContainer) { statsContainer.classList.toggle('hidden'); button.classList.toggle('stats-shown'); button.querySelector('.button-text').textContent = statsContainer.classList.contains('hidden') ? 'Ver Desglose' : 'Ocular Desglose'; } }
-        else if (button.matches('.delete-affiliate-btn')) { if (confirm('¿Seguro que deseas eliminar este afiliado?')) { await deleteDataFromFirestore('affiliates', id); showToast('Afiliado eliminado.'); } }
-        else if (button.matches('.delete-advisor-btn')) { if (confirm('¿Seguro? Se desasignará de todos los afiliados.')) { const batch = window.firebase.writeBatch(db); affiliates.forEach(aff => { if(aff.advisorId === id) { const affRef = window.firebase.doc(db, `users/${adminUidForRole}/affiliates/${aff.id}`); batch.update(affRef, { advisorId: null }); } }); const advisorRef = window.firebase.doc(db, `users/${adminUidForRole}/advisors/${id}`); batch.delete(advisorRef); await batch.commit(); showToast('Asesor eliminado.'); } }
-        else if (button.matches('.delete-plan-btn')) { const isPlanInUse = affiliates.some(aff => aff.healthPlan === id); if(isPlanInUse) return showToast('Plan en uso. No se puede eliminar.', 'error'); if (confirm('¿Seguro?')) { await deleteDataFromFirestore('healthPlans', id); showToast('Plan eliminado.'); } }
-        else if (button.matches('.download-receipt-btn')) { showToast('Generando recibo PDF...', 'success'); const affiliateId = button.dataset.id; const affiliateToPrint = affiliates.find(a => a.id === affiliateId); if (!affiliateToPrint) { return showToast('No se encontró el afiliado para generar el recibo.', 'error'); } const planToPrint = healthPlans.find(p => p.id === affiliateToPrint.healthPlan) || {}; const advisorForPrint = advisors.find(a => a.id === affiliateToPrint.advisorId) || {}; setTimeout(() => { generarReciboAfiliacionPDF(affiliateToPrint, planToPrint, advisorForPrint, companyProfile); }, 300); }
-        else if (button.matches('.delete-role-btn')) { const roleToDelete = userRoles.find(r => r.id === id); if (confirm(`¿Estás seguro de eliminar al usuario ${roleToDelete.email}? Esta acción no se puede deshacer y su cuenta será eliminada permanentemente.`)) { showToast('Esta función requiere un backend (Cloud Function) para eliminar de forma segura un usuario de Firebase Authentication. La implementación actual solo eliminará los registros de rol en Firestore.', 'error'); const batch = window.firebase.writeBatch(db); const rootRoleRef = window.firebase.doc(db, 'userRoles', id); const adminRoleRef = window.firebase.doc(db, `users/${adminUidForRole}/roles`, id); batch.delete(rootRoleRef); batch.delete(adminRoleRef); await batch.commit(); showToast('Registros de rol eliminados.', 'success'); } }
-        else if (button.id === 'sell-plan-btn') { if (!lastQuoteResult) { showToast('Por favor, realiza una cotización primero.', 'error'); return; } modalManager.open('affiliate-modal'); setTimeout(() => { const form = document.getElementById('affiliate-form'); if (!form) return; form['manual-override-checkbox'].checked = true; document.getElementById('manual-override-container').classList.remove('hidden'); form['manual-cost-health'].value = lastQuoteResult.health ? Math.round(lastQuoteResult.health.total) : ''; form['manual-cost-pension'].value = lastQuoteResult.pension ? Math.round(lastQuoteResult.pension.total) : ''; form['manual-cost-arl'].value = lastQuoteResult.arl ? Math.round(lastQuoteResult.arl.total) : ''; form['manual-cost-ccf'].value = lastQuoteResult.ccf ? Math.round(lastQuoteResult.ccf.total) : ''; const incomeValue = Number(document.getElementById('income').value); form['affiliate-notes'].value = `Cotización inicial basada en un ingreso mensual de ${formatCurrency(incomeValue)}. IBC: ${formatCurrency(lastQuoteResult.ibc)}.`; showToast('Datos de cotización precargados.'); }, 100); }
-    });
-
-    // Listeners para envío de formularios
-    document.getElementById('login-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { await window.firebase.signInWithEmailAndPassword(auth, e.target['login-email'].value, e.target['login-password'].value); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
-    document.getElementById('register-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { const userCredential = await window.firebase.createUserWithEmailAndPassword(auth, e.target['register-email'].value, e.target['register-password'].value); await setupNewUserDocument(userCredential.user); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
-    document.getElementById('license-form').addEventListener('submit', e => { e.preventDefault(); handleLicenseActivation(); });
-    document.getElementById('affiliate-form').addEventListener('submit', async (e) => { e.preventDefault(); const form = e.target; const selectedPlan = form.querySelector('input[name="health-plan"]:checked'); const manualOverride = form['manual-override-checkbox'].checked; if (!selectedPlan && !manualOverride && healthPlans.length > 0) { return showToast('Debe seleccionar un plan o ingresar costos manuales.', 'error'); } const affiliateData = { name: form['affiliate-name'].value.trim(), documentId: form['affiliate-id'].value.trim(), email: form['affiliate-email'].value.trim(), phone: form['affiliate-phone'].value.trim(), address: form['affiliate-address'].value.trim(), healthPlan: selectedPlan ? selectedPlan.value : null, pensionPlan: form['pension-plan'].value, arlPlan: form['arl-plan'].value, ccfPlan: form['ccf-plan'].value, advisorId: form['advisor-select-list'].value, startDate: form['affiliate-start-date'].value, endDate: form['affiliate-end-date'].value, status: form['affiliate-status'].value, notes: form['affiliate-notes'].value.trim(), manualCosts: null, manualCommission: null }; if (manualOverride) { affiliateData.manualCosts = { health: Number(form['manual-cost-health'].value) || 0, pension: Number(form['manual-cost-pension'].value) || 0, arl: Number(form['manual-cost-arl'].value) || 0, ccf: Number(form['manual-cost-ccf'].value) || 0 }; affiliateData.manualCommission = Number(form['manual-commission'].value) || null; } const existingId = form['affiliate-doc-id'].value; if (existingId) { affiliateData.id = existingId; const oldAffiliate = affiliates.find(a => a.id === existingId); if (oldAffiliate && oldAffiliate.status !== affiliateData.status) { createNovedad('status_change', `El estado de ${affiliateData.name} cambió de ${oldAffiliate.status} a ${affiliateData.status}.`); } await saveDataToFirestore('affiliates', affiliateData); modalManager.close('affiliate-modal'); showToast('Afiliado actualizado correctamente.'); } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/affiliates`)); affiliateData.id = docRef.id; affiliateData.createdAt = window.firebase.serverTimestamp(); if (currentUserRole === 'asesor' && userRoleData.linkedAdvisorId) { affiliateData.advisorId = userRoleData.linkedAdvisorId; } await saveDataToFirestore('affiliates', affiliateData); modalManager.close('affiliate-modal'); showToast('Afiliado guardado. Generando recibo...', 'success'); createNovedad('creation', `Nuevo afiliado registrado: ${affiliateData.name}.`); try { const planSeleccionado = healthPlans.find(p => p.id === affiliateData.healthPlan) || {}; const asesorAsignado = advisors.find(a => a.id === affiliateData.advisorId) || {}; setTimeout(() => { generarReciboAfiliacionPDF(affiliateData, planSeleccionado, asesorAsignado, companyProfile); }, 500); } catch (pdfError) { console.error("Error al generar el recibo PDF:", pdfError); showToast("Afiliado guardado, pero hubo un error al generar el recibo.", "error"); } } });
-    document.getElementById('advisor-form').addEventListener('submit', async (e) => { e.preventDefault(); const form = e.target; const advisorId = form['advisor-doc-id'].value; const advisorData = { name: form['advisor-name'].value.trim(), commissionRate: Number(form['advisor-commission'].value) }; if (!advisorData.name || isNaN(advisorData.commissionRate)) { showToast('Por favor, completa todos los campos correctamente.', 'error'); return; } try { if (advisorId) { advisorData.id = advisorId; await saveDataToFirestore('advisors', advisorData); showToast('Asesor actualizado con éxito.', 'success'); } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/advisors`)); advisorData.id = docRef.id; await saveDataToFirestore('advisors', advisorData); showToast('Asesor guardado correctamente.', 'success'); } modalManager.close('advisor-modal'); } catch (error) { console.error("Error guardando asesor:", error); showToast('Hubo un error al guardar el asesor.', 'error'); } });
-    document.getElementById('plan-form').addEventListener('submit', async (e) => { e.preventDefault(); const form = e.target; const planId = form['plan-doc-id'].value; const planData = { name: form['plan-name'].value.trim(), price: Number(form['plan-price'].value), features: form['plan-features'].value.trim() }; if (!planData.name || !planData.price || !planData.features) { showToast('Por favor, completa todos los campos.', 'error'); return; } try { if (planId) { planData.id = planId; await saveDataToFirestore('healthPlans', planData); showToast('Plan actualizado con éxito.', 'success'); } else { const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/healthPlans`)); planData.id = docRef.id; await saveDataToFirestore('healthPlans', planData); showToast('Plan guardado correctamente.', 'success'); } modalManager.close('plan-modal'); } catch (error) { console.error("Error guardando plan:", error); showToast('Hubo un error al guardar el plan.', 'error'); } });
-    document.getElementById('calculator-form').addEventListener('submit', e => { e.preventDefault(); calculateBtn.disabled = true; calculateBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 mr-2 animate-spin"></i>Calculando...'; lucide.createIcons(); setTimeout(() => { const form = e.target; const selections = { health: form.querySelector('[value="health"]').checked, pension: form.querySelector('[value="pension"]').checked, arl: form.querySelector('[value="arl"]').checked, ccf: form.querySelector('[value="ccf"]').checked }; const results = calculateContributions(Number(form['income'].value), form['contract-type'].value, form['arl-level'].value, selections); lastQuoteResult = results; renderCalculatorResults(results); calculateBtn.style.display = 'none'; newQuoteBtn.style.display = 'flex'; document.querySelectorAll('#calculator-fieldset-1, #calculator-fieldset-2').forEach(fs => fs.disabled = true); }, 300); });
-    
-    // Formularios corregidos
-    document.getElementById('invite-user-form').addEventListener('submit', handleInviteUser);
-    document.getElementById('transaction-form').addEventListener('submit', handleTransactionSubmit);
-    document.getElementById('company-profile-form').addEventListener('submit', handleCompanyProfileSave);
-    document.getElementById('settings-form').addEventListener('submit', handleSettingsSave); // Listener para el nuevo handler de settings
-
-    // Listeners para interactividad de UI
-    document.getElementById('mark-novedades-read').addEventListener('click', async () => { const unreadNovedades = novedades.filter(n => n.read === false); if (unreadNovedades.length === 0) return; const batch = window.firebase.writeBatch(db); unreadNovedades.forEach(novedad => { const docRef = window.firebase.doc(db, `users/${adminUidForRole}/novedades`, novedad.id); batch.update(docRef, { read: true }); }); await batch.commit(); showToast('Notificaciones marcadas como leídas.'); });
-    document.getElementById('new-quote-btn').addEventListener('click', () => { resetCalculatorState(); });
-    document.getElementById('select-all-components').addEventListener('change', e => { document.querySelectorAll('.component-checkbox').forEach(cb => { cb.checked = e.target.checked; }); });
-    
-    // Listener para el desplegable de roles
-    const inviteRoleSelect = document.getElementById('invite-role');
-    const inviteLinkContainer = document.getElementById('invite-link-container');
-    const inviteLinkSelect = document.getElementById('invite-link-select');
-    const inviteLinkLabel = document.getElementById('invite-link-label');
-    inviteRoleSelect.addEventListener('change', (e) => {
-        const selectedRole = e.target.value;
-        if (selectedRole === 'asesor' || selectedRole === 'afiliado') {
-            let options = '<option value="" disabled selected>Seleccionar para vincular...</option>';
-            if (selectedRole === 'asesor') {
-                inviteLinkLabel.textContent = 'Vincular con Asesor Existente:';
-                options += advisors.map(advisor => `<option value="${advisor.id}">${advisor.name}</option>`).join('');
-            } else {
-                inviteLinkLabel.textContent = 'Vincular con Afiliado Existente:';
-                options += affiliates.map(aff => `<option value="${aff.id}">${aff.name} (${aff.documentId})</option>`).join('');
-            }
-            inviteLinkSelect.innerHTML = options;
-            inviteLinkContainer.classList.remove('hidden');
-        } else {
-            inviteLinkContainer.classList.add('hidden');
-        }
-    });
-
-    // Listeners para cambio de tema en tiempo real
-    document.querySelectorAll('#theme-selector input[name="theme"]').forEach(radio => {
-        radio.addEventListener('change', (e) => applyTheme(e.target.value));
-    });
-    document.querySelectorAll('#sidebar-theme-selector input[name="sidebar-theme"]').forEach(radio => {
-        radio.addEventListener('change', (e) => applySidebarTheme(e.target.value));
-    });
-    document.querySelectorAll('#bottom-nav-theme-selector input[name="bottom-nav-theme"]').forEach(radio => {
-        radio.addEventListener('change', (e) => applyBottomNavTheme(e.target.value));
-    });
-});
-
-        document.querySelectorAll('#theme-selector input[name="theme"]').forEach(radio => {
-            radio.addEventListener('change', (e) => applyTheme(e.target.value));
-        });
-        document.querySelectorAll('#sidebar-theme-selector input[name="sidebar-theme"]').forEach(radio => {
-            radio.addEventListener('change', (e) => applySidebarTheme(e.target.value));
-        });
-        document.querySelectorAll('#bottom-nav-theme-selector input[name="bottom-nav-theme"]').forEach(radio => {
-            radio.addEventListener('change', (e) => applyBottomNavTheme(e.target.value));
-        });
-    });
+    document.addEventListener('DOMContentLoaded', () => {
         document.body.addEventListener('click', async (e) => { 
             const target = e.target;
             const button = target.closest('button');
@@ -2328,8 +2066,3 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
-
-
-
-
-
