@@ -1755,7 +1755,89 @@
         }
     }
 });
+// ==========================================================
+// INICIA EL CÓDIGO NUEVO QUE DEBES PEGAR
+// ==========================================================
 
+// CÓDIGO PARA GUARDAR ASESORES
+document.getElementById('advisor-form').addEventListener('submit', async (e) => {
+    // 1. Prevenir que la página se recargue
+    e.preventDefault();
+    const form = e.target;
+    const advisorId = form['advisor-doc-id'].value;
+
+    // 2. Recolectar los datos del formulario
+    const advisorData = {
+        name: form['advisor-name'].value.trim(),
+        commissionRate: Number(form['advisor-commission'].value)
+    };
+
+    // 3. Validar que los datos no estén vacíos
+    if (!advisorData.name || isNaN(advisorData.commissionRate)) {
+        showToast('Por favor, completa todos los campos correctamente.', 'error');
+        return;
+    }
+
+    try {
+        if (advisorId) {
+            // Si hay un ID, es una actualización
+            advisorData.id = advisorId;
+            await saveDataToFirestore('advisors', advisorData);
+            showToast('Asesor actualizado con éxito.', 'success');
+        } else {
+            // Si no hay ID, es una creación
+            const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/advisors`));
+            advisorData.id = docRef.id;
+            await saveDataToFirestore('advisors', advisorData);
+            showToast('Asesor guardado correctamente.', 'success');
+        }
+        modalManager.close('advisor-modal');
+    } catch (error) {
+        console.error("Error guardando asesor:", error);
+        showToast('Hubo un error al guardar el asesor.', 'error');
+    }
+});
+
+// CÓDIGO PARA GUARDAR PLANES
+document.getElementById('plan-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const planId = form['plan-doc-id'].value;
+
+    const planData = {
+        name: form['plan-name'].value.trim(),
+        price: Number(form['plan-price'].value),
+        features: form['plan-features'].value.trim()
+    };
+
+    if (!planData.name || !planData.price || !planData.features) {
+        showToast('Por favor, completa todos los campos.', 'error');
+        return;
+    }
+
+    try {
+        if (planId) {
+            // Actualizar plan
+            planData.id = planId;
+            await saveDataToFirestore('healthPlans', planData);
+            showToast('Plan actualizado con éxito.', 'success');
+        } else {
+            // Crear plan
+            const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/healthPlans`));
+            planData.id = docRef.id;
+            await saveDataToFirestore('healthPlans', planData);
+            showToast('Plan guardado correctamente.', 'success');
+        }
+        modalManager.close('plan-modal');
+    } catch (error) {
+        console.error("Error guardando plan:", error);
+        showToast('Hubo un error al guardar el plan.', 'error');
+    }
+});
+
+// ==========================================================
+// EL CÓDIGO NUEVO TERMINA AQUÍ
+// ==========================================================
 
         document.getElementById('mark-novedades-read').addEventListener('click', async () => {
             const unreadNovedades = novedades.filter(n => n.read === false);
@@ -1964,5 +2046,6 @@ const modalManager = {
 </script>
 </body>
 </html>
+
 
 
