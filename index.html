@@ -594,8 +594,8 @@
     let activeListeners = [];
 
     const defaultSettings = { 
-        SMMLV: 1300000, 
-        ADMIN_FEE_PER_AFFILIATE: 15000,
+        SMMLV: 1423500, 
+        ADMIN_FEE_PER_AFFILIATE: 29000,
         CONTRIBUTION_RATES: { health: 12.5, pension: 16, employee_health: 4, employer_health: 8.5, employee_pension: 4, employer_pension: 12, independiente_ccf: 2, employer_ccf: 4 }, 
         ARL_RATES: { 1: 0.522, 2: 1.044, 3: 2.436, 4: 4.350, 5: 6.960 } 
     };
@@ -1672,6 +1672,33 @@
             else if (button.matches('.delete-affiliate-btn')) { if (confirm('¿Seguro que deseas eliminar este afiliado?')) { await deleteDataFromFirestore('affiliates', id); showToast('Afiliado eliminado.'); } } 
             else if (button.matches('.delete-advisor-btn')) { if (confirm('¿Seguro? Se desasignará de todos los afiliados.')) { const batch = window.firebase.writeBatch(db); affiliates.forEach(aff => { if(aff.advisorId === id) { const affRef = window.firebase.doc(db, `users/${adminUidForRole}/affiliates/${aff.id}`); batch.update(affRef, { advisorId: null }); } }); const advisorRef = window.firebase.doc(db, `users/${adminUidForRole}/advisors/${id}`); batch.delete(advisorRef); await batch.commit(); showToast('Asesor eliminado.'); } } 
             else if (button.matches('.delete-plan-btn')) { const isPlanInUse = affiliates.some(aff => aff.healthPlan === id); if(isPlanInUse) return showToast('Plan en uso. No se puede eliminar.', 'error'); if (confirm('¿Seguro?')) { await deleteDataFromFirestore('healthPlans', id); showToast('Plan eliminado.'); } }
+                 // ==========================================================
+ // INICIA EL CÓDIGO NUEVO QUE DEBES PEGAR AQUÍ
+ // ==========================================================
+ else if (button.matches('.download-receipt-btn')) {
+     showToast('Generando recibo PDF...', 'success');
+     
+     // 1. Obtener el ID del afiliado desde el botón
+     const affiliateId = button.dataset.id;
+     
+     // 2. Buscar toda la información necesaria en los datos que ya tenemos
+     const affiliateToPrint = affiliates.find(a => a.id === affiliateId);
+
+     if (!affiliateToPrint) {
+         return showToast('No se encontró el afiliado para generar el recibo.', 'error');
+     }
+     
+     const planToPrint = healthPlans.find(p => p.id === affiliateToPrint.healthPlan) || {};
+     const advisorForPrint = advisors.find(a => a.id === affiliateToPrint.advisorId) || {};
+     
+     // 3. Llamar a la función que ya existe para crear el PDF
+     setTimeout(() => { // Usamos un pequeño delay para que el toast se muestre bien
+          generarReciboAfiliacionPDF(affiliateToPrint, planToPrint, advisorForPrint, companyProfile);
+     }, 300);
+ }
+ // ==========================================================
+ // EL CÓDIGO NUEVO TERMINA AQUÍ
+ // ==========================================================
             else if (button.matches('.delete-role-btn')) {
                  const roleToDelete = userRoles.find(r => r.id === id);
                  if (confirm(`¿Estás seguro de eliminar al usuario ${roleToDelete.email}? Esta acción no se puede deshacer y su cuenta será eliminada permanentemente.`)) {
@@ -2060,6 +2087,7 @@ const modalManager = {
 </script>
 </body>
 </html>
+
 
 
 
