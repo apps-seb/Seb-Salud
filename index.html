@@ -547,6 +547,29 @@
                 </main>
             </div>
         </div>
+
+        <div id="new-affiliate-success-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60]">
+        <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-sm transform scale-95 text-center">
+            <div class="p-6">
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100">
+                    <i data-lucide="check-circle" class="h-10 w-10 text-green-600"></i>
+                </div>
+                <h2 id="success-modal-title" class="text-2xl font-bold mt-4 text-slate-800">¡Afiliado con Éxito!</h2>
+                <p class="text-slate-500 mt-2">El nuevo afiliado ha sido registrado correctamente.</p>
+            </div>
+            <div class="p-6 pt-0 bg-slate-50 rounded-b-xl space-y-3">
+                <button id="success-download-pdf-btn" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition-transform hover:scale-105">
+                    <i data-lucide="download" class="w-5 h-5"></i>
+                    <span>Descargar Recibo PDF</span>
+                </button>
+                <button id="success-share-btn" class="w-full bg-slate-600 hover:bg-slate-700 text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition-transform hover:scale-105">
+                    <i data-lucide="share-2" class="w-5 h-5"></i>
+                    <span>Compartir</span>
+                </button>
+                 <button data-close-modal="new-affiliate-success-modal" class="w-full text-sm text-slate-600 hover:text-slate-800 font-medium py-2 mt-2">Cerrar</button>
+            </div>
+        </div>
+    </div>
         
         <div id="affiliate-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col transform scale-95"><div class="flex justify-between items-center p-5 border-b sticky top-0 bg-white z-10 flex-shrink-0"><h2 id="affiliate-modal-title" class="text-2xl font-bold">Nuevo Afiliado</h2><button data-close-modal="affiliate-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><div class="flex-grow overflow-y-auto"><form id="affiliate-form" class="p-6"><input type="hidden" id="affiliate-doc-id"><div class="space-y-10"><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">1. Información Personal</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><input type="text" id="affiliate-name" placeholder="Nombre Completo" class="w-full px-4 py-2 border rounded-lg" required><input type="text" id="affiliate-id" placeholder="Documento" class="w-full px-4 py-2 border rounded-lg" required><input type="email" id="affiliate-email" placeholder="Correo Electrónico" class="w-full px-4 py-2 border rounded-lg" required><input type="tel" id="affiliate-phone" placeholder="Teléfono" class="w-full px-4 py-2 border rounded-lg"><input type="text" id="affiliate-address" placeholder="Dirección" class="md:col-span-2 w-full px-4 py-2 border rounded-lg"></div></div><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">2. Plan de Salud Complementario / Prepagada</h3><div id="health-plan-selector" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"></div></div><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">3. Otras Afiliaciones</h3><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div><label for="pension-plan" class="block text-sm font-medium text-slate-600 mb-1">Fondo de Pensión</label><select id="pension-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione un fondo</option><option value="Colpensiones">Colpensiones (Público)</option><option value="Porvenir">Porvenir</option><option value="Protección">Protección</option><option value="Colfondos">Colfondos</option><option value="Skandia">Skandia</option></select></div><div><label for="arl-plan" class="block text-sm font-medium text-slate-600 mb-1">ARL</label><select id="arl-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una ARL</option><option value="ARL Sura">ARL Sura</option><option value="ARL Positiva">ARL Positiva</option><option value="ARL Colmena">ARL Colmena</option><option value="Seguros Bolívar ARL">Seguros Bolívar ARL</option><option value="AXA Colpatria ARL">AXA Colpatria ARL</option></select></div><div><label for="ccf-plan" class="block text-sm font-medium text-slate-600 mb-1">Caja de Compensación</label><select id="ccf-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una caja</option><option value="Compensar">Compensar</option><option value="Colsubsidio">Colsubsidio</option><option value="Cafam">Cafam</option><option value="Comfama">Comfama (Antioquia)</option><option value="Comfandi">Comfandi (Valle)</option><option value="Otra">Otra / Ninguna</option></select></div></div></div><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">4. Detalles de Venta y Administrativos</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"><div><label for="advisor-select-list" class="block text-sm font-medium text-slate-600 mb-1">Asesor Asignado</label><select id="advisor-select-list" class="w-full px-4 py-2 border rounded-lg" required></select></div><div><label for="affiliate-start-date" class="block text-sm font-medium text-slate-600 mb-1">Fecha de Inicio</label><input type="date" id="affiliate-start-date" class="w-full px-4 py-2 border rounded-lg" required></div><div><label for="affiliate-end-date" class="block text-sm font-medium text-slate-600 mb-1">Fecha de Finalización</label><input type="date" id="affiliate-end-date" class="w-full px-4 py-2 border rounded-lg"></div><div><label for="affiliate-status" class="block text-sm font-medium text-slate-600 mb-1">Estado del Afiliado</label><select id="affiliate-status" class="w-full px-4 py-2 border rounded-lg" required><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div></div><div class="mt-6"><label class="flex items-center space-x-2"><input type="checkbox" id="manual-override-checkbox" class="h-4 w-4 text-primary-600 rounded"><span>Usar costos y comisiones manuales</span></label></div><div id="manual-override-container" class="hidden mt-4 space-y-6 p-4 border rounded-lg bg-slate-50"><div><h4 class="text-md font-semibold text-slate-600 mb-3">Costos de Afiliación</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="text-sm font-medium">Salud ($)</label><input type="number" id="manual-cost-health" class="w-full p-2 border rounded-lg mt-1" placeholder="Ej: 95000"></div><div><label class="text-sm font-medium">Pensión ($)</label><input type="number" id="manual-cost-pension" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div><div><label class="text-sm font-medium">ARL ($)</label><input type="number" id="manual-cost-arl" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div><div><label class="text-sm font-medium">Caja Comp. ($)</label><input type="number" id="manual-cost-ccf" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div></div></div><div class="pt-4 border-t"><h4 class="text-md font-semibold text-slate-600 mb-3">Comisiones</h4><div class="max-w-xs"><label class="text-sm font-medium">Comisión Asesor ($)</label><input type="number" id="manual-commission" class="w-full p-2 border rounded-lg mt-1" placeholder="Ej: 20000"></div></div></div><div class="mt-6"><textarea id="affiliate-notes" placeholder="Notas adicionales..." class="w-full px-4 py-2 border rounded-lg h-24"></textarea></div></div></div><div class="pt-6 border-t mt-8 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-lg">Guardar Afiliado</button></div></form></div></div></div>
         <div id="plan-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="plan-modal-title" class="text-2xl font-bold">Nuevo Plan de Salud</h2><button data-close-modal="plan-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="plan-form" class="p-6"><input type="hidden" id="plan-doc-id"><div class="space-y-4"><div><label for="plan-name" class="block text-sm font-medium text-slate-600">Nombre del Plan</label><input type="text" id="plan-name" placeholder="Ej: Plan Integral" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="plan-price" class="block text-sm font-medium text-slate-600">Precio Mensual ($)</label><input type="number" id="plan-price" placeholder="Ej: 180000" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="plan-features" class="block text-sm font-medium text-slate-600">Características (una por línea)</label><textarea id="plan-features" placeholder="Acceso directo a 5 especialidades&#10;Atención domiciliaria" class="w-full mt-1 p-2 border rounded-lg h-32" required></textarea></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Plan</button></div></form></div></div>
@@ -591,6 +614,7 @@
     let affiliatesViewMode = 'card';
     let calendarViewMode = 'card';
     let lastQuoteResult = null;
+    let lastCreatedAffiliate = null;
     let activeListeners = [];
 
     const defaultSettings = { 
@@ -1733,55 +1757,55 @@ inviteRoleSelect.addEventListener('change', (e) => {
         document.getElementById('register-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { const userCredential = await window.firebase.createUserWithEmailAndPassword(auth, e.target['register-email'].value, e.target['register-password'].value); await setupNewUserDocument(userCredential.user); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('license-form').addEventListener('submit', e => { e.preventDefault(); handleLicenseActivation(); });
         document.getElementById('affiliate-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const form = e.target;
-            const selectedPlan = form.querySelector('input[name="health-plan"]:checked');
-            const manualOverride = form['manual-override-checkbox'].checked;
-            if (!selectedPlan && !manualOverride && healthPlans.length > 0) {
-                return showToast('Debe seleccionar un plan o ingresar costos manuales.', 'error');
-            }
-            const affiliateData = {
-                name: form['affiliate-name'].value.trim(),
-                documentId: form['affiliate-id'].value.trim(),
-                email: form['affiliate-email'].value.trim(),
-                phone: form['affiliate-phone'].value.trim(),
-                address: form['affiliate-address'].value.trim(),
-                healthPlan: selectedPlan ? selectedPlan.value : null,
-                pensionPlan: form['pension-plan'].value,
-                arlPlan: form['arl-plan'].value,
-                ccfPlan: form['ccf-plan'].value,
-                advisorId: form['advisor-select-list'].value,
-                startDate: form['affiliate-start-date'].value,
-                endDate: form['affiliate-end-date'].value,
-                status: form['affiliate-status'].value,
-                notes: form['affiliate-notes'].value.trim(),
-                manualCosts: null,
-                manualCommission: null
-            };
-            if (manualOverride) {
-                affiliateData.manualCosts = {
-                    health: Number(form['manual-cost-health'].value) || 0,
-                    pension: Number(form['manual-cost-pension'].value) || 0,
-                    arl: Number(form['manual-cost-arl'].value) || 0,
-                    ccf: Number(form['manual-cost-ccf'].value) || 0
-                };
-                affiliateData.manualCommission = Number(form['manual-commission'].value) || null;
-            }
-            const existingId = form['affiliate-doc-id'].value;
+            e.preventDefault();
+            const form = e.target;
+            const selectedPlan = form.querySelector('input[name="health-plan"]:checked');
+            const manualOverride = form['manual-override-checkbox'].checked;
+            if (!selectedPlan && !manualOverride && healthPlans.length > 0) {
+                return showToast('Debe seleccionar un plan o ingresar costos manuales.', 'error');
+            }
+            const affiliateData = {
+                name: form['affiliate-name'].value.trim(),
+                documentId: form['affiliate-id'].value.trim(),
+                email: form['affiliate-email'].value.trim(),
+                phone: form['affiliate-phone'].value.trim(),
+                address: form['affiliate-address'].value.trim(),
+                healthPlan: selectedPlan ? selectedPlan.value : null,
+                pensionPlan: form['pension-plan'].value,
+                arlPlan: form['arl-plan'].value,
+                ccfPlan: form['ccf-plan'].value,
+                advisorId: form['advisor-select-list'].value,
+                startDate: form['affiliate-start-date'].value,
+                endDate: form['affiliate-end-date'].value,
+                status: form['affiliate-status'].value,
+                notes: form['affiliate-notes'].value.trim(),
+                manualCosts: null,
+                manualCommission: null
+            };
+            if (manualOverride) {
+                affiliateData.manualCosts = {
+                    health: Number(form['manual-cost-health'].value) || 0,
+                    pension: Number(form['manual-cost-pension'].value) || 0,
+                    arl: Number(form['manual-cost-arl'].value) || 0,
+                    ccf: Number(form['manual-cost-ccf'].value) || 0
+                };
+                affiliateData.manualCommission = Number(form['manual-commission'].value) || null;
+            }
+            const existingId = form['affiliate-doc-id'].value;
 
-            if (existingId) {
-                // --- Lógica para ACTUALIZAR un afiliado existente ---
-                affiliateData.id = existingId;
-                const oldAffiliate = affiliates.find(a => a.id === existingId);
-                if (oldAffiliate && oldAffiliate.status !== affiliateData.status) {
-                    createNovedad('status_change', `El estado de ${affiliateData.name} cambió de ${oldAffiliate.status} a ${affiliateData.status}.`);
-                }
-                await saveDataToFirestore('affiliates', affiliateData);
-                modalManager.close('affiliate-modal');
-                showToast('Afiliado actualizado correctamente.');
+            if (existingId) {
+                // --- Lógica para ACTUALIZAR un afiliado existente (sin cambios) ---
+                affiliateData.id = existingId;
+                const oldAffiliate = affiliates.find(a => a.id === existingId);
+                if (oldAffiliate && oldAffiliate.status !== affiliateData.status) {
+                    createNovedad('status_change', `El estado de ${affiliateData.name} cambió de ${oldAffiliate.status} a ${affiliateData.status}.`);
+                }
+                await saveDataToFirestore('affiliates', affiliateData);
+                modalManager.close('affiliate-modal');
+                showToast('Afiliado actualizado correctamente.');
 
-            } else {
-                // --- Lógica para CREAR un nuevo afiliado y generar el RECIBO ---
+            } else {
+                // --- NUEVA LÓGICA PARA CREAR AFILIADO Y MOSTRAR MODAL DE ÉXITO ---
                 const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/affiliates`));
                 affiliateData.id = docRef.id;
                 affiliateData.createdAt = window.firebase.serverTimestamp();
@@ -1790,26 +1814,24 @@ inviteRoleSelect.addEventListener('change', (e) => {
                     affiliateData.advisorId = userRoleData.linkedAdvisorId;
                 }
                 
+                // 1. Guardar en la base de datos
                 await saveDataToFirestore('affiliates', affiliateData);
-                modalManager.close('affiliate-modal');
-                showToast('Afiliado guardado. Generando recibo...', 'success');
+                
+                // 2. Crear la notificación
                 createNovedad('creation', `Nuevo afiliado registrado: ${affiliateData.name}.`);
                 
-                // --- LÓGICA PARA GENERAR PDF ---
-                try {
-                    const planSeleccionado = healthPlans.find(p => p.id === affiliateData.healthPlan) || {};
-                    const asesorAsignado = advisors.find(a => a.id === affiliateData.advisorId) || {};
-                    
-                    setTimeout(() => {
-                        generarReciboAfiliacionPDF(affiliateData, planSeleccionado, asesorAsignado, companyProfile);
-                    }, 500);
+                // 3. Cerrar el formulario actual
+                modalManager.close('affiliate-modal');
 
-                } catch (pdfError) {
-                    console.error("Error al generar el recibo PDF:", pdfError);
-                    showToast("Afiliado guardado, pero hubo un error al generar el recibo.", "error");
-                }
+                // 4. Guardar los datos del afiliado recién creado en nuestra variable temporal
+                lastCreatedAffiliate = affiliateData;
+
+                // 5. Abrir el nuevo modal de éxito
+                setTimeout(() => { // Pequeño delay para que las transiciones de los modales se vean fluidas
+                    modalManager.open('new-affiliate-success-modal');
+                }, 250);
             }
-        });
+        });
 
         // CÓDIGO NUEVO PARA GUARDAR ASESORES
         document.getElementById('advisor-form').addEventListener('submit', async (e) => {
@@ -1850,6 +1872,42 @@ inviteRoleSelect.addEventListener('change', (e) => {
             }
         });
 
+// --- MANEJO DE LOS BOTONES DEL MODAL DE ÉXITO DE AFILIACIÓN ---
+    document.getElementById('success-download-pdf-btn').addEventListener('click', () => {
+        if (!lastCreatedAffiliate) return;
+
+        // Buscamos los datos relacionados que necesitamos para el PDF
+        const planSeleccionado = healthPlans.find(p => p.id === lastCreatedAffiliate.healthPlan) || {};
+        const asesorAsignado = advisors.find(a => a.id === lastCreatedAffiliate.advisorId) || {};
+        
+        // Llamamos a la función que ya genera el PDF
+        generarReciboAfiliacionPDF(lastCreatedAffiliate, planSeleccionado, asesorAsignado, companyProfile);
+    });
+
+    document.getElementById('success-share-btn').addEventListener('click', async () => {
+        if (!lastCreatedAffiliate) return;
+
+        const affiliateName = lastCreatedAffiliate.name;
+        const companyName = companyProfile.name || 'nuestros servicios de salud';
+        const shareText = `¡Hola, ${affiliateName}! Tu afiliación en ${companyName} ha sido exitosa. ¡Bienvenido/a!`;
+
+        // Usamos la API nativa de compartir del navegador
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'Afiliación Exitosa',
+                    text: shareText,
+                });
+            } catch (error) {
+                console.error('Error al intentar compartir:', error);
+                showToast('No se pudo completar la acción de compartir.', 'error');
+            }
+        } else {
+            // Si el navegador no soporta la función de compartir
+            showToast('La función de compartir no está disponible en este navegador.', 'error');
+        }
+    });
+        
         // CÓDIGO NUEVO PARA GUARDAR PLANES
         document.getElementById('plan-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -2211,6 +2269,7 @@ inviteRoleSelect.addEventListener('change', (e) => {
 </script>
 </body>
 </html>
+
 
 
 
