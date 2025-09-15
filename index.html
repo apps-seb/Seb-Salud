@@ -584,12 +584,15 @@
     </div>
 
 <script type="module">
-    
-window.firebase = {
-    initializeApp, deleteApp,
-    getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut,
-    getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query, where, enableIndexedDbPersistence
-};
+    // =================================================================
+// INICIO DE LA SOLUCIÓN: IMPORTACIONES DE FIREBASE
+// =================================================================
+import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query, where, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+// =================================================================
+// FIN DE LA SOLUCIÓN
+// =================================================================
 
 // --- INICIALIZACIÓN Y CONFIGURACIÓN DE FIREBASE ---
 const firebaseConfig = {
@@ -602,12 +605,11 @@ const firebaseConfig = {
     measurementId: "G-EJCS9FYWHK"
 };
 
-const app = window.firebase.initializeApp(firebaseConfig);
-const auth = window.firebase.getAuth(app);
-const db = window.firebase.getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-// Llamada a la persistencia con el nombre CORRECTO
-window.firebase.enableIndexedDbPersistence(db)
+enableIndexedDbPersistence(db)
   .catch((err) => {
     if (err.code == 'failed-precondition') {
       console.warn('La persistencia falló, probablemente porque ya hay otra pestaña abierta.');
@@ -615,14 +617,13 @@ window.firebase.enableIndexedDbPersistence(db)
       console.warn('El navegador actual no soporta la persistencia offline de Firestore.');
     }
   });
-// FIN DEL BLOQUE CORREGIDO
 
+let currentUser = null;
 
-    // --- ESTADO GLOBAL PARA ROLES ---
-    let currentUser = null;
-    let currentUserRole = null; // 'admin', 'asesor', 'afiliado'
-    let adminUidForRole = null; // UID del admin al que pertenece el usuario con rol
-    let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
+// --- ESTADO GLOBAL PARA ROLES ---
+let currentUserRole = null; // 'admin', 'asesor', 'afiliado'
+let adminUidForRole = null; // UID del admin al que pertenece el usuario con rol
+let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
     
 
     // --- ESTADO GLOBAL Y CONFIGURACIÓN ---
@@ -2322,6 +2323,7 @@ inviteRoleSelect.addEventListener('change', (e) => {
 </script>
 </body>
 </html>
+
 
 
 
