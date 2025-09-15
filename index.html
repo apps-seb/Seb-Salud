@@ -1232,9 +1232,9 @@
             body: [
                 ['Ingresos Totales', formatCurrency(totalIncome)],
                 ['Egresos Totales', formatCurrency(totalExpenses)],
-                [{content: `   &#226;”” Total Comisiones a Asesores`, styles: {cellPadding: {left: 8}}}, formatCurrency(advisorCommissions)],
-                [{content: `   &#226;”” Otros Egresos Manuales`, styles: {cellPadding: {left: 8}}}, formatCurrency(manualExpenses)],
-                ['Ganancia por Administraci&#243;n (Afiliados Activos x Tarifa)', formatCurrency(adminProfit)],
+                [{content: `   % Total Comisiones a Asesores`, styles: {cellPadding: {left: 8}}}, formatCurrency(advisorCommissions)],
+                [{content: `   % Otros Egresos Manuales`, styles: {cellPadding: {left: 8}}}, formatCurrency(manualExpenses)],
+                ['Ganancia por Administración (Afiliados Activos x Tarifa)', formatCurrency(adminProfit)],
                 [{content: 'Ganancia Neta (Saldo Real en Caja)', styles: {fontStyle: 'bold', fillColor: '#f0fdf4', textColor: '#15803d'}},
                  {content: formatCurrency(netProfit), styles: {fontStyle: 'bold', fillColor: '#f0fdf4', textColor: '#15803d'}}]
             ],
@@ -1278,7 +1278,7 @@
             doc.setPage(i);
             doc.setFontSize(8);
             doc.setTextColor(150);
-            doc.text('P&#225;gina ' + String(i) + ' de ' + String(pageCount), doc.internal.pageSize.width - 14, doc.internal.pageSize.height - 6, {align: 'right'});
+            doc.text('Página ' + String(i) + ' de ' + String(pageCount), doc.internal.pageSize.width - 14, doc.internal.pageSize.height - 6, {align: 'right'});
             doc.text(`Generado el ${new Date().toLocaleString('es-CO')}`, 14, doc.internal.pageSize.height - 6);
         }
         
@@ -2234,6 +2234,7 @@
 </script>
 </body>
 </html>
+
 
 
 
