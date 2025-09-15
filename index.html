@@ -135,6 +135,10 @@
     background-color: #282828;
     color: white;
 }
+[data-theme="spotify"] .bg-slate-100 {
+    background-color: #282828; /* Coincide con el color de los inputs del tema */
+    color: white;
+}
 [data-theme="spotify"] #header-search-results {
     background-color: #282828 !important;
     border-color: #404040 !important;
@@ -142,7 +146,7 @@
 [data-theme="spotify"] .search-result-item:hover {
     background-color: #3a3a3a !important;
 }
-        [data-theme="spotify"] .health-plan-card { border-color: #404040; }
+        
 
 
         /* --- NUEVAS ANIMACIONES Y ESTILOS --- */
@@ -329,6 +333,21 @@
                             </div>
                         </div>
                         <div class="flex justify-between items-center mb-6 gap-4 flex-wrap">
+                           <div id="header-search-container" class="relative flex-1 max-w-xl mx-auto hidden md:block">
+    <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <i data-lucide="search" class="h-5 w-5 text-slate-400"></i>
+        </div>
+        <input type="text" id="header-search-input" placeholder="Buscar afiliado por nombre o documento..." 
+               class="block w-full bg-slate-100 border border-transparent rounded-lg py-2 pl-10 pr-4 
+                      focus:outline-none focus:ring-2 focus:ring-primary-600 focus:bg-white"
+               autocomplete="off">
+    </div>
+    <div id="header-search-results" 
+         class="absolute mt-2 w-full bg-white rounded-lg shadow-2xl border border-slate-200/50 
+                overflow-y-auto max-h-80 z-50 hidden">
+        </div>
+</div>
                             <div class="flex items-center gap-2">
                                 <span class="text-sm font-medium text-slate-600 mr-2">Vista:</span>
                                 <button id="calendar-view-cards-btn" class="p-2 rounded-lg" title="Ver como tarjetas"><i data-lucide="layout-grid" class="h-5 w-5 pointer-events-none"></i></button>
@@ -367,7 +386,15 @@
                     </section>
 
                     <section id="flujo-caja" class="content-section"><div class="bg-white p-6 rounded-xl shadow-lg mb-8"><div class="flex flex-col md:flex-row justify-between md:items-center gap-4"><div><h2 class="text-2xl font-bold text-slate-800">Flujo de Caja</h2><p class="text-slate-500">Gesti&#243;n de ingresos, egresos y reportes financieros.</p></div><div class="flex items-center gap-4"><button id="add-expense-btn" class="w-full md:w-auto bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap"><i data-lucide="minus" class="w-5 h-5 mr-2"></i>Nuevo Egreso</button><button id="add-income-btn" class="w-full md:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i>Nuevo Ingreso</button></div></div></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8"><div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg"><div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center"><div class="bg-emerald-50 text-emerald-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Ingresos (Mes)</h3><p id="cashflow-income" class="text-3xl font-bold mt-1">$0</p></div><div class="bg-rose-50 text-rose-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Egresos (Mes)</h3><p id="cashflow-expenses" class="text-3xl font-bold mt-1">$0</p></div><div class="bg-sky-50 text-sky-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Balance (Mes)</h3><p id="cashflow-profit" class="text-3xl font-bold mt-1">$0</p></div></div></div><div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg"><div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b pb-4 mb-4"><div><h3 class="text-lg font-semibold text-slate-700">Historial de Transacciones</h3></div><div class="flex flex-col sm:flex-row gap-4 items-center"><input type="date" id="report-start-date" class="w-full p-2 border rounded-lg"><span class="text-slate-500">a</span><input type="date" id="report-end-date" class="w-full p-2 border rounded-lg"><button id="generate-report-btn" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="file-text" class="w-5 h-5 mr-2"></i>Generar PDF</button></div></div><div class="max-h-96 overflow-y-auto"><table class="w-full text-sm"><thead class="sticky top-0 bg-slate-100"><tr class="text-left"><th class="p-2 text-xs font-semibold text-slate-600 uppercase">Fecha</th><th class="p-2 text-xs font-semibold text-slate-600 uppercase">Concepto</th><th class="p-2 text-right text-xs font-semibold text-slate-600 uppercase">Monto</th></tr></thead><tbody id="transactions-table-body"></tbody></table></div></div></div></section>
-                    <section id="afiliados" class="content-section"><div class="bg-white p-4 rounded-xl shadow-lg mb-6"><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end"><div class="md:col-span-2"><label for="search-affiliate" class="text-sm font-medium text-slate-600">Buscar Afiliado</label><div class="relative mt-1"><input type="text" id="search-affiliate" placeholder="Nombre o documento..." class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg placeholder-slate-400"><i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i></div></div><div><label for="filter-affiliate-status" class="text-sm font-medium text-slate-600">Estado</label><select id="filter-affiliate-status" class="w-full mt-1 py-2 px-3 border border-slate-300 rounded-lg"><option value="all">Todos</option><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div><div><label for="filter-affiliate-payment-status" class="text-sm font-medium text-slate-600">Estado de Pago</label><select id="filter-affiliate-payment-status" class="w-full mt-1 py-2 px-3 border border-slate-300 rounded-lg"><option value="all">Todos</option><option value="Al d&#237;a">Al d&#237;a</option><option value="En mora">En mora</option></select></div></div></div><div class="flex justify-between items-center mb-6 gap-4 flex-wrap"><div class="flex items-center gap-2"><span class="text-sm font-medium text-slate-600 mr-2">Vista:</span><button id="view-as-cards-btn" class="p-2 rounded-lg" title="Ver como tarjetas"><i data-lucide="layout-grid" class="h-5 w-5 pointer-events-none"></i></button><button id="view-as-table-btn" class="p-2 rounded-lg" title="Ver como tabla"><i data-lucide="table-2" class="h-5 w-5 pointer-events-none"></i></button></div><div class="flex items-center gap-4"><button id="export-affiliates-btn" class="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center whitespace-nowrap"><i data-lucide="download" class="w-5 h-5 mr-2 text-green-600"></i>Exportar a CSV</button><button id="add-affiliate-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Afiliado</button></div></div><div id="affiliates-card-container" class="grid grid-cols-1 xl:grid-cols-2 gap-6"></div><div id="affiliates-table-container" style="display: none;" class="bg-white rounded-xl shadow-lg overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50"><tr class="text-left"><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Afiliado</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Plan / Asesor</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Contacto</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Estado</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase text-center">Acciones</th></tr></thead><tbody id="affiliates-table-body" class="divide-y divide-slate-200"></tbody></table></div></section>
+                    <section id="afiliados" class="content-section"><div class="bg-white p-4 rounded-xl shadow-lg mb-6"><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end"><div class="md:col-span-2"><label for="search-affiliate" class="text-sm font-medium text-slate-600">Buscar Afiliado</label><div class="relative mt-1"><input type="text" id="search-affiliate" placeholder="Nombre o documento..." class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg placeholder-slate-400"><i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i></div></div><div><label for="filter-affiliate-status" class="text-sm font-medium text-slate-600">Estado</label><select id="filter-affiliate-status" class="w-full mt-1 py-2 px-3 border border-slate-300 rounded-lg"><option value="all">Todos</option><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div>
+                        <div>
+    <label for="affiliate-payment-status" class="block text-sm font-medium text-slate-600 mb-1">Estado de Pago</label>
+    <select id="affiliate-payment-status" class="w-full px-4 py-2 border rounded-lg" required>
+        <option value="Al día">Al día</option>
+        <option value="En mora">En mora</option>
+    </select>
+</div>
+                        <div><label for="filter-affiliate-payment-status" class="text-sm font-medium text-slate-600">Estado de Pago</label><select id="filter-affiliate-payment-status" class="w-full mt-1 py-2 px-3 border border-slate-300 rounded-lg"><option value="all">Todos</option><option value="Al d&#237;a">Al d&#237;a</option><option value="En mora">En mora</option></select></div></div></div><div class="flex justify-between items-center mb-6 gap-4 flex-wrap"><div class="flex items-center gap-2"><span class="text-sm font-medium text-slate-600 mr-2">Vista:</span><button id="view-as-cards-btn" class="p-2 rounded-lg" title="Ver como tarjetas"><i data-lucide="layout-grid" class="h-5 w-5 pointer-events-none"></i></button><button id="view-as-table-btn" class="p-2 rounded-lg" title="Ver como tabla"><i data-lucide="table-2" class="h-5 w-5 pointer-events-none"></i></button></div><div class="flex items-center gap-4"><button id="export-affiliates-btn" class="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center whitespace-nowrap"><i data-lucide="download" class="w-5 h-5 mr-2 text-green-600"></i>Exportar a CSV</button><button id="add-affiliate-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Afiliado</button></div></div><div id="affiliates-card-container" class="grid grid-cols-1 xl:grid-cols-2 gap-6"></div><div id="affiliates-table-container" style="display: none;" class="bg-white rounded-xl shadow-lg overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50"><tr class="text-left"><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Afiliado</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Plan / Asesor</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Contacto</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Estado</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase text-center">Acciones</th></tr></thead><tbody id="affiliates-table-body" class="divide-y divide-slate-200"></tbody></table></div></section>
                     <section id="asesores" class="content-section"><div class="flex justify-end items-center mb-6 gap-4"><button id="export-advisors-btn" class="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center whitespace-nowrap"><i data-lucide="download" class="w-5 h-5 mr-2 text-green-600"></i>Exportar a CSV</button><button id="add-advisor-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Asesor</button></div><div id="advisors-container" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6"></div></section>
                     <section id="ranking-vendedores" class="content-section"><div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-2"><h2 class="text-2xl font-bold text-slate-800">Ranking de Vendedores</h2><p class="text-sm text-slate-500">Top vendedores por comisiones totales generadas.</p></div><div id="ranking-list" class="space-y-4"></div></section>
                     <section id="planes" class="content-section"><div class="flex justify-between items-center mb-6"><h2 class="text-2xl font-bold text-slate-800">Administrar Planes de Salud</h2><button id="add-plan-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Plan</button></div><div id="plans-list" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6"></div></section>
@@ -959,95 +986,127 @@
     function updateViewToggleButtons() { const cardBtn = document.getElementById('view-as-cards-btn'); const tableBtn = document.getElementById('view-as-table-btn'); cardBtn.className = affiliatesViewMode === 'card' ? 'p-2 rounded-lg bg-primary-600 text-white shadow-md' : 'p-2 rounded-lg bg-white hover:bg-slate-100 border text-slate-600'; tableBtn.className = affiliatesViewMode === 'table' ? 'p-2 rounded-lg bg-primary-600 text-white shadow-md' : 'p-2 rounded-lg bg-white hover:bg-slate-100 border text-slate-600'; }
     
     function renderAffiliatesList() {
-        const cardContainer = document.getElementById('affiliates-card-container');
-        const tableContainer = document.getElementById('affiliates-table-container');
-        const searchTerm = document.getElementById('search-affiliate').value.toLowerCase();
-        const statusFilter = document.getElementById('filter-affiliate-status').value;
-        const paymentStatusFilter = document.getElementById('filter-affiliate-payment-status').value;
-        
-        let filteredAffiliates = affiliates;
-        
-        if (currentUserRole === 'asesor' && userRoleData.linkedAdvisorId) {
-            filteredAffiliates = affiliates.filter(a => a.advisorId === userRoleData.linkedAdvisorId);
-        }
+        // ========= INICIO DEL CÓDIGO DE REEMPLAZO para renderAffiliatesList =========
+const cardContainer = document.getElementById('affiliates-card-container');
+const tableContainer = document.getElementById('affiliates-table-container');
 
-        filteredAffiliates = filteredAffiliates.filter(a =>
-            (a.name.toLowerCase().includes(searchTerm) || (a.documentId && a.documentId.includes(searchTerm))) &&
-            (statusFilter === 'all' || a.status === statusFilter) &&
-            (paymentStatusFilter === 'all' || (a.paymentStatus === (paymentStatusFilter === 'En mora' ? 'En mora' : 'Al día')))
-        );
-        
-        cardContainer.style.display = 'none';
-        tableContainer.style.display = 'none';
+// Paso A: Leemos los valores actuales de TODOS los filtros
+const searchTerm = document.getElementById('search-affiliate').value.toLowerCase();
+const statusFilter = document.getElementById('filter-affiliate-status').value;
+const paymentStatusFilter = document.getElementById('filter-affiliate-payment-status').value;
 
-        if (filteredAffiliates.length === 0) {
-            cardContainer.innerHTML = `<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No se encontraron afiliados.</p></div>`;
-            cardContainer.style.display = 'grid';
-            return;
-        }
+let filteredAffiliates = affiliates;
 
-        if (affiliatesViewMode === 'card') {
-            renderAffiliatesAsCards(filteredAffiliates);
-            cardContainer.style.display = 'grid';
-        } else {
-            renderAffiliatesAsTable(filteredAffiliates);
-            tableContainer.style.display = 'block';
-        }
+// (Este bloque es para la vista de asesor, ya debería estar ahí)
+if (currentUserRole === 'asesor' && userRoleData.linkedAdvisorId) {
+    filteredAffiliates = affiliates.filter(a => a.advisorId === userRoleData.linkedAdvisorId);
+}
+
+// Paso B: Aplicamos todos los filtros a la lista de afiliados
+filteredAffiliates = filteredAffiliates.filter(a => {
+    // Aseguramos que el afiliado tenga un estado de pago para evitar errores (por defecto 'Al día')
+    const paymentStatus = a.paymentStatus || 'Al día';
+
+    // Comprobamos si el afiliado cumple cada una de las condiciones
+    const matchesSearch = searchTerm === '' || a.name.toLowerCase().includes(searchTerm) || a.documentId.includes(searchTerm);
+    const matchesStatus = statusFilter === 'all' || a.status === statusFilter;
+    const matchesPayment = paymentStatusFilter === 'all' || paymentStatus === paymentStatusFilter;
+
+    // El afiliado solo se mostrará si cumple TODAS las condiciones
+    return matchesSearch && matchesStatus && matchesPayment;
+});
+
+// Paso C: Mostramos el resultado (ya sea en tarjetas o tabla)
+cardContainer.style.display = 'none';
+tableContainer.style.display = 'none';
+
+if (filteredAffiliates.length === 0) {
+    cardContainer.innerHTML = `<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No se encontraron afiliados que coincidan con los filtros.</p></div>`;
+    cardContainer.style.display = 'grid';
+    return;
+}
+
+if (affiliatesViewMode === 'card') {
+    renderAffiliatesAsCards(filteredAffiliates);
+    cardContainer.style.display = 'grid';
+} else {
+    renderAffiliatesAsTable(filteredAffiliates);
+    tableContainer.style.display = 'block';
+}
+// ========= FIN DEL CÓDIGO DE REEMPLAZO =========
     }
     
-    function renderAffiliatesAsCards(filteredData) { const listContainer = document.getElementById('affiliates-card-container'); const statusStyles = { 'Activo': 'bg-green-100 text-green-800', 'Pendiente': 'bg-yellow-100 text-yellow-800', 'Inactivo': 'bg-red-100 text-red-800' }; listContainer.innerHTML = filteredData.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const commission = getAdvisorCommissionForAffiliate(aff); const commissionBase = getAffiliateCommissionBase(aff); const healthPlan = healthPlans.find(p => p.id === aff.healthPlan); 
-        const actionsHtml = `
-            <div>
-                <button class="download-receipt-btn text-slate-500 hover:text-blue-600 p-2 rounded-full" data-id="${aff.id}" title="Descargar Recibo">
-                    <i data-lucide="file-down" class="h-5 w-5 pointer-events-none"></i>
-                </button>
-                <button class="edit-affiliate-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${aff.id}" title="Editar">
-                    <i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i>
-                </button>
-                ${currentUserRole === 'admin' ? `
-                <button class="delete-affiliate-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${aff.id}" title="Eliminar">
-                    <i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i>
-                </button>` : ''}
-            </div>`;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            return ` <div class="bg-white rounded-xl shadow-lg transition hover:shadow-2xl flex flex-col"> <div class="p-5"> <div class="flex justify-between items-start"> <div><h3 class="font-bold text-lg text-slate-800">${aff.name}</h3><p class="text-sm text-slate-500">Doc: ${aff.documentId}</p></div> <div class="flex items-center gap-2 flex-shrink-0 ml-2"><span class="text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[aff.status] || ''}">${aff.status}</span></div> </div> <div class="grid grid-cols-2 gap-4 mt-4 text-sm"> <div><strong class="block text-slate-500">Asesor</strong><span>${advisor ? advisor.name : 'N/A'}</span></div> <div><strong class="block text-slate-500">Comisi&#243;n Mensual</strong><span class="font-bold text-green-600">${formatCurrency(commission)} ${aff.manualCommission ? '<span title="Comisi&#243;n Manual" class="text-blue-500 font-bold">*</span>' : ''}</span></div> <div><strong class="block text-slate-500">Valor Plan/Base</strong><span>${formatCurrency(commissionBase)} ${aff.manualCosts ? '<span title="Costos Manuales" class="text-blue-500 font-bold">*</span>' : ''}</span></div> <div><strong class="block text-slate-500">Fecha Inicio</strong><span>${aff.startDate}</span></div> </div> </div> <div class="details-section hidden p-5 border-t bg-slate-50"> <h4 class="font-semibold mb-2">Detalles Completos:</h4> <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm"> <p><strong class="text-slate-500">Plan:</strong> ${healthPlan ? healthPlan.name : 'N/A'}</p><p><strong class="text-slate-500">Pensi&#243;n:</strong> ${aff.pensionPlan}</p> <p><strong class="text-slate-500">ARL:</strong> ${aff.arlPlan}</p><p><strong class="text-slate-500">Caja Comp.:</strong> ${aff.ccfPlan}</p> <p class="sm:col-span-2"><strong class="text-slate-500">Notas:</strong> <span class="whitespace-pre-wrap">${aff.notes || 'N/A'}</span></p> </div> </div> <div class="border-t p-3 mt-auto flex justify-between items-center bg-gray-50/50 rounded-b-xl"> <button data-toggle-details="${aff.id}" class="text-sm text-primary-600 font-semibold hover:text-primary-700 flex items-center">Ver Detalles<i data-lucide="chevron-down" class="details-toggle-icon h-5 w-5 ml-1"></i></button> ${actionsHtml} </div> </div>`; }).join(''); lucide.createIcons(); }
-    function renderAffiliatesAsTable(filteredData) { const tableBody = document.getElementById('affiliates-table-body'); const statusStyles = { 'Activo': 'bg-green-100 text-green-800', 'Pendiente': 'bg-yellow-100 text-yellow-800', 'Inactivo': 'bg-red-100 text-red-800' }; tableBody.innerHTML = filteredData.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const healthPlan = healthPlans.find(p => p.id === aff.healthPlan); const actionsHtml = currentUserRole === 'admin' ? `<button class="edit-affiliate-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${aff.id}" title="Editar"><i data-lucide="pencil" class="h-4 w-4 pointer-events-none"></i></button> <button class="delete-affiliate-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${aff.id}" title="Eliminar"><i data-lucide="trash-2" class="h-4 w-4 pointer-events-none"></i></button>` : `<button class="edit-affiliate-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${aff.id}" title="Editar"><i data-lucide="pencil" class="h-4 w-4 pointer-events-none"></i></button>`; return ` <tr class="hover:bg-slate-50"> <td class="p-3"><div class="font-semibold text-slate-800">${aff.name}</div><div class="text-xs text-slate-500">Doc: ${aff.documentId}</div></td> <td class="p-3"><div class="text-slate-800">${healthPlan ? healthPlan.name : 'N/A'}</div><div class="text-xs text-slate-500">Asesor: ${advisor ? advisor.name : 'N/A'}</div></td> <td class="p-3"><div class="text-slate-800 break-all">${aff.email || 'N/A'}</div><div class="text-xs text-slate-500">${aff.phone || 'N/A'}</div></td> <td class="p-3"><span class="text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[aff.status] || ''}">${aff.status}</span><div class="text-xs text-slate-500 mt-1">Inicio: ${aff.startDate}</div></td> <td class="p-3 text-center"><div class="flex justify-center items-center"> ${actionsHtml} </div></td> </tr>`; }).join(''); lucide.createIcons(); }
-    function renderAdvisorsSection() {
-        const container = document.getElementById("advisors-container");
-        if (!container) return;
-        if (advisors.length === 0) {
-            container.innerHTML = '<p class="text-center text-slate-500 col-span-full">No hay asesores registrados.</p>';
-            return;
-        }
-        const statusStyles = { 'Activo': "bg-green-100 text-green-800", 'Pendiente': "bg-yellow-100 text-yellow-800", 'Inactivo': "bg-red-100 text-red-800", };
-        container.innerHTML = advisors.map((advisor) => {
-            const affs = affiliates.filter((a) => a.advisorId === advisor.id);
-            const activeAffs = affs.filter((a) => a.status === "Activo");
-            const totalCommission = affs.reduce((sum, a) => sum + getAdvisorCommissionForAffiliate(a), 0);
-            const monthlyCommission = activeAffs.reduce((sum, a) => sum + getAdvisorCommissionForAffiliate(a), 0);
-            const hasAffiliates = affs.length > 0;
-            const breakdownHtml = hasAffiliates ? affs.map((aff) => {
-                const commission = getAdvisorCommissionForAffiliate(aff);
-                return `<tr class="border-b border-slate-200 last:border-b-0 hover:bg-slate-100"><td class="p-2 font-medium text-slate-800">${aff.name}</td><td class="p-2"><span class="text-xs font-semibold px-2 py-0.5 rounded-full ${statusStyles[aff.status] || ""}">${aff.status}</span></td><td class="p-2 text-right font-mono text-green-700">${formatCurrency(commission)}</td></tr>`;
-            }).join("") : `<tr><td colspan="3" class="text-center p-4 text-slate-500">Este asesor no tiene afiliados.</td></tr>`;
-            return `
-            <div class="bg-white rounded-xl shadow-lg flex flex-col transition hover:shadow-2xl">
-                <div class="p-5 flex justify-between items-start">
-                    <div><h3 class="font-bold text-xl text-slate-800">${advisor.name}</h3><p class="text-sm text-primary-600 font-semibold">Comisi&#243;n Base: ${advisor.commissionRate}%</p></div>
-                    <div class="flex-shrink-0"><button class="edit-advisor-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${advisor.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button><button class="delete-advisor-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${advisor.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button></div>
+    function renderAffiliatesAsCards(filteredData) {// ==========================================================
+// === COMIENZA A PEGAR ESTE CÓDIGO NUEVO ===================
+// ==========================================================
+const listContainer = document.getElementById('affiliates-card-container');
+const statusStyles = { 'Activo': 'bg-green-100 text-green-800', 'Pendiente': 'bg-yellow-100 text-yellow-800', 'Inactivo': 'bg-red-100 text-red-800' };
+
+listContainer.innerHTML = filteredData.map(aff => {
+    const advisor = advisors.find(v => v.id === aff.advisorId);
+    const commission = getAdvisorCommissionForAffiliate(aff);
+    const commissionBase = getAffiliateCommissionBase(aff);
+    const healthPlan = healthPlans.find(p => p.id === aff.healthPlan);
+
+    const isOverdue = aff.paymentStatus === 'En mora';
+    const paymentStatusToggle = `
+        <div class="flex items-center gap-1">
+            <button class="payment-status-btn p-2 rounded-full hover:bg-green-100 ${!isOverdue ? 'text-green-500' : 'text-slate-400'}" 
+                    title="Marcar como 'Al día'" data-id="${aff.id}" data-set-payment-status="Al día">
+                <i data-lucide="check-circle" class="h-5 w-5 pointer-events-none"></i>
+            </button>
+            <button class="payment-status-btn p-2 rounded-full hover:bg-red-100 ${isOverdue ? 'text-red-500' : 'text-slate-400'}" 
+                    title="Marcar como 'En mora'" data-id="${aff.id}" data-set-payment-status="En mora">
+                <i data-lucide="alert-circle" class="h-5 w-5 pointer-events-none"></i>
+            </button>
+        </div>
+    `;
+
+    const actionsHtml = `
+        <div class="flex items-center">
+            <button class="download-receipt-btn text-slate-500 hover:text-blue-600 p-2 rounded-full" data-id="${aff.id}" title="Descargar Recibo"><i data-lucide="file-down" class="h-5 w-5 pointer-events-none"></i></button>
+            <button class="edit-affiliate-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${aff.id}" title="Editar"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button>
+            ${currentUserRole === 'admin' ? `<button class="delete-affiliate-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${aff.id}" title="Eliminar"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button>` : ''}
+        </div>`;
+
+    return `
+    <div class="bg-white rounded-xl shadow-lg transition hover:shadow-2xl flex flex-col">
+        <div class="p-5">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="font-bold text-lg text-slate-800">${aff.name}</h3>
+                    <p class="text-sm text-slate-500">Doc: ${aff.documentId}</p>
                 </div>
-                <div class="p-5 grid grid-cols-3 gap-4 text-center border-y">
-                    <div><p class="text-3xl font-bold text-slate-700">${affs.length}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Afiliados</p></div>
-                    <div><p class="text-xl font-bold text-primary-600">${formatCurrency(monthlyCommission, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisi&#243;n (Mes)</p></div>
-                    <div><p class="text-xl font-bold text-green-600">${formatCurrency(totalCommission, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisi&#243;n (Total)</p></div>
+                <div class="flex items-center gap-2 flex-shrink-0 ml-2">
+                    <span class="text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[aff.status] || ''}">${aff.status}</span>
                 </div>
-                <div id="advisor-stats-${advisor.id}" class="hidden">
-                    <div class="p-4 bg-slate-50"><h4 class="font-semibold mb-3 text-slate-700 text-sm">Desglose de Afiliados</h4><div class="max-h-64 overflow-y-auto pr-1"><table class="w-full text-sm text-left"><thead class="text-xs text-slate-500 uppercase bg-slate-200 sticky top-0"><tr><th class="p-2 font-semibold">Afiliado</th><th class="p-2 font-semibold">Estado</th><th class="p-2 font-semibold text-right">Ganancia</th></tr></thead><tbody class="bg-white">${breakdownHtml}</tbody></table></div></div>
-                </div>
-                <div class="mt-auto border-t p-3 flex justify-end items-center bg-gray-50/50 rounded-b-xl"><button ${hasAffiliates ? "" : "disabled"} data-toggle-stats="${advisor.id}" class="stats-toggle-btn text-sm text-primary-600 font-semibold hover:text-primary-700 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"><span class="button-text">Ver Desglose</span><i data-lucide="chevron-down" class="stats-toggle-icon h-5 w-5 ml-1"></i></button></div>
-            </div>`;
-        }).join("");
-        lucide.createIcons();
-    }
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-4 text-sm">
+                <div><strong class="block text-slate-500">Asesor</strong><span>${advisor ? advisor.name : 'N/A'}</span></div>
+                <div><strong class="block text-slate-500">Comisión Mensual</strong><span class="font-bold text-green-600">${formatCurrency(commission)} ${aff.manualCommission ? '<span title="Comisión Manual" class="text-blue-500 font-bold">*</span>' : ''}</span></div>
+                <div><strong class="block text-slate-500">Valor Plan/Base</strong><span>${formatCurrency(commissionBase)} ${aff.manualCosts ? '<span title="Costos Manuales" class="text-blue-500 font-bold">*</span>' : ''}</span></div>
+                <div><strong class="block text-slate-500">Fecha Inicio</strong><span>${aff.startDate}</span></div>
+            </div>
+        </div>
+        <div class="details-section hidden p-5 border-t bg-slate-50">
+            <h4 class="font-semibold mb-2">Detalles Completos:</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                <p><strong class="text-slate-500">Plan:</strong> ${healthPlan ? healthPlan.name : 'N/A'}</p><p><strong class="text-slate-500">Pensión:</strong> ${aff.pensionPlan}</p>
+                <p><strong class="text-slate-500">ARL:</strong> ${aff.arlPlan}</p><p><strong class="text-slate-500">Caja Comp.:</strong> ${aff.ccfPlan}</p>
+                <p class="sm:col-span-2"><strong class="text-slate-500">Notas:</strong> <span class="whitespace-pre-wrap">${aff.notes || 'N/A'}</span></p>
+            </div>
+        </div>
+        <div class="border-t p-3 mt-auto flex justify-between items-center bg-gray-50/50 rounded-b-xl">
+            ${paymentStatusToggle}
+            ${actionsHtml}
+        </div>
+    </div>`;
+}).join('');
+lucide.createIcons();
+// ==========================================================
+// === TERMINA DE PEGAR AQUÍ ================================
+// ==========================================================
+        
     function renderRankingSection(){const e=document.getElementById("ranking-list");if(!e)return;const t=advisors.map(e=>{const t=affiliates.filter(t=>t.advisorId===e.id).reduce((e,t)=>e+getAdvisorCommissionForAffiliate(t),0);return{...e,totalCommission:t}});if(t.sort((e,t)=>t.totalCommission-e.totalCommission),0===t.length){e.innerHTML='<div class="text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay asesores para mostrar en el ranking.</p></div>';return}const a=["bg-amber-400 text-amber-900","bg-slate-300 text-slate-800","bg-orange-400 text-orange-900"],n=['<i data-lucide="trophy" class="w-6 h-6 text-amber-500"></i>','<i data-lucide="award" class="w-6 h-6 text-slate-500"></i>','<i data-lucide="medal" class="w-6 h-6 text-orange-500"></i>'];e.innerHTML=t.map((e,t)=>{const o=t+1,s=3>=o?a[t]:"bg-slate-200 text-slate-700",i=3>=o?n[t]:`<span class="font-bold text-lg">${o}</span>`;return` <div class="bg-white rounded-xl shadow-lg p-4 flex items-center space-x-4 transition hover:shadow-xl hover:scale-[1.02]"> <div class="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${s}">${i}</div> <div class="flex-grow"> <h3 class="font-bold text-lg text-slate-800">${e.name}</h3> <p class="text-sm text-slate-500">Comisi&#243;n Base: ${e.commissionRate}%</p> </div> <div class="text-right"> <p class="text-xl font-extrabold text-green-600">${formatCurrency(e.totalCommission)}</p> <p class="text-xs font-medium text-slate-500 uppercase">Comisi&#243;n Total</p> </div> </div>`}).join("");}
     function renderPlansList(){const e=document.getElementById("plans-list");if(!e)return;if(0===healthPlans.length){e.innerHTML='<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay planes de salud creados. &#161;A&#241;ade el primero!</p></div>';return}e.innerHTML=healthPlans.map(e=>` <div class="bg-white rounded-xl shadow-lg flex flex-col"> <div class="p-5 flex-grow"> <div class="flex justify-between items-start"><h3 class="font-bold text-lg text-slate-800">${e.name}</h3><p class="text-xl font-extrabold text-primary-600">${formatCurrency(e.price)}</p></div> <ul class="text-sm text-slate-600 space-y-1 mt-4"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check-circle-2" class="w-4 h-4 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> <div class="border-t p-3 flex justify-end items-center bg-gray-50/50 rounded-b-xl"> <button class="edit-plan-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button> <button class="delete-plan-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button> </div> </div>`).join("");}
     function populateAdvisorSelect(){const e=document.getElementById("advisor-select-list");e&&(e.innerHTML='<option value="" disabled selected>Asignar Asesor</option>'+advisors.map(e=>`<option value="${e.id}">${e.name}</option>`).join(""))}
@@ -1725,6 +1784,12 @@ const renderHeaderSearchResults = (results) => {
         headerSearchResults.querySelectorAll('p').forEach(p => {
              if (p.classList.contains('text-slate-800')) { p.style.color = '#f9fafb'; }
              if (p.classList.contains('text-slate-500')) { p.style.color = '#b3b3b3'; }
+
+            // ========= PEGA ESTAS LÍNEAS PARA ACTIVAR LOS FILTROS =========
+document.getElementById('search-affiliate').addEventListener('input', renderAffiliatesList);
+document.getElementById('filter-affiliate-status').addEventListener('change', renderAffiliatesList);
+document.getElementById('filter-affiliate-payment-status').addEventListener('change', renderAffiliatesList);
+// ==============================================================
         });
     }
     headerSearchResults.classList.remove('hidden');
@@ -1869,7 +1934,17 @@ document.addEventListener('click', (e) => {
             else if (button.matches('.edit-advisor-btn')) modalManager.open('advisor-modal', advisors.find(v => v.id === id)); 
             else if (button.matches('.edit-plan-btn')) modalManager.open('plan-modal', healthPlans.find(p => p.id === id)); 
             else if (button.matches('[data-toggle-details]')) { const card = button.closest('.bg-white'); if (card) { card.querySelector('.details-section').classList.toggle('hidden'); button.classList.toggle('details-shown'); } } 
-            else if (button.matches('[data-toggle-stats]')) { const statsContainer = document.getElementById(`advisor-stats-${button.dataset.toggleStats}`); if (statsContainer) { statsContainer.classList.toggle('hidden'); button.classList.toggle('stats-shown'); button.querySelector('.button-text').textContent = statsContainer.classList.contains('hidden') ? 'Ver Desglose' : 'Ocular Desglose'; } } 
+            else if (button.matches('[data-toggle-stats]')) { const statsContainer = document.getElementById(`advisor-stats-${button.dataset.toggleStats}`); if (statsContainer) { statsContainer.classList.toggle('hidden'); button.classList.toggle('stats-shown'); button.querySelector('.button-text').textContent = statsContainer.classList.contains('hidden') ? 'Ver Desglose' : 'Ocular Desglose'; } }
+            else if (button.matches('.payment-status-btn')) {
+    const affiliateId = button.dataset.id;
+    const newStatus = button.dataset.setPaymentStatus;
+
+    if (affiliateId && newStatus) {
+        // Actualizamos solo el campo de pago en la base de datos
+        await saveDataToFirestore('affiliates', { id: affiliateId, paymentStatus: newStatus });
+        showToast(`Estado de pago actualizado a "${newStatus}".`);
+    }
+}    
             else if (button.matches('.delete-affiliate-btn')) { if (confirm('&#191;Seguro que deseas eliminar este afiliado?')) { await deleteDataFromFirestore('affiliates', id); showToast('Afiliado eliminado.'); } } 
             else if (button.matches('.delete-advisor-btn')) { if (confirm('&#191;Seguro? Se desasignar&#225; de todos los afiliados.')) { const batch = writeBatch(db); affiliates.forEach(aff => { if(aff.advisorId === id) { const affRef = doc(db, `users/${adminUidForRole}/affiliates/${aff.id}`); batch.update(affRef, { advisorId: null }); } }); const advisorRef = doc(db, `users/${adminUidForRole}/advisors/${id}`); batch.delete(advisorRef); await batch.commit(); showToast('Asesor eliminado.'); } } 
             else if (button.matches('.delete-plan-btn')) { const isPlanInUse = affiliates.some(aff => aff.healthPlan === id); if(isPlanInUse) return showToast('Plan en uso. No se puede eliminar.', 'error'); if (confirm('&#191;Seguro?')) { await deleteDataFromFirestore('healthPlans', id); showToast('Plan eliminado.'); } }
@@ -1927,6 +2002,7 @@ document.addEventListener('click', (e) => {
                 startDate: form['affiliate-start-date'].value,
                 endDate: form['affiliate-end-date'].value,
                 status: form['affiliate-status'].value,
+                paymentStatus: form['affiliate-payment-status'].value, // <-- AÑADE ESTA LÍNEA
                 notes: form['affiliate-notes'].value.trim(),
                 manualCosts: null,
                 manualCommission: null
@@ -2344,7 +2420,9 @@ document.addEventListener('click', (e) => {
                     advisorSelect.disabled = false;
                     advisorSelect.value = data?.advisorId || '';
                 }
-                form['affiliate-doc-id'].value = data?.id || ''; form['affiliate-name'].value = data?.name || ''; form['affiliate-id'].value = data?.documentId || ''; form['affiliate-email'].value = data?.email || ''; form['affiliate-phone'].value = data?.phone || ''; form['affiliate-address'].value = data?.address || ''; if(data?.healthPlan) { const planInput = form.querySelector(`input[name="health-plan"][value="${data.healthPlan}"]`); if (planInput) planInput.checked = true; } form['pension-plan'].value = data?.pensionPlan || ''; form['arl-plan'].value = data?.arlPlan || ''; form['ccf-plan'].value = data?.ccfPlan || ''; form['affiliate-start-date'].value = data?.startDate || new Date().toISOString().split('T')[0]; form['affiliate-end-date'].value = data?.endDate || ''; form['affiliate-status'].value = data?.status || 'Pendiente'; form['affiliate-notes'].value = data?.notes || ''; const manualContainer = form.querySelector('#manual-override-container'); form['manual-override-checkbox'].checked = !!(data?.manualCosts || data?.manualCommission); manualContainer.classList.toggle('hidden', !form['manual-override-checkbox'].checked); form['manual-cost-health'].value = data?.manualCosts?.health || ''; form['manual-cost-pension'].value = data?.manualCosts?.pension || ''; form['manual-cost-arl'].value = data?.manualCosts?.arl || ''; form['manual-cost-ccf'].value = data?.manualCosts?.ccf || ''; form['manual-commission'].value = data?.manualCommission || '';
+                form['affiliate-doc-id'].value = data?.id || ''; form['affiliate-name'].value = data?.name || ''; form['affiliate-id'].value = data?.documentId || ''; form['affiliate-email'].value = data?.email || ''; form['affiliate-phone'].value = data?.phone || ''; form['affiliate-address'].value = data?.address || ''; if(data?.healthPlan) { const planInput = form.querySelector(`input[name="health-plan"][value="${data.healthPlan}"]`); if (planInput) planInput.checked = true; } form['pension-plan'].value = data?.pensionPlan || ''; form['arl-plan'].value = data?.arlPlan || ''; form['ccf-plan'].value = data?.ccfPlan || ''; form['affiliate-start-date'].value = data?.startDate || new Date().toISOString().split('T')[0]; form['affiliate-end-date'].value = data?.endDate || ''; form['affiliate-status'].value = data?.status || 'Pendiente';
+                form['affiliate-payment-status'].value = data?.paymentStatus || 'Al día'; // <-- AÑADE ESTA LÍNEA
+                form['affiliate-notes'].value = data?.notes || ''; const manualContainer = form.querySelector('#manual-override-container'); form['manual-override-checkbox'].checked = !!(data?.manualCosts || data?.manualCommission); manualContainer.classList.toggle('hidden', !form['manual-override-checkbox'].checked); form['manual-cost-health'].value = data?.manualCosts?.health || ''; form['manual-cost-pension'].value = data?.manualCosts?.pension || ''; form['manual-cost-arl'].value = data?.manualCosts?.arl || ''; form['manual-cost-ccf'].value = data?.manualCosts?.ccf || ''; form['manual-commission'].value = data?.manualCommission || '';
             } else if (modalId === 'advisor-modal') { form['advisor-doc-id'].value = data?.id || ''; form['advisor-name'].value = data?.name || ''; form['advisor-commission'].value = data?.commissionRate || ''; } 
             else if (modalId === 'plan-modal') { form['plan-doc-id'].value = data?.id || ''; form['plan-name'].value = data?.name || ''; form['plan-price'].value = data?.price || ''; form['plan-features'].value = data?.features || ''; } 
             else if (modalId === 'settings-modal') { 
@@ -2392,6 +2470,7 @@ document.addEventListener('click', (e) => {
 </script>
 </body>
 </html>
+
 
 
 
