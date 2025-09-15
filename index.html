@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seb Salud - V2</title>
+    <title>Seb Salud - Plataforma de Gesti&#243;n</title>
 
     <meta name="theme-color" content="#1DB954"/>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Seb Salud">
+    
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <link rel="manifest" href="manifest.json">
 
@@ -20,6 +21,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
+        /* ... Tu CSS original va aquí, no necesita cambios ... */
         :root {
             --color-primary-400: 165 180 252; --color-primary-500: 129 140 248; --color-primary-600: 79 70 229; --color-primary-700: 67 56 202;
             --auth-gradient-from: rgb(var(--color-primary-600));
@@ -150,7 +152,7 @@
 <body class="bg-slate-50 text-slate-800 antialiased" data-sidebar-theme="dark" data-bottom-nav-theme="dark">
 
     <div id="loader" class="fixed inset-0 bg-slate-100/80 backdrop-blur-sm z-[101] flex items-center justify-center">
-        <div class="flex flex-col items-center"><i data-lucide="shield-check" class="h-12 w-12 text-primary-500 animate-pulse"></i><p class="mt-4 text-slate-600">Verificando sesión...</p></div>
+        <div class="flex flex-col items-center"><i data-lucide="shield-check" class="h-12 w-12 text-primary-500 animate-pulse"></i><p class="mt-4 text-slate-600">Verificando sesi&#243;n...</p></div>
     </div>
     <div id="toast" class="fixed top-5 right-5 z-[100] bg-green-500 text-white py-2 px-4 rounded-lg shadow-xl opacity-0 transform translate-y-2 transition-all duration-300"><span id="toast-message"></span></div>
 
@@ -159,18 +161,18 @@
             <div class="auth-banner p-6 md:p-8 lg:p-12 text-white flex flex-col justify-center items-center text-center">
                 <i data-lucide="shield-check" class="h-16 w-16 md:h-20 md:w-20 text-white/80 mb-6"></i>
                 <h2 class="text-2xl md:text-3xl font-bold mb-4">Bienvenido a Seb Salud</h2>
-                <p class="text-white/80 max-w-sm">Tu plataforma de gestión de salud todo en uno. Administra afiliados, asesores y finanzas de forma eficiente y segura.</p>
+                <p class="text-white/80 max-w-sm">Tu plataforma de gesti&#243;n de salud todo en uno. Administra afiliados, asesores y finanzas de forma eficiente y segura.</p>
             </div>
             <div class="p-8 lg:p-12 flex flex-col justify-center">
                 <div class="w-full max-w-md mx-auto">
-                    <div id="login-view" class="auth-form"><h2 class="text-3xl font-bold text-slate-800 mb-2">Iniciar Sesión</h2><p class="text-slate-500 mb-8">Ingresa a tu cuenta para continuar.</p><form id="login-form"><div class="space-y-5"><div class="relative"><i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i><input type="email" id="login-email" placeholder="Correo Electrónico" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required></div><div class="relative"><i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i><input type="password" id="login-password" placeholder="Contraseña" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required></div></div><div class="mt-8"><button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">Ingresar</button></div></form><p class="text-center text-sm text-slate-600 mt-8">¿No tienes una cuenta? <button id="show-register" class="font-semibold text-primary-600 hover:underline">Regístrate aquí</button></p></div>
-                    <div id="register-view" class="auth-form" style="display: none;"><h2 class="text-3xl font-bold text-slate-800 mb-2">Crear Cuenta</h2><p class="text-slate-500 mb-8">Únete a nuestra plataforma.</p><form id="register-form"><div class="space-y-5"><div class="relative"><i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i><input type="email" id="register-email" placeholder="Correo Electrónico" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required></div><div class="relative"><i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i><input type="password" id="register-password" placeholder="Contraseña (mín. 6 caracteres)" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required></div></div><div class="mt-8"><button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">Crear Cuenta</button></div></form><p class="text-center text-sm text-slate-600 mt-8">¿Ya tienes una cuenta? <button id="show-login" class="font-semibold text-primary-600 hover:underline">Inicia sesión</button></p></div>
+                    <div id="login-view" class="auth-form"><h2 class="text-3xl font-bold text-slate-800 mb-2">Iniciar Sesi&#243;n</h2><p class="text-slate-500 mb-8">Ingresa a tu cuenta para continuar.</p><form id="login-form"><div class="space-y-5"><div class="relative"><i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i><input type="email" id="login-email" placeholder="Correo Electr&#243;nico" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required></div><div class="relative"><i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i><input type="password" id="login-password" placeholder="Contrase&#241;a" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required></div></div><div class="mt-8"><button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">Ingresar</button></div></form><p class="text-center text-sm text-slate-600 mt-8">&#191;No tienes una cuenta? <button id="show-register" class="font-semibold text-primary-600 hover:underline">Reg&#237;strate aqu&#237;</button></p></div>
+                    <div id="register-view" class="auth-form" style="display: none;"><h2 class="text-3xl font-bold text-slate-800 mb-2">Crear Cuenta</h2><p class="text-slate-500 mb-8">&#218;nete a nuestra plataforma.</p><form id="register-form"><div class="space-y-5"><div class="relative"><i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i><input type="email" id="register-email" placeholder="Correo Electr&#243;nico" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required></div><div class="relative"><i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i><input type="password" id="register-password" placeholder="Contrase&#241;a (m&#237;n. 6 caracteres)" class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none" required></div></div><div class="mt-8"><button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">Crear Cuenta</button></div></form><p class="text-center text-sm text-slate-600 mt-8">&#191;Ya tienes una cuenta? <button id="show-login" class="font-semibold text-primary-600 hover:underline">Inicia sesi&#243;n</button></p></div>
                 </div>
             </div>
         </div>
     </div>
     
-    <div id="license-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60]"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95 text-center"><div class="p-6"><div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100"><i data-lucide="key-round" class="h-6 w-6 text-primary-600"></i></div><h2 class="text-2xl font-bold mt-4">Activar Licencia</h2><p class="text-slate-500 mt-2">Para continuar, por favor ingresa tu código de licencia.</p></div><form id="license-form" class="p-6 pt-0"><div class="space-y-4"><input type="text" id="license-key-input" placeholder="XXXX-XXXX-XXXX-XXXX" class="w-full text-center tracking-widest font-mono px-4 py-2.5 border rounded-lg" required><p id="license-error-message" class="text-red-500 text-sm h-4"></p></div><div class="pt-6 mt-2"><button type="submit" id="activate-license-btn" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg">Activar</button></div></form></div></div>
+    <div id="license-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[60]"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95 text-center"><div class="p-6"><div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100"><i data-lucide="key-round" class="h-6 w-6 text-primary-600"></i></div><h2 class="text-2xl font-bold mt-4">Activar Licencia</h2><p class="text-slate-500 mt-2">Para continuar, por favor ingresa tu c&#243;digo de licencia.</p></div><form id="license-form" class="p-6 pt-0"><div class="space-y-4"><input type="text" id="license-key-input" placeholder="XXXX-XXXX-XXXX-XXXX" class="w-full text-center tracking-widest font-mono px-4 py-2.5 border rounded-lg" required><p id="license-error-message" class="text-red-500 text-sm h-4"></p></div><div class="pt-6 mt-2"><button type="submit" id="activate-license-btn" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg">Activar</button></div></form></div></div>
 
     <div id="app-container" style="display: none;">
         <div class="flex h-screen overflow-hidden">
@@ -186,10 +188,10 @@
                     <a href="#" data-target="ranking-vendedores" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="award" class="w-5 h-5 mr-3"></i>Ranking Vendedores</a>
                     <a href="#" data-target="planes" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="shield-plus" class="w-5 h-5 mr-3"></i>Planes de Salud</a>
                     <a href="#" data-target="cotizador" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="calculator" class="w-5 h-5 mr-3"></i>Cotizador</a>
-                    <a href="#" data-target="gestion-roles" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="users-2" class="w-5 h-5 mr-3"></i>Gestión de Roles</a>
+                    <a href="#" data-target="gestion-roles" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="users-2" class="w-5 h-5 mr-3"></i>Gesti&#243;n de Roles</a>
                     <a href="#" data-target="perfil-afiliado" data-role="afiliado" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="user" class="w-5 h-5 mr-3"></i>Mi Perfil</a>
                 </nav>
-            <div class="px-4 py-4 border-t flex-shrink-0"><p class="text-xs text-slate-400 uppercase tracking-wider">Usuario Conectado</p><p id="user-email-display" class="font-mono rounded p-1 text-xs break-words mt-1"></p><button id="logout-btn" class="w-full mt-3 text-left text-sm flex items-center"><i data-lucide="log-out" class="w-4 h-4 mr-2"></i>Cerrar Sesión</button></div></aside>
+            <div class="px-4 py-4 border-t flex-shrink-0"><p class="text-xs text-slate-400 uppercase tracking-wider">Usuario Conectado</p><p id="user-email-display" class="font-mono rounded p-1 text-xs break-words mt-1"></p><button id="logout-btn" class="w-full mt-3 text-left text-sm flex items-center"><i data-lucide="log-out" class="w-4 h-4 mr-2"></i>Cerrar Sesi&#243;n</button></div></aside>
             <div class="flex-1 flex flex-col md:ml-64 relative">
                 <header class="fixed top-0 inset-x-0 md:left-64 bg-white/80 backdrop-blur-md shadow-sm h-16 flex items-center justify-between px-4 z-20 border-b border-slate-200/75">
                     <div class="flex items-center">
@@ -221,14 +223,14 @@
                     </div>
                     <div class="border-t border-slate-200/80 my-1"></div>
                     <button id="profile-modal-logout-btn" class="w-full text-left flex items-center gap-2 p-2 text-sm text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
-                        <i data-lucide="log-out" class="w-4 h-4"></i><span>Cerrar Sesión</span>
+                        <i data-lucide="log-out" class="w-4 h-4"></i><span>Cerrar Sesi&#243;n</span>
                     </button>
                 </div>
 
                 <div id="novedades-modal" class="absolute top-[68px] right-4 z-30 w-96 bg-white rounded-xl shadow-2xl border border-slate-200/50 flex flex-col origin-top-right transition-transform duration-200 ease-out transform scale-95 opacity-0 pointer-events-none">
                     <div class="p-4 border-b flex justify-between items-center">
                         <h3 class="font-semibold text-slate-800">Notificaciones</h3>
-                        <button id="mark-novedades-read" class="text-xs font-medium text-primary-600 hover:text-primary-700 disabled:opacity-50 disabled:cursor-not-allowed">Marcar todo como leído</button>
+                        <button id="mark-novedades-read" class="text-xs font-medium text-primary-600 hover:text-primary-700 disabled:opacity-50 disabled:cursor-not-allowed">Marcar todo como le&#237;do</button>
                     </div>
                     <div id="novedades-list" class="flex-1 overflow-y-auto max-h-96 p-2 space-y-1">
                         </div>
@@ -236,7 +238,7 @@
 
                 <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8 mt-16">
                     <section id="dashboard" class="content-section active">
-                        <h1 class="text-2xl font-bold text-slate-800 mb-6">Resumen General y Métricas Clave</h1>
+                        <h1 class="text-2xl font-bold text-slate-800 mb-6">Resumen General y M&#233;tricas Clave</h1>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
                             <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Ingresos del Mes</h3><p id="kpi-monthly-income" class="text-3xl font-bold text-slate-800 mt-2">$0</p></div><div class="bg-emerald-100 text-emerald-600 p-2 rounded-full"><i data-lucide="trending-up" class="h-6 w-6"></i></div></div>
                             <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Admin. / Ganancia Neta (Mes)</h3><p id="kpi-net-profit" class="text-3xl font-bold text-slate-800 mt-2">$0</p></div><div class="bg-indigo-100 text-indigo-600 p-2 rounded-full"><i data-lucide="briefcase" class="h-6 w-6"></i></div></div>
@@ -252,24 +254,24 @@
                             <form id="company-profile-form" class="space-y-6">
                                 <div><label for="company-name" class="block text-sm font-medium text-slate-600">Nombre</label><input type="text" id="company-name" class="w-full mt-1 p-2 border rounded-lg" required></div>
                                 <div><label for="company-nit" class="block text-sm font-medium text-slate-600">NIT / Documento</label><input type="text" id="company-nit" class="w-full mt-1 p-2 border rounded-lg" required></div>
-                                <div><label for="company-address" class="block text-sm font-medium text-slate-600">Dirección</label><input type="text" id="company-address" class="w-full mt-1 p-2 border rounded-lg"></div>
-                                <div><label for="company-phone" class="block text-sm font-medium text-slate-600">Teléfono</label><input type="tel" id="company-phone" class="w-full mt-1 p-2 border rounded-lg"></div>
+                                <div><label for="company-address" class="block text-sm font-medium text-slate-600">Direcci&#243;n</label><input type="text" id="company-address" class="w-full mt-1 p-2 border rounded-lg"></div>
+                                <div><label for="company-phone" class="block text-sm font-medium text-slate-600">Tel&#233;fono</label><input type="tel" id="company-phone" class="w-full mt-1 p-2 border rounded-lg"></div>
                                 <div><label for="company-email" class="block text-sm font-medium text-slate-600">Email</label><input type="email" id="company-email" class="w-full mt-1 p-2 border rounded-lg"></div>
                                 <div class="mt-6 pt-6 border-t"><h3 class="text-lg font-medium text-slate-700 mb-4">Color del Tema Principal</h3>
                                     <div id="theme-selector" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                                        <label class="cursor-pointer"><input type="radio" name="theme" value="default" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Índigo</span><div class="w-6 h-6 rounded-full bg-[#4f46e5]"></div></div></div></label>
+                                        <label class="cursor-pointer"><input type="radio" name="theme" value="default" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500/50"><div class="flex items-center justify-between"><span class="font-semibold">&#205;ndigo</span><div class="w-6 h-6 rounded-full bg-[#4f46e5]"></div></div></div></label>
                                         <label class="cursor-pointer"><input type="radio" name="theme" value="bosque" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-lime-500 peer-checked:ring-2 peer-checked:ring-lime-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Bosque</span><div style="background-image: linear-gradient(to right top, #a3e635, #06b6d4);" class="w-6 h-6 rounded-full"></div></div></div></label>
                                         <label class="cursor-pointer"><input type="radio" name="theme" value="atardecer" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-orange-500 peer-checked:ring-2 peer-checked:ring-orange-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Atardecer</span><div style="background-image: linear-gradient(to right top, #fde047, #f97316, #ef4444);" class="w-6 h-6 rounded-full"></div></div></div></label>
                                         <label class="cursor-pointer"><input type="radio" name="theme" value="elegant" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-amber-500 peer-checked:ring-2 peer-checked:ring-amber-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Elegant</span><div style="background-image: linear-gradient(to right top, #f59e0b, #0ea5e9);" class="w-6 h-6 rounded-full"></div></div></div></label>
                                         <label class="cursor-pointer"><input type="radio" name="theme" value="espacial" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-sky-500 peer-checked:ring-2 peer-checked:ring-sky-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Espacial</span><div class="w-6 h-6 rounded-full bg-gradient-to-br from-[#38bdf8] to-[#8b5cf6]"></div></div></div></label>
                                         <label class="cursor-pointer"><input type="radio" name="theme" value="verano-tropical" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-fuchsia-600 peer-checked:ring-2 peer-checked:ring-fuchsia-600/50"><div class="flex items-center justify-between"><span class="font-semibold">Tropical</span><div class="w-6 h-6 rounded-full bg-gradient-to-br from-[#a3e635] to-[#ec4899]"></div></div></div></label>
                                         <label class="cursor-pointer"><input type="radio" name="theme" value="apple" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-gray-300 peer-checked:ring-2 peer-checked:ring-gray-300/50"><div class="flex items-center justify-between"><span class="font-semibold">Apple</span><div class="w-6 h-6 rounded-full bg-black border-2 border-white"></div></div></div></label>
-                                        <label class="cursor-pointer"><input type="radio" name="theme" value="neon-amarillo" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-yellow-400 peer-checked:ring-2 peer-checked:ring-yellow-400/50"><div class="flex items-center justify-between"><span class="font-semibold">Neón</span><div class="w-6 h-6 rounded-full bg-[#ccff00]"></div></div></div></label>
+                                        <label class="cursor-pointer"><input type="radio" name="theme" value="neon-amarillo" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-yellow-400 peer-checked:ring-2 peer-checked:ring-yellow-400/50"><div class="flex items-center justify-between"><span class="font-semibold">Ne&#243;n</span><div class="w-6 h-6 rounded-full bg-[#ccff00]"></div></div></div></label>
                                         <label class="cursor-pointer"><input type="radio" name="theme" value="spotify" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-green-500 peer-checked:ring-2 peer-checked:ring-green-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Spotify</span><div class="w-6 h-6 rounded-full bg-[#1DB954]"></div></div></div></label>
                                     </div>
                                 </div>
                                 <div class="mt-6 pt-6 border-t"><h3 class="text-lg font-medium text-slate-700 mb-4">Tema del Panel Lateral</h3><div id="sidebar-theme-selector" class="grid grid-cols-2 gap-4"><label class="cursor-pointer"><input type="radio" name="sidebar-theme" value="dark" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-slate-800 peer-checked:ring-2 peer-checked:ring-slate-800/50"><div class="flex items-center justify-between"><span class="font-semibold">Oscuro</span><div class="w-6 h-6 rounded-full bg-slate-900 border-2"></div></div></div></label><label class="cursor-pointer"><input type="radio" name="sidebar-theme" value="light" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-slate-400 peer-checked:ring-2 peer-checked:ring-slate-400/50"><div class="flex items-center justify-between"><span class="font-semibold">Claro</span><div class="w-6 h-6 rounded-full bg-white border-2"></div></div></div></label></div></div>
-                                <div class="mt-6 pt-6 border-t"><h3 class="text-lg font-medium text-slate-700 mb-4">Tema del Menú Inferior (Móvil)</h3><div id="bottom-nav-theme-selector" class="grid grid-cols-2 gap-4"><label class="cursor-pointer"><input type="radio" name="bottom-nav-theme" value="dark" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-slate-800 peer-checked:ring-2 peer-checked:ring-slate-800/50"><div class="flex items-center justify-between"><span class="font-semibold">Oscuro</span><div class="w-6 h-6 rounded-full bg-slate-900 border-2"></div></div></div></label><label class="cursor-pointer"><input type="radio" name="bottom-nav-theme" value="light" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-slate-400 peer-checked:ring-2 peer-checked:ring-slate-400/50"><div class="flex items-center justify-between"><span class="font-semibold">Claro</span><div class="w-6 h-6 rounded-full bg-white border-2"></div></div></div></label></div></div>
+                                <div class="mt-6 pt-6 border-t"><h3 class="text-lg font-medium text-slate-700 mb-4">Tema del Men&#250; Inferior (M&#243;vil)</h3><div id="bottom-nav-theme-selector" class="grid grid-cols-2 gap-4"><label class="cursor-pointer"><input type="radio" name="bottom-nav-theme" value="dark" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-slate-800 peer-checked:ring-2 peer-checked:ring-slate-800/50"><div class="flex items-center justify-between"><span class="font-semibold">Oscuro</span><div class="w-6 h-6 rounded-full bg-slate-900 border-2"></div></div></div></label><label class="cursor-pointer"><input type="radio" name="bottom-nav-theme" value="light" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-slate-400 peer-checked:ring-2 peer-checked:ring-slate-400/50"><div class="flex items-center justify-between"><span class="font-semibold">Claro</span><div class="w-6 h-6 rounded-full bg-white border-2"></div></div></div></label></div></div>
                                 <div class="pt-4"><button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg">Guardar Cambios</button></div>
                             </form>
                         </div>
@@ -312,9 +314,9 @@
                         <div id="calendar-list-container" style="display: none;">
                             <div class="flex justify-end mb-4">
                                 <select id="calendar-list-range-filter" class="p-2 border rounded-lg">
-                                    <option value="3">Últimos 3 meses</option>
-                                    <option value="6" selected>Últimos 6 meses</option>
-                                    <option value="12">Últimos 12 meses</option>
+                                    <option value="3">&#218;ltimos 3 meses</option>
+                                    <option value="6" selected>&#218;ltimos 6 meses</option>
+                                    <option value="12">&#218;ltimos 12 meses</option>
                                 </select>
                             </div>
                             <div class="bg-white rounded-xl shadow-lg overflow-x-auto">
@@ -326,8 +328,8 @@
                         </div>
                     </section>
 
-                    <section id="flujo-caja" class="content-section"><div class="bg-white p-6 rounded-xl shadow-lg mb-8"><div class="flex flex-col md:flex-row justify-between md:items-center gap-4"><div><h2 class="text-2xl font-bold text-slate-800">Flujo de Caja</h2><p class="text-slate-500">Gestión de ingresos, egresos y reportes financieros.</p></div><div class="flex items-center gap-4"><button id="add-expense-btn" class="w-full md:w-auto bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap"><i data-lucide="minus" class="w-5 h-5 mr-2"></i>Nuevo Egreso</button><button id="add-income-btn" class="w-full md:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i>Nuevo Ingreso</button></div></div></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8"><div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg"><div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center"><div class="bg-emerald-50 text-emerald-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Ingresos (Mes)</h3><p id="cashflow-income" class="text-3xl font-bold mt-1">$0</p></div><div class="bg-rose-50 text-rose-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Egresos (Mes)</h3><p id="cashflow-expenses" class="text-3xl font-bold mt-1">$0</p></div><div class="bg-sky-50 text-sky-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Balance (Mes)</h3><p id="cashflow-profit" class="text-3xl font-bold mt-1">$0</p></div></div></div><div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg"><div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b pb-4 mb-4"><div><h3 class="text-lg font-semibold text-slate-700">Historial de Transacciones</h3></div><div class="flex flex-col sm:flex-row gap-4 items-center"><input type="date" id="report-start-date" class="w-full p-2 border rounded-lg"><span class="text-slate-500">a</span><input type="date" id="report-end-date" class="w-full p-2 border rounded-lg"><button id="generate-report-btn" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="file-text" class="w-5 h-5 mr-2"></i>Generar PDF</button></div></div><div class="max-h-96 overflow-y-auto"><table class="w-full text-sm"><thead class="sticky top-0 bg-slate-100"><tr class="text-left"><th class="p-2 text-xs font-semibold text-slate-600 uppercase">Fecha</th><th class="p-2 text-xs font-semibold text-slate-600 uppercase">Concepto</th><th class="p-2 text-right text-xs font-semibold text-slate-600 uppercase">Monto</th></tr></thead><tbody id="transactions-table-body"></tbody></table></div></div></div></section>
-                    <section id="afiliados" class="content-section"><div class="bg-white p-4 rounded-xl shadow-lg mb-6"><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end"><div class="md:col-span-2"><label for="search-affiliate" class="text-sm font-medium text-slate-600">Buscar Afiliado</label><div class="relative mt-1"><input type="text" id="search-affiliate" placeholder="Nombre o documento..." class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg placeholder-slate-400"><i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i></div></div><div><label for="filter-affiliate-status" class="text-sm font-medium text-slate-600">Estado</label><select id="filter-affiliate-status" class="w-full mt-1 py-2 px-3 border border-slate-300 rounded-lg"><option value="all">Todos</option><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div><div><label for="filter-affiliate-payment-status" class="text-sm font-medium text-slate-600">Estado de Pago</label><select id="filter-affiliate-payment-status" class="w-full mt-1 py-2 px-3 border border-slate-300 rounded-lg"><option value="all">Todos</option><option value="Al día">Al día</option><option value="En mora">En mora</option></select></div></div></div><div class="flex justify-between items-center mb-6 gap-4 flex-wrap"><div class="flex items-center gap-2"><span class="text-sm font-medium text-slate-600 mr-2">Vista:</span><button id="view-as-cards-btn" class="p-2 rounded-lg" title="Ver como tarjetas"><i data-lucide="layout-grid" class="h-5 w-5 pointer-events-none"></i></button><button id="view-as-table-btn" class="p-2 rounded-lg" title="Ver como tabla"><i data-lucide="table-2" class="h-5 w-5 pointer-events-none"></i></button></div><div class="flex items-center gap-4"><button id="export-affiliates-btn" class="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center whitespace-nowrap"><i data-lucide="download" class="w-5 h-5 mr-2 text-green-600"></i>Exportar a CSV</button><button id="add-affiliate-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Afiliado</button></div></div><div id="affiliates-card-container" class="grid grid-cols-1 xl:grid-cols-2 gap-6"></div><div id="affiliates-table-container" style="display: none;" class="bg-white rounded-xl shadow-lg overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50"><tr class="text-left"><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Afiliado</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Plan / Asesor</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Contacto</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Estado</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase text-center">Acciones</th></tr></thead><tbody id="affiliates-table-body" class="divide-y divide-slate-200"></tbody></table></div></section>
+                    <section id="flujo-caja" class="content-section"><div class="bg-white p-6 rounded-xl shadow-lg mb-8"><div class="flex flex-col md:flex-row justify-between md:items-center gap-4"><div><h2 class="text-2xl font-bold text-slate-800">Flujo de Caja</h2><p class="text-slate-500">Gesti&#243;n de ingresos, egresos y reportes financieros.</p></div><div class="flex items-center gap-4"><button id="add-expense-btn" class="w-full md:w-auto bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap"><i data-lucide="minus" class="w-5 h-5 mr-2"></i>Nuevo Egreso</button><button id="add-income-btn" class="w-full md:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i>Nuevo Ingreso</button></div></div></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8"><div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg"><div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center"><div class="bg-emerald-50 text-emerald-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Ingresos (Mes)</h3><p id="cashflow-income" class="text-3xl font-bold mt-1">$0</p></div><div class="bg-rose-50 text-rose-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Egresos (Mes)</h3><p id="cashflow-expenses" class="text-3xl font-bold mt-1">$0</p></div><div class="bg-sky-50 text-sky-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Balance (Mes)</h3><p id="cashflow-profit" class="text-3xl font-bold mt-1">$0</p></div></div></div><div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg"><div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b pb-4 mb-4"><div><h3 class="text-lg font-semibold text-slate-700">Historial de Transacciones</h3></div><div class="flex flex-col sm:flex-row gap-4 items-center"><input type="date" id="report-start-date" class="w-full p-2 border rounded-lg"><span class="text-slate-500">a</span><input type="date" id="report-end-date" class="w-full p-2 border rounded-lg"><button id="generate-report-btn" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="file-text" class="w-5 h-5 mr-2"></i>Generar PDF</button></div></div><div class="max-h-96 overflow-y-auto"><table class="w-full text-sm"><thead class="sticky top-0 bg-slate-100"><tr class="text-left"><th class="p-2 text-xs font-semibold text-slate-600 uppercase">Fecha</th><th class="p-2 text-xs font-semibold text-slate-600 uppercase">Concepto</th><th class="p-2 text-right text-xs font-semibold text-slate-600 uppercase">Monto</th></tr></thead><tbody id="transactions-table-body"></tbody></table></div></div></div></section>
+                    <section id="afiliados" class="content-section"><div class="bg-white p-4 rounded-xl shadow-lg mb-6"><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end"><div class="md:col-span-2"><label for="search-affiliate" class="text-sm font-medium text-slate-600">Buscar Afiliado</label><div class="relative mt-1"><input type="text" id="search-affiliate" placeholder="Nombre o documento..." class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg placeholder-slate-400"><i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i></div></div><div><label for="filter-affiliate-status" class="text-sm font-medium text-slate-600">Estado</label><select id="filter-affiliate-status" class="w-full mt-1 py-2 px-3 border border-slate-300 rounded-lg"><option value="all">Todos</option><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div><div><label for="filter-affiliate-payment-status" class="text-sm font-medium text-slate-600">Estado de Pago</label><select id="filter-affiliate-payment-status" class="w-full mt-1 py-2 px-3 border border-slate-300 rounded-lg"><option value="all">Todos</option><option value="Al d&#237;a">Al d&#237;a</option><option value="En mora">En mora</option></select></div></div></div><div class="flex justify-between items-center mb-6 gap-4 flex-wrap"><div class="flex items-center gap-2"><span class="text-sm font-medium text-slate-600 mr-2">Vista:</span><button id="view-as-cards-btn" class="p-2 rounded-lg" title="Ver como tarjetas"><i data-lucide="layout-grid" class="h-5 w-5 pointer-events-none"></i></button><button id="view-as-table-btn" class="p-2 rounded-lg" title="Ver como tabla"><i data-lucide="table-2" class="h-5 w-5 pointer-events-none"></i></button></div><div class="flex items-center gap-4"><button id="export-affiliates-btn" class="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center whitespace-nowrap"><i data-lucide="download" class="w-5 h-5 mr-2 text-green-600"></i>Exportar a CSV</button><button id="add-affiliate-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Afiliado</button></div></div><div id="affiliates-card-container" class="grid grid-cols-1 xl:grid-cols-2 gap-6"></div><div id="affiliates-table-container" style="display: none;" class="bg-white rounded-xl shadow-lg overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50"><tr class="text-left"><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Afiliado</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Plan / Asesor</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Contacto</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Estado</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase text-center">Acciones</th></tr></thead><tbody id="affiliates-table-body" class="divide-y divide-slate-200"></tbody></table></div></section>
                     <section id="asesores" class="content-section"><div class="flex justify-end items-center mb-6 gap-4"><button id="export-advisors-btn" class="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center whitespace-nowrap"><i data-lucide="download" class="w-5 h-5 mr-2 text-green-600"></i>Exportar a CSV</button><button id="add-advisor-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Asesor</button></div><div id="advisors-container" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6"></div></section>
                     <section id="ranking-vendedores" class="content-section"><div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-2"><h2 class="text-2xl font-bold text-slate-800">Ranking de Vendedores</h2><p class="text-sm text-slate-500">Top vendedores por comisiones totales generadas.</p></div><div id="ranking-list" class="space-y-4"></div></section>
                     <section id="planes" class="content-section"><div class="flex justify-between items-center mb-6"><h2 class="text-2xl font-bold text-slate-800">Administrar Planes de Salud</h2><button id="add-plan-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Plan</button></div><div id="plans-list" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6"></div></section>
@@ -336,7 +338,7 @@
                         <div class="flex justify-between items-center mb-6">
                             <div>
                                 <h2 class="text-2xl font-bold text-slate-800">Cotizador de Aportes a Seguridad Social</h2>
-                                <p class="text-slate-500 mt-1">Calcula los aportes de forma rápida y precisa.</p>
+                                <p class="text-slate-500 mt-1">Calcula los aportes de forma r&#225;pida y precisa.</p>
                             </div>
                             <button id="open-settings-btn" data-role="admin" class="text-slate-500 hover:text-primary-600 p-2 rounded-full bg-slate-100 hover:bg-slate-200"><i data-lucide="settings" class="w-6 h-6"></i></button>
                         </div>
@@ -352,7 +354,7 @@
                                                     <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"><span class="text-gray-500 sm:text-sm">$</span></div>
                                                     <input type="number" id="income" placeholder="2000000" class="w-full pl-7 pr-4 py-2 border border-slate-300 rounded-lg" required>
                                                 </div>
-                                                <p class="text-xs text-slate-500 mt-1">El sistema calculará el IBC (40% del ingreso).</p>
+                                                <p class="text-xs text-slate-500 mt-1">El sistema calcular&#225; el IBC (40% del ingreso).</p>
                                             </div>
                                             <div>
                                                 <label for="contract-type" class="block text-sm font-medium text-slate-600 mb-1">Tipo de Cotizante</label>
@@ -364,11 +366,11 @@
                                             <div>
                                                 <label for="arl-level" class="block text-sm font-medium text-slate-600 mb-1">Nivel de Riesgo ARL</label>
                                                 <select id="arl-level" class="w-full px-4 py-2 border border-slate-300 rounded-lg" required>
-                                                    <option value="1">Nivel 1 (0.522%) - Riesgo Mínimo</option>
+                                                    <option value="1">Nivel 1 (0.522%) - Riesgo M&#237;nimo</option>
                                                     <option value="2">Nivel 2 (1.044%) - Riesgo Bajo</option>
                                                     <option value="3">Nivel 3 (2.436%) - Riesgo Medio</option>
                                                     <option value="4">Nivel 4 (4.350%) - Riesgo Alto</option>
-                                                    <option value="5">Nivel 5 (6.960%) - Riesgo Máximo</option>
+                                                    <option value="5">Nivel 5 (6.960%) - Riesgo M&#225;ximo</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -377,7 +379,7 @@
                                         <legend class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">2. Componentes a Cotizar</legend>
                                         <div class="grid grid-cols-2 gap-4">
                                             <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="health" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>Salud</span></label>
-                                            <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="pension" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>Pensión</span></label>
+                                            <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="pension" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>Pensi&#243;n</span></label>
                                             <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="arl" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>ARL</span></label>
                                             <label class="flex items-center space-x-2"><input type="checkbox" name="components" value="ccf" class="h-4 w-4 text-primary-600 rounded component-checkbox" checked><span>Caja Comp.</span></label>
                                         </div>
@@ -387,14 +389,14 @@
                                     </fieldset>
                                     <div class="pt-4 mt-4 border-t" id="cotizador-actions">
                                         <button type="submit" id="calculate-btn" class="w-full shimmer-button bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-px flex items-center justify-center transition-all duration-200"><i data-lucide="calculator" class="w-5 h-5 mr-2"></i>Cotizar Aportes</button>
-                                        <button type="button" id="new-quote-btn" style="display: none;" class="w-full bg-slate-600 hover:bg-slate-700 text-white font-bold py-3 px-6 rounded-lg shadow-md flex items-center justify-center"><i data-lucide="rotate-cw" class="w-5 h-5 mr-2"></i>Hacer Nueva Cotización</button>
+                                        <button type="button" id="new-quote-btn" style="display: none;" class="w-full bg-slate-600 hover:bg-slate-700 text-white font-bold py-3 px-6 rounded-lg shadow-md flex items-center justify-center"><i data-lucide="rotate-cw" class="w-5 h-5 mr-2"></i>Hacer Nueva Cotizaci&#243;n</button>
                                     </div>
                                 </form>
                             </div>
                             <div id="calculator-results-container" class="bg-white p-6 sm:p-8 rounded-xl shadow-lg lg:col-span-3">
                                 <div id="quote-summary" class="hidden grid grid-cols-2 gap-4 mb-6 border-b pb-6">
                                     <div>
-                                        <p class="text-sm font-medium text-slate-500">Ingreso Base de Cotización (IBC)</p>
+                                        <p class="text-sm font-medium text-slate-500">Ingreso Base de Cotizaci&#243;n (IBC)</p>
                                         <p id="ibc-value" class="text-2xl font-bold text-slate-800">$0</p>
                                     </div>
                                     <div class="text-right">
@@ -406,12 +408,12 @@
                                     </div>
                                 <div id="quote-placeholder" class="text-center py-16 text-slate-400">
                                     <i data-lucide="scan-line" class="h-16 w-16 mx-auto mb-4 text-slate-300"></i>
-                                    <h3 class="font-semibold text-slate-600">Esperando cálculo</h3>
+                                    <h3 class="font-semibold text-slate-600">Esperando c&#225;lculo</h3>
                                     <p class="text-sm">Completa el formulario y presiona "Cotizar" para ver los resultados.</p>
                                 </div>
                                 <div id="quote-actions-container" class="mt-8 pt-6 border-t border-slate-200 hidden">
                                     <button id="sell-plan-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg shadow-md flex items-center justify-center transition-transform transform hover:scale-105">
-                                        <i data-lucide="user-plus" class="w-5 h-5 mr-2"></i>Registrar Afiliado con esta Cotización
+                                        <i data-lucide="user-plus" class="w-5 h-5 mr-2"></i>Registrar Afiliado con esta Cotizaci&#243;n
                                     </button>
                                 </div>
                             </div>
@@ -429,7 +431,7 @@
                                         <input type="email" id="invite-email" class="w-full mt-1 p-2 border rounded-lg" required>
                                     </div>
                                     <div>
-                                        <label for="invite-password" class="block text-sm font-medium text-slate-600">Contraseña Temporal</label>
+                                        <label for="invite-password" class="block text-sm font-medium text-slate-600">Contrase&#241;a Temporal</label>
                                         <input type="password" id="invite-password" class="w-full mt-1 p-2 border rounded-lg" required>
                                     </div>
                                     <div>
@@ -484,7 +486,7 @@
                                 <div class="border-t my-6"></div>
 
                                 <div class="space-y-4 text-sm">
-                                    <h4 class="font-semibold text-slate-700 mb-2">Información de Contacto</h4>
+                                    <h4 class="font-semibold text-slate-700 mb-2">Informaci&#243;n de Contacto</h4>
                                     <div class="flex items-center gap-3">
                                         <i data-lucide="mail" class="w-5 h-5 text-slate-400 flex-shrink-0"></i>
                                         <span id="afiliado-profile-email" class="text-slate-600 break-all">...</span>
@@ -512,9 +514,9 @@
                                 <div class="p-6">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         <div>
-                                            <h4 class="font-semibold text-slate-700 mb-3">Características Incluidas</h4>
+                                            <h4 class="font-semibold text-slate-700 mb-3">Caracter&#237;sticas Incluidas</h4>
                                             <ul id="afiliado-profile-plan-features" class="space-y-2 text-sm text-slate-600">
-                                                <li>Cargando características...</li>
+                                                <li>Cargando caracter&#237;sticas...</li>
                                             </ul>
                                         </div>
                                         <div>
@@ -530,7 +532,7 @@
                                                  <div class="flex items-start gap-3">
                                                     <i data-lucide="calendar-clock" class="w-5 h-5 text-red-500 mt-0.5"></i>
                                                     <div>
-                                                        <p class="font-medium text-slate-800">Próximo Pago / Vencimiento</p>
+                                                        <p class="font-medium text-slate-800">Pr&#243;ximo Pago / Vencimiento</p>
                                                         <p id="afiliado-profile-end-date" class="text-sm font-semibold text-red-600">--/--/----</p>
                                                     </div>
                                                 </div>
@@ -551,7 +553,7 @@
                 <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100">
                     <i data-lucide="check-circle" class="h-10 w-10 text-green-600"></i>
                 </div>
-                <h2 id="success-modal-title" class="text-2xl font-bold mt-4 text-slate-800">¡Afiliado con Éxito!</h2>
+                <h2 id="success-modal-title" class="text-2xl font-bold mt-4 text-slate-800">&#161;Afiliado con &#201;xito!</h2>
                 <p class="text-slate-500 mt-2">El nuevo afiliado ha sido registrado correctamente.</p>
             </div>
             <div class="p-6 pt-0 bg-slate-50 rounded-b-xl space-y-3">
@@ -568,10 +570,10 @@
         </div>
     </div>
         
-        <div id="affiliate-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col transform scale-95"><div class="flex justify-between items-center p-5 border-b sticky top-0 bg-white z-10 flex-shrink-0"><h2 id="affiliate-modal-title" class="text-2xl font-bold">Nuevo Afiliado</h2><button data-close-modal="affiliate-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><div class="flex-grow overflow-y-auto"><form id="affiliate-form" class="p-6"><input type="hidden" id="affiliate-doc-id"><div class="space-y-10"><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">1. Información Personal</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><input type="text" id="affiliate-name" placeholder="Nombre Completo" class="w-full px-4 py-2 border rounded-lg" required><input type="text" id="affiliate-id" placeholder="Documento" class="w-full px-4 py-2 border rounded-lg" required><input type="email" id="affiliate-email" placeholder="Correo Electrónico" class="w-full px-4 py-2 border rounded-lg" required><input type="tel" id="affiliate-phone" placeholder="Teléfono" class="w-full px-4 py-2 border rounded-lg"><input type="text" id="affiliate-address" placeholder="Dirección" class="md:col-span-2 w-full px-4 py-2 border rounded-lg"></div></div><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">2. Plan de Salud Complementario / Prepagada</h3><div id="health-plan-selector" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"></div></div><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">3. Otras Afiliaciones</h3><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div><label for="pension-plan" class="block text-sm font-medium text-slate-600 mb-1">Fondo de Pensión</label><select id="pension-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione un fondo</option><option value="Colpensiones">Colpensiones (Público)</option><option value="Porvenir">Porvenir</option><option value="Protección">Protección</option><option value="Colfondos">Colfondos</option><option value="Skandia">Skandia</option></select></div><div><label for="arl-plan" class="block text-sm font-medium text-slate-600 mb-1">ARL</label><select id="arl-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una ARL</option><option value="ARL Sura">ARL Sura</option><option value="ARL Positiva">ARL Positiva</option><option value="ARL Colmena">ARL Colmena</option><option value="Seguros Bolívar ARL">Seguros Bolívar ARL</option><option value="AXA Colpatria ARL">AXA Colpatria ARL</option></select></div><div><label for="ccf-plan" class="block text-sm font-medium text-slate-600 mb-1">Caja de Compensación</label><select id="ccf-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una caja</option><option value="Compensar">Compensar</option><option value="Colsubsidio">Colsubsidio</option><option value="Cafam">Cafam</option><option value="Comfama">Comfama (Antioquia)</option><option value="Comfandi">Comfandi (Valle)</option><option value="Otra">Otra / Ninguna</option></select></div></div></div><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">4. Detalles de Venta y Administrativos</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"><div><label for="advisor-select-list" class="block text-sm font-medium text-slate-600 mb-1">Asesor Asignado</label><select id="advisor-select-list" class="w-full px-4 py-2 border rounded-lg" required></select></div><div><label for="affiliate-start-date" class="block text-sm font-medium text-slate-600 mb-1">Fecha de Inicio</label><input type="date" id="affiliate-start-date" class="w-full px-4 py-2 border rounded-lg" required></div><div><label for="affiliate-end-date" class="block text-sm font-medium text-slate-600 mb-1">Fecha de Finalización</label><input type="date" id="affiliate-end-date" class="w-full px-4 py-2 border rounded-lg"></div><div><label for="affiliate-status" class="block text-sm font-medium text-slate-600 mb-1">Estado del Afiliado</label><select id="affiliate-status" class="w-full px-4 py-2 border rounded-lg" required><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div></div><div class="mt-6"><label class="flex items-center space-x-2"><input type="checkbox" id="manual-override-checkbox" class="h-4 w-4 text-primary-600 rounded"><span>Usar costos y comisiones manuales</span></label></div><div id="manual-override-container" class="hidden mt-4 space-y-6 p-4 border rounded-lg bg-slate-50"><div><h4 class="text-md font-semibold text-slate-600 mb-3">Costos de Afiliación</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="text-sm font-medium">Salud ($)</label><input type="number" id="manual-cost-health" class="w-full p-2 border rounded-lg mt-1" placeholder="Ej: 95000"></div><div><label class="text-sm font-medium">Pensión ($)</label><input type="number" id="manual-cost-pension" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div><div><label class="text-sm font-medium">ARL ($)</label><input type="number" id="manual-cost-arl" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div><div><label class="text-sm font-medium">Caja Comp. ($)</label><input type="number" id="manual-cost-ccf" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div></div></div><div class="pt-4 border-t"><h4 class="text-md font-semibold text-slate-600 mb-3">Comisiones</h4><div class="max-w-xs"><label class="text-sm font-medium">Comisión Asesor ($)</label><input type="number" id="manual-commission" class="w-full p-2 border rounded-lg mt-1" placeholder="Ej: 20000"></div></div></div><div class="mt-6"><textarea id="affiliate-notes" placeholder="Notas adicionales..." class="w-full px-4 py-2 border rounded-lg h-24"></textarea></div></div></div><div class="pt-6 border-t mt-8 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-lg">Guardar Afiliado</button></div></form></div></div></div>
-        <div id="plan-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="plan-modal-title" class="text-2xl font-bold">Nuevo Plan de Salud</h2><button data-close-modal="plan-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="plan-form" class="p-6"><input type="hidden" id="plan-doc-id"><div class="space-y-4"><div><label for="plan-name" class="block text-sm font-medium text-slate-600">Nombre del Plan</label><input type="text" id="plan-name" placeholder="Ej: Plan Integral" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="plan-price" class="block text-sm font-medium text-slate-600">Precio Mensual ($)</label><input type="number" id="plan-price" placeholder="Ej: 180000" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="plan-features" class="block text-sm font-medium text-slate-600">Características (una por línea)</label><textarea id="plan-features" placeholder="Acceso directo a 5 especialidades&#10;Atención domiciliaria" class="w-full mt-1 p-2 border rounded-lg h-32" required></textarea></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Plan</button></div></form></div></div>
-        <div id="advisor-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="advisor-modal-title" class="text-2xl font-bold">Nuevo Asesor</h2><button data-close-modal="advisor-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="advisor-form" class="p-6"><input type="hidden" id="advisor-doc-id"><div class="space-y-4"><input type="text" id="advisor-name" placeholder="Nombre Completo" class="w-full px-4 py-2 border rounded-lg" required><input type="number" id="advisor-commission" placeholder="Comisión (%)" min="0" max="100" class="w-full px-4 py-2 border rounded-lg" required></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Asesor</button></div></form></div></div>
-        <div id="settings-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b sticky top-0 bg-white z-10"><h2 class="text-2xl font-bold">Configuración de Parámetros</h2><button data-close-modal="settings-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="settings-form" class="p-6 space-y-6"><div><h3 class="font-semibold text-lg mb-2">Generales</h3><div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-medium">Salario Mínimo (SMMLV)</label><input type="number" id="setting-smmlv" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Costo Admin. por Afiliado ($)</label><input type="number" id="setting-admin-fee" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes de Cotización (%)</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="block text-sm font-medium">Salud Total</label><input type="number" step="0.1" id="setting-health" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Pensión Total</label><input type="number" step="0.1" id="setting-pension" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Indep.</label><input type="number" step="0.1" id="setting-ccf-ind" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Empleador</label><input type="number" step="0.1" id="setting-ccf-emp" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes ARL (%)</h3><div class="grid grid-cols-2 md:grid-cols-5 gap-4"><div><label class="block text-sm font-medium">Riesgo 1</label><input type="number" step="0.001" id="setting-arl-1" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 2</label><input type="number" step="0.001" id="setting-arl-2" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 3</label><input type="number" step="0.001" id="setting-arl-3" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 4</label><input type="number" step="0.001" id="setting-arl-4" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 5</label><input type="number" step="0.001" id="setting-arl-5" class="w-full p-2 border rounded-lg"></div></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Cambios</button></div></form></div></div>
+        <div id="affiliate-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col transform scale-95"><div class="flex justify-between items-center p-5 border-b sticky top-0 bg-white z-10 flex-shrink-0"><h2 id="affiliate-modal-title" class="text-2xl font-bold">Nuevo Afiliado</h2><button data-close-modal="affiliate-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><div class="flex-grow overflow-y-auto"><form id="affiliate-form" class="p-6"><input type="hidden" id="affiliate-doc-id"><div class="space-y-10"><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">1. Informaci&#243;n Personal</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><input type="text" id="affiliate-name" placeholder="Nombre Completo" class="w-full px-4 py-2 border rounded-lg" required><input type="text" id="affiliate-id" placeholder="Documento" class="w-full px-4 py-2 border rounded-lg" required><input type="email" id="affiliate-email" placeholder="Correo Electr&#243;nico" class="w-full px-4 py-2 border rounded-lg" required><input type="tel" id="affiliate-phone" placeholder="Tel&#233;fono" class="w-full px-4 py-2 border rounded-lg"><input type="text" id="affiliate-address" placeholder="Direcci&#243;n" class="md:col-span-2 w-full px-4 py-2 border rounded-lg"></div></div><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">2. Plan de Salud Complementario / Prepagada</h3><div id="health-plan-selector" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"></div></div><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">3. Otras Afiliaciones</h3><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div><label for="pension-plan" class="block text-sm font-medium text-slate-600 mb-1">Fondo de Pensi&#243;n</label><select id="pension-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione un fondo</option><option value="Colpensiones">Colpensiones (P&#250;blico)</option><option value="Porvenir">Porvenir</option><option value="Protecci&#243;n">Protecci&#243;n</option><option value="Colfondos">Colfondos</option><option value="Skandia">Skandia</option></select></div><div><label for="arl-plan" class="block text-sm font-medium text-slate-600 mb-1">ARL</label><select id="arl-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una ARL</option><option value="ARL Sura">ARL Sura</option><option value="ARL Positiva">ARL Positiva</option><option value="ARL Colmena">ARL Colmena</option><option value="Seguros Bol&#237;var ARL">Seguros Bol&#237;var ARL</option><option value="AXA Colpatria ARL">AXA Colpatria ARL</option></select></div><div><label for="ccf-plan" class="block text-sm font-medium text-slate-600 mb-1">Caja de Compensaci&#243;n</label><select id="ccf-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una caja</option><option value="Compensar">Compensar</option><option value="Colsubsidio">Colsubsidio</option><option value="Cafam">Cafam</option><option value="Comfama">Comfama (Antioquia)</option><option value="Comfandi">Comfandi (Valle)</option><option value="Otra">Otra / Ninguna</option></select></div></div></div><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">4. Detalles de Venta y Administrativos</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"><div><label for="advisor-select-list" class="block text-sm font-medium text-slate-600 mb-1">Asesor Asignado</label><select id="advisor-select-list" class="w-full px-4 py-2 border rounded-lg" required></select></div><div><label for="affiliate-start-date" class="block text-sm font-medium text-slate-600 mb-1">Fecha de Inicio</label><input type="date" id="affiliate-start-date" class="w-full px-4 py-2 border rounded-lg" required></div><div><label for="affiliate-end-date" class="block text-sm font-medium text-slate-600 mb-1">Fecha de Finalizaci&#243;n</label><input type="date" id="affiliate-end-date" class="w-full px-4 py-2 border rounded-lg"></div><div><label for="affiliate-status" class="block text-sm font-medium text-slate-600 mb-1">Estado del Afiliado</label><select id="affiliate-status" class="w-full px-4 py-2 border rounded-lg" required><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div></div><div class="mt-6"><label class="flex items-center space-x-2"><input type="checkbox" id="manual-override-checkbox" class="h-4 w-4 text-primary-600 rounded"><span>Usar costos y comisiones manuales</span></label></div><div id="manual-override-container" class="hidden mt-4 space-y-6 p-4 border rounded-lg bg-slate-50"><div><h4 class="text-md font-semibold text-slate-600 mb-3">Costos de Afiliaci&#243;n</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="text-sm font-medium">Salud ($)</label><input type="number" id="manual-cost-health" class="w-full p-2 border rounded-lg mt-1" placeholder="Ej: 95000"></div><div><label class="text-sm font-medium">Pensi&#243;n ($)</label><input type="number" id="manual-cost-pension" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div><div><label class="text-sm font-medium">ARL ($)</label><input type="number" id="manual-cost-arl" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div><div><label class="text-sm font-medium">Caja Comp. ($)</label><input type="number" id="manual-cost-ccf" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div></div></div><div class="pt-4 border-t"><h4 class="text-md font-semibold text-slate-600 mb-3">Comisiones</h4><div class="max-w-xs"><label class="text-sm font-medium">Comisi&#243;n Asesor ($)</label><input type="number" id="manual-commission" class="w-full p-2 border rounded-lg mt-1" placeholder="Ej: 20000"></div></div></div><div class="mt-6"><textarea id="affiliate-notes" placeholder="Notas adicionales..." class="w-full px-4 py-2 border rounded-lg h-24"></textarea></div></div></div><div class="pt-6 border-t mt-8 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-lg">Guardar Afiliado</button></div></form></div></div></div>
+        <div id="plan-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="plan-modal-title" class="text-2xl font-bold">Nuevo Plan de Salud</h2><button data-close-modal="plan-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="plan-form" class="p-6"><input type="hidden" id="plan-doc-id"><div class="space-y-4"><div><label for="plan-name" class="block text-sm font-medium text-slate-600">Nombre del Plan</label><input type="text" id="plan-name" placeholder="Ej: Plan Integral" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="plan-price" class="block text-sm font-medium text-slate-600">Precio Mensual ($)</label><input type="number" id="plan-price" placeholder="Ej: 180000" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="plan-features" class="block text-sm font-medium text-slate-600">Caracter&#237;sticas (una por l&#237;nea)</label><textarea id="plan-features" placeholder="Acceso directo a 5 especialidades&#10;Atenci&#243;n domiciliaria" class="w-full mt-1 p-2 border rounded-lg h-32" required></textarea></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Plan</button></div></form></div></div>
+        <div id="advisor-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="advisor-modal-title" class="text-2xl font-bold">Nuevo Asesor</h2><button data-close-modal="advisor-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="advisor-form" class="p-6"><input type="hidden" id="advisor-doc-id"><div class="space-y-4"><input type="text" id="advisor-name" placeholder="Nombre Completo" class="w-full px-4 py-2 border rounded-lg" required><input type="number" id="advisor-commission" placeholder="Comisi&#243;n (%)" min="0" max="100" class="w-full px-4 py-2 border rounded-lg" required></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Asesor</button></div></form></div></div>
+        <div id="settings-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b sticky top-0 bg-white z-10"><h2 class="text-2xl font-bold">Configuraci&#243;n de Par&#225;metros</h2><button data-close-modal="settings-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="settings-form" class="p-6 space-y-6"><div><h3 class="font-semibold text-lg mb-2">Generales</h3><div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-medium">Salario M&#237;nimo (SMMLV)</label><input type="number" id="setting-smmlv" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Costo Admin. por Afiliado ($)</label><input type="number" id="setting-admin-fee" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes de Cotizaci&#243;n (%)</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="block text-sm font-medium">Salud Total</label><input type="number" step="0.1" id="setting-health" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Pensi&#243;n Total</label><input type="number" step="0.1" id="setting-pension" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Indep.</label><input type="number" step="0.1" id="setting-ccf-ind" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Empleador</label><input type="number" step="0.1" id="setting-ccf-emp" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes ARL (%)</h3><div class="grid grid-cols-2 md:grid-cols-5 gap-4"><div><label class="block text-sm font-medium">Riesgo 1</label><input type="number" step="0.001" id="setting-arl-1" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 2</label><input type="number" step="0.001" id="setting-arl-2" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 3</label><input type="number" step="0.001" id="setting-arl-3" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 4</label><input type="number" step="0.001" id="setting-arl-4" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 5</label><input type="number" step="0.001" id="setting-arl-5" class="w-full p-2 border rounded-lg"></div></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Cambios</button></div></form></div></div>
         <div id="transaction-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="transaction-modal-title" class="text-2xl font-bold"></h2><button data-close-modal="transaction-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="transaction-form" class="p-6"><input type="hidden" id="transaction-type"><div class="space-y-4"><div><label for="transaction-concept" class="block text-sm font-medium text-slate-600">Concepto</label><input type="text" id="transaction-concept" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-amount" class="block text-sm font-medium text-slate-600">Monto</label><input type="number" id="transaction-amount" min="0" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-date" class="block text-sm font-medium text-slate-600">Fecha</label><input type="date" id="transaction-date" class="w-full mt-1 p-2 border rounded-lg" required></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar</button></div></form></div></div>
         
         <nav class="bottom-nav md:hidden fixed bottom-0 inset-x-0 flex justify-around p-2 border-t z-40">
@@ -585,46 +587,42 @@
 
 <script type="module">
     // =================================================================
-// INICIO DE LA SOLUCIÓN: IMPORTACIONES DE FIREBASE
-// =================================================================
-import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query, where, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-// =================================================================
-// FIN DE LA SOLUCIÓN
-// =================================================================
-
-// --- INICIALIZACIÓN Y CONFIGURACIÓN DE FIREBASE ---
-const firebaseConfig = {
-    apiKey: "AIzaSyDS4VDnwGia2ZUe3o81rqLe-oEu_pVCUHc",
-    authDomain: "seb-salud.firebaseapp.com",
-    projectId: "seb-salud",
-    storageBucket: "seb-salud.appspot.com",
-    messagingSenderId: "1094873327284",
-    appId: "1:1094873327284:web:001e70e84c2de45389d9e1",
-    measurementId: "G-EJCS9FYWHK"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-enableIndexedDbPersistence(db)
-  .catch((err) => {
-    if (err.code == 'failed-precondition') {
-      console.warn('La persistencia falló, probablemente porque ya hay otra pestaña abierta.');
-    } else if (err.code == 'unimplemented') {
-      console.warn('El navegador actual no soporta la persistencia offline de Firestore.');
-    }
-  });
-
-let currentUser = null;
-
-// --- ESTADO GLOBAL PARA ROLES ---
-let currentUserRole = null; // 'admin', 'asesor', 'afiliado'
-let adminUidForRole = null; // UID del admin al que pertenece el usuario con rol
-let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
+    // INICIO DE LA SOLUCIÓN: IMPORTACIONES DE FIREBASE
+    // =================================================================
+    import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query, where, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     
+    // --- INICIALIZACIÓN Y CONFIGURACIÓN DE FIREBASE ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyDS4VDnwGia2ZUe3o81rqLe-oEu_pVCUHc",
+        authDomain: "seb-salud.firebaseapp.com",
+        projectId: "seb-salud",
+        storageBucket: "seb-salud.appspot.com",
+        messagingSenderId: "1094873327284",
+        appId: "1:1094873327284:web:001e70e84c2de45389d9e1",
+        measurementId: "G-EJCS9FYWHK"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    enableIndexedDbPersistence(db)
+      .catch((err) => {
+        if (err.code == 'failed-precondition') {
+          console.warn('La persistencia falló, probablemente porque ya hay otra pestaña abierta.');
+        } else if (err.code == 'unimplemented') {
+          console.warn('El navegador actual no soporta la persistencia offline de Firestore.');
+        }
+      });
+
+    let currentUser = null;
+
+    // --- ESTADO GLOBAL PARA ROLES ---
+    let currentUserRole = null; // 'admin', 'asesor', 'afiliado'
+    let adminUidForRole = null; // UID del admin al que pertenece el usuario con rol
+    let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
 
     // --- ESTADO GLOBAL Y CONFIGURACIÓN ---
     let affiliates = [], advisors = [], manualTransactions = [], novedades = [], healthPlans = [], userRoles = [];
@@ -642,8 +640,7 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
         CONTRIBUTION_RATES: { health: 12.5, pension: 16, employee_health: 4, employer_health: 8.5, employee_pension: 4, employer_pension: 12, independiente_ccf: 2, employer_ccf: 4 }, 
         ARL_RATES: { 1: 0.522, 2: 1.044, 3: 2.436, 4: 4.350, 5: 6.960 } 
     };
-    // El tema aquí definido ('spotify') es el que se asignará a los NUEVOS usuarios al registrarse.
-    // Los usuarios existentes cargarán el tema guardado en su perfil.
+    
     const defaultCompanyProfile = { name: 'Mi Empresa de Seguridad Social', nit: '900.123.456-7', address: 'Calle 123 # 45-67, Bogotá', phone: '3001234567', email: 'contacto@empresa.com', theme: 'spotify', sidebarTheme: 'dark', bottomNavTheme: 'dark' };
     
     // --- MANEJO DE VISTAS Y ESTADO DE CARGA ---
@@ -654,11 +651,11 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
     const showView = (view) => { loader.style.display = 'none'; authContainer.style.display = 'none'; appContainer.style.display = 'none'; view.style.display = view === appContainer ? 'block' : 'flex'; lucide.createIcons(); };
 
     // --- FLUJO DE AUTENTICACIÓN MEJORADO CON ROLES ---
-    window.firebase.onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(auth, async (user) => {
         if (user) {
             currentUser = user;
-            const roleDocRef = window.firebase.doc(db, "userRoles", user.uid);
-            const roleDocSnap = await window.firebase.getDoc(roleDocRef);
+            const roleDocRef = doc(db, "userRoles", user.uid);
+            const roleDocSnap = await getDoc(roleDocRef);
 
             if (roleDocSnap.exists()) {
                 // Es un Asesor o Afiliado
@@ -666,8 +663,8 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
                 currentUserRole = roleData.role;
                 adminUidForRole = roleData.adminUid;
                 
-                const userRoleDataRef = window.firebase.doc(db, `users/${adminUidForRole}/roles`, user.uid);
-                const userRoleDataSnap = await window.firebase.getDoc(userRoleDataRef);
+                const userRoleDataRef = doc(db, `users/${adminUidForRole}/roles`, user.uid);
+                const userRoleDataSnap = await getDoc(userRoleDataRef);
                 userRoleData = userRoleDataSnap.exists() ? userRoleDataSnap.data() : {};
 
                 await initializeAppForUser();
@@ -676,8 +673,8 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
                 // Es un Administrador
                 currentUserRole = 'admin';
                 adminUidForRole = user.uid;
-                const userDocRef = window.firebase.doc(db, "users", user.uid);
-                const userDocSnap = await window.firebase.getDoc(userDocRef);
+                const userDocRef = doc(db, "users", user.uid);
+                const userDocSnap = await getDoc(userDocRef);
                 
                 if (userDocSnap.exists() && userDocSnap.data().licenseActivated) {
                     await initializeAppForUser();
@@ -703,7 +700,7 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
     });
     
     // --- LÓGICA DE DATOS CON FIRESTORE ---
-    async function setupNewUserDocument(user) { const userDocRef = window.firebase.doc(db, "users", user.uid); const batch = window.firebase.writeBatch(db); batch.set(userDocRef, { email: user.email, createdAt: window.firebase.serverTimestamp(), licenseActivated: false, companyProfile: defaultCompanyProfile, settings: defaultSettings }); const advisorRef = window.firebase.doc(window.firebase.collection(userDocRef, "advisors")); batch.set(advisorRef, { id: advisorRef.id, name: 'Asesor Inicial', commissionRate: 10 }); const planRef = window.firebase.doc(window.firebase.collection(userDocRef, "healthPlans")); batch.set(planRef, { id: planRef.id, name: 'Plan de Ejemplo', price: 100000, features: 'Característica 1\nCaracterística 2' }); await batch.commit(); }
+    async function setupNewUserDocument(user) { const userDocRef = doc(db, "users", user.uid); const batch = writeBatch(db); batch.set(userDocRef, { email: user.email, createdAt: serverTimestamp(), licenseActivated: false, companyProfile: defaultCompanyProfile, settings: defaultSettings }); const advisorRef = doc(collection(userDocRef, "advisors")); batch.set(advisorRef, { id: advisorRef.id, name: 'Asesor Inicial', commissionRate: 10 }); const planRef = doc(collection(userDocRef, "healthPlans")); batch.set(planRef, { id: planRef.id, name: 'Plan de Ejemplo', price: 100000, features: 'Característica 1\nCaracterística 2' }); await batch.commit(); }
     
     async function handleLicenseActivation() {
         const licenseKey = document.getElementById('license-key-input').value.trim();
@@ -713,7 +710,6 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
         activateBtn.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i> Verificando...';
         lucide.createIcons();
         try {
-            const { getDocs, query, collection, where, writeBatch, doc, serverTimestamp } = window.firebase;
             const licensesRef = collection(db, 'licences');
             const q = query(licensesRef, where("code", "==", licenseKey), where("status", "==", "available"));
             const querySnapshot = await getDocs(q);
@@ -746,17 +742,13 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
 
     function setupRealtimeListeners() {
         if (!currentUser || !adminUidForRole || activeListeners.length > 0) return;
-        const { doc, collection, onSnapshot } = window.firebase;
+        
         const basePath = `users/${adminUidForRole}`;
 
-        // Este listener se activa para TODOS los roles (admin, asesor, afiliado).
-        // Escucha los cambios en el documento del administrador principal.
-        // Así, cuando el admin cambia el tema o la configuración, se propaga a todos los usuarios vinculados.
         const unsubUser = onSnapshot(doc(db, basePath), (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 companyProfile = data.companyProfile || defaultCompanyProfile;
-                // Lógica de carga de settings robusta
                 settings = {
                     ...defaultSettings,
                     ...(data.settings || {}),
@@ -781,10 +773,9 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
         const collectionsToListen = {
             affiliates: (data) => {
                 const oldAffiliates = [...affiliates];
-                 // Convertir Timestamps de Firestore a objetos Date de JS al cargar los datos
                 affiliates = data.map(aff => ({
                     ...aff,
-                    createdAt: aff.createdAt?.toDate() // Si existe createdAt y es un Timestamp, lo convierte.
+                    createdAt: aff.createdAt?.toDate() 
                 }));
                 renderAllDependentOnAffiliates();
                 if (currentUserRole === 'admin') {
@@ -820,7 +811,7 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
             const colRef = collection(db, `${basePath}/${colName}`);
             const unsub = onSnapshot(colRef, (snapshot) => {
                 const data = snapshot.docs.map(d => ({
-                    id: d.id, // <-- Importante: Incluir el ID del documento
+                    id: d.id,
                     ...d.data()
                 }));
                 callback(data);
@@ -848,8 +839,8 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
     
     function unsubscribeAllListeners() { activeListeners.forEach(unsub => unsub()); activeListeners = []; }
     function resetLocalData() { affiliates = []; advisors = []; manualTransactions = []; novedades = []; healthPlans = []; userRoles = []; companyProfile = {}; settings = {}; lastQuoteResult = null; }
-    async function saveDataToFirestore(collectionName, data) { if (!currentUser) return; const docRef = window.firebase.doc(db, `users/${adminUidForRole}/${collectionName}/${data.id}`); await window.firebase.setDoc(docRef, data, { merge: true }); }
-    async function deleteDataFromFirestore(collectionName, docId) { if (!currentUser) return; const docRef = window.firebase.doc(db, `users/${adminUidForRole}/${collectionName}/${docId}`); await window.firebase.deleteDoc(docRef); }
+    async function saveDataToFirestore(collectionName, data) { if (!currentUser) return; const docRef = doc(db, `users/${adminUidForRole}/${collectionName}/${data.id}`); await setDoc(docRef, data, { merge: true }); }
+    async function deleteDataFromFirestore(collectionName, docId) { if (!currentUser) return; const docRef = doc(db, `users/${adminUidForRole}/${collectionName}/${docId}`); await deleteDoc(docRef); }
     
     async function initializeAppForUser() {
         document.getElementById('user-email-display').textContent = currentUser.email;
@@ -879,21 +870,19 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
     }
 
     function updateUIVisibilityByRole() {
-        // Ocultar todos los elementos con data-role y links de navegación primero
         document.querySelectorAll('[data-role]').forEach(el => el.style.display = 'none');
         document.querySelectorAll('#sidebar-nav .nav-link, .bottom-nav > a').forEach(el => el.style.display = 'none');
 
         let visibleTargets = [];
         if (currentUserRole === 'admin') {
             visibleTargets = ['dashboard', 'empresa', 'calendario', 'flujo-caja', 'afiliados', 'asesores', 'ranking-vendedores', 'planes', 'cotizador', 'gestion-roles'];
-            document.querySelectorAll('[data-role="admin"]').forEach(el => el.style.display = ''); // Re-mostrar elementos admin
+            document.querySelectorAll('[data-role="admin"]').forEach(el => el.style.display = ''); 
         } else if (currentUserRole === 'asesor') {
              visibleTargets = ['dashboard', 'afiliados', 'cotizador'];
         } else if (currentUserRole === 'afiliado') {
             visibleTargets = ['perfil-afiliado', 'cotizador'];
         }
 
-        // Mostrar links de navegación basados en los targets visibles
         document.querySelectorAll('.nav-link, .bottom-nav-link').forEach(el => {
              if (visibleTargets.includes(el.dataset.target)) {
                  el.style.display = 'flex';
@@ -904,7 +893,7 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
     function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme); }
     function applySidebarTheme(theme) { document.body.setAttribute('data-sidebar-theme', theme || 'dark'); }
     function applyBottomNavTheme(theme) { document.body.setAttribute('data-bottom-nav-theme', theme || 'dark'); }
-    async function createNovedad(type, description) { if (!currentUser || currentUserRole !== 'admin') return; const novedad = { type, description, read: false, timestamp: window.firebase.serverTimestamp() }; const collectionRef = window.firebase.collection(db, `users/${adminUidForRole}/novedades`); await window.firebase.addDoc(collectionRef, novedad); }
+    async function createNovedad(type, description) { if (!currentUser || currentUserRole !== 'admin') return; const novedad = { type, description, read: false, timestamp: serverTimestamp() }; const collectionRef = collection(db, `users/${adminUidForRole}/novedades`); await addDoc(collectionRef, novedad); }
     function getAffiliateCommissionBase(affiliate) { if (affiliate.manualCosts && Object.values(affiliate.manualCosts).some(cost => cost > 0)) { return Object.values(affiliate.manualCosts).reduce((sum, cost) => sum + (Number(cost) || 0), 0); } const plan = healthPlans.find(p => p.id === affiliate.healthPlan); return plan ? plan.price : 0; }
     function getAdvisorCommissionForAffiliate(affiliate) { if (affiliate.manualCommission && affiliate.manualCommission > 0) { return affiliate.manualCommission; } const advisor = advisors.find(v => v.id === affiliate.advisorId); if (!advisor) return 0; return getAffiliateCommissionBase(affiliate) * (advisor.commissionRate / 100); }
     
@@ -921,7 +910,7 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
                     'planes': renderPlansList, 
                     'calendario': renderCalendarioSection, 'gestion-roles': renderGestionRolesSection,
                     'perfil-afiliado': renderPerfilAfiliadoSection,
-                    'cotizador': () => {} // El cotizador no necesita una función de renderizado inicial
+                    'cotizador': () => {} 
                 }; 
                 if(renderMap[targetId]) renderMap[targetId](); 
                 lucide.createIcons(); 
@@ -982,7 +971,7 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
                     <i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i>
                 </button>` : ''}
             </div>`;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            return ` <div class="bg-white rounded-xl shadow-lg transition hover:shadow-2xl flex flex-col"> <div class="p-5"> <div class="flex justify-between items-start"> <div><h3 class="font-bold text-lg text-slate-800">${aff.name}</h3><p class="text-sm text-slate-500">Doc: ${aff.documentId}</p></div> <div class="flex items-center gap-2 flex-shrink-0 ml-2"><span class="text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[aff.status] || ''}">${aff.status}</span></div> </div> <div class="grid grid-cols-2 gap-4 mt-4 text-sm"> <div><strong class="block text-slate-500">Asesor</strong><span>${advisor ? advisor.name : 'N/A'}</span></div> <div><strong class="block text-slate-500">Comisión Mensual</strong><span class="font-bold text-green-600">${formatCurrency(commission)} ${aff.manualCommission ? '<span title="Comisión Manual" class="text-blue-500 font-bold">*</span>' : ''}</span></div> <div><strong class="block text-slate-500">Valor Plan/Base</strong><span>${formatCurrency(commissionBase)} ${aff.manualCosts ? '<span title="Costos Manuales" class="text-blue-500 font-bold">*</span>' : ''}</span></div> <div><strong class="block text-slate-500">Fecha Inicio</strong><span>${aff.startDate}</span></div> </div> </div> <div class="details-section hidden p-5 border-t bg-slate-50"> <h4 class="font-semibold mb-2">Detalles Completos:</h4> <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm"> <p><strong class="text-slate-500">Plan:</strong> ${healthPlan ? healthPlan.name : 'N/A'}</p><p><strong class="text-slate-500">Pensión:</strong> ${aff.pensionPlan}</p> <p><strong class="text-slate-500">ARL:</strong> ${aff.arlPlan}</p><p><strong class="text-slate-500">Caja Comp.:</strong> ${aff.ccfPlan}</p> <p class="sm:col-span-2"><strong class="text-slate-500">Notas:</strong> <span class="whitespace-pre-wrap">${aff.notes || 'N/A'}</span></p> </div> </div> <div class="border-t p-3 mt-auto flex justify-between items-center bg-gray-50/50 rounded-b-xl"> <button data-toggle-details="${aff.id}" class="text-sm text-primary-600 font-semibold hover:text-primary-700 flex items-center">Ver Detalles<i data-lucide="chevron-down" class="details-toggle-icon h-5 w-5 ml-1"></i></button> ${actionsHtml} </div> </div>`; }).join(''); lucide.createIcons(); }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            return ` <div class="bg-white rounded-xl shadow-lg transition hover:shadow-2xl flex flex-col"> <div class="p-5"> <div class="flex justify-between items-start"> <div><h3 class="font-bold text-lg text-slate-800">${aff.name}</h3><p class="text-sm text-slate-500">Doc: ${aff.documentId}</p></div> <div class="flex items-center gap-2 flex-shrink-0 ml-2"><span class="text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[aff.status] || ''}">${aff.status}</span></div> </div> <div class="grid grid-cols-2 gap-4 mt-4 text-sm"> <div><strong class="block text-slate-500">Asesor</strong><span>${advisor ? advisor.name : 'N/A'}</span></div> <div><strong class="block text-slate-500">Comisi&#243;n Mensual</strong><span class="font-bold text-green-600">${formatCurrency(commission)} ${aff.manualCommission ? '<span title="Comisi&#243;n Manual" class="text-blue-500 font-bold">*</span>' : ''}</span></div> <div><strong class="block text-slate-500">Valor Plan/Base</strong><span>${formatCurrency(commissionBase)} ${aff.manualCosts ? '<span title="Costos Manuales" class="text-blue-500 font-bold">*</span>' : ''}</span></div> <div><strong class="block text-slate-500">Fecha Inicio</strong><span>${aff.startDate}</span></div> </div> </div> <div class="details-section hidden p-5 border-t bg-slate-50"> <h4 class="font-semibold mb-2">Detalles Completos:</h4> <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm"> <p><strong class="text-slate-500">Plan:</strong> ${healthPlan ? healthPlan.name : 'N/A'}</p><p><strong class="text-slate-500">Pensi&#243;n:</strong> ${aff.pensionPlan}</p> <p><strong class="text-slate-500">ARL:</strong> ${aff.arlPlan}</p><p><strong class="text-slate-500">Caja Comp.:</strong> ${aff.ccfPlan}</p> <p class="sm:col-span-2"><strong class="text-slate-500">Notas:</strong> <span class="whitespace-pre-wrap">${aff.notes || 'N/A'}</span></p> </div> </div> <div class="border-t p-3 mt-auto flex justify-between items-center bg-gray-50/50 rounded-b-xl"> <button data-toggle-details="${aff.id}" class="text-sm text-primary-600 font-semibold hover:text-primary-700 flex items-center">Ver Detalles<i data-lucide="chevron-down" class="details-toggle-icon h-5 w-5 ml-1"></i></button> ${actionsHtml} </div> </div>`; }).join(''); lucide.createIcons(); }
     function renderAffiliatesAsTable(filteredData) { const tableBody = document.getElementById('affiliates-table-body'); const statusStyles = { 'Activo': 'bg-green-100 text-green-800', 'Pendiente': 'bg-yellow-100 text-yellow-800', 'Inactivo': 'bg-red-100 text-red-800' }; tableBody.innerHTML = filteredData.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const healthPlan = healthPlans.find(p => p.id === aff.healthPlan); const actionsHtml = currentUserRole === 'admin' ? `<button class="edit-affiliate-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${aff.id}" title="Editar"><i data-lucide="pencil" class="h-4 w-4 pointer-events-none"></i></button> <button class="delete-affiliate-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${aff.id}" title="Eliminar"><i data-lucide="trash-2" class="h-4 w-4 pointer-events-none"></i></button>` : `<button class="edit-affiliate-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${aff.id}" title="Editar"><i data-lucide="pencil" class="h-4 w-4 pointer-events-none"></i></button>`; return ` <tr class="hover:bg-slate-50"> <td class="p-3"><div class="font-semibold text-slate-800">${aff.name}</div><div class="text-xs text-slate-500">Doc: ${aff.documentId}</div></td> <td class="p-3"><div class="text-slate-800">${healthPlan ? healthPlan.name : 'N/A'}</div><div class="text-xs text-slate-500">Asesor: ${advisor ? advisor.name : 'N/A'}</div></td> <td class="p-3"><div class="text-slate-800 break-all">${aff.email || 'N/A'}</div><div class="text-xs text-slate-500">${aff.phone || 'N/A'}</div></td> <td class="p-3"><span class="text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[aff.status] || ''}">${aff.status}</span><div class="text-xs text-slate-500 mt-1">Inicio: ${aff.startDate}</div></td> <td class="p-3 text-center"><div class="flex justify-center items-center"> ${actionsHtml} </div></td> </tr>`; }).join(''); lucide.createIcons(); }
     function renderAdvisorsSection() {
         const container = document.getElementById("advisors-container");
@@ -1005,13 +994,13 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
             return `
             <div class="bg-white rounded-xl shadow-lg flex flex-col transition hover:shadow-2xl">
                 <div class="p-5 flex justify-between items-start">
-                    <div><h3 class="font-bold text-xl text-slate-800">${advisor.name}</h3><p class="text-sm text-primary-600 font-semibold">Comisión Base: ${advisor.commissionRate}%</p></div>
+                    <div><h3 class="font-bold text-xl text-slate-800">${advisor.name}</h3><p class="text-sm text-primary-600 font-semibold">Comisi&#243;n Base: ${advisor.commissionRate}%</p></div>
                     <div class="flex-shrink-0"><button class="edit-advisor-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${advisor.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button><button class="delete-advisor-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${advisor.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button></div>
                 </div>
                 <div class="p-5 grid grid-cols-3 gap-4 text-center border-y">
                     <div><p class="text-3xl font-bold text-slate-700">${affs.length}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Afiliados</p></div>
-                    <div><p class="text-xl font-bold text-primary-600">${formatCurrency(monthlyCommission, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión (Mes)</p></div>
-                    <div><p class="text-xl font-bold text-green-600">${formatCurrency(totalCommission, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión (Total)</p></div>
+                    <div><p class="text-xl font-bold text-primary-600">${formatCurrency(monthlyCommission, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisi&#243;n (Mes)</p></div>
+                    <div><p class="text-xl font-bold text-green-600">${formatCurrency(totalCommission, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisi&#243;n (Total)</p></div>
                 </div>
                 <div id="advisor-stats-${advisor.id}" class="hidden">
                     <div class="p-4 bg-slate-50"><h4 class="font-semibold mb-3 text-slate-700 text-sm">Desglose de Afiliados</h4><div class="max-h-64 overflow-y-auto pr-1"><table class="w-full text-sm text-left"><thead class="text-xs text-slate-500 uppercase bg-slate-200 sticky top-0"><tr><th class="p-2 font-semibold">Afiliado</th><th class="p-2 font-semibold">Estado</th><th class="p-2 font-semibold text-right">Ganancia</th></tr></thead><tbody class="bg-white">${breakdownHtml}</tbody></table></div></div>
@@ -1021,8 +1010,8 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
         }).join("");
         lucide.createIcons();
     }
-    function renderRankingSection(){const e=document.getElementById("ranking-list");if(!e)return;const t=advisors.map(e=>{const t=affiliates.filter(t=>t.advisorId===e.id).reduce((e,t)=>e+getAdvisorCommissionForAffiliate(t),0);return{...e,totalCommission:t}});if(t.sort((e,t)=>t.totalCommission-e.totalCommission),0===t.length){e.innerHTML='<div class="text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay asesores para mostrar en el ranking.</p></div>';return}const a=["bg-amber-400 text-amber-900","bg-slate-300 text-slate-800","bg-orange-400 text-orange-900"],n=['<i data-lucide="trophy" class="w-6 h-6 text-amber-500"></i>','<i data-lucide="award" class="w-6 h-6 text-slate-500"></i>','<i data-lucide="medal" class="w-6 h-6 text-orange-500"></i>'];e.innerHTML=t.map((e,t)=>{const o=t+1,s=3>=o?a[t]:"bg-slate-200 text-slate-700",i=3>=o?n[t]:`<span class="font-bold text-lg">${o}</span>`;return` <div class="bg-white rounded-xl shadow-lg p-4 flex items-center space-x-4 transition hover:shadow-xl hover:scale-[1.02]"> <div class="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${s}">${i}</div> <div class="flex-grow"> <h3 class="font-bold text-lg text-slate-800">${e.name}</h3> <p class="text-sm text-slate-500">Comisión Base: ${e.commissionRate}%</p> </div> <div class="text-right"> <p class="text-xl font-extrabold text-green-600">${formatCurrency(e.totalCommission)}</p> <p class="text-xs font-medium text-slate-500 uppercase">Comisión Total</p> </div> </div>`}).join("");}
-    function renderPlansList(){const e=document.getElementById("plans-list");if(!e)return;if(0===healthPlans.length){e.innerHTML='<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay planes de salud creados. ¡Añade el primero!</p></div>';return}e.innerHTML=healthPlans.map(e=>` <div class="bg-white rounded-xl shadow-lg flex flex-col"> <div class="p-5 flex-grow"> <div class="flex justify-between items-start"><h3 class="font-bold text-lg text-slate-800">${e.name}</h3><p class="text-xl font-extrabold text-primary-600">${formatCurrency(e.price)}</p></div> <ul class="text-sm text-slate-600 space-y-1 mt-4"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check-circle-2" class="w-4 h-4 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> <div class="border-t p-3 flex justify-end items-center bg-gray-50/50 rounded-b-xl"> <button class="edit-plan-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button> <button class="delete-plan-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button> </div> </div>`).join("");}
+    function renderRankingSection(){const e=document.getElementById("ranking-list");if(!e)return;const t=advisors.map(e=>{const t=affiliates.filter(t=>t.advisorId===e.id).reduce((e,t)=>e+getAdvisorCommissionForAffiliate(t),0);return{...e,totalCommission:t}});if(t.sort((e,t)=>t.totalCommission-e.totalCommission),0===t.length){e.innerHTML='<div class="text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay asesores para mostrar en el ranking.</p></div>';return}const a=["bg-amber-400 text-amber-900","bg-slate-300 text-slate-800","bg-orange-400 text-orange-900"],n=['<i data-lucide="trophy" class="w-6 h-6 text-amber-500"></i>','<i data-lucide="award" class="w-6 h-6 text-slate-500"></i>','<i data-lucide="medal" class="w-6 h-6 text-orange-500"></i>'];e.innerHTML=t.map((e,t)=>{const o=t+1,s=3>=o?a[t]:"bg-slate-200 text-slate-700",i=3>=o?n[t]:`<span class="font-bold text-lg">${o}</span>`;return` <div class="bg-white rounded-xl shadow-lg p-4 flex items-center space-x-4 transition hover:shadow-xl hover:scale-[1.02]"> <div class="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${s}">${i}</div> <div class="flex-grow"> <h3 class="font-bold text-lg text-slate-800">${e.name}</h3> <p class="text-sm text-slate-500">Comisi&#243;n Base: ${e.commissionRate}%</p> </div> <div class="text-right"> <p class="text-xl font-extrabold text-green-600">${formatCurrency(e.totalCommission)}</p> <p class="text-xs font-medium text-slate-500 uppercase">Comisi&#243;n Total</p> </div> </div>`}).join("");}
+    function renderPlansList(){const e=document.getElementById("plans-list");if(!e)return;if(0===healthPlans.length){e.innerHTML='<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay planes de salud creados. &#161;A&#241;ade el primero!</p></div>';return}e.innerHTML=healthPlans.map(e=>` <div class="bg-white rounded-xl shadow-lg flex flex-col"> <div class="p-5 flex-grow"> <div class="flex justify-between items-start"><h3 class="font-bold text-lg text-slate-800">${e.name}</h3><p class="text-xl font-extrabold text-primary-600">${formatCurrency(e.price)}</p></div> <ul class="text-sm text-slate-600 space-y-1 mt-4"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check-circle-2" class="w-4 h-4 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> <div class="border-t p-3 flex justify-end items-center bg-gray-50/50 rounded-b-xl"> <button class="edit-plan-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button> <button class="delete-plan-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button> </div> </div>`).join("");}
     function populateAdvisorSelect(){const e=document.getElementById("advisor-select-list");e&&(e.innerHTML='<option value="" disabled selected>Asignar Asesor</option>'+advisors.map(e=>`<option value="${e.id}">${e.name}</option>`).join(""))}
     
     function renderAsesorDashboard() {
@@ -1107,9 +1096,9 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
 
         const componentMap = {
             health:  { title: "Salud (EPS)", icon: "heart-pulse", color: "rose" },
-            pension: { title: "Pensión", icon: "landmark", color: "amber" },
+            pension: { title: "Pensi&#243;n", icon: "landmark", color: "amber" },
             arl:     { title: "Riesgos Laborales (ARL)", icon: "hard-hat", color: "sky" },
-            ccf:     { title: "Caja de Compensación", icon: "boxes", color: "indigo" }
+            ccf:     { title: "Caja de Compensaci&#243;n", icon: "boxes", color: "indigo" }
         };
 
         let htmlOutput = [];
@@ -1164,7 +1153,7 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
         lucide.createIcons();
     }
 
-    function renderHealthPlanCards(){const e=document.getElementById("health-plan-selector");if(!e)return;if(0===healthPlans.length){e.innerHTML='<p class="text-slate-500 md:col-span-4">No hay planes de salud definidos. Por favor, cree un plan en la sección "Planes de Salud".</p>';return}e.innerHTML=healthPlans.map((e,t)=>` <label class="health-plan-card cursor-pointer rounded-lg p-4 flex flex-col justify-between"> <div> <div class="flex justify-between items-center"><h4 class="font-bold text-md text-slate-800">${e.name}</h4><input type="radio" name="health-plan" value="${e.id}" class="h-4 w-4 text-primary-600"></div> <p class="text-xl font-extrabold text-primary-600 my-2">${formatCurrency(e.price)}<span class="text-sm font-medium text-slate-500">/mes</span></p> <ul class="text-xs text-slate-600 space-y-1 mt-3"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check" class="w-3.5 h-3.5 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> </label>`).join("");}
+    function renderHealthPlanCards(){const e=document.getElementById("health-plan-selector");if(!e)return;if(0===healthPlans.length){e.innerHTML='<p class="text-slate-500 md:col-span-4">No hay planes de salud definidos. Por favor, cree un plan en la secci&#243;n "Planes de Salud".</p>';return}e.innerHTML=healthPlans.map((e,t)=>` <label class="health-plan-card cursor-pointer rounded-lg p-4 flex flex-col justify-between"> <div> <div class="flex justify-between items-center"><h4 class="font-bold text-md text-slate-800">${e.name}</h4><input type="radio" name="health-plan" value="${e.id}" class="h-4 w-4 text-primary-600"></div> <p class="text-xl font-extrabold text-primary-600 my-2">${formatCurrency(e.price)}<span class="text-sm font-medium text-slate-500">/mes</span></p> <ul class="text-xs text-slate-600 space-y-1 mt-3"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check" class="w-3.5 h-3.5 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> </label>`).join("");}
     
     function renderNovedadesDropdown(){
         const container = document.getElementById("novedades-list");
@@ -1190,30 +1179,27 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
 
     function renderEmpresaSection(){if(!companyProfile.name) return;document.getElementById("company-name").value=companyProfile.name;document.getElementById("company-nit").value=companyProfile.nit;document.getElementById("company-address").value=companyProfile.address;document.getElementById("company-phone").value=companyProfile.phone;document.getElementById("company-email").value=companyProfile.email;document.querySelector(`#theme-selector input[value="${companyProfile.theme||"default"}"]`).checked=!0;document.querySelector(`#sidebar-theme-selector input[value="${companyProfile.sidebarTheme||"dark"}"]`).checked=!0;document.querySelector(`#bottom-nav-theme-selector input[value="${companyProfile.bottomNavTheme||"dark"}"]`).checked=!0}
     function renderFlujoCajaSection(){const e=new Date,t=new Date(e.getFullYear(),e.getMonth(),1);document.getElementById("report-start-date").value=t.toISOString().split("T")[0],document.getElementById("report-end-date").value=e.toISOString().split("T")[0];const a=getAllTransactions(),n=a.filter(t=>{const a=new Date(t.date);return a.getMonth()===e.getMonth()&&a.getFullYear()===e.getFullYear()}),o=n.filter(e=>"ingreso"===e.type).reduce((e,t)=>e+t.amount,0),s=n.filter(e=>"egreso"===e.type).reduce((e,t)=>e+t.amount,0);document.getElementById("cashflow-income").textContent=formatCurrency(o),document.getElementById("cashflow-expenses").textContent=formatCurrency(s),document.getElementById("cashflow-profit").textContent=formatCurrency(o-s),renderTransactionsTable(a)}
-    function getAllTransactions(){const e=[];return affiliates.forEach(t=>{if("Activo"===t.status){const a=getAffiliateCommissionBase(t);e.push({id:`auto-i-${t.id}`,type:"ingreso",concept:`Pago afiliado: ${t.name}`,amount:a,date:t.startDate});const n=getAdvisorCommissionForAffiliate(t);if(0<n){const o=advisors.find(e=>e.id===t.advisorId);e.push({id:`auto-e-${t.id}`,type:"egreso",concept:`Comisión ${o?.name||"N/A"} (Afiliado: ${t.name})`,amount:n,date:t.startDate})}}}),[...e,...manualTransactions].sort((e,t)=>new Date(t.date)-new Date(e.date))}
+    function getAllTransactions(){const e=[];return affiliates.forEach(t=>{if("Activo"===t.status){const a=getAffiliateCommissionBase(t);e.push({id:`auto-i-${t.id}`,type:"ingreso",concept:`Pago afiliado: ${t.name}`,amount:a,date:t.startDate});const n=getAdvisorCommissionForAffiliate(t);if(0<n){const o=advisors.find(e=>e.id===t.advisorId);e.push({id:`auto-e-${t.id}`,type:"egreso",concept:`Comisi&#243;n ${o?.name||"N/A"} (Afiliado: ${t.name})`,amount:n,date:t.startDate})}}}),[...e,...manualTransactions].sort((e,t)=>new Date(t.date)-new Date(e.date))}
     function renderTransactionsTable(e){const t=document.getElementById("transactions-table-body");if(0===e.length){t.innerHTML='<tr><td colspan="3" class="text-center p-4 text-slate-500">No hay transacciones registradas.</td></tr>';return}t.innerHTML=e.map(e=>{const t="ingreso"===e.type;return`<tr class="border-b"><td class="p-3">${new Date(e.date).toLocaleDateString("es-CO")}</td><td class="p-3 text-slate-700">${e.concept}</td><td class="p-3 text-right font-semibold ${t?"text-emerald-600":"text-rose-600"}">${t?"+":"-"}${formatCurrency(e.amount)}</td></tr>`}).join("")}
     
     function generatePDFReport() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         
-        // 1. Obtener colores de la marca y rango de fechas
         const primaryColorRGB = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim().split(' ').map(Number);
         const startDate = new Date(document.getElementById('report-start-date').value + 'T00:00:00');
         const endDate = new Date(document.getElementById('report-end-date').value + 'T23:59:59');
 
         if (isNaN(startDate) || isNaN(endDate)) {
-            return showToast("Por favor, selecciona un rango de fechas válido.", "error");
+            return showToast("Por favor, selecciona un rango de fechas v&#225;lido.", "error");
         }
 
-        // 2. Filtrar datos para el período
         const transactionsInPeriod = getAllTransactions().filter(t => {
             const tDate = new Date(t.date);
             return tDate >= startDate && tDate <= endDate;
         });
         const activeAffiliatesCount = affiliates.filter(a => a.status === 'Activo').length;
         
-        // 3. Calcular Resumen Financiero
         const totalIncome = transactionsInPeriod.filter(t => t.type === 'ingreso').reduce((sum, t) => sum + t.amount, 0);
         const advisorCommissions = transactionsInPeriod.filter(t => t.type === 'egreso' && t.id.startsWith('auto-e-')).reduce((sum, t) => sum + t.amount, 0);
         const manualExpenses = transactionsInPeriod.filter(t => t.type === 'egreso' && !t.id.startsWith('auto-e-')).reduce((sum, t) => sum + t.amount, 0);
@@ -1221,7 +1207,6 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
         const adminProfit = activeAffiliatesCount * (settings.ADMIN_FEE_PER_AFFILIATE || 0);
         const netProfit = totalIncome - totalExpenses;
 
-        // 4. Calcular Desglose de Comisiones por Asesor
         const commissionBreakdown = advisors.map(advisor => {
             const totalCommissionForAdvisor = transactionsInPeriod
                 .filter(t => t.type === 'egreso' && t.id.startsWith('auto-e-') && t.concept.includes(advisor.name))
@@ -1229,8 +1214,6 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
             return { name: advisor.name, commission: totalCommissionForAdvisor };
         }).filter(item => item.commission > 0);
 
-        // 5. Construir el PDF
-        // Encabezado
         doc.setFontSize(18);
         doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
         doc.text(companyProfile.name || 'Reporte Financiero', 14, 22);
@@ -1243,16 +1226,15 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
 
         let currentY = 45;
 
-        // Tabla de Resumen Financiero
         doc.autoTable({
             startY: currentY,
             head: [['Resumen Financiero', '']],
             body: [
                 ['Ingresos Totales', formatCurrency(totalIncome)],
                 ['Egresos Totales', formatCurrency(totalExpenses)],
-                [{content: `   └ Total Comisiones a Asesores`, styles: {cellPadding: {left: 8}}}, formatCurrency(advisorCommissions)],
-                [{content: `   └ Otros Egresos Manuales`, styles: {cellPadding: {left: 8}}}, formatCurrency(manualExpenses)],
-                ['Ganancia por Administración (Afiliados Activos x Tarifa)', formatCurrency(adminProfit)],
+                [{content: `   &#226;”” Total Comisiones a Asesores`, styles: {cellPadding: {left: 8}}}, formatCurrency(advisorCommissions)],
+                [{content: `   &#226;”” Otros Egresos Manuales`, styles: {cellPadding: {left: 8}}}, formatCurrency(manualExpenses)],
+                ['Ganancia por Administraci&#243;n (Afiliados Activos x Tarifa)', formatCurrency(adminProfit)],
                 [{content: 'Ganancia Neta (Saldo Real en Caja)', styles: {fontStyle: 'bold', fillColor: '#f0fdf4', textColor: '#15803d'}},
                  {content: formatCurrency(netProfit), styles: {fontStyle: 'bold', fillColor: '#f0fdf4', textColor: '#15803d'}}]
             ],
@@ -1267,11 +1249,10 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
         });
         currentY = doc.lastAutoTable.finalY + 10;
 
-        // Tabla de Desglose de Comisiones
         if (commissionBreakdown.length > 0) {
             doc.autoTable({
                 startY: currentY,
-                head: [['Desglose de Comisiones por Asesor', 'Comisión Generada']],
+                head: [['Desglose de Comisiones por Asesor', 'Comisi&#243;n Generada']],
                 body: commissionBreakdown.map(item => [item.name, formatCurrency(item.commission)]),
                 theme: 'striped',
                 headStyles: { fillColor: primaryColorRGB }
@@ -1279,7 +1260,6 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
             currentY = doc.lastAutoTable.finalY + 10;
         }
         
-        // Lista Detallada de Transacciones
         doc.autoTable({
             startY: currentY,
             head: [['Historial Detallado de Transacciones', 'Fecha', 'Tipo', 'Monto']],
@@ -1293,17 +1273,15 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
             headStyles: { fillColor: [45, 55, 72] }
         });
 
-        // Pie de página
         const pageCount = doc.internal.getNumberOfPages();
         for(var i = 1; i <= pageCount; i++) {
             doc.setPage(i);
             doc.setFontSize(8);
             doc.setTextColor(150);
-            doc.text('Página ' + String(i) + ' de ' + String(pageCount), doc.internal.pageSize.width - 14, doc.internal.pageSize.height - 6, {align: 'right'});
+            doc.text('P&#225;gina ' + String(i) + ' de ' + String(pageCount), doc.internal.pageSize.width - 14, doc.internal.pageSize.height - 6, {align: 'right'});
             doc.text(`Generado el ${new Date().toLocaleString('es-CO')}`, 14, doc.internal.pageSize.height - 6);
         }
         
-        // Guardar
         doc.save(`Reporte_Financiero_${startDate.toLocaleDateString('es-CO').replace(/\//g, "-")}.pdf`);
         showToast("Generando reporte financiero detallado.", "success");
     }
@@ -1324,7 +1302,7 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
     }
 
     function getNovedadIcon(e){return{creation:'<i data-lucide="user-plus" class="h-5 w-5 text-green-500"></i>',status_change:'<i data-lucide="shuffle" class="h-5 w-5 text-yellow-500"></i>',payment_reminder:'<i data-lucide="calendar-clock" class="h-5 w-5 text-red-500"></i>',commission_earned:'<i data-lucide="award" class="h-5 w-5 text-blue-500"></i>',admin_profit:'<i data-lucide="trending-up" class="h-5 w-5 text-indigo-500"></i>',deletion:'<i data-lucide="user-x" class="h-5 w-5 text-red-500"></i>'}[e]||'<i data-lucide="alert-triangle" class="h-5 w-5 text-yellow-500"></i>'}
-    function formatTimeAgo(e){if(!e) return "hace un momento"; const t=Math.floor((new Date-e)/1e3);let a=t/31536e3;if(1<a)return`hace ${Math.floor(a)} años`;if(1<(a=t/2592e3))return`hace ${Math.floor(a)} meses`;if(1<(a=t/86400))return`hace ${Math.floor(a)} días`;if(1<(a=t/3600))return`hace ${Math.floor(a)} horas`;if(1<(a=t/60))return`hace ${Math.floor(a)} minutos`;return`hace ${Math.floor(t)} segundos`}
+    function formatTimeAgo(e){if(!e) return "hace un momento"; const t=Math.floor((new Date-e)/1e3);let a=t/31536e3;if(1<a)return`hace ${Math.floor(a)} a&#241;os`;if(1<(a=t/2592e3))return`hace ${Math.floor(a)} meses`;if(1<(a=t/86400))return`hace ${Math.floor(a)} d&#237;as`;if(1<(a=t/3600))return`hace ${Math.floor(a)} horas`;if(1<(a=t/60))return`hace ${Math.floor(a)} minutos`;return`hace ${Math.floor(t)} segundos`}
     function checkAndGenerateNovedades(newAffiliates, oldAffiliates){}
     
     // --- LÓGICA DEL CALENDARIO (MODIFICADA) ---
@@ -1352,7 +1330,6 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
         const listContainer = document.getElementById('calendar-list-container');
         const monthYearFilter = document.getElementById('calendar-month-year-filter-container');
 
-        // Ocultar todos los contenedores y filtros primero
         [cardContainer, tableContainer, listContainer].forEach(c => c.style.display = 'none');
         monthYearFilter.style.display = 'none';
         
@@ -1561,28 +1538,28 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
         }
 
         try {
-            const secondaryApp = window.firebase.initializeApp(firebaseConfig, `secondary-auth-${Date.now()}`);
-            const secondaryAuth = window.firebase.getAuth(secondaryApp);
-            const userCredential = await window.firebase.createUserWithEmailAndPassword(secondaryAuth, email, password);
+            const secondaryApp = initializeApp(firebaseConfig, `secondary-auth-${Date.now()}`);
+            const secondaryAuth = getAuth(secondaryApp);
+            const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, password);
             const newUserUid = userCredential.user.uid;
-            await window.firebase.signOut(secondaryAuth);
-            await window.firebase.deleteApp(secondaryApp);
+            await signOut(secondaryAuth);
+            await deleteApp(secondaryApp);
 
-            const batch = window.firebase.writeBatch(db);
+            const batch = writeBatch(db);
             
-            const userRoleRef = window.firebase.doc(db, "userRoles", newUserUid);
+            const userRoleRef = doc(db, "userRoles", newUserUid);
             batch.set(userRoleRef, {
                 email: email,
                 role: role,
                 adminUid: currentUser.uid
             });
 
-            const adminRoleRef = window.firebase.doc(db, `users/${currentUser.uid}/roles`, newUserUid);
+            const adminRoleRef = doc(db, `users/${currentUser.uid}/roles`, newUserUid);
             const roleData = {
                 uid: newUserUid,
                 email: email,
                 role: role,
-                createdAt: window.firebase.serverTimestamp()
+                createdAt: serverTimestamp()
             };
             if (role === 'asesor') roleData.linkedAdvisorId = linkedId;
             if (role === 'afiliado') roleData.linkedAffiliateId = linkedId;
@@ -1616,13 +1593,11 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
             'Inactivo': { bg: 'bg-red-100', text: 'text-red-800', icon: 'x-circle' }
         };
 
-        // Rellenar tarjeta de perfil
         document.getElementById('afiliado-profile-name').textContent = affiliate.name;
         document.getElementById('afiliado-profile-id').textContent = affiliate.documentId;
         document.getElementById('afiliado-profile-email').textContent = affiliate.email;
         document.getElementById('afiliado-profile-phone').textContent = affiliate.phone;
         
-        // Rellenar tarjeta de plan
         document.getElementById('afiliado-profile-plan-name').textContent = plan ? plan.name : "Plan no especificado";
         document.getElementById('afiliado-profile-plan-price').textContent = plan ? formatCurrency(plan.price) : "$0";
         document.getElementById('afiliado-profile-start-date').textContent = affiliate.startDate || '--/--/----';
@@ -1636,7 +1611,6 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
                 ${affiliate.status}
             </span>`;
 
-        // Rellenar características del plan
         const featuresList = document.getElementById('afiliado-profile-plan-features');
         if (plan && plan.features) {
             featuresList.innerHTML = plan.features.split('\n').map(feature => `
@@ -1646,7 +1620,7 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
                 </li>
             `).join('');
         } else {
-            featuresList.innerHTML = '<li>No hay características detalladas para este plan.</li>';
+            featuresList.innerHTML = '<li>No hay caracter&#237;sticas detalladas para este plan.</li>';
         }
 
         lucide.createIcons();
@@ -1656,32 +1630,30 @@ let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
     document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('invite-user-form').addEventListener('submit', handleInviteUser);
         const inviteRoleSelect = document.getElementById('invite-role');
-const inviteLinkContainer = document.getElementById('invite-link-container');
-const inviteLinkSelect = document.getElementById('invite-link-select');
-const inviteLinkLabel = document.getElementById('invite-link-label');
+        const inviteLinkContainer = document.getElementById('invite-link-container');
+        const inviteLinkSelect = document.getElementById('invite-link-select');
+        const inviteLinkLabel = document.getElementById('invite-link-label');
 
-inviteRoleSelect.addEventListener('change', (e) => {
-    const selectedRole = e.target.value;
+        inviteRoleSelect.addEventListener('change', (e) => {
+            const selectedRole = e.target.value;
 
-    if (selectedRole === 'asesor' || selectedRole === 'afiliado') {
-        let options = '<option value="" disabled selected>Seleccionar para vincular...</option>';
+            if (selectedRole === 'asesor' || selectedRole === 'afiliado') {
+                let options = '<option value="" disabled selected>Seleccionar para vincular...</option>';
 
-        if (selectedRole === 'asesor') {
-            inviteLinkLabel.textContent = 'Vincular con Asesor Existente:';
-            // La variable 'advisors' ya la tienes disponible globalmente
-            options += advisors.map(advisor => `<option value="${advisor.id}">${advisor.name}</option>`).join('');
-        } else { // es 'afiliado'
-            inviteLinkLabel.textContent = 'Vincular con Afiliado Existente:';
-            // La variable 'affiliates' ya la tienes disponible globalmente
-            options += affiliates.map(aff => `<option value="${aff.id}">${aff.name} (${aff.documentId})</option>`).join('');
-        }
+                if (selectedRole === 'asesor') {
+                    inviteLinkLabel.textContent = 'Vincular con Asesor Existente:';
+                    options += advisors.map(advisor => `<option value="${advisor.id}">${advisor.name}</option>`).join('');
+                } else { 
+                    inviteLinkLabel.textContent = 'Vincular con Afiliado Existente:';
+                    options += affiliates.map(aff => `<option value="${aff.id}">${aff.name} (${aff.documentId})</option>`).join('');
+                }
 
-        inviteLinkSelect.innerHTML = options;
-        inviteLinkContainer.classList.remove('hidden'); // Muestra el contenedor
-    } else {
-        inviteLinkContainer.classList.add('hidden'); // Oculta si no se selecciona nada
-    }
-});
+                inviteLinkSelect.innerHTML = options;
+                inviteLinkContainer.classList.remove('hidden'); 
+            } else {
+                inviteLinkContainer.classList.add('hidden'); 
+            }
+        });
         document.body.addEventListener('click', async (e) => { 
             const target = e.target;
             const button = target.closest('button');
@@ -1713,7 +1685,7 @@ inviteRoleSelect.addEventListener('change', (e) => {
             switch (button.id) { 
                 case 'show-register': document.getElementById('login-view').style.display = 'none'; document.getElementById('register-view').style.display = 'block'; return; 
                 case 'show-login': document.getElementById('register-view').style.display = 'none'; document.getElementById('login-view').style.display = 'block'; return; 
-                case 'logout-btn': case 'profile-modal-logout-btn': window.firebase.signOut(auth); return; 
+                case 'logout-btn': case 'profile-modal-logout-btn': signOut(auth); return; 
                 case 'menu-toggle': document.getElementById('sidebar').classList.toggle('-translate-x-full'); const overlay = document.getElementById('sidebar-overlay'); overlay.classList.toggle('opacity-0'); overlay.classList.toggle('pointer-events-none'); return; 
                 case 'profile-toggle-btn': document.getElementById('profile-modal').classList.toggle('scale-95'); document.getElementById('profile-modal').classList.toggle('opacity-0'); document.getElementById('profile-modal').classList.toggle('pointer-events-none'); return; 
                 case 'novedades-toggle-btn': document.getElementById('novedades-modal').classList.toggle('scale-95'); document.getElementById('novedades-modal').classList.toggle('opacity-0'); document.getElementById('novedades-modal').classList.toggle('pointer-events-none'); return;
@@ -1740,15 +1712,15 @@ inviteRoleSelect.addEventListener('change', (e) => {
             else if (button.matches('.edit-plan-btn')) modalManager.open('plan-modal', healthPlans.find(p => p.id === id)); 
             else if (button.matches('[data-toggle-details]')) { const card = button.closest('.bg-white'); if (card) { card.querySelector('.details-section').classList.toggle('hidden'); button.classList.toggle('details-shown'); } } 
             else if (button.matches('[data-toggle-stats]')) { const statsContainer = document.getElementById(`advisor-stats-${button.dataset.toggleStats}`); if (statsContainer) { statsContainer.classList.toggle('hidden'); button.classList.toggle('stats-shown'); button.querySelector('.button-text').textContent = statsContainer.classList.contains('hidden') ? 'Ver Desglose' : 'Ocular Desglose'; } } 
-            else if (button.matches('.delete-affiliate-btn')) { if (confirm('¿Seguro que deseas eliminar este afiliado?')) { await deleteDataFromFirestore('affiliates', id); showToast('Afiliado eliminado.'); } } 
-            else if (button.matches('.delete-advisor-btn')) { if (confirm('¿Seguro? Se desasignará de todos los afiliados.')) { const batch = window.firebase.writeBatch(db); affiliates.forEach(aff => { if(aff.advisorId === id) { const affRef = window.firebase.doc(db, `users/${adminUidForRole}/affiliates/${aff.id}`); batch.update(affRef, { advisorId: null }); } }); const advisorRef = window.firebase.doc(db, `users/${adminUidForRole}/advisors/${id}`); batch.delete(advisorRef); await batch.commit(); showToast('Asesor eliminado.'); } } 
-            else if (button.matches('.delete-plan-btn')) { const isPlanInUse = affiliates.some(aff => aff.healthPlan === id); if(isPlanInUse) return showToast('Plan en uso. No se puede eliminar.', 'error'); if (confirm('¿Seguro?')) { await deleteDataFromFirestore('healthPlans', id); showToast('Plan eliminado.'); } }
+            else if (button.matches('.delete-affiliate-btn')) { if (confirm('&#191;Seguro que deseas eliminar este afiliado?')) { await deleteDataFromFirestore('affiliates', id); showToast('Afiliado eliminado.'); } } 
+            else if (button.matches('.delete-advisor-btn')) { if (confirm('&#191;Seguro? Se desasignar&#225; de todos los afiliados.')) { const batch = writeBatch(db); affiliates.forEach(aff => { if(aff.advisorId === id) { const affRef = doc(db, `users/${adminUidForRole}/affiliates/${aff.id}`); batch.update(affRef, { advisorId: null }); } }); const advisorRef = doc(db, `users/${adminUidForRole}/advisors/${id}`); batch.delete(advisorRef); await batch.commit(); showToast('Asesor eliminado.'); } } 
+            else if (button.matches('.delete-plan-btn')) { const isPlanInUse = affiliates.some(aff => aff.healthPlan === id); if(isPlanInUse) return showToast('Plan en uso. No se puede eliminar.', 'error'); if (confirm('&#191;Seguro?')) { await deleteDataFromFirestore('healthPlans', id); showToast('Plan eliminado.'); } }
             else if (button.matches('.download-receipt-btn')) {
                 showToast('Generando recibo PDF...', 'success');
                 const affiliateId = button.dataset.id;
                 const affiliateToPrint = affiliates.find(a => a.id === affiliateId);
                 if (!affiliateToPrint) {
-                    return showToast('No se encontró el afiliado para generar el recibo.', 'error');
+                    return showToast('No se encontr&#243; el afiliado para generar el recibo.', 'error');
                 }
                 const planToPrint = healthPlans.find(p => p.id === affiliateToPrint.healthPlan) || {};
                 const advisorForPrint = advisors.find(a => a.id === affiliateToPrint.advisorId) || {};
@@ -1758,22 +1730,22 @@ inviteRoleSelect.addEventListener('change', (e) => {
             }
             else if (button.matches('.delete-role-btn')) {
                  const roleToDelete = userRoles.find(r => r.id === id);
-                 if (confirm(`¿Estás seguro de eliminar al usuario ${roleToDelete.email}? Esta acción no se puede deshacer y su cuenta será eliminada permanentemente.`)) {
-                        showToast('Esta función requiere un backend (Cloud Function) para eliminar de forma segura un usuario de Firebase Authentication. La implementación actual solo eliminará los registros de rol en Firestore.', 'error');
-                        const batch = window.firebase.writeBatch(db);
-                        const rootRoleRef = window.firebase.doc(db, 'userRoles', id);
-                        const adminRoleRef = window.firebase.doc(db, `users/${adminUidForRole}/roles`, id);
+                 if (confirm(`&#191;Est&#225;s seguro de eliminar al usuario ${roleToDelete.email}? Esta acci&#243;n no se puede deshacer y su cuenta ser&#225; eliminada permanentemente.`)) {
+                        showToast('Esta funci&#243;n requiere un backend (Cloud Function) para eliminar de forma segura un usuario de Firebase Authentication. La implementaci&#243;n actual solo eliminar&#225; los registros de rol en Firestore.', 'error');
+                        const batch = writeBatch(db);
+                        const rootRoleRef = doc(db, 'userRoles', id);
+                        const adminRoleRef = doc(db, `users/${adminUidForRole}/roles`, id);
                         batch.delete(rootRoleRef);
                         batch.delete(adminRoleRef);
                         await batch.commit();
                         showToast('Registros de rol eliminados.', 'success');
                  }
             }
-            else if (button.id === 'sell-plan-btn') { if (!lastQuoteResult) { showToast('Por favor, realiza una cotización primero.', 'error'); return; } modalManager.open('affiliate-modal'); setTimeout(() => { const form = document.getElementById('affiliate-form'); if (!form) return; form['manual-override-checkbox'].checked = true; document.getElementById('manual-override-container').classList.remove('hidden'); form['manual-cost-health'].value = lastQuoteResult.health ? Math.round(lastQuoteResult.health.total) : ''; form['manual-cost-pension'].value = lastQuoteResult.pension ? Math.round(lastQuoteResult.pension.total) : ''; form['manual-cost-arl'].value = lastQuoteResult.arl ? Math.round(lastQuoteResult.arl.total) : ''; form['manual-cost-ccf'].value = lastQuoteResult.ccf ? Math.round(lastQuoteResult.ccf.total) : ''; const incomeValue = Number(document.getElementById('income').value); form['affiliate-notes'].value = `Cotización inicial basada en un ingreso mensual de ${formatCurrency(incomeValue)}. IBC: ${formatCurrency(lastQuoteResult.ibc)}.`; showToast('Datos de cotización precargados.'); }, 100); } 
+            else if (button.id === 'sell-plan-btn') { if (!lastQuoteResult) { showToast('Por favor, realiza una cotizaci&#243;n primero.', 'error'); return; } modalManager.open('affiliate-modal'); setTimeout(() => { const form = document.getElementById('affiliate-form'); if (!form) return; form['manual-override-checkbox'].checked = true; document.getElementById('manual-override-container').classList.remove('hidden'); form['manual-cost-health'].value = lastQuoteResult.health ? Math.round(lastQuoteResult.health.total) : ''; form['manual-cost-pension'].value = lastQuoteResult.pension ? Math.round(lastQuoteResult.pension.total) : ''; form['manual-cost-arl'].value = lastQuoteResult.arl ? Math.round(lastQuoteResult.arl.total) : ''; form['manual-cost-ccf'].value = lastQuoteResult.ccf ? Math.round(lastQuoteResult.ccf.total) : ''; const incomeValue = Number(document.getElementById('income').value); form['affiliate-notes'].value = `Cotizaci&#243;n inicial basada en un ingreso mensual de ${formatCurrency(incomeValue)}. IBC: ${formatCurrency(lastQuoteResult.ibc)}.`; showToast('Datos de cotizaci&#243;n precargados.'); }, 100); } 
         });
         
-        document.getElementById('login-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { await window.firebase.signInWithEmailAndPassword(auth, e.target['login-email'].value, e.target['login-password'].value); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
-        document.getElementById('register-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { const userCredential = await window.firebase.createUserWithEmailAndPassword(auth, e.target['register-email'].value, e.target['register-password'].value); await setupNewUserDocument(userCredential.user); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
+        document.getElementById('login-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { await signInWithEmailAndPassword(auth, e.target['login-email'].value, e.target['login-password'].value); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
+        document.getElementById('register-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { const userCredential = await createUserWithEmailAndPassword(auth, e.target['register-email'].value, e.target['register-password'].value); await setupNewUserDocument(userCredential.user); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('license-form').addEventListener('submit', e => { e.preventDefault(); handleLicenseActivation(); });
         document.getElementById('affiliate-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1813,59 +1785,48 @@ inviteRoleSelect.addEventListener('change', (e) => {
             const existingId = form['affiliate-doc-id'].value;
 
             if (existingId) {
-                // --- Lógica para ACTUALIZAR un afiliado existente (sin cambios) ---
                 affiliateData.id = existingId;
                 const oldAffiliate = affiliates.find(a => a.id === existingId);
                 if (oldAffiliate && oldAffiliate.status !== affiliateData.status) {
-                    createNovedad('status_change', `El estado de ${affiliateData.name} cambió de ${oldAffiliate.status} a ${affiliateData.status}.`);
+                    createNovedad('status_change', `El estado de ${affiliateData.name} cambi&#243; de ${oldAffiliate.status} a ${affiliateData.status}.`);
                 }
                 await saveDataToFirestore('affiliates', affiliateData);
                 modalManager.close('affiliate-modal');
                 showToast('Afiliado actualizado correctamente.');
 
             } else {
-                // --- NUEVA LÓGICA PARA CREAR AFILIADO Y MOSTRAR MODAL DE ÉXITO ---
-                const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/affiliates`));
+                const docRef = doc(collection(db, `users/${adminUidForRole}/affiliates`));
                 affiliateData.id = docRef.id;
-                affiliateData.createdAt = window.firebase.serverTimestamp();
+                affiliateData.createdAt = serverTimestamp();
 
                 if (currentUserRole === 'asesor' && userRoleData.linkedAdvisorId) {
                     affiliateData.advisorId = userRoleData.linkedAdvisorId;
                 }
                 
-                // 1. Guardar en la base de datos
                 await saveDataToFirestore('affiliates', affiliateData);
                 
-                // 2. Crear la notificación
                 createNovedad('creation', `Nuevo afiliado registrado: ${affiliateData.name}.`);
                 
-                // 3. Cerrar el formulario actual
                 modalManager.close('affiliate-modal');
 
-                // 4. Guardar los datos del afiliado recién creado en nuestra variable temporal
                 lastCreatedAffiliate = affiliateData;
 
-                // 5. Abrir el nuevo modal de éxito
-                setTimeout(() => { // Pequeño delay para que las transiciones de los modales se vean fluidas
+                setTimeout(() => { 
                     modalManager.open('new-affiliate-success-modal');
                 }, 250);
             }
         });
 
-        // CÓDIGO NUEVO PARA GUARDAR ASESORES
         document.getElementById('advisor-form').addEventListener('submit', async (e) => {
-            // 1. Prevenir que la página se recargue
             e.preventDefault();
             const form = e.target;
             const advisorId = form['advisor-doc-id'].value;
 
-            // 2. Recolectar los datos del formulario
             const advisorData = {
                 name: form['advisor-name'].value.trim(),
                 commissionRate: Number(form['advisor-commission'].value)
             };
 
-            // 3. Validar que los datos no estén vacíos
             if (!advisorData.name || isNaN(advisorData.commissionRate)) {
                 showToast('Por favor, completa todos los campos correctamente.', 'error');
                 return;
@@ -1873,13 +1834,11 @@ inviteRoleSelect.addEventListener('change', (e) => {
 
             try {
                 if (advisorId) {
-                    // Si hay un ID, es una actualización
                     advisorData.id = advisorId;
                     await saveDataToFirestore('advisors', advisorData);
-                    showToast('Asesor actualizado con éxito.', 'success');
+                    showToast('Asesor actualizado con &#233;xito.', 'success');
                 } else {
-                    // Si no hay ID, es una creación
-                    const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/advisors`));
+                    const docRef = doc(collection(db, `users/${adminUidForRole}/advisors`));
                     advisorData.id = docRef.id;
                     await saveDataToFirestore('advisors', advisorData);
                     showToast('Asesor guardado correctamente.', 'success');
@@ -1891,15 +1850,12 @@ inviteRoleSelect.addEventListener('change', (e) => {
             }
         });
 
-// --- MANEJO DE LOS BOTONES DEL MODAL DE ÉXITO DE AFILIACIÓN ---
     document.getElementById('success-download-pdf-btn').addEventListener('click', () => {
         if (!lastCreatedAffiliate) return;
 
-        // Buscamos los datos relacionados que necesitamos para el PDF
         const planSeleccionado = healthPlans.find(p => p.id === lastCreatedAffiliate.healthPlan) || {};
         const asesorAsignado = advisors.find(a => a.id === lastCreatedAffiliate.advisorId) || {};
         
-        // Llamamos a la función que ya genera el PDF
         generarReciboAfiliacionPDF(lastCreatedAffiliate, planSeleccionado, asesorAsignado, companyProfile);
     });
 
@@ -1908,26 +1864,23 @@ inviteRoleSelect.addEventListener('change', (e) => {
 
         const affiliateName = lastCreatedAffiliate.name;
         const companyName = companyProfile.name || 'nuestros servicios de salud';
-        const shareText = `¡Hola, ${affiliateName}! Tu afiliación en ${companyName} ha sido exitosa. ¡Bienvenido/a!`;
+        const shareText = `&#161;Hola, ${affiliateName}! Tu afiliaci&#243;n en ${companyName} ha sido exitosa. &#161;Bienvenido/a!`;
 
-        // Usamos la API nativa de compartir del navegador
         if (navigator.share) {
             try {
                 await navigator.share({
-                    title: 'Afiliación Exitosa',
+                    title: 'Afiliaci&#243;n Exitosa',
                     text: shareText,
                 });
             } catch (error) {
                 console.error('Error al intentar compartir:', error);
-                showToast('No se pudo completar la acción de compartir.', 'error');
+                showToast('No se pudo completar la acci&#243;n de compartir.', 'error');
             }
         } else {
-            // Si el navegador no soporta la función de compartir
-            showToast('La función de compartir no está disponible en este navegador.', 'error');
+            showToast('La funci&#243;n de compartir no est&#225; disponible en este navegador.', 'error');
         }
     });
         
-        // --- MANEJO PARA MOSTRAR/OCULTAR COSTOS MANUALES EN EL MODAL DE AFILIADO ---
     document.getElementById('affiliate-modal').addEventListener('change', (e) => {
         if (e.target.id === 'manual-override-checkbox') {
             const manualContainer = document.getElementById('manual-override-container');
@@ -1937,7 +1890,6 @@ inviteRoleSelect.addEventListener('change', (e) => {
     });
         
         
-        // CÓDIGO NUEVO PARA GUARDAR PLANES
         document.getElementById('plan-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const form = e.target;
@@ -1956,13 +1908,11 @@ inviteRoleSelect.addEventListener('change', (e) => {
 
             try {
                 if (planId) {
-                    // Actualizar plan
                     planData.id = planId;
                     await saveDataToFirestore('healthPlans', planData);
-                    showToast('Plan actualizado con éxito.', 'success');
+                    showToast('Plan actualizado con &#233;xito.', 'success');
                 } else {
-                    // Crear plan
-                    const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/healthPlans`));
+                    const docRef = doc(collection(db, `users/${adminUidForRole}/healthPlans`));
                     planData.id = docRef.id;
                     await saveDataToFirestore('healthPlans', planData);
                     showToast('Plan guardado correctamente.', 'success');
@@ -1974,16 +1924,13 @@ inviteRoleSelect.addEventListener('change', (e) => {
             }
         });
         
-        // --- MANEJO PARA GUARDAR PERFIL DE EMPRESA SIN RECARGAR ---
         document.getElementById('company-profile-form').addEventListener('submit', async (e) => {
-            // 1. Prevenir que la página se recargue (la parte más importante)
             e.preventDefault();
             const saveButton = e.target.querySelector('button[type="submit"]');
             saveButton.disabled = true;
             saveButton.textContent = 'Guardando...';
 
             try {
-                // 2. Recolectar todos los datos del formulario
                 const profileData = {
                     name: document.getElementById('company-name').value,
                     nit: document.getElementById('company-nit').value,
@@ -1995,33 +1942,24 @@ inviteRoleSelect.addEventListener('change', (e) => {
                     bottomNavTheme: document.querySelector('#bottom-nav-theme-selector input[name="bottom-nav-theme"]:checked').value,
                 };
 
-                // 3. Apuntar al documento correcto del usuario en Firestore
-                // 'adminUidForRole' es la variable global que ya tienes y que apunta al UID del admin
-                const userDocRef = window.firebase.doc(db, `users/${adminUidForRole}`);
+                const userDocRef = doc(db, `users/${adminUidForRole}`);
                 
-                // 4. Actualizar el documento del usuario con los nuevos datos del perfil
-                // Usamos { merge: true } para no sobrescribir otros campos importantes como 'settings'
-                await window.firebase.setDoc(userDocRef, {
+                await setDoc(userDocRef, {
                     companyProfile: profileData
                 }, { merge: true });
 
-                // 5. Mostrar un mensaje de éxito al usuario
-                showToast('Perfil de la empresa guardado con éxito.', 'success');
+                showToast('Perfil de la empresa guardado con &#233;xito.', 'success');
 
             } catch (error) {
-                // En caso de un error, notificar al usuario
                 console.error("Error al guardar el perfil de la empresa:", error);
                 showToast('Error al guardar los cambios. Intenta de nuevo.', 'error');
             } finally {
-                // 6. Reactivar el botón, sin importar si hubo éxito o error
                 saveButton.disabled = false;
                 saveButton.textContent = 'Guardar Cambios';
             }
         });
 
-        // --- MANEJO PARA GUARDAR INGRESO/EGRESO SIN RECARGAR ---
     document.getElementById('transaction-form').addEventListener('submit', async (e) => {
-        // 1. Prevenir la recarga de la página
         e.preventDefault();
         const saveButton = e.target.querySelector('button[type="submit"]');
         saveButton.disabled = true;
@@ -2029,9 +1967,8 @@ inviteRoleSelect.addEventListener('change', (e) => {
 
         try {
             const form = e.target;
-            const transactionType = form['transaction-type'].value; // 'ingreso' o 'egreso'
+            const transactionType = form['transaction-type'].value; 
 
-            // 2. Recolectar los datos del formulario del modal
             const transactionData = {
                 concept: form['transaction-concept'].value.trim(),
                 amount: Number(form['transaction-amount'].value),
@@ -2039,70 +1976,58 @@ inviteRoleSelect.addEventListener('change', (e) => {
                 type: transactionType,
             };
 
-            // 3. Validar que los datos importantes no estén vacíos
             if (!transactionData.concept || transactionData.amount <= 0 || !transactionData.date) {
                 showToast('Por favor, completa todos los campos correctamente.', 'error');
-                // Devolvemos el botón a su estado original y detenemos la ejecución
                 saveButton.disabled = false;
                 saveButton.textContent = 'Guardar';
                 return; 
             }
 
-            // 4. Crear una referencia para un nuevo documento en la colección 'manualTransactions'
-            const docRef = window.firebase.doc(window.firebase.collection(db, `users/${adminUidForRole}/manualTransactions`));
+            const docRef = doc(collection(db, `users/${adminUidForRole}/manualTransactions`));
             transactionData.id = docRef.id;
 
-            // 5. Guardar los datos en Firestore usando la función que ya existe
             await saveDataToFirestore('manualTransactions', transactionData);
 
-            // 6. Mostrar mensaje de éxito y cerrar el modal
-            showToast(`El ${transactionType} se guardó correctamente.`, 'success');
+            showToast(`El ${transactionType} se guard&#243; correctamente.`, 'success');
             modalManager.close('transaction-modal');
 
         } catch (error) {
-            console.error("Error al guardar la transacción:", error);
-            showToast('Hubo un error al guardar la transacción.', 'error');
+            console.error("Error al guardar la transacci&#243;n:", error);
+            showToast('Hubo un error al guardar la transacci&#243;n.', 'error');
         } finally {
-            // 7. Reactivar el botón (esto se ejecuta si todo sale bien después de cerrar el modal)
             saveButton.disabled = false;
             saveButton.textContent = 'Guardar';
         }
     });
-    // --- FIN DEL CÓDIGO PARA TRANSACCIONES ---
 
-        // --- MANEJO PARA CAMBIAR TEMAS EN TIEMPO REAL (VISTA PREVIA) ---
     const setupThemePreview = (selectorId, applyFunction) => {
         const selectorContainer = document.getElementById(selectorId);
         if (selectorContainer) {
             selectorContainer.addEventListener('change', (e) => {
-                // Nos aseguramos de que el clic fue en un botón de radio
                 if (e.target.type === 'radio' && e.target.name) {
                     const selectedValue = e.target.value;
-                    // Llamamos a la función correspondiente para aplicar el tema
                     applyFunction(selectedValue);
                 }
             });
         }
     };
 
-    // Usamos nuestra función para los 3 selectores de tema
     setupThemePreview('theme-selector', applyTheme);
     setupThemePreview('sidebar-theme-selector', applySidebarTheme);
     setupThemePreview('bottom-nav-theme-selector', applyBottomNavTheme);
-    // --- FIN DEL CÓDIGO PARA TEMAS EN TIEMPO REAL ---
 
         document.getElementById('mark-novedades-read').addEventListener('click', async () => {
             const unreadNovedades = novedades.filter(n => n.read === false);
             if (unreadNovedades.length === 0) return;
 
-            const batch = window.firebase.writeBatch(db);
+            const batch = writeBatch(db);
             unreadNovedades.forEach(novedad => {
-                const docRef = window.firebase.doc(db, `users/${adminUidForRole}/novedades`, novedad.id);
+                const docRef = doc(db, `users/${adminUidForRole}/novedades`, novedad.id);
                 batch.update(docRef, { read: true });
             });
 
             await batch.commit();
-            showToast('Notificaciones marcadas como leídas.');
+            showToast('Notificaciones marcadas como le&#237;das.');
         });
         
         const calculatorForm = document.getElementById('calculator-form');
@@ -2148,12 +2073,10 @@ inviteRoleSelect.addEventListener('change', (e) => {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
-        // --- 1. CONFIGURACIÓN DE BRANDING Y ESTILOS ---
         const primaryColorRGB = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim().split(' ').map(Number);
         const formatDate = (dateString) => dateString ? new Date(dateString + 'T00:00:00').toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
         const generationDate = new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-        // --- 2. ENCABEZADO DEL DOCUMENTO ---
         doc.setFontSize(20);
         doc.setFont("helvetica", "bold");
         doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
@@ -2161,7 +2084,7 @@ inviteRoleSelect.addEventListener('change', (e) => {
         doc.setFontSize(14);
         doc.setFont("helvetica", "normal");
         doc.setTextColor(40);
-        doc.text("Recibo de Afiliación", 20, 35);
+        doc.text("Recibo de Afiliaci&#243;n", 20, 35);
         doc.setLineWidth(0.5);
         doc.setDrawColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
         doc.line(20, 38, 190, 38);
@@ -2170,11 +2093,10 @@ inviteRoleSelect.addEventListener('change', (e) => {
         doc.text(`NIT: ${companyProfileData.nit || 'N/D'}`, 190, 25, { align: 'right' });
         doc.text(`Contacto: ${companyProfileData.phone || companyProfileData.email || 'N/D'}`, 190, 30, { align: 'right' });
         doc.setFont("helvetica", "bold");
-        doc.text(`Recibo N°: ${affiliateData.id.slice(-7).toUpperCase()}`, 190, 45, { align: 'right' });
+        doc.text(`Recibo N&#176;: ${affiliateData.id.slice(-7).toUpperCase()}`, 190, 45, { align: 'right' });
         doc.setFont("helvetica", "normal");
-        doc.text(`Fecha de Emisión: ${generationDate}`, 190, 50, { align: 'right' });
+        doc.text(`Fecha de Emisi&#243;n: ${generationDate}`, 190, 50, { align: 'right' });
 
-        // --- 3. SECCIÓN: DATOS DEL AFILIADO ---
         doc.setFontSize(12);
         doc.setFont("helvetica", "bold");
         doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
@@ -2185,15 +2107,14 @@ inviteRoleSelect.addEventListener('change', (e) => {
             body: [
                 ['Nombre Completo:', affiliateData.name],
                 ['Documento de Identidad:', affiliateData.documentId],
-                ['Correo Electrónico:', affiliateData.email],
-                ['Teléfono de Contacto:', affiliateData.phone],
-                ['Dirección:', affiliateData.address],
+                ['Correo Electr&#243;nico:', affiliateData.email],
+                ['Tel&#233;fono de Contacto:', affiliateData.phone],
+                ['Direcci&#243;n:', affiliateData.address],
             ],
             styles: { fontSize: 10, cellPadding: 1.5 },
             columnStyles: { 0: { fontStyle: 'bold' } }
         });
 
-        // --- 4. SECCIÓN: DETALLES DEL PLAN Y AFILIACIÓN ---
         let finalY = doc.lastAutoTable.finalY + 10;
         doc.setFontSize(12);
         doc.setFont("helvetica", "bold");
@@ -2208,21 +2129,20 @@ inviteRoleSelect.addEventListener('change', (e) => {
             head: [['Concepto', 'Detalle']],
             body: [
                 ['Plan Adquirido', plan.name || 'No especificado (Costos Manuales)'],
-                ['Valor Mensual del Plan', plan.price ? formatCurrency(plan.price) : 'Según costos manuales'],
+                ['Valor Mensual del Plan', plan.price ? formatCurrency(plan.price) : 'Seg&#250;n costos manuales'],
                 ['Asesor Asignado', advisor.name || 'No asignado'],
                 ['Fecha de Inicio de Cobertura', formatDate(affiliateData.startDate)],
-                ['Próximo Pago / Vencimiento', formatDate(affiliateData.endDate) || 'Indefinido'],
+                ['Pr&#243;ximo Pago / Vencimiento', formatDate(affiliateData.endDate) || 'Indefinido'],
             ],
             styles: { fontSize: 10 },
         });
 
-        // --- 5. SECCIÓN: CARACTERÍSTICAS DEL PLAN ---
         if (plan.features) {
             finalY = doc.lastAutoTable.finalY + 10;
             doc.setFontSize(12);
             doc.setFont("helvetica", "bold");
             doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
-            doc.text("Características Incluidas en el Plan", 20, finalY);
+            doc.text("Caracter&#237;sticas Incluidas en el Plan", 20, finalY);
             const features = plan.features.split('\n').map(feature => [feature.trim()]);
             doc.autoTable({
                 startY: finalY + 3,
@@ -2234,17 +2154,15 @@ inviteRoleSelect.addEventListener('change', (e) => {
             });
         }
         
-        // --- 6. PIE DE PÁGINA ---
         finalY = doc.internal.pageSize.height - 30;
         doc.setLineWidth(0.2);
         doc.setDrawColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
         doc.line(20, finalY, 190, finalY);
         doc.setFontSize(9);
         doc.setTextColor(150);
-        doc.text("Gracias por confiar en nuestros servicios. Este documento es un comprobante de su afiliación.", doc.internal.pageSize.width / 2, finalY + 8, { align: 'center' });
+        doc.text("Gracias por confiar en nuestros servicios. Este documento es un comprobante de su afiliaci&#243;n.", doc.internal.pageSize.width / 2, finalY + 8, { align: 'center' });
         doc.text("Para cualquier consulta, no dude en contactarnos.", doc.internal.pageSize.width / 2, finalY + 13, { align: 'center' });
 
-        // --- 7. GUARDAR EL DOCUMENTO ---
         doc.save(`Recibo_Afiliacion_${affiliateData.name.replace(/\s/g, '_')}.pdf`);
     }
 
@@ -2252,14 +2170,11 @@ inviteRoleSelect.addEventListener('change', (e) => {
         open(modalId, data = null) {
             const modal = document.getElementById(modalId); if (!modal) return;
             const form = modal.querySelector('form'); if(form) form.reset();
-            const titles = { 'affiliate-modal': 'Afiliado', 'advisor-modal': 'Asesor', 'settings-modal': 'Configuración', 'plan-modal': 'Plan de Salud', 'transaction-modal': 'Transacción', 'license-modal': 'Activar Licencia' };
-            // --- INICIO DE LA MODIFICACIÓN ---
+            const titles = { 'affiliate-modal': 'Afiliado', 'advisor-modal': 'Asesor', 'settings-modal': 'Configuraci&#243;n', 'plan-modal': 'Plan de Salud', 'transaction-modal': 'Transacci&#243;n', 'license-modal': 'Activar Licencia' };
             const titleText = titles[modalId];
-            // Solo cambiamos el h2 si el modalId existe en nuestra lista de titles
             if (titleText) {
                 modal.querySelector('h2').textContent = data?.id ? `Editar ${titleText}` : (data?.title || `Nuevo ${titleText}`);
             }
-            // --- FIN DE LA MODIFICACIÓN ---
             if (modalId === 'license-modal') { document.getElementById('license-error-message').textContent = ''; }
             else if (modalId === 'affiliate-modal') {
                 populateAdvisorSelect(); renderHealthPlanCards();
@@ -2300,22 +2215,18 @@ inviteRoleSelect.addEventListener('change', (e) => {
     function exportToCSV(headers, data, filename) { const csvRows = [headers.join(',')]; for (const row of data) { const values = headers.map(header => `"${('' + row[header]).replace(/"/g, '\\"')}"`); csvRows.push(values.join(',')); } const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); window.URL.revokeObjectURL(url); }
     function handleExportAffiliates() { const headers = ['Nombre', 'Documento', 'Email', 'Telefono', 'Direccion', 'Asesor', 'Estado', 'Fecha de Inicio', 'Plan de Salud', 'Fondo Pension', 'ARL', 'Caja Comp.']; const dataToExport = affiliates.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const plan = healthPlans.find(p=> p.id === aff.healthPlan); return { 'Nombre': aff.name, 'Documento': aff.documentId, 'Email': aff.email, 'Telefono': aff.phone, 'Direccion': aff.address, 'Asesor': advisor ? advisor.name : 'N/A', 'Estado': aff.status, 'Fecha de Inicio': aff.startDate, 'Plan de Salud': plan ? plan.name : 'N/A', 'Fondo Pension': aff.pensionPlan, 'ARL': aff.arlPlan, 'Caja Comp.': aff.ccfPlan }; }); exportToCSV(headers, dataToExport, 'afiliados_seb_salud.csv'); showToast('Exportando afiliados a CSV.'); }
     function handleExportAdvisors() { const headers = ['Nombre', 'Comision (%)', 'Total Afiliados', 'Comision Total Generada']; const dataToExport = advisors.map(advisor => { const advisorAffiliates = affiliates.filter(a => a.advisorId === advisor.id); const totalCommission = advisorAffiliates.reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0); return { 'Nombre': advisor.name, 'Comision (%)': advisor.commissionRate, 'Total Afiliados': advisorAffiliates.length, 'Comision Total Generada': totalCommission }; }); exportToCSV(headers, dataToExport, 'asesores_seb_salud.csv'); showToast('Exportando asesores a CSV.'); }
-    function getFirebaseAuthErrorMessage(error) { switch (error.code) { case 'auth/invalid-email': return 'El correo es inválido.'; case 'auth/user-not-found': return 'Usuario no encontrado.'; case 'auth/wrong-password': return 'Contraseña incorrecta.'; case 'auth/email-already-in-use': return 'El correo ya está en uso.'; case 'auth/weak-password': return 'La contraseña es muy débil (mínimo 6 caracteres).'; default: 'Ocurrió un error inesperado. Intenta de nuevo.'; } }
+    function getFirebaseAuthErrorMessage(error) { switch (error.code) { case 'auth/invalid-email': return 'El correo es inv&#225;lido.'; case 'auth/user-not-found': return 'Usuario no encontrado.'; case 'auth/wrong-password': return 'Contrase&#241;a incorrecta.'; case 'auth/email-already-in-use': return 'El correo ya est&#225; en uso.'; case 'auth/weak-password': return 'La contrase&#241;a es muy d&#233;bil (m&#237;nimo 6 caracteres).'; default: 'Ocurri&#243; un error inesperado. Intenta de nuevo.'; } }
 </script>
 
-    <script>
-  // Primero, comprueba si el navegador del usuario es compatible con esta tecnología.
+<script>
+  // SCRIPT DEL SERVICE WORKER CON RUTA CORREGIDA
   if ('serviceWorker' in navigator) {
-    // Si es compatible, espera a que toda la página se haya cargado.
     window.addEventListener('load', () => {
-      // Ahora sí, le ordena al navegador que busque el archivo sw.js y lo instale.
-      navigator.serviceWorker.register('sw.js')
+      navigator.serviceWorker.register('sw.js') // RUTA CORREGIDA
         .then(registration => {
-          // Si todo sale bien, muestra un mensaje en la consola del desarrollador.
-          console.log('Service Worker registrado con éxito:', registration.scope);
+          console.log('Service Worker registrado con &#233;xito:', registration.scope);
         })
         .catch(error => {
-          // Si algo falla, también lo informa.
           console.log('Error al registrar el Service Worker:', error);
         });
     });
@@ -2323,14 +2234,3 @@ inviteRoleSelect.addEventListener('change', (e) => {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
