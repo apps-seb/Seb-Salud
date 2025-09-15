@@ -665,7 +665,7 @@
     // --- ESTADO GLOBAL Y CONFIGURACIÓN ---
     let affiliates = [], advisors = [], manualTransactions = [], novedades = [], healthPlans = [], userRoles = [];
     let companyProfile = {};
-    let settings = {};
+    let settings = JSON.parse(JSON.stringify(defaultSettings));
     let affiliatesViewMode = 'card';
     let calendarViewMode = 'card';
     let lastQuoteResult = null;
@@ -2427,5 +2427,6 @@ if (filterAffiliatePaymentStatus) {
 </script>
 </body>
 </html>
+
 
 
