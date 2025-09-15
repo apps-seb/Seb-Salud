@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seb Salud - Plataforma de Gestión</title>
+    <meta name="theme-color" content="#1DB954"/>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Seb Salud">
+<link rel="apple-touch-icon" href="icons/icon-192x192.png">
+<link rel="manifest" href="manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -600,6 +606,21 @@
     const app = window.firebase.initializeApp(firebaseConfig);
     const auth = window.firebase.getAuth(app);
     const db = window.firebase.getFirestore(app);
+    // ***************************************************************
+// AÑADE ESTA SECCIÓN PARA HABILITAR LA PERSISTENCIA OFFLINE
+// ***************************************************************
+const { enablePersistence } = window.firebase;
+enablePersistence(db)
+  .catch((err) => {
+    if (err.code == 'failed-precondition') {
+      console.warn('La persistencia falló, probablemente porque ya hay otra pestaña abierta.');
+    } else if (err.code == 'unimplemented') {
+      console.warn('El navegador actual no soporta la persistencia offline de Firestore.');
+    }
+  });
+// ***************************************************************
+// FIN DE LA SECCIÓN AÑADIDA
+// ***************************************************************
     let currentUser = null;
 
     // --- ESTADO GLOBAL PARA ROLES ---
@@ -2283,5 +2304,25 @@ inviteRoleSelect.addEventListener('change', (e) => {
     function handleExportAdvisors() { const headers = ['Nombre', 'Comision (%)', 'Total Afiliados', 'Comision Total Generada']; const dataToExport = advisors.map(advisor => { const advisorAffiliates = affiliates.filter(a => a.advisorId === advisor.id); const totalCommission = advisorAffiliates.reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0); return { 'Nombre': advisor.name, 'Comision (%)': advisor.commissionRate, 'Total Afiliados': advisorAffiliates.length, 'Comision Total Generada': totalCommission }; }); exportToCSV(headers, dataToExport, 'asesores_seb_salud.csv'); showToast('Exportando asesores a CSV.'); }
     function getFirebaseAuthErrorMessage(error) { switch (error.code) { case 'auth/invalid-email': return 'El correo es inválido.'; case 'auth/user-not-found': return 'Usuario no encontrado.'; case 'auth/wrong-password': return 'Contraseña incorrecta.'; case 'auth/email-already-in-use': return 'El correo ya está en uso.'; case 'auth/weak-password': return 'La contraseña es muy débil (mínimo 6 caracteres).'; default: 'Ocurrió un error inesperado. Intenta de nuevo.'; } }
 </script>
+
+    <script>
+  // Primero, comprueba si el navegador del usuario es compatible con esta tecnología.
+  if ('serviceWorker' in navigator) {
+    // Si es compatible, espera a que toda la página se haya cargado.
+    window.addEventListener('load', () => {
+      // Ahora sí, le ordena al navegador que busque el archivo sw.js y lo instale.
+      navigator.serviceWorker.register('./sw.js')
+        .then(registration => {
+          // Si todo sale bien, muestra un mensaje en la consola del desarrollador.
+          console.log('Service Worker registrado con éxito:', registration.scope);
+        })
+        .catch(error => {
+          // Si algo falla, también lo informa.
+          console.log('Error al registrar el Service Worker:', error);
+        });
+    });
+  }
+</script>
 </body>
 </html>
+
