@@ -2302,7 +2302,7 @@ inviteRoleSelect.addEventListener('change', (e) => {
     // Si es compatible, espera a que toda la página se haya cargado.
     window.addEventListener('load', () => {
       // Ahora sí, le ordena al navegador que busque el archivo sw.js y lo instale.
-      navigator.serviceWorker.register('./sw.js')
+      navigator.serviceWorker.register('/Seb-Salud/sw.js')
         .then(registration => {
           // Si todo sale bien, muestra un mensaje en la consola del desarrollador.
           console.log('Service Worker registrado con éxito:', registration.scope);
@@ -2316,5 +2316,6 @@ inviteRoleSelect.addEventListener('change', (e) => {
 </script>
 </body>
 </html>
+
 
 
