@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seb Salud - Plataforma de Gesti&#243;n</title>
+    <title>Seb Salud - Plataforma de Gestión</title>
 
     <meta name="theme-color" content="#1DB954"/>
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -152,7 +152,7 @@
 <body class="bg-slate-50 text-slate-800 antialiased" data-sidebar-theme="dark" data-bottom-nav-theme="dark">
 
     <div id="loader" class="fixed inset-0 bg-slate-100/80 backdrop-blur-sm z-[101] flex items-center justify-center">
-        <div class="flex flex-col items-center"><i data-lucide="shield-check" class="h-12 w-12 text-primary-500 animate-pulse"></i><p class="mt-4 text-slate-600">Verificando sesi&#243;n...</p></div>
+        <div class="flex flex-col items-center"><i data-lucide="shield-check" class="h-12 w-12 text-primary-500 animate-pulse"></i><p class="mt-4 text-slate-600">Verificando sesión...</p></div>
     </div>
     <div id="toast" class="fixed top-5 right-5 z-[100] bg-green-500 text-white py-2 px-4 rounded-lg shadow-xl opacity-0 transform translate-y-2 transition-all duration-300"><span id="toast-message"></span></div>
 
@@ -161,7 +161,7 @@
             <div class="auth-banner p-6 md:p-8 lg:p-12 text-white flex flex-col justify-center items-center text-center">
                 <i data-lucide="shield-check" class="h-16 w-16 md:h-20 md:w-20 text-white/80 mb-6"></i>
                 <h2 class="text-2xl md:text-3xl font-bold mb-4">Bienvenido a Seb Salud</h2>
-                <p class="text-white/80 max-w-sm">Tu plataforma de gesti&#243;n de salud todo en uno. Administra afiliados, asesores y finanzas de forma eficiente y segura.</p>
+                <p class="text-white/80 max-w-sm">Tu plataforma de gestión de salud todo en uno. Administra afiliados, asesores y finanzas de forma eficiente y segura.</p>
             </div>
             <div class="p-8 lg:p-12 flex flex-col justify-center">
                 <div class="w-full max-w-md mx-auto">
@@ -238,7 +238,7 @@
 
                 <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8 mt-16">
                     <section id="dashboard" class="content-section active">
-                        <h1 class="text-2xl font-bold text-slate-800 mb-6">Resumen General y M&#233;tricas Clave</h1>
+                        <h1 class="text-2xl font-bold text-slate-800 mb-6">Resumen General y Métricas Clave</h1>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
                             <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Ingresos del Mes</h3><p id="kpi-monthly-income" class="text-3xl font-bold text-slate-800 mt-2">$0</p></div><div class="bg-emerald-100 text-emerald-600 p-2 rounded-full"><i data-lucide="trending-up" class="h-6 w-6"></i></div></div>
                             <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Admin. / Ganancia Neta (Mes)</h3><p id="kpi-net-profit" class="text-3xl font-bold text-slate-800 mt-2">$0</p></div><div class="bg-indigo-100 text-indigo-600 p-2 rounded-full"><i data-lucide="briefcase" class="h-6 w-6"></i></div></div>
@@ -254,7 +254,7 @@
                             <form id="company-profile-form" class="space-y-6">
                                 <div><label for="company-name" class="block text-sm font-medium text-slate-600">Nombre</label><input type="text" id="company-name" class="w-full mt-1 p-2 border rounded-lg" required></div>
                                 <div><label for="company-nit" class="block text-sm font-medium text-slate-600">NIT / Documento</label><input type="text" id="company-nit" class="w-full mt-1 p-2 border rounded-lg" required></div>
-                                <div><label for="company-address" class="block text-sm font-medium text-slate-600">Direcci&#243;n</label><input type="text" id="company-address" class="w-full mt-1 p-2 border rounded-lg"></div>
+                                <div><label for="company-address" class="block text-sm font-medium text-slate-600">Dirección</label><input type="text" id="company-address" class="w-full mt-1 p-2 border rounded-lg"></div>
                                 <div><label for="company-phone" class="block text-sm font-medium text-slate-600">Tel&#233;fono</label><input type="tel" id="company-phone" class="w-full mt-1 p-2 border rounded-lg"></div>
                                 <div><label for="company-email" class="block text-sm font-medium text-slate-600">Email</label><input type="email" id="company-email" class="w-full mt-1 p-2 border rounded-lg"></div>
                                 <div class="mt-6 pt-6 border-t"><h3 class="text-lg font-medium text-slate-700 mb-4">Color del Tema Principal</h3>
@@ -2084,7 +2084,7 @@
         doc.setFontSize(14);
         doc.setFont("helvetica", "normal");
         doc.setTextColor(40);
-        doc.text("Recibo de Afiliaci&#243;n", 20, 35);
+        doc.text("Recibo de Afiliación", 20, 35);
         doc.setLineWidth(0.5);
         doc.setDrawColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
         doc.line(20, 38, 190, 38);
@@ -2093,9 +2093,9 @@
         doc.text(`NIT: ${companyProfileData.nit || 'N/D'}`, 190, 25, { align: 'right' });
         doc.text(`Contacto: ${companyProfileData.phone || companyProfileData.email || 'N/D'}`, 190, 30, { align: 'right' });
         doc.setFont("helvetica", "bold");
-        doc.text(`Recibo N&#176;: ${affiliateData.id.slice(-7).toUpperCase()}`, 190, 45, { align: 'right' });
+        doc.text(`Recibo N176;: ${affiliateData.id.slice(-7).toUpperCase()}`, 190, 45, { align: 'right' });
         doc.setFont("helvetica", "normal");
-        doc.text(`Fecha de Emisi&#243;n: ${generationDate}`, 190, 50, { align: 'right' });
+        doc.text(`Fecha de Emisión: ${generationDate}`, 190, 50, { align: 'right' });
 
         doc.setFontSize(12);
         doc.setFont("helvetica", "bold");
@@ -2107,9 +2107,9 @@
             body: [
                 ['Nombre Completo:', affiliateData.name],
                 ['Documento de Identidad:', affiliateData.documentId],
-                ['Correo Electr&#243;nico:', affiliateData.email],
-                ['Tel&#233;fono de Contacto:', affiliateData.phone],
-                ['Direcci&#243;n:', affiliateData.address],
+                ['Correo Electrónico:', affiliateData.email],
+                ['Teléfono de Contacto:', affiliateData.phone],
+                ['Dirección:', affiliateData.address],
             ],
             styles: { fontSize: 10, cellPadding: 1.5 },
             columnStyles: { 0: { fontStyle: 'bold' } }
@@ -2129,10 +2129,10 @@
             head: [['Concepto', 'Detalle']],
             body: [
                 ['Plan Adquirido', plan.name || 'No especificado (Costos Manuales)'],
-                ['Valor Mensual del Plan', plan.price ? formatCurrency(plan.price) : 'Seg&#250;n costos manuales'],
+                ['Valor Mensual del Plan', plan.price ? formatCurrency(plan.price) : 'Según costos manuales'],
                 ['Asesor Asignado', advisor.name || 'No asignado'],
                 ['Fecha de Inicio de Cobertura', formatDate(affiliateData.startDate)],
-                ['Pr&#243;ximo Pago / Vencimiento', formatDate(affiliateData.endDate) || 'Indefinido'],
+                ['Próximo Pago / Vencimiento', formatDate(affiliateData.endDate) || 'Indefinido'],
             ],
             styles: { fontSize: 10 },
         });
@@ -2142,7 +2142,7 @@
             doc.setFontSize(12);
             doc.setFont("helvetica", "bold");
             doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
-            doc.text("Caracter&#237;sticas Incluidas en el Plan", 20, finalY);
+            doc.text("Características Incluidas en el Plan", 20, finalY);
             const features = plan.features.split('\n').map(feature => [feature.trim()]);
             doc.autoTable({
                 startY: finalY + 3,
@@ -2160,7 +2160,7 @@
         doc.line(20, finalY, 190, finalY);
         doc.setFontSize(9);
         doc.setTextColor(150);
-        doc.text("Gracias por confiar en nuestros servicios. Este documento es un comprobante de su afiliaci&#243;n.", doc.internal.pageSize.width / 2, finalY + 8, { align: 'center' });
+        doc.text("Gracias por confiar en nuestros servicios. Este documento es un comprobante de su afiliación.", doc.internal.pageSize.width / 2, finalY + 8, { align: 'center' });
         doc.text("Para cualquier consulta, no dude en contactarnos.", doc.internal.pageSize.width / 2, finalY + 13, { align: 'center' });
 
         doc.save(`Recibo_Afiliacion_${affiliateData.name.replace(/\s/g, '_')}.pdf`);
@@ -2170,7 +2170,7 @@
         open(modalId, data = null) {
             const modal = document.getElementById(modalId); if (!modal) return;
             const form = modal.querySelector('form'); if(form) form.reset();
-            const titles = { 'affiliate-modal': 'Afiliado', 'advisor-modal': 'Asesor', 'settings-modal': 'Configuraci&#243;n', 'plan-modal': 'Plan de Salud', 'transaction-modal': 'Transacci&#243;n', 'license-modal': 'Activar Licencia' };
+            const titles = { 'affiliate-modal': 'Afiliado', 'advisor-modal': 'Asesor', 'settings-modal': 'Configuración', 'plan-modal': 'Plan de Salud', 'transaction-modal': 'Transacción', 'license-modal': 'Activar Licencia' };
             const titleText = titles[modalId];
             if (titleText) {
                 modal.querySelector('h2').textContent = data?.id ? `Editar ${titleText}` : (data?.title || `Nuevo ${titleText}`);
@@ -2224,7 +2224,7 @@
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('sw.js') // RUTA CORREGIDA
         .then(registration => {
-          console.log('Service Worker registrado con &#233;xito:', registration.scope);
+          console.log('Service Worker registrado con Éxito:', registration.scope);
         })
         .catch(error => {
           console.log('Error al registrar el Service Worker:', error);
@@ -2234,4 +2234,5 @@
 </script>
 </body>
 </html>
+
 
