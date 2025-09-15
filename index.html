@@ -338,7 +338,7 @@
                         <div class="flex justify-between items-center mb-6">
                             <div>
                                 <h2 class="text-2xl font-bold text-slate-800">Cotizador de Aportes a Seguridad Social</h2>
-                                <p class="text-slate-500 mt-1">Calcula los aportes de forma r&#225;pida y precisa.</p>
+                                <p class="text-slate-500 mt-1">Calcula los aportes de forma rápida y precisa.</p>
                             </div>
                             <button id="open-settings-btn" data-role="admin" class="text-slate-500 hover:text-primary-600 p-2 rounded-full bg-slate-100 hover:bg-slate-200"><i data-lucide="settings" class="w-6 h-6"></i></button>
                         </div>
@@ -1179,7 +1179,7 @@
 
     function renderEmpresaSection(){if(!companyProfile.name) return;document.getElementById("company-name").value=companyProfile.name;document.getElementById("company-nit").value=companyProfile.nit;document.getElementById("company-address").value=companyProfile.address;document.getElementById("company-phone").value=companyProfile.phone;document.getElementById("company-email").value=companyProfile.email;document.querySelector(`#theme-selector input[value="${companyProfile.theme||"default"}"]`).checked=!0;document.querySelector(`#sidebar-theme-selector input[value="${companyProfile.sidebarTheme||"dark"}"]`).checked=!0;document.querySelector(`#bottom-nav-theme-selector input[value="${companyProfile.bottomNavTheme||"dark"}"]`).checked=!0}
     function renderFlujoCajaSection(){const e=new Date,t=new Date(e.getFullYear(),e.getMonth(),1);document.getElementById("report-start-date").value=t.toISOString().split("T")[0],document.getElementById("report-end-date").value=e.toISOString().split("T")[0];const a=getAllTransactions(),n=a.filter(t=>{const a=new Date(t.date);return a.getMonth()===e.getMonth()&&a.getFullYear()===e.getFullYear()}),o=n.filter(e=>"ingreso"===e.type).reduce((e,t)=>e+t.amount,0),s=n.filter(e=>"egreso"===e.type).reduce((e,t)=>e+t.amount,0);document.getElementById("cashflow-income").textContent=formatCurrency(o),document.getElementById("cashflow-expenses").textContent=formatCurrency(s),document.getElementById("cashflow-profit").textContent=formatCurrency(o-s),renderTransactionsTable(a)}
-    function getAllTransactions(){const e=[];return affiliates.forEach(t=>{if("Activo"===t.status){const a=getAffiliateCommissionBase(t);e.push({id:`auto-i-${t.id}`,type:"ingreso",concept:`Pago afiliado: ${t.name}`,amount:a,date:t.startDate});const n=getAdvisorCommissionForAffiliate(t);if(0<n){const o=advisors.find(e=>e.id===t.advisorId);e.push({id:`auto-e-${t.id}`,type:"egreso",concept:`Comisi&#243;n ${o?.name||"N/A"} (Afiliado: ${t.name})`,amount:n,date:t.startDate})}}}),[...e,...manualTransactions].sort((e,t)=>new Date(t.date)-new Date(e.date))}
+    function getAllTransactions(){const e=[];return affiliates.forEach(t=>{if("Activo"===t.status){const a=getAffiliateCommissionBase(t);e.push({id:`auto-i-${t.id}`,type:"ingreso",concept:`Pago afiliado: ${t.name}`,amount:a,date:t.startDate});const n=getAdvisorCommissionForAffiliate(t);if(0<n){const o=advisors.find(e=>e.id===t.advisorId);e.push({id:`auto-e-${t.id}`,type:"egreso",concept:`Comisión ${o?.name||"N/A"} (Afiliado: ${t.name})`,amount:n,date:t.startDate})}}}),[...e,...manualTransactions].sort((e,t)=>new Date(t.date)-new Date(e.date))}
     function renderTransactionsTable(e){const t=document.getElementById("transactions-table-body");if(0===e.length){t.innerHTML='<tr><td colspan="3" class="text-center p-4 text-slate-500">No hay transacciones registradas.</td></tr>';return}t.innerHTML=e.map(e=>{const t="ingreso"===e.type;return`<tr class="border-b"><td class="p-3">${new Date(e.date).toLocaleDateString("es-CO")}</td><td class="p-3 text-slate-700">${e.concept}</td><td class="p-3 text-right font-semibold ${t?"text-emerald-600":"text-rose-600"}">${t?"+":"-"}${formatCurrency(e.amount)}</td></tr>`}).join("")}
     
     function generatePDFReport() {
@@ -1252,7 +1252,7 @@
         if (commissionBreakdown.length > 0) {
             doc.autoTable({
                 startY: currentY,
-                head: [['Desglose de Comisiones por Asesor', 'Comisi&#243;n Generada']],
+                head: [['Desglose de Comisiones por Asesor', 'Comisión Generada']],
                 body: commissionBreakdown.map(item => [item.name, formatCurrency(item.commission)]),
                 theme: 'striped',
                 headStyles: { fillColor: primaryColorRGB }
@@ -1988,12 +1988,12 @@
 
             await saveDataToFirestore('manualTransactions', transactionData);
 
-            showToast(`El ${transactionType} se guard&#243; correctamente.`, 'success');
+            showToast(`El ${transactionType} se guardo; correctamente.`, 'success');
             modalManager.close('transaction-modal');
 
         } catch (error) {
             console.error("Error al guardar la transacci&#243;n:", error);
-            showToast('Hubo un error al guardar la transacci&#243;n.', 'error');
+            showToast('Hubo un error al guardar la transacción.', 'error');
         } finally {
             saveButton.disabled = false;
             saveButton.textContent = 'Guardar';
@@ -2234,5 +2234,6 @@
 </script>
 </body>
 </html>
+
 
 
