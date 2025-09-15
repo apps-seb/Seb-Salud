@@ -1836,7 +1836,7 @@
                 if (advisorId) {
                     advisorData.id = advisorId;
                     await saveDataToFirestore('advisors', advisorData);
-                    showToast('Asesor actualizado con &#233;xito.', 'success');
+                    showToast('Asesor actualizado con Éxito.', 'success');
                 } else {
                     const docRef = doc(collection(db, `users/${adminUidForRole}/advisors`));
                     advisorData.id = docRef.id;
@@ -1910,7 +1910,7 @@
                 if (planId) {
                     planData.id = planId;
                     await saveDataToFirestore('healthPlans', planData);
-                    showToast('Plan actualizado con &#233;xito.', 'success');
+                    showToast('Plan actualizado con Éxito.', 'success');
                 } else {
                     const docRef = doc(collection(db, `users/${adminUidForRole}/healthPlans`));
                     planData.id = docRef.id;
@@ -1948,7 +1948,7 @@
                     companyProfile: profileData
                 }, { merge: true });
 
-                showToast('Perfil de la empresa guardado con &#233;xito.', 'success');
+                showToast('Perfil de la empresa guardado con Éxito.', 'success');
 
             } catch (error) {
                 console.error("Error al guardar el perfil de la empresa:", error);
@@ -2234,6 +2234,7 @@
 </script>
 </body>
 </html>
+
 
 
 
