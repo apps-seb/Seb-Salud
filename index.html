@@ -584,28 +584,40 @@
     </div>
 
 <script type="module">
-    import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query, where, enablePersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
+    
 window.firebase = {
     initializeApp, deleteApp,
     getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut,
-    getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query, where, enablePersistence
+    getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query, where, enableIndexedDbPersistence
 };
-    // --- INICIALIZACIÓN Y CONFIGURACIÓN DE FIREBASE ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyDS4VDnwGia2ZUe3o81rqLe-oEu_pVCUHc",
-        authDomain: "seb-salud.firebaseapp.com",
-        projectId: "seb-salud",
-        storageBucket: "seb-salud.appspot.com",
-        messagingSenderId: "1094873327284",
-        appId: "1:1094873327284:web:001e70e84c2de45389d9e1",
-        measurementId: "G-EJCS9FYWHK"
-    };
-    const app = window.firebase.initializeApp(firebaseConfig);
-    const auth = window.firebase.getAuth(app);
-    const db = window.firebase.getFirestore(app);
+
+// --- INICIALIZACIÓN Y CONFIGURACIÓN DE FIREBASE ---
+const firebaseConfig = {
+    apiKey: "AIzaSyDS4VDnwGia2ZUe3o81rqLe-oEu_pVCUHc",
+    authDomain: "seb-salud.firebaseapp.com",
+    projectId: "seb-salud",
+    storageBucket: "seb-salud.appspot.com",
+    messagingSenderId: "1094873327284",
+    appId: "1:1094873327284:web:001e70e84c2de45389d9e1",
+    measurementId: "G-EJCS9FYWHK"
+};
+
+const app = window.firebase.initializeApp(firebaseConfig);
+const auth = window.firebase.getAuth(app);
+const db = window.firebase.getFirestore(app);
+
+// Llamada a la persistencia con el nombre CORRECTO
+window.firebase.enableIndexedDbPersistence(db)
+  .catch((err) => {
+    if (err.code == 'failed-precondition') {
+      console.warn('La persistencia falló, probablemente porque ya hay otra pestaña abierta.');
+    } else if (err.code == 'unimplemented') {
+      console.warn('El navegador actual no soporta la persistencia offline de Firestore.');
+    }
+  });
+// FIN DEL BLOQUE CORREGIDO
+
+let currentUser = null;
 
     let currentUser = null;
 
@@ -2311,6 +2323,7 @@ inviteRoleSelect.addEventListener('change', (e) => {
 </script>
 </body>
 </html>
+
 
 
 
