@@ -584,6 +584,15 @@
     </div>
 
 <script type="module">
+    import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query, where, enablePersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+window.firebase = {
+    initializeApp, deleteApp,
+    getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut,
+    getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query, where, enablePersistence
+};
     // --- INICIALIZACIÓN Y CONFIGURACIÓN DE FIREBASE ---
     const firebaseConfig = {
         apiKey: "AIzaSyDS4VDnwGia2ZUe3o81rqLe-oEu_pVCUHc",
@@ -597,21 +606,7 @@
     const app = window.firebase.initializeApp(firebaseConfig);
     const auth = window.firebase.getAuth(app);
     const db = window.firebase.getFirestore(app);
-    // ***************************************************************
-// AÑADE ESTA SECCIÓN PARA HABILITAR LA PERSISTENCIA OFFLINE
-// ***************************************************************
-const { enablePersistence } = window.firebase;
-enablePersistence(db)
-  .catch((err) => {
-    if (err.code == 'failed-precondition') {
-      console.warn('La persistencia falló, probablemente porque ya hay otra pestaña abierta.');
-    } else if (err.code == 'unimplemented') {
-      console.warn('El navegador actual no soporta la persistencia offline de Firestore.');
-    }
-  });
-// ***************************************************************
-// FIN DE LA SECCIÓN AÑADIDA
-// ***************************************************************
+
     let currentUser = null;
 
     // --- ESTADO GLOBAL PARA ROLES ---
@@ -2316,6 +2311,7 @@ inviteRoleSelect.addEventListener('change', (e) => {
 </script>
 </body>
 </html>
+
 
 
 
