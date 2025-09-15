@@ -1,59 +1,53 @@
-const CACHE_NAME = 'seb-salud-cache-v1';
-
-// Lista de recursos básicos para que la app cargue offline.
-const URLS_TO_CACHE = [
-  '/Seb-Salud/', // Ruta corregida para index.html
-  '/Seb-Salud/manifest.json', // Ruta corregida
-  '/Seb-Salud/icons/icon-192x192.png', // Ruta corregida
-  '/Seb-Salud/icons/icon-512x512.png', // Ruta corregida
-  'https://cdn.tailwindcss.com',
-  'https://unpkg.com/lucide@latest',
-  'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap'
+const CACHE_NAME = 'seb-salud-cache-v5'; // <-- ¡Cambia la versión aquí!
+const urlsToCache = [
+    '/',
+    'index.html', // O el nombre de tu archivo HTML principal
+    'manifest.json',
+    'icons/icon-192x192.png',
+    'https://cdn.tailwindcss.com',
+    'https://unpkg.com/lucide@latest'
+    // Puedes añadir aquí otros recursos estáticos importantes que quieras que carguen rápido
 ];
 
-// Instala el Service Worker y guarda el "App Shell" en la caché.
+// Evento de instalación: se dispara cuando el SW se instala por primera vez.
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Cache abierta. Guardando recursos offline.');
-        return cache.addAll(URLS_TO_CACHE);
-      })
-      .then(() => self.skipWaiting())
-  );
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then(cache => {
+                console.log('Cache abierta');
+                return cache.addAll(urlsToCache);
+            })
+    );
 });
 
-// Limpia cachés antiguas cuando se activa un nuevo Service Worker.
+// Evento de activación: se dispara cuando un nuevo SW toma el control.
 self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cacheName => {
+                    // Si el nombre de la caché no es el actual, la borramos.
+                    if (cacheName !== CACHE_NAME) {
+                        console.log('Borrando caché antigua:', cacheName);
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
         })
-      );
-    }).then(() => self.clients.claim())
-  );
+    );
 });
 
-// Intercepta las peticiones de red.
+// Evento fetch: intercepta todas las peticiones de red.
 self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') return;
-
-  // Estrategia: Cache-First. Busca en la caché primero.
-  event.respondWith(
-    caches.match(event.request)
-      .then(cachedResponse => {
-        // Si está en caché, lo devuelve.
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        // Si no, lo busca en la red.
-        return fetch(event.request);
-      })
-  );
+    event.respondWith(
+        caches.match(event.request)
+            .then(response => {
+                // Si la respuesta está en la caché, la devolvemos inmediatamente.
+                if (response) {
+                    return response;
+                }
+                // Si no está en la caché, vamos a la red a buscarla.
+                return fetch(event.request);
+            })
+    );
 });
