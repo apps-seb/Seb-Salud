@@ -1666,7 +1666,7 @@
 
 
     document.addEventListener('DOMContentLoaded', () => {
-        // --- INICIO LÓGICA DEL BUSCADOR GLOBAL (VERSIÓN MÓVIL INCLUIDA) ---
+// --- INICIO LÓGICA DEL BUSCADOR GLOBAL (VERSIÓN MÓVIL INCLUIDA) ---
 
 // 1. Función de utilidad para optimizar la búsqueda (debounce)
 function debounce(func, delay) {
@@ -1691,11 +1691,13 @@ const headerActions = document.getElementById('header-actions');
 const toggleMobileSearch = (show) => {
     if (show) {
         headerMainContent.classList.add('hidden');
+        headerActions.classList.add('hidden'); // Ocultar acciones también
         headerSearchContainer.classList.remove('hidden');
         headerSearchContainer.classList.add('flex');
         headerSearchInput.focus();
     } else {
         headerMainContent.classList.remove('hidden');
+        headerActions.classList.remove('hidden'); // Mostrar acciones de nuevo
         headerSearchContainer.classList.add('hidden');
         headerSearchContainer.classList.remove('flex');
         headerSearchResults.classList.add('hidden');
@@ -1720,13 +1722,6 @@ const renderHeaderSearchResults = (results) => {
             </div>
         `).join('');
     }
-    // Ajuste de color para temas oscuros
-    if (document.documentElement.dataset.theme === 'spotify') {
-        headerSearchResults.querySelectorAll('p').forEach(p => {
-             if (p.classList.contains('text-slate-800')) { p.style.color = '#f9fafb'; }
-             if (p.classList.contains('text-slate-500')) { p.style.color = '#b3b3b3'; }
-        });
-    }
     headerSearchResults.classList.remove('hidden');
 };
 
@@ -1737,10 +1732,13 @@ const handleHeaderSearch = () => {
         headerSearchResults.classList.add('hidden');
         return;
     }
+
+    // Usamos la variable global `affiliates` que ya tienes en tu código
     const filteredAffiliates = affiliates.filter(aff => 
         aff.name.toLowerCase().includes(searchTerm) || 
-        aff.documentId.toLowerCase().includes(searchTerm)
+        (aff.documentId && aff.documentId.toLowerCase().includes(searchTerm))
     );
+
     renderHeaderSearchResults(filteredAffiliates);
 };
 
@@ -1756,14 +1754,15 @@ headerSearchResults.addEventListener('click', (e) => {
     const affiliateDoc = resultItem.dataset.affiliateDoc;
     
     // Navegar a la sección de afiliados
-    renderContent('afiliados');
     document.querySelectorAll('[data-target]').forEach(l => l.classList.remove('active'));
     document.querySelectorAll(`[data-target="afiliados"]`).forEach(l => l.classList.add('active'));
+    renderContent('afiliados');
 
     // Usar el buscador de esa sección para mostrar al afiliado
     const mainAffiliateSearchInput = document.getElementById('search-affiliate');
     if (mainAffiliateSearchInput) {
         mainAffiliateSearchInput.value = affiliateDoc;
+        // Disparamos un evento 'input' para que el filtro de la sección se active
         mainAffiliateSearchInput.dispatchEvent(new Event('input', { bubbles: true }));
     }
     
@@ -1778,8 +1777,9 @@ headerSearchResults.addEventListener('click', (e) => {
 
 // 9. Ocultar la interfaz de búsqueda si se hace clic fuera de ella
 document.addEventListener('click', (e) => {
-    if (!headerSearchContainer.contains(e.target) && !headerActions.contains(e.target)) {
+    if (!headerSearchContainer.contains(e.target) && !searchToggleMobile.contains(e.target)) {
         headerSearchResults.classList.add('hidden');
+        // Si la búsqueda móvil está abierta y se hace clic fuera, ciérrala
         if (window.innerWidth < 768 && !headerSearchContainer.classList.contains('hidden')) {
             toggleMobileSearch(false);
         }
@@ -2392,3 +2392,4 @@ document.addEventListener('click', (e) => {
 </script>
 </body>
 </html>
+
