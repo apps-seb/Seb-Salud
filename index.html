@@ -667,7 +667,7 @@
     let companyProfile = {};
     let settings = {};
     let affiliatesViewMode = 'card';
-    let calendarViewMode = 'card';
+    let calendarViewMode = 'list'; // <--- VISTA POR DEFECTO DEL CALENDARIO
     let lastQuoteResult = null;
     let lastCreatedAffiliate = null;
     let activeListeners = [];
@@ -1009,7 +1009,7 @@
                     <i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i>
                 </button>` : ''}
             </div>`;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            return ` <div class="bg-white rounded-xl shadow-lg transition hover:shadow-2xl flex flex-col"> <div class="p-5"> <div class="flex justify-between items-start"> <div><h3 class="font-bold text-lg text-slate-800">${aff.name}</h3><p class="text-sm text-slate-500">Doc: ${aff.documentId}</p></div> <div class="flex items-center gap-2 flex-shrink-0 ml-2"><span class="text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[aff.status] || ''}">${aff.status}</span></div> </div> <div class="grid grid-cols-2 gap-4 mt-4 text-sm"> <div><strong class="block text-slate-500">Asesor</strong><span>${advisor ? advisor.name : 'N/A'}</span></div> <div><strong class="block text-slate-500">Comisi&#243;n Mensual</strong><span class="font-bold text-green-600">${formatCurrency(commission)} ${aff.manualCommission ? '<span title="Comisi&#243;n Manual" class="text-blue-500 font-bold">*</span>' : ''}</span></div> <div><strong class="block text-slate-500">Valor Plan/Base</strong><span>${formatCurrency(commissionBase)} ${aff.manualCosts ? '<span title="Costos Manuales" class="text-blue-500 font-bold">*</span>' : ''}</span></div> <div><strong class="block text-slate-500">Fecha Inicio</strong><span>${aff.startDate}</span></div> </div> </div> <div class="details-section hidden p-5 border-t bg-slate-50"> <h4 class="font-semibold mb-2">Detalles Completos:</h4> <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm"> <p><strong class="text-slate-500">Plan:</strong> ${healthPlan ? healthPlan.name : 'N/A'}</p><p><strong class="text-slate-500">Pensi&#243;n:</strong> ${aff.pensionPlan}</p> <p><strong class="text-slate-500">ARL:</strong> ${aff.arlPlan}</p><p><strong class="text-slate-500">Caja Comp.:</strong> ${aff.ccfPlan}</p> <p class="sm:col-span-2"><strong class="text-slate-500">Notas:</strong> <span class="whitespace-pre-wrap">${aff.notes || 'N/A'}</span></p> </div> </div> <div class="border-t p-3 mt-auto flex justify-between items-center bg-gray-50/50 rounded-b-xl"> <button data-toggle-details="${aff.id}" class="text-sm text-primary-600 font-semibold hover:text-primary-700 flex items-center">Ver Detalles<i data-lucide="chevron-down" class="details-toggle-icon h-5 w-5 ml-1"></i></button> ${actionsHtml} </div> </div>`; }).join(''); lucide.createIcons(); }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        return ` <div class="bg-white rounded-xl shadow-lg transition hover:shadow-2xl flex flex-col"> <div class="p-5"> <div class="flex justify-between items-start"> <div><h3 class="font-bold text-lg text-slate-800">${aff.name}</h3><p class="text-sm text-slate-500">Doc: ${aff.documentId}</p></div> <div class="flex items-center gap-2 flex-shrink-0 ml-2"><span class="text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[aff.status] || ''}">${aff.status}</span></div> </div> <div class="grid grid-cols-2 gap-4 mt-4 text-sm"> <div><strong class="block text-slate-500">Asesor</strong><span>${advisor ? advisor.name : 'N/A'}</span></div> <div><strong class="block text-slate-500">Comisión Mensual</strong><span class="font-bold text-green-600">${formatCurrency(commission)} ${aff.manualCommission ? '<span title="Comisión Manual" class="text-blue-500 font-bold">*</span>' : ''}</span></div> <div><strong class="block text-slate-500">Valor Plan/Base</strong><span>${formatCurrency(commissionBase)} ${aff.manualCosts ? '<span title="Costos Manuales" class="text-blue-500 font-bold">*</span>' : ''}</span></div> <div><strong class="block text-slate-500">Fecha Inicio</strong><span>${aff.startDate}</span></div> </div> </div> <div class="details-section hidden p-5 border-t bg-slate-50"> <h4 class="font-semibold mb-2">Detalles Completos:</h4> <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm"> <p><strong class="text-slate-500">Plan:</strong> ${healthPlan ? healthPlan.name : 'N/A'}</p><p><strong class="text-slate-500">Pensión:</strong> ${aff.pensionPlan}</p> <p><strong class="text-slate-500">ARL:</strong> ${aff.arlPlan}</p><p><strong class="text-slate-500">Caja Comp.:</strong> ${aff.ccfPlan}</p> <p class="sm:col-span-2"><strong class="text-slate-500">Notas:</strong> <span class="whitespace-pre-wrap">${aff.notes || 'N/A'}</span></p> </div> </div> <div class="border-t p-3 mt-auto flex justify-between items-center bg-gray-50/50 rounded-b-xl"> <button data-toggle-details="${aff.id}" class="text-sm text-primary-600 font-semibold hover:text-primary-700 flex items-center">Ver Detalles<i data-lucide="chevron-down" class="details-toggle-icon h-5 w-5 ml-1"></i></button> ${actionsHtml} </div> </div>`; }).join(''); lucide.createIcons(); }
     function renderAffiliatesAsTable(filteredData) { const tableBody = document.getElementById('affiliates-table-body'); const statusStyles = { 'Activo': 'bg-green-100 text-green-800', 'Pendiente': 'bg-yellow-100 text-yellow-800', 'Inactivo': 'bg-red-100 text-red-800' }; tableBody.innerHTML = filteredData.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const healthPlan = healthPlans.find(p => p.id === aff.healthPlan); const actionsHtml = currentUserRole === 'admin' ? `<button class="edit-affiliate-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${aff.id}" title="Editar"><i data-lucide="pencil" class="h-4 w-4 pointer-events-none"></i></button> <button class="delete-affiliate-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${aff.id}" title="Eliminar"><i data-lucide="trash-2" class="h-4 w-4 pointer-events-none"></i></button>` : `<button class="edit-affiliate-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${aff.id}" title="Editar"><i data-lucide="pencil" class="h-4 w-4 pointer-events-none"></i></button>`; return ` <tr class="hover:bg-slate-50"> <td class="p-3"><div class="font-semibold text-slate-800">${aff.name}</div><div class="text-xs text-slate-500">Doc: ${aff.documentId}</div></td> <td class="p-3"><div class="text-slate-800">${healthPlan ? healthPlan.name : 'N/A'}</div><div class="text-xs text-slate-500">Asesor: ${advisor ? advisor.name : 'N/A'}</div></td> <td class="p-3"><div class="text-slate-800 break-all">${aff.email || 'N/A'}</div><div class="text-xs text-slate-500">${aff.phone || 'N/A'}</div></td> <td class="p-3"><span class="text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[aff.status] || ''}">${aff.status}</span><div class="text-xs text-slate-500 mt-1">Inicio: ${aff.startDate}</div></td> <td class="p-3 text-center"><div class="flex justify-center items-center"> ${actionsHtml} </div></td> </tr>`; }).join(''); lucide.createIcons(); }
     function renderAdvisorsSection() {
         const container = document.getElementById("advisors-container");
@@ -1032,13 +1032,13 @@
             return `
             <div class="bg-white rounded-xl shadow-lg flex flex-col transition hover:shadow-2xl">
                 <div class="p-5 flex justify-between items-start">
-                    <div><h3 class="font-bold text-xl text-slate-800">${advisor.name}</h3><p class="text-sm text-primary-600 font-semibold">Comisi&#243;n Base: ${advisor.commissionRate}%</p></div>
+                    <div><h3 class="font-bold text-xl text-slate-800">${advisor.name}</h3><p class="text-sm text-primary-600 font-semibold">Comisión Base: ${advisor.commissionRate}%</p></div>
                     <div class="flex-shrink-0"><button class="edit-advisor-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${advisor.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button><button class="delete-advisor-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${advisor.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button></div>
                 </div>
                 <div class="p-5 grid grid-cols-3 gap-4 text-center border-y">
                     <div><p class="text-3xl font-bold text-slate-700">${affs.length}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Afiliados</p></div>
-                    <div><p class="text-xl font-bold text-primary-600">${formatCurrency(monthlyCommission, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisi&#243;n (Mes)</p></div>
-                    <div><p class="text-xl font-bold text-green-600">${formatCurrency(totalCommission, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisi&#243;n (Total)</p></div>
+                    <div><p class="text-xl font-bold text-primary-600">${formatCurrency(monthlyCommission, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión (Mes)</p></div>
+                    <div><p class="text-xl font-bold text-green-600">${formatCurrency(totalCommission, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión (Total)</p></div>
                 </div>
                 <div id="advisor-stats-${advisor.id}" class="hidden">
                     <div class="p-4 bg-slate-50"><h4 class="font-semibold mb-3 text-slate-700 text-sm">Desglose de Afiliados</h4><div class="max-h-64 overflow-y-auto pr-1"><table class="w-full text-sm text-left"><thead class="text-xs text-slate-500 uppercase bg-slate-200 sticky top-0"><tr><th class="p-2 font-semibold">Afiliado</th><th class="p-2 font-semibold">Estado</th><th class="p-2 font-semibold text-right">Ganancia</th></tr></thead><tbody class="bg-white">${breakdownHtml}</tbody></table></div></div>
@@ -1048,8 +1048,8 @@
         }).join("");
         lucide.createIcons();
     }
-    function renderRankingSection(){const e=document.getElementById("ranking-list");if(!e)return;const t=advisors.map(e=>{const t=affiliates.filter(t=>t.advisorId===e.id).reduce((e,t)=>e+getAdvisorCommissionForAffiliate(t),0);return{...e,totalCommission:t}});if(t.sort((e,t)=>t.totalCommission-e.totalCommission),0===t.length){e.innerHTML='<div class="text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay asesores para mostrar en el ranking.</p></div>';return}const a=["bg-amber-400 text-amber-900","bg-slate-300 text-slate-800","bg-orange-400 text-orange-900"],n=['<i data-lucide="trophy" class="w-6 h-6 text-amber-500"></i>','<i data-lucide="award" class="w-6 h-6 text-slate-500"></i>','<i data-lucide="medal" class="w-6 h-6 text-orange-500"></i>'];e.innerHTML=t.map((e,t)=>{const o=t+1,s=3>=o?a[t]:"bg-slate-200 text-slate-700",i=3>=o?n[t]:`<span class="font-bold text-lg">${o}</span>`;return` <div class="bg-white rounded-xl shadow-lg p-4 flex items-center space-x-4 transition hover:shadow-xl hover:scale-[1.02]"> <div class="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${s}">${i}</div> <div class="flex-grow"> <h3 class="font-bold text-lg text-slate-800">${e.name}</h3> <p class="text-sm text-slate-500">Comisi&#243;n Base: ${e.commissionRate}%</p> </div> <div class="text-right"> <p class="text-xl font-extrabold text-green-600">${formatCurrency(e.totalCommission)}</p> <p class="text-xs font-medium text-slate-500 uppercase">Comisi&#243;n Total</p> </div> </div>`}).join("");}
-    function renderPlansList(){const e=document.getElementById("plans-list");if(!e)return;if(0===healthPlans.length){e.innerHTML='<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay planes de salud creados. &#161;A&#241;ade el primero!</p></div>';return}e.innerHTML=healthPlans.map(e=>` <div class="bg-white rounded-xl shadow-lg flex flex-col"> <div class="p-5 flex-grow"> <div class="flex justify-between items-start"><h3 class="font-bold text-lg text-slate-800">${e.name}</h3><p class="text-xl font-extrabold text-primary-600">${formatCurrency(e.price)}</p></div> <ul class="text-sm text-slate-600 space-y-1 mt-4"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check-circle-2" class="w-4 h-4 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> <div class="border-t p-3 flex justify-end items-center bg-gray-50/50 rounded-b-xl"> <button class="edit-plan-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button> <button class="delete-plan-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button> </div> </div>`).join("");}
+    function renderRankingSection(){const e=document.getElementById("ranking-list");if(!e)return;const t=advisors.map(e=>{const t=affiliates.filter(t=>t.advisorId===e.id).reduce((e,t)=>e+getAdvisorCommissionForAffiliate(t),0);return{...e,totalCommission:t}});if(t.sort((e,t)=>t.totalCommission-e.totalCommission),0===t.length){e.innerHTML='<div class="text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay asesores para mostrar en el ranking.</p></div>';return}const a=["bg-amber-400 text-amber-900","bg-slate-300 text-slate-800","bg-orange-400 text-orange-900"],n=['<i data-lucide="trophy" class="w-6 h-6 text-amber-500"></i>','<i data-lucide="award" class="w-6 h-6 text-slate-500"></i>','<i data-lucide="medal" class="w-6 h-6 text-orange-500"></i>'];e.innerHTML=t.map((e,t)=>{const o=t+1,s=3>=o?a[t]:"bg-slate-200 text-slate-700",i=3>=o?n[t]:`<span class="font-bold text-lg">${o}</span>`;return` <div class="bg-white rounded-xl shadow-lg p-4 flex items-center space-x-4 transition hover:shadow-xl hover:scale-[1.02]"> <div class="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${s}">${i}</div> <div class="flex-grow"> <h3 class="font-bold text-lg text-slate-800">${e.name}</h3> <p class="text-sm text-slate-500">Comisión Base: ${e.commissionRate}%</p> </div> <div class="text-right"> <p class="text-xl font-extrabold text-green-600">${formatCurrency(e.totalCommission)}</p> <p class="text-xs font-medium text-slate-500 uppercase">Comisión Total</p> </div> </div>`}).join("");}
+    function renderPlansList(){const e=document.getElementById("plans-list");if(!e)return;if(0===healthPlans.length){e.innerHTML='<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay planes de salud creados. ¡Añade el primero!</p></div>';return}e.innerHTML=healthPlans.map(e=>` <div class="bg-white rounded-xl shadow-lg flex flex-col"> <div class="p-5 flex-grow"> <div class="flex justify-between items-start"><h3 class="font-bold text-lg text-slate-800">${e.name}</h3><p class="text-xl font-extrabold text-primary-600">${formatCurrency(e.price)}</p></div> <ul class="text-sm text-slate-600 space-y-1 mt-4"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check-circle-2" class="w-4 h-4 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> <div class="border-t p-3 flex justify-end items-center bg-gray-50/50 rounded-b-xl"> <button class="edit-plan-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button> <button class="delete-plan-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button> </div> </div>`).join("");}
     function populateAdvisorSelect(){const e=document.getElementById("advisor-select-list");e&&(e.innerHTML='<option value="" disabled selected>Asignar Asesor</option>'+advisors.map(e=>`<option value="${e.id}">${e.name}</option>`).join(""))}
     
     function renderAsesorDashboard() {
@@ -1134,9 +1134,9 @@
 
         const componentMap = {
             health:  { title: "Salud (EPS)", icon: "heart-pulse", color: "rose" },
-            pension: { title: "Pensi&#243;n", icon: "landmark", color: "amber" },
+            pension: { title: "Pensión", icon: "landmark", color: "amber" },
             arl:     { title: "Riesgos Laborales (ARL)", icon: "hard-hat", color: "sky" },
-            ccf:     { title: "Caja de Compensaci&#243;n", icon: "boxes", color: "indigo" }
+            ccf:     { title: "Caja de Compensación", icon: "boxes", color: "indigo" }
         };
 
         let htmlOutput = [];
@@ -1191,7 +1191,7 @@
         lucide.createIcons();
     }
 
-    function renderHealthPlanCards(){const e=document.getElementById("health-plan-selector");if(!e)return;if(0===healthPlans.length){e.innerHTML='<p class="text-slate-500 md:col-span-4">No hay planes de salud definidos. Por favor, cree un plan en la secci&#243;n "Planes de Salud".</p>';return}e.innerHTML=healthPlans.map((e,t)=>` <label class="health-plan-card cursor-pointer rounded-lg p-4 flex flex-col justify-between"> <div> <div class="flex justify-between items-center"><h4 class="font-bold text-md text-slate-800">${e.name}</h4><input type="radio" name="health-plan" value="${e.id}" class="h-4 w-4 text-primary-600"></div> <p class="text-xl font-extrabold text-primary-600 my-2">${formatCurrency(e.price)}<span class="text-sm font-medium text-slate-500">/mes</span></p> <ul class="text-xs text-slate-600 space-y-1 mt-3"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check" class="w-3.5 h-3.5 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> </label>`).join("");}
+    function renderHealthPlanCards(){const e=document.getElementById("health-plan-selector");if(!e)return;if(0===healthPlans.length){e.innerHTML='<p class="text-slate-500 md:col-span-4">No hay planes de salud definidos. Por favor, cree un plan en la sección "Planes de Salud".</p>';return}e.innerHTML=healthPlans.map((e,t)=>` <label class="health-plan-card cursor-pointer rounded-lg p-4 flex flex-col justify-between"> <div> <div class="flex justify-between items-center"><h4 class="font-bold text-md text-slate-800">${e.name}</h4><input type="radio" name="health-plan" value="${e.id}" class="h-4 w-4 text-primary-600"></div> <p class="text-xl font-extrabold text-primary-600 my-2">${formatCurrency(e.price)}<span class="text-sm font-medium text-slate-500">/mes</span></p> <ul class="text-xs text-slate-600 space-y-1 mt-3"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check" class="w-3.5 h-3.5 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> </label>`).join("");}
     
     function renderNovedadesDropdown(){
         const container = document.getElementById("novedades-list");
@@ -1229,7 +1229,7 @@
         const endDate = new Date(document.getElementById('report-end-date').value + 'T23:59:59');
 
         if (isNaN(startDate) || isNaN(endDate)) {
-            return showToast("Por favor, selecciona un rango de fechas v&#225;lido.", "error");
+            return showToast("Por favor, selecciona un rango de fechas válido.", "error");
         }
 
         const transactionsInPeriod = getAllTransactions().filter(t => {
@@ -1270,8 +1270,8 @@
             body: [
                 ['Ingresos Totales', formatCurrency(totalIncome)],
                 ['Egresos Totales', formatCurrency(totalExpenses)],
-                [{content: `   % Total Comisiones a Asesores`, styles: {cellPadding: {left: 8}}}, formatCurrency(advisorCommissions)],
-                [{content: `   % Otros Egresos Manuales`, styles: {cellPadding: {left: 8}}}, formatCurrency(manualExpenses)],
+                [{content: `   - Total Comisiones a Asesores`, styles: {cellPadding: {left: 8}}}, formatCurrency(advisorCommissions)],
+                [{content: `   - Otros Egresos Manuales`, styles: {cellPadding: {left: 8}}}, formatCurrency(manualExpenses)],
                 ['Ganancia por Administración (Afiliados Activos x Tarifa)', formatCurrency(adminProfit)],
                 [{content: 'Ganancia Neta (Saldo Real en Caja)', styles: {fontStyle: 'bold', fillColor: '#f0fdf4', textColor: '#15803d'}},
                  {content: formatCurrency(netProfit), styles: {fontStyle: 'bold', fillColor: '#f0fdf4', textColor: '#15803d'}}]
@@ -1340,7 +1340,7 @@
     }
 
     function getNovedadIcon(e){return{creation:'<i data-lucide="user-plus" class="h-5 w-5 text-green-500"></i>',status_change:'<i data-lucide="shuffle" class="h-5 w-5 text-yellow-500"></i>',payment_reminder:'<i data-lucide="calendar-clock" class="h-5 w-5 text-red-500"></i>',commission_earned:'<i data-lucide="award" class="h-5 w-5 text-blue-500"></i>',admin_profit:'<i data-lucide="trending-up" class="h-5 w-5 text-indigo-500"></i>',deletion:'<i data-lucide="user-x" class="h-5 w-5 text-red-500"></i>'}[e]||'<i data-lucide="alert-triangle" class="h-5 w-5 text-yellow-500"></i>'}
-    function formatTimeAgo(e){if(!e) return "hace un momento"; const t=Math.floor((new Date-e)/1e3);let a=t/31536e3;if(1<a)return`hace ${Math.floor(a)} a&#241;os`;if(1<(a=t/2592e3))return`hace ${Math.floor(a)} meses`;if(1<(a=t/86400))return`hace ${Math.floor(a)} d&#237;as`;if(1<(a=t/3600))return`hace ${Math.floor(a)} horas`;if(1<(a=t/60))return`hace ${Math.floor(a)} minutos`;return`hace ${Math.floor(t)} segundos`}
+    function formatTimeAgo(e){if(!e) return "hace un momento"; const t=Math.floor((new Date-e)/1e3);let a=t/31536e3;if(1<a)return`hace ${Math.floor(a)} años`;if(1<(a=t/2592e3))return`hace ${Math.floor(a)} meses`;if(1<(a=t/86400))return`hace ${Math.floor(a)} días`;if(1<(a=t/3600))return`hace ${Math.floor(a)} horas`;if(1<(a=t/60))return`hace ${Math.floor(a)} minutos`;return`hace ${Math.floor(t)} segundos`}
     function checkAndGenerateNovedades(newAffiliates, oldAffiliates){}
     
     // --- LÓGICA DEL CALENDARIO (MODIFICADA) ---
@@ -1446,93 +1446,85 @@
         `).join('');
     }
 
-// REEMPLAZA EL BLOQUE DAÑADO CON ESTA VERSIÓN COMPLETA Y CORRECTA
-function renderCalendarAsList() {
-    const range = parseInt(document.getElementById('calendar-list-range-filter').value, 10);
-    const headContainer = document.getElementById('calendar-list-head');
-    const bodyContainer = document.getElementById('calendar-list-body');
-    const monthsLocale = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-
-    // 1. OBTENER LOS MESES PARA LAS CABECERAS
-    const monthHeaders = [];
-    let currentDate = new Date();
-    currentDate.setDate(1); // Normalizar al primer día del mes
-    for (let i = 0; i < range; i++) {
-        monthHeaders.unshift({ // Usamos unshift para que queden en orden cronológico
-            year: currentDate.getFullYear(),
-            month: currentDate.getMonth(),
-            label: `${monthsLocale[currentDate.getMonth()]} ${currentDate.getFullYear()}`
-        });
-        currentDate.setMonth(currentDate.getMonth() - 1);
-    }
-    const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
-    const endDate = new Date();
-
-    // 2. GENERAR LAS CABECERAS DE LA TABLA
-    headContainer.innerHTML = `
-        <tr>
-            <th class="p-3 text-xs font-semibold text-slate-600 uppercase text-left sticky left-0 bg-slate-100 z-10">Asesor</th>
-            ${monthHeaders.map(h => `<th class="p-3 text-xs font-semibold text-slate-600 uppercase text-center">${h.label}</th>`).join('')}
-        </tr>`;
-
-    // 3. FILTRAR Y AGRUPAR LOS DATOS
-    const affiliatesInRange = affiliates.filter(aff => aff.createdAt && aff.createdAt >= startDate && aff.createdAt <= endDate);
-    const groupedData = affiliatesInRange.reduce((acc, aff) => {
-        const key = `${aff.createdAt.getFullYear()}-${aff.createdAt.getMonth()}`;
-        if (!acc[aff.advisorId]) acc[aff.advisorId] = {};
-        if (!acc[aff.advisorId][key]) acc[aff.advisorId][key] = [];
-        acc[aff.advisorId][key].push(aff);
-        return acc;
-    }, {});
-
-    if (advisors.length === 0) {
-        bodyContainer.innerHTML = `<tr><td colspan="${range + 1}" class="text-center p-6 text-slate-500">No hay asesores registrados.</td></tr>`;
-        return;
-    }
-
-    // 4. GENERAR EL CUERPO DE LA TABLA CON LA LÓGICA DE DESGLOSE
-    bodyContainer.innerHTML = advisors.map(advisor => {
-        const cells = monthHeaders.map(header => {
-            const key = `${header.year}-${header.month}`;
-            const affiliatesForMonth = groupedData[advisor.id]?.[key];
-            const cellId = `${advisor.id}-${key}`; // ID único para cada celda
-
-            if (affiliatesForMonth && affiliatesForMonth.length > 0) {
-                const count = affiliatesForMonth.length;
-                // Generamos el HTML para la celda con el contador, el botón y la lista oculta
-                return `
-                    <td class="p-3 align-top text-center">
-                        <div class="flex items-center justify-center gap-2">
-                            <span class="font-bold text-lg text-primary-600">${count}</span>
-                            <button class="calendar-details-toggle p-1 rounded-full hover:bg-slate-200" data-toggle-cell="${cellId}" title="Ver desglose">
-                                <i data-lucide="chevron-down" class="h-5 w-5 text-slate-500 pointer-events-none details-toggle-icon"></i>
-                            </button>
-                        </div>
-                        <ul id="details-${cellId}" class="hidden text-left mt-2 space-y-1 text-sm max-h-40 overflow-y-auto pr-2">
-                            ${affiliatesForMonth.map(aff => `
-                                <li class="p-1.5 rounded hover:bg-slate-100">
-                                    <p class="font-medium text-slate-800">${aff.name}</p>
-                                    <p class="text-xs text-slate-500">Registrado: ${aff.createdAt.toLocaleDateString('es-CO')}</p>
-                                </li>
-                            `).join('')}
-                        </ul>
-                    </td>`;
-            } else {
-                // Si no hay afiliados, mostramos un guion
-                return `<td class="p-3 align-top text-center"><span class="text-slate-400">-</span></td>`;
-            }
-        }).join('');
-
-        return `
-            <tr class="border-b">
-                <td class="p-3 font-semibold text-slate-800 align-top sticky left-0 bg-white z-10">${advisor.name}</td>
-                ${cells}
+    function renderCalendarAsList() {
+        const range = parseInt(document.getElementById('calendar-list-range-filter').value, 10);
+        const headContainer = document.getElementById('calendar-list-head');
+        const bodyContainer = document.getElementById('calendar-list-body');
+        const monthsLocale = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    
+        // 1. OBTENER LOS MESES PARA LAS CABECERAS
+        const monthHeaders = [];
+        let currentDate = new Date();
+        currentDate.setDate(1); // Normalizar al primer día del mes
+        for (let i = 0; i < range; i++) {
+            monthHeaders.unshift({ // Usamos unshift para que queden en orden cronológico
+                year: currentDate.getFullYear(),
+                month: currentDate.getMonth(),
+                label: `${monthsLocale[currentDate.getMonth()]} ${currentDate.getFullYear()}`
+            });
+            currentDate.setMonth(currentDate.getMonth() - 1);
+        }
+        const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+        const endDate = new Date();
+    
+        // 2. GENERAR LAS CABECERAS DE LA TABLA
+        headContainer.innerHTML = `
+            <tr>
+                <th class="p-3 text-xs font-semibold text-slate-600 uppercase text-left sticky left-0 bg-slate-100 z-10">Asesor</th>
+                ${monthHeaders.map(h => `<th class="p-3 text-xs font-semibold text-slate-600 uppercase text-center">${h.label}</th>`).join('')}
             </tr>`;
-    }).join('');
-}
+    
+        // 3. FILTRAR Y AGRUPAR LOS DATOS
+        const affiliatesInRange = affiliates.filter(aff => aff.createdAt && aff.createdAt >= startDate && aff.createdAt <= endDate);
+        const groupedData = affiliatesInRange.reduce((acc, aff) => {
+            const key = `${aff.createdAt.getFullYear()}-${aff.createdAt.getMonth()}`;
+            if (!acc[aff.advisorId]) acc[aff.advisorId] = {};
+            if (!acc[aff.advisorId][key]) acc[aff.advisorId][key] = [];
+            acc[aff.advisorId][key].push(aff);
+            return acc;
+        }, {});
+    
+        if (advisors.length === 0) {
+            bodyContainer.innerHTML = `<tr><td colspan="${range + 1}" class="text-center p-6 text-slate-500">No hay asesores registrados.</td></tr>`;
+            return;
+        }
+    
+        // 4. GENERAR EL CUERPO DE LA TABLA CON LA LÓGICA DE DESGLOSE
+        bodyContainer.innerHTML = advisors.map(advisor => {
+            const cells = monthHeaders.map(header => {
+                const key = `${header.year}-${header.month}`;
+                const affiliatesForMonth = groupedData[advisor.id]?.[key];
+                const cellId = `${advisor.id}-${key}`; // ID único para cada celda
+    
+                if (affiliatesForMonth && affiliatesForMonth.length > 0) {
+                    const count = affiliatesForMonth.length;
+                    // Generamos el HTML para la celda con el contador, el botón y la lista oculta
+                    return `
+                        <td class="p-3 align-top text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <span class="font-bold text-lg text-primary-600">${count}</span>
+                                <button class="calendar-details-toggle p-1 rounded-full hover:bg-slate-200" data-toggle-cell="${cellId}" title="Ver desglose">
+                                    <i data-lucide="chevron-down" class="h-5 w-5 text-slate-500 pointer-events-none details-toggle-icon"></i>
+                                </button>
+                            </div>
+                            <ul id="details-${cellId}" class="hidden text-left mt-2 space-y-1 text-sm max-h-40 overflow-y-auto pr-2">
+                                ${affiliatesForMonth.map(aff => `
+                                    <li class="p-1.5 rounded hover:bg-slate-100">
+                                        <p class="font-medium text-slate-800">${aff.name}</p>
+                                        <p class="text-xs text-slate-500">Registrado: ${aff.createdAt.toLocaleDateString('es-CO')}</p>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </td>`;
+                } else {
+                    // Si no hay afiliados, mostramos un guion
+                    return `<td class="p-3 align-top text-center"><span class="text-slate-400">-</span></td>`;
+                }
+            }).join('');
+    
             return `
-                <tr>
-                    <td class="p-3 font-semibold text-slate-800 align-top">${advisor.name}</td>
+                <tr class="border-b">
+                    <td class="p-3 font-semibold text-slate-800 align-top sticky left-0 bg-white z-10">${advisor.name}</td>
                     ${cells}
                 </tr>`;
         }).join('');
@@ -1686,7 +1678,7 @@ function renderCalendarAsList() {
                 </li>
             `).join('');
         } else {
-            featuresList.innerHTML = '<li>No hay caracter&#237;sticas detalladas para este plan.</li>';
+            featuresList.innerHTML = '<li>No hay características detalladas para este plan.</li>';
         }
 
         lucide.createIcons();
@@ -1694,161 +1686,122 @@ function renderCalendarAsList() {
 
 
     document.addEventListener('DOMContentLoaded', () => {
-// --- INICIO LÓGICA DEL BUSCADOR GLOBAL (VERSIÓN MÓVIL INCLUIDA) ---
-
-// 1. Función de utilidad para optimizar la búsqueda (debounce)
-function debounce(func, delay) {
-    let timeout;
-    return function(...args) {
-        const context = this;
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(context, args), delay);
-    };
-}
-
-// 2. Obtener referencias a todos los elementos que controlaremos
-const headerSearchInput = document.getElementById('header-search-input');
-const headerSearchResults = document.getElementById('header-search-results');
-const headerSearchContainer = document.getElementById('header-search-container');
-const headerMainContent = document.getElementById('header-main-content');
-const searchToggleMobile = document.getElementById('search-toggle-mobile');
-const closeSearchMobile = document.getElementById('close-search-mobile');
-const headerActions = document.getElementById('header-actions');
-
-// 3. Función para mostrar u ocultar la interfaz de búsqueda en móvil
-const toggleMobileSearch = (show) => {
-    if (show) {
-        headerMainContent.classList.add('hidden');
-        headerActions.classList.add('hidden'); // Ocultar acciones también
-        headerSearchContainer.classList.remove('hidden');
-        headerSearchContainer.classList.add('flex');
-        headerSearchInput.focus();
-    } else {
-        headerMainContent.classList.remove('hidden');
-        headerActions.classList.remove('hidden'); // Mostrar acciones de nuevo
-        headerSearchContainer.classList.add('hidden');
-        headerSearchContainer.classList.remove('flex');
-        headerSearchResults.classList.add('hidden');
-        headerSearchInput.value = '';
-    }
-};
-
-// 4. Asignar los eventos a los botones de abrir y cerrar en móvil
-searchToggleMobile.addEventListener('click', () => toggleMobileSearch(true));
-closeSearchMobile.addEventListener('click', () => toggleMobileSearch(false));
-
-// 5. Función que dibuja los resultados encontrados en la lista desplegable
-const renderHeaderSearchResults = (results) => {
-    if (results.length === 0) {
-        headerSearchResults.innerHTML = `<div class="p-4 text-center text-sm text-slate-500">No se encontraron afiliados.</div>`;
-    } else {
-        headerSearchResults.innerHTML = results.map(aff => `
-            <div class="search-result-item p-3 border-b border-slate-200/50 hover:bg-slate-50 cursor-pointer" 
-                 data-affiliate-id="${aff.id}" data-affiliate-doc="${aff.documentId}">
-                <p class="font-semibold text-slate-800">${aff.name}</p>
-                <p class="text-sm text-slate-500">Doc: ${aff.documentId}</p>
-            </div>
-        `).join('');
-    }
-    headerSearchResults.classList.remove('hidden');
-};
-
-// 6. Función que filtra los afiliados según lo que se escribe
-const handleHeaderSearch = () => {
-    const searchTerm = headerSearchInput.value.trim().toLowerCase();
-    if (searchTerm.length < 2) {
-        headerSearchResults.classList.add('hidden');
-        return;
-    }
-
-    // Usamos la variable global `affiliates` que ya tienes en tu código
-    const filteredAffiliates = affiliates.filter(aff => 
-        aff.name.toLowerCase().includes(searchTerm) || 
-        (aff.documentId && aff.documentId.toLowerCase().includes(searchTerm))
-    );
-
-    renderHeaderSearchResults(filteredAffiliates);
-};
-
-// 7. Crear la versión optimizada de la búsqueda y asignarla al input
-const debouncedSearch = debounce(handleHeaderSearch, 300);
-headerSearchInput.addEventListener('input', debouncedSearch);
-
-// 8. Programar la acción al hacer clic en un resultado de la lista
-headerSearchResults.addEventListener('click', (e) => {
-    const resultItem = e.target.closest('.search-result-item');
-    if (!resultItem) return;
-
-    const affiliateDoc = resultItem.dataset.affiliateDoc;
-    
-    // Navegar a la sección de afiliados
-    document.querySelectorAll('[data-target]').forEach(l => l.classList.remove('active'));
-    document.querySelectorAll(`[data-target="afiliados"]`).forEach(l => l.classList.add('active'));
-    renderContent('afiliados');
-
-    // Usar el buscador de esa sección para mostrar al afiliado
-    const mainAffiliateSearchInput = document.getElementById('search-affiliate');
-    if (mainAffiliateSearchInput) {
-        mainAffiliateSearchInput.value = affiliateDoc;
-        // Disparamos un evento 'input' para que el filtro de la sección se active
-        mainAffiliateSearchInput.dispatchEvent(new Event('input', { bubbles: true }));
-    }
-    
-    // Cerrar la interfaz de búsqueda
-    if (window.innerWidth < 768) { // Si es móvil
-        toggleMobileSearch(false);
-    } else { // Si es escritorio
-        headerSearchResults.classList.add('hidden');
-        headerSearchInput.value = '';
-    }
-});
-
-// 9. Ocultar la interfaz de búsqueda si se hace clic fuera de ella
-document.addEventListener('click', (e) => {
-    if (!headerSearchContainer.contains(e.target) && !searchToggleMobile.contains(e.target)) {
-        headerSearchResults.classList.add('hidden');
-        // Si la búsqueda móvil está abierta y se hace clic fuera, ciérrala
-        if (window.innerWidth < 768 && !headerSearchContainer.classList.contains('hidden')) {
-            toggleMobileSearch(false);
+        // --- INICIO LÓGICA DEL BUSCADOR GLOBAL (VERSIÓN MÓVIL INCLUIDA) ---
+        function debounce(func, delay) {
+            let timeout;
+            return function(...args) {
+                const context = this;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), delay);
+            };
         }
-    }
-});
-// --- FIN LÓGICA DEL BUSCADOR GLOBAL ---
+        const headerSearchInput = document.getElementById('header-search-input');
+        const headerSearchResults = document.getElementById('header-search-results');
+        const headerSearchContainer = document.getElementById('header-search-container');
+        const headerMainContent = document.getElementById('header-main-content');
+        const searchToggleMobile = document.getElementById('search-toggle-mobile');
+        const closeSearchMobile = document.getElementById('close-search-mobile');
+        const headerActions = document.getElementById('header-actions');
+        const toggleMobileSearch = (show) => {
+            if (show) {
+                headerMainContent.classList.add('hidden');
+                headerActions.classList.add('hidden');
+                headerSearchContainer.classList.remove('hidden');
+                headerSearchContainer.classList.add('flex');
+                headerSearchInput.focus();
+            } else {
+                headerMainContent.classList.remove('hidden');
+                headerActions.classList.remove('hidden');
+                headerSearchContainer.classList.add('hidden');
+                headerSearchContainer.classList.remove('flex');
+                headerSearchResults.classList.add('hidden');
+                headerSearchInput.value = '';
+            }
+        };
+        searchToggleMobile.addEventListener('click', () => toggleMobileSearch(true));
+        closeSearchMobile.addEventListener('click', () => toggleMobileSearch(false));
+        const renderHeaderSearchResults = (results) => {
+            if (results.length === 0) {
+                headerSearchResults.innerHTML = `<div class="p-4 text-center text-sm text-slate-500">No se encontraron afiliados.</div>`;
+            } else {
+                headerSearchResults.innerHTML = results.map(aff => `
+                    <div class="search-result-item p-3 border-b border-slate-200/50 hover:bg-slate-50 cursor-pointer" 
+                         data-affiliate-id="${aff.id}" data-affiliate-doc="${aff.documentId}">
+                        <p class="font-semibold text-slate-800">${aff.name}</p>
+                        <p class="text-sm text-slate-500">Doc: ${aff.documentId}</p>
+                    </div>
+                `).join('');
+            }
+            headerSearchResults.classList.remove('hidden');
+        };
+        const handleHeaderSearch = () => {
+            const searchTerm = headerSearchInput.value.trim().toLowerCase();
+            if (searchTerm.length < 2) {
+                headerSearchResults.classList.add('hidden');
+                return;
+            }
+            const filteredAffiliates = affiliates.filter(aff => 
+                aff.name.toLowerCase().includes(searchTerm) || 
+                (aff.documentId && aff.documentId.toLowerCase().includes(searchTerm))
+            );
+            renderHeaderSearchResults(filteredAffiliates);
+        };
+        const debouncedSearch = debounce(handleHeaderSearch, 300);
+        headerSearchInput.addEventListener('input', debouncedSearch);
+        headerSearchResults.addEventListener('click', (e) => {
+            const resultItem = e.target.closest('.search-result-item');
+            if (!resultItem) return;
+            const affiliateDoc = resultItem.dataset.affiliateDoc;
+            
+            document.querySelectorAll('[data-target]').forEach(l => l.classList.remove('active'));
+            document.querySelectorAll(`[data-target="afiliados"]`).forEach(l => l.classList.add('active'));
+            renderContent('afiliados');
+
+            const mainAffiliateSearchInput = document.getElementById('search-affiliate');
+            if (mainAffiliateSearchInput) {
+                mainAffiliateSearchInput.value = affiliateDoc;
+                mainAffiliateSearchInput.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+            
+            if (window.innerWidth < 768) {
+                toggleMobileSearch(false);
+            } else {
+                headerSearchResults.classList.add('hidden');
+                headerSearchInput.value = '';
+            }
+        });
+        document.addEventListener('click', (e) => {
+            if (!headerSearchContainer.contains(e.target) && !searchToggleMobile.contains(e.target)) {
+                headerSearchResults.classList.add('hidden');
+                if (window.innerWidth < 768 && !headerSearchContainer.classList.contains('hidden')) {
+                    toggleMobileSearch(false);
+                }
+            }
+        });
+        // --- FIN LÓGICA DEL BUSCADOR GLOBAL ---
+        
         // --- INICIO LÓGICA DE FILTROS EN TIEMPO REAL (SECCIÓN AFILIADOS) ---
+        const searchAffiliateInput = document.getElementById('search-affiliate');
+        const filterAffiliateStatus = document.getElementById('filter-affiliate-status');
+        const filterAffiliatePaymentStatus = document.getElementById('filter-affiliate-payment-status');
+        const debouncedRenderAffiliates = debounce(renderAffiliatesList, 300);
+        if (searchAffiliateInput) {
+            searchAffiliateInput.addEventListener('input', () => {
+                debouncedRenderAffiliates();
+            });
+        }
+        if (filterAffiliateStatus) {
+            filterAffiliateStatus.addEventListener('change', () => {
+                renderAffiliatesList();
+            });
+        }
+        if (filterAffiliatePaymentStatus) {
+            filterAffiliatePaymentStatus.addEventListener('change', () => {
+                renderAffiliatesList();
+            });
+        }
+        // --- FIN LÓGICA DE FILTROS EN TIEMPO REAL ---
 
-// 1. Obtenemos las referencias a los controles de filtro de la sección "Afiliados"
-const searchAffiliateInput = document.getElementById('search-affiliate');
-const filterAffiliateStatus = document.getElementById('filter-affiliate-status');
-const filterAffiliatePaymentStatus = document.getElementById('filter-affiliate-payment-status');
-
-// 2. Creamos una versión "debounced" de la función que renderiza la lista.
-// Esto evita que la lista se redibuje con cada letra que escribes, mejorando el rendimiento.
-// ¡Reutilizamos la función debounce que ya creamos para el buscador principal!
-const debouncedRenderAffiliates = debounce(renderAffiliatesList, 300);
-
-// 3. Añadimos los event listeners a cada control de filtro
-if (searchAffiliateInput) {
-    searchAffiliateInput.addEventListener('input', () => {
-        // Cuando el usuario escribe en la barra de búsqueda, llamamos a la función optimizada
-        debouncedRenderAffiliates();
-    });
-}
-
-if (filterAffiliateStatus) {
-    filterAffiliateStatus.addEventListener('change', () => {
-        // Cuando el usuario cambia el selector de estado, redibujamos la lista inmediatamente
-        renderAffiliatesList();
-    });
-}
-
-if (filterAffiliatePaymentStatus) {
-    filterAffiliatePaymentStatus.addEventListener('change', () => {
-        // Cuando el usuario cambia el selector de estado de pago, redibujamos la lista
-        renderAffiliatesList();
-    });
-}
-
-// --- FIN LÓGICA DE FILTROS EN TIEMPO REAL ---
         document.getElementById('invite-user-form').addEventListener('submit', handleInviteUser);
         const inviteRoleSelect = document.getElementById('invite-role');
         const inviteLinkContainer = document.getElementById('invite-link-container');
@@ -1857,10 +1810,8 @@ if (filterAffiliatePaymentStatus) {
 
         inviteRoleSelect.addEventListener('change', (e) => {
             const selectedRole = e.target.value;
-
             if (selectedRole === 'asesor' || selectedRole === 'afiliado') {
                 let options = '<option value="" disabled selected>Seleccionar para vincular...</option>';
-
                 if (selectedRole === 'asesor') {
                     inviteLinkLabel.textContent = 'Vincular con Asesor Existente:';
                     options += advisors.map(advisor => `<option value="${advisor.id}">${advisor.name}</option>`).join('');
@@ -1868,13 +1819,13 @@ if (filterAffiliatePaymentStatus) {
                     inviteLinkLabel.textContent = 'Vincular con Afiliado Existente:';
                     options += affiliates.map(aff => `<option value="${aff.id}">${aff.name} (${aff.documentId})</option>`).join('');
                 }
-
                 inviteLinkSelect.innerHTML = options;
                 inviteLinkContainer.classList.remove('hidden'); 
             } else {
                 inviteLinkContainer.classList.add('hidden'); 
             }
         });
+
         document.body.addEventListener('click', async (e) => { 
             const target = e.target;
             const button = target.closest('button');
@@ -1886,7 +1837,6 @@ if (filterAffiliatePaymentStatus) {
 
             if (profileModal && !profileModal.contains(target) && profileToggleBtn && !profileToggleBtn.contains(target)) { profileModal.classList.add('scale-95', 'opacity-0', 'pointer-events-none'); } 
             if (novedadesModal && !novedadesModal.contains(target) && novedadesToggleBtn && !novedadesToggleBtn.contains(target)) { novedadesModal.classList.add('scale-95', 'opacity-0', 'pointer-events-none'); } 
-
             
             if (navLink) { 
                 e.preventDefault(); 
@@ -1933,15 +1883,15 @@ if (filterAffiliatePaymentStatus) {
             else if (button.matches('.edit-plan-btn')) modalManager.open('plan-modal', healthPlans.find(p => p.id === id)); 
             else if (button.matches('[data-toggle-details]')) { const card = button.closest('.bg-white'); if (card) { card.querySelector('.details-section').classList.toggle('hidden'); button.classList.toggle('details-shown'); } } 
             else if (button.matches('[data-toggle-stats]')) { const statsContainer = document.getElementById(`advisor-stats-${button.dataset.toggleStats}`); if (statsContainer) { statsContainer.classList.toggle('hidden'); button.classList.toggle('stats-shown'); button.querySelector('.button-text').textContent = statsContainer.classList.contains('hidden') ? 'Ver Desglose' : 'Ocular Desglose'; } } 
-            else if (button.matches('.delete-affiliate-btn')) { if (confirm('&#191;Seguro que deseas eliminar este afiliado?')) { await deleteDataFromFirestore('affiliates', id); showToast('Afiliado eliminado.'); } } 
-            else if (button.matches('.delete-advisor-btn')) { if (confirm('&#191;Seguro? Se desasignar&#225; de todos los afiliados.')) { const batch = writeBatch(db); affiliates.forEach(aff => { if(aff.advisorId === id) { const affRef = doc(db, `users/${adminUidForRole}/affiliates/${aff.id}`); batch.update(affRef, { advisorId: null }); } }); const advisorRef = doc(db, `users/${adminUidForRole}/advisors/${id}`); batch.delete(advisorRef); await batch.commit(); showToast('Asesor eliminado.'); } } 
-            else if (button.matches('.delete-plan-btn')) { const isPlanInUse = affiliates.some(aff => aff.healthPlan === id); if(isPlanInUse) return showToast('Plan en uso. No se puede eliminar.', 'error'); if (confirm('&#191;Seguro?')) { await deleteDataFromFirestore('healthPlans', id); showToast('Plan eliminado.'); } }
+            else if (button.matches('.delete-affiliate-btn')) { if (confirm('¿Seguro que deseas eliminar este afiliado?')) { await deleteDataFromFirestore('affiliates', id); showToast('Afiliado eliminado.'); } } 
+            else if (button.matches('.delete-advisor-btn')) { if (confirm('¿Seguro? Se desasignará de todos los afiliados.')) { const batch = writeBatch(db); affiliates.forEach(aff => { if(aff.advisorId === id) { const affRef = doc(db, `users/${adminUidForRole}/affiliates/${aff.id}`); batch.update(affRef, { advisorId: null }); } }); const advisorRef = doc(db, `users/${adminUidForRole}/advisors/${id}`); batch.delete(advisorRef); await batch.commit(); showToast('Asesor eliminado.'); } } 
+            else if (button.matches('.delete-plan-btn')) { const isPlanInUse = affiliates.some(aff => aff.healthPlan === id); if(isPlanInUse) return showToast('Plan en uso. No se puede eliminar.', 'error'); if (confirm('¿Seguro?')) { await deleteDataFromFirestore('healthPlans', id); showToast('Plan eliminado.'); } }
             else if (button.matches('.download-receipt-btn')) {
                 showToast('Generando recibo PDF...', 'success');
                 const affiliateId = button.dataset.id;
                 const affiliateToPrint = affiliates.find(a => a.id === affiliateId);
                 if (!affiliateToPrint) {
-                    return showToast('No se encontr&#243; el afiliado para generar el recibo.', 'error');
+                    return showToast('No se encontró el afiliado para generar el recibo.', 'error');
                 }
                 const planToPrint = healthPlans.find(p => p.id === affiliateToPrint.healthPlan) || {};
                 const advisorForPrint = advisors.find(a => a.id === affiliateToPrint.advisorId) || {};
@@ -1951,96 +1901,97 @@ if (filterAffiliatePaymentStatus) {
             }
             else if (button.matches('.delete-role-btn')) {
                  const roleToDelete = userRoles.find(r => r.id === id);
-                 if (confirm(`&#191;Est&#225;s seguro de eliminar al usuario ${roleToDelete.email}? Esta acci&#243;n no se puede deshacer y su cuenta ser&#225; eliminada permanentemente.`)) {
-                        showToast('Esta funci&#243;n requiere un backend (Cloud Function) para eliminar de forma segura un usuario de Firebase Authentication. La implementaci&#243;n actual solo eliminar&#225; los registros de rol en Firestore.', 'error');
-                        const batch = writeBatch(db);
-                        const rootRoleRef = doc(db, 'userRoles', id);
-                        const adminRoleRef = doc(db, `users/${adminUidForRole}/roles`, id);
-                        batch.delete(rootRoleRef);
-                        batch.delete(adminRoleRef);
-                        await batch.commit();
-                        showToast('Registros de rol eliminados.', 'success');
+                 if (confirm(`¿Estás seguro de eliminar al usuario ${roleToDelete.email}? Esta acción no se puede deshacer y su cuenta será eliminada permanentemente.`)) {
+                      showToast('Esta función requiere un backend (Cloud Function) para eliminar de forma segura un usuario de Firebase Authentication. La implementación actual solo eliminará los registros de rol en Firestore.', 'error');
+                      const batch = writeBatch(db);
+                      const rootRoleRef = doc(db, 'userRoles', id);
+                      const adminRoleRef = doc(db, `users/${adminUidForRole}/roles`, id);
+                      batch.delete(rootRoleRef);
+                      batch.delete(adminRoleRef);
+                      await batch.commit();
+                      showToast('Registros de rol eliminados.', 'success');
                  }
             }
-            else if (button.id === 'sell-plan-btn') { if (!lastQuoteResult) { showToast('Por favor, realiza una cotizaci&#243;n primero.', 'error'); return; } modalManager.open('affiliate-modal'); setTimeout(() => { const form = document.getElementById('affiliate-form'); if (!form) return; form['manual-override-checkbox'].checked = true; document.getElementById('manual-override-container').classList.remove('hidden'); form['manual-cost-health'].value = lastQuoteResult.health ? Math.round(lastQuoteResult.health.total) : ''; form['manual-cost-pension'].value = lastQuoteResult.pension ? Math.round(lastQuoteResult.pension.total) : ''; form['manual-cost-arl'].value = lastQuoteResult.arl ? Math.round(lastQuoteResult.arl.total) : ''; form['manual-cost-ccf'].value = lastQuoteResult.ccf ? Math.round(lastQuoteResult.ccf.total) : ''; const incomeValue = Number(document.getElementById('income').value); form['affiliate-notes'].value = `Cotizaci&#243;n inicial basada en un ingreso mensual de ${formatCurrency(incomeValue)}. IBC: ${formatCurrency(lastQuoteResult.ibc)}.`; showToast('Datos de cotizaci&#243;n precargados.'); }, 100); } 
+            else if (button.id === 'sell-plan-btn') { if (!lastQuoteResult) { showToast('Por favor, realiza una cotización primero.', 'error'); return; } modalManager.open('affiliate-modal'); setTimeout(() => { const form = document.getElementById('affiliate-form'); if (!form) return; form['manual-override-checkbox'].checked = true; document.getElementById('manual-override-container').classList.remove('hidden'); form['manual-cost-health'].value = lastQuoteResult.health ? Math.round(lastQuoteResult.health.total) : ''; form['manual-cost-pension'].value = lastQuoteResult.pension ? Math.round(lastQuoteResult.pension.total) : ''; form['manual-cost-arl'].value = lastQuoteResult.arl ? Math.round(lastQuoteResult.arl.total) : ''; form['manual-cost-ccf'].value = lastQuoteResult.ccf ? Math.round(lastQuoteResult.ccf.total) : ''; const incomeValue = Number(document.getElementById('income').value); form['affiliate-notes'].value = `Cotización inicial basada en un ingreso mensual de ${formatCurrency(incomeValue)}. IBC: ${formatCurrency(lastQuoteResult.ibc)}.`; showToast('Datos de cotización precargados.'); }, 100); } 
         });
+        
         // --- Lógica de desglose para la vista de Calendario ---
-        const calendarListBody = document.getElementById('calendar-list-body');
-        if(calendarListBody) {
-            calendarListBody.addEventListener('click', (e) => {
-                const toggleButton = e.target.closest('.calendar-details-toggle');
-  
-                if (!toggleButton) return; // Si no se hizo clic en un botón, no hacer nada
-  
-                e.preventDefault();
-                
-                const cellId = toggleButton.dataset.toggleCell;
-                const detailsList = document.getElementById(`details-${cellId}`);
-                const icon = toggleButton.querySelector('.details-toggle-icon');
-  
-                if (detailsList) {
-                    // Alternar la visibilidad de la lista de nombres
-                    detailsList.classList.toggle('hidden');
-                    
-                    // Alternar la clase en el botón para manejar el estado visual (opcional pero recomendado)
-                    toggleButton.classList.toggle('details-shown');
-                    
-                    // La clase 'details-shown' con el CSS existente rotará el ícono
-                }
-            });
-        }
+        const calendarListBody = document.getElementById('calendar-list-body');
+        if(calendarListBody) {
+            calendarListBody.addEventListener('click', (e) => {
+                const toggleButton = e.target.closest('.calendar-details-toggle');
+    
+                if (!toggleButton) return; // Si no se hizo clic en un botón, no hacer nada
+    
+                e.preventDefault();
+                
+                const cellId = toggleButton.dataset.toggleCell;
+                const detailsList = document.getElementById(`details-${cellId}`);
+                const icon = toggleButton.querySelector('.details-toggle-icon');
+    
+                if (detailsList) {
+                    // Alternar la visibilidad de la lista de nombres
+                    detailsList.classList.toggle('hidden');
+                    
+                    // Alternar la clase en el botón para manejar el estado visual (opcional pero recomendado)
+                    toggleButton.classList.toggle('details-shown');
+                    
+                    // La clase 'details-shown' con el CSS existente rotará el ícono
+                }
+            });
+        }
         
         document.getElementById('login-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { await signInWithEmailAndPassword(auth, e.target['login-email'].value, e.target['login-password'].value); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('register-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { const userCredential = await createUserWithEmailAndPassword(auth, e.target['register-email'].value, e.target['register-password'].value); await setupNewUserDocument(userCredential.user); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('license-form').addEventListener('submit', e => { e.preventDefault(); handleLicenseActivation(); });
         document.getElementById('affiliate-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const form = e.target;
-            const selectedPlan = form.querySelector('input[name="health-plan"]:checked');
-            const manualOverride = form['manual-override-checkbox'].checked;
-            if (!selectedPlan && !manualOverride && healthPlans.length > 0) {
-                return showToast('Debe seleccionar un plan o ingresar costos manuales.', 'error');
-            }
-            const affiliateData = {
-                name: form['affiliate-name'].value.trim(),
-                documentId: form['affiliate-id'].value.trim(),
-                email: form['affiliate-email'].value.trim(),
-                phone: form['affiliate-phone'].value.trim(),
-                address: form['affiliate-address'].value.trim(),
-                healthPlan: selectedPlan ? selectedPlan.value : null,
-                pensionPlan: form['pension-plan'].value,
-                arlPlan: form['arl-plan'].value,
-                ccfPlan: form['ccf-plan'].value,
-                advisorId: form['advisor-select-list'].value,
-                startDate: form['affiliate-start-date'].value,
-                endDate: form['affiliate-end-date'].value,
-                status: form['affiliate-status'].value,
-                notes: form['affiliate-notes'].value.trim(),
-                manualCosts: null,
-                manualCommission: null
-            };
-            if (manualOverride) {
-                affiliateData.manualCosts = {
-                    health: Number(form['manual-cost-health'].value) || 0,
-                    pension: Number(form['manual-cost-pension'].value) || 0,
-                    arl: Number(form['manual-cost-arl'].value) || 0,
-                    ccf: Number(form['manual-cost-ccf'].value) || 0
-                };
-                affiliateData.manualCommission = Number(form['manual-commission'].value) || null;
-            }
-            const existingId = form['affiliate-doc-id'].value;
+            e.preventDefault();
+            const form = e.target;
+            const selectedPlan = form.querySelector('input[name="health-plan"]:checked');
+            const manualOverride = form['manual-override-checkbox'].checked;
+            if (!selectedPlan && !manualOverride && healthPlans.length > 0) {
+                return showToast('Debe seleccionar un plan o ingresar costos manuales.', 'error');
+            }
+            const affiliateData = {
+                name: form['affiliate-name'].value.trim(),
+                documentId: form['affiliate-id'].value.trim(),
+                email: form['affiliate-email'].value.trim(),
+                phone: form['affiliate-phone'].value.trim(),
+                address: form['affiliate-address'].value.trim(),
+                healthPlan: selectedPlan ? selectedPlan.value : null,
+                pensionPlan: form['pension-plan'].value,
+                arlPlan: form['arl-plan'].value,
+                ccfPlan: form['ccf-plan'].value,
+                advisorId: form['advisor-select-list'].value,
+                startDate: form['affiliate-start-date'].value,
+                endDate: form['affiliate-end-date'].value,
+                status: form['affiliate-status'].value,
+                notes: form['affiliate-notes'].value.trim(),
+                manualCosts: null,
+                manualCommission: null
+            };
+            if (manualOverride) {
+                affiliateData.manualCosts = {
+                    health: Number(form['manual-cost-health'].value) || 0,
+                    pension: Number(form['manual-cost-pension'].value) || 0,
+                    arl: Number(form['manual-cost-arl'].value) || 0,
+                    ccf: Number(form['manual-cost-ccf'].value) || 0
+                };
+                affiliateData.manualCommission = Number(form['manual-commission'].value) || null;
+            }
+            const existingId = form['affiliate-doc-id'].value;
 
-            if (existingId) {
-                affiliateData.id = existingId;
-                const oldAffiliate = affiliates.find(a => a.id === existingId);
-                if (oldAffiliate && oldAffiliate.status !== affiliateData.status) {
-                    createNovedad('status_change', `El estado de ${affiliateData.name} cambi&#243; de ${oldAffiliate.status} a ${affiliateData.status}.`);
-                }
-                await saveDataToFirestore('affiliates', affiliateData);
-                modalManager.close('affiliate-modal');
-                showToast('Afiliado actualizado correctamente.');
+            if (existingId) {
+                affiliateData.id = existingId;
+                const oldAffiliate = affiliates.find(a => a.id === existingId);
+                if (oldAffiliate && oldAffiliate.status !== affiliateData.status) {
+                    createNovedad('status_change', `El estado de ${affiliateData.name} cambió de ${oldAffiliate.status} a ${affiliateData.status}.`);
+                }
+                await saveDataToFirestore('affiliates', affiliateData);
+                modalManager.close('affiliate-modal');
+                showToast('Afiliado actualizado correctamente.');
 
-            } else {
+            } else {
                 const docRef = doc(collection(db, `users/${adminUidForRole}/affiliates`));
                 affiliateData.id = docRef.id;
                 affiliateData.createdAt = serverTimestamp();
@@ -2061,7 +2012,7 @@ if (filterAffiliatePaymentStatus) {
                     modalManager.open('new-affiliate-success-modal');
                 }, 250);
             }
-        });
+        });
 
         document.getElementById('advisor-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -2096,44 +2047,44 @@ if (filterAffiliatePaymentStatus) {
             }
         });
 
-    document.getElementById('success-download-pdf-btn').addEventListener('click', () => {
-        if (!lastCreatedAffiliate) return;
+        document.getElementById('success-download-pdf-btn').addEventListener('click', () => {
+            if (!lastCreatedAffiliate) return;
 
-        const planSeleccionado = healthPlans.find(p => p.id === lastCreatedAffiliate.healthPlan) || {};
-        const asesorAsignado = advisors.find(a => a.id === lastCreatedAffiliate.advisorId) || {};
-        
-        generarReciboAfiliacionPDF(lastCreatedAffiliate, planSeleccionado, asesorAsignado, companyProfile);
-    });
+            const planSeleccionado = healthPlans.find(p => p.id === lastCreatedAffiliate.healthPlan) || {};
+            const asesorAsignado = advisors.find(a => a.id === lastCreatedAffiliate.advisorId) || {};
+            
+            generarReciboAfiliacionPDF(lastCreatedAffiliate, planSeleccionado, asesorAsignado, companyProfile);
+        });
 
-    document.getElementById('success-share-btn').addEventListener('click', async () => {
-        if (!lastCreatedAffiliate) return;
+        document.getElementById('success-share-btn').addEventListener('click', async () => {
+            if (!lastCreatedAffiliate) return;
 
-        const affiliateName = lastCreatedAffiliate.name;
-        const companyName = companyProfile.name || 'nuestros servicios de salud';
-        const shareText = `&#161;Hola, ${affiliateName}! Tu afiliaci&#243;n en ${companyName} ha sido exitosa. &#161;Bienvenido/a!`;
+            const affiliateName = lastCreatedAffiliate.name;
+            const companyName = companyProfile.name || 'nuestros servicios de salud';
+            const shareText = `¡Hola, ${affiliateName}! Tu afiliación en ${companyName} ha sido exitosa. ¡Bienvenido/a!`;
 
-        if (navigator.share) {
-            try {
-                await navigator.share({
-                    title: 'Afiliaci&#243;n Exitosa',
-                    text: shareText,
-                });
-            } catch (error) {
-                console.error('Error al intentar compartir:', error);
-                showToast('No se pudo completar la acci&#243;n de compartir.', 'error');
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Afiliación Exitosa',
+                        text: shareText,
+                    });
+                } catch (error) {
+                    console.error('Error al intentar compartir:', error);
+                    showToast('No se pudo completar la acción de compartir.', 'error');
+                }
+            } else {
+                showToast('La función de compartir no está disponible en este navegador.', 'error');
             }
-        } else {
-            showToast('La funci&#243;n de compartir no est&#225; disponible en este navegador.', 'error');
-        }
-    });
+        });
         
-    document.getElementById('affiliate-modal').addEventListener('change', (e) => {
-        if (e.target.id === 'manual-override-checkbox') {
-            const manualContainer = document.getElementById('manual-override-container');
-            const isChecked = e.target.checked;
-            manualContainer.classList.toggle('hidden', !isChecked);
-        }
-    });
+        document.getElementById('affiliate-modal').addEventListener('change', (e) => {
+            if (e.target.id === 'manual-override-checkbox') {
+                const manualContainer = document.getElementById('manual-override-container');
+                const isChecked = e.target.checked;
+                manualContainer.classList.toggle('hidden', !isChecked);
+            }
+        });
         
         
         document.getElementById('plan-form').addEventListener('submit', async (e) => {
@@ -2205,62 +2156,62 @@ if (filterAffiliatePaymentStatus) {
             }
         });
 
-    document.getElementById('transaction-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const saveButton = e.target.querySelector('button[type="submit"]');
-        saveButton.disabled = true;
-        saveButton.textContent = 'Guardando...';
+        document.getElementById('transaction-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const saveButton = e.target.querySelector('button[type="submit"]');
+            saveButton.disabled = true;
+            saveButton.textContent = 'Guardando...';
 
-        try {
-            const form = e.target;
-            const transactionType = form['transaction-type'].value; 
+            try {
+                const form = e.target;
+                const transactionType = form['transaction-type'].value; 
 
-            const transactionData = {
-                concept: form['transaction-concept'].value.trim(),
-                amount: Number(form['transaction-amount'].value),
-                date: form['transaction-date'].value,
-                type: transactionType,
-            };
+                const transactionData = {
+                    concept: form['transaction-concept'].value.trim(),
+                    amount: Number(form['transaction-amount'].value),
+                    date: form['transaction-date'].value,
+                    type: transactionType,
+                };
 
-            if (!transactionData.concept || transactionData.amount <= 0 || !transactionData.date) {
-                showToast('Por favor, completa todos los campos correctamente.', 'error');
+                if (!transactionData.concept || transactionData.amount <= 0 || !transactionData.date) {
+                    showToast('Por favor, completa todos los campos correctamente.', 'error');
+                    saveButton.disabled = false;
+                    saveButton.textContent = 'Guardar';
+                    return; 
+                }
+
+                const docRef = doc(collection(db, `users/${adminUidForRole}/manualTransactions`));
+                transactionData.id = docRef.id;
+
+                await saveDataToFirestore('manualTransactions', transactionData);
+
+                showToast(`El ${transactionType} se guardo; correctamente.`, 'success');
+                modalManager.close('transaction-modal');
+
+            } catch (error) {
+                console.error("Error al guardar la transacción:", error);
+                showToast('Hubo un error al guardar la transacción.', 'error');
+            } finally {
                 saveButton.disabled = false;
                 saveButton.textContent = 'Guardar';
-                return; 
             }
+        });
 
-            const docRef = doc(collection(db, `users/${adminUidForRole}/manualTransactions`));
-            transactionData.id = docRef.id;
+        const setupThemePreview = (selectorId, applyFunction) => {
+            const selectorContainer = document.getElementById(selectorId);
+            if (selectorContainer) {
+                selectorContainer.addEventListener('change', (e) => {
+                    if (e.target.type === 'radio' && e.target.name) {
+                        const selectedValue = e.target.value;
+                        applyFunction(selectedValue);
+                    }
+                });
+            }
+        };
 
-            await saveDataToFirestore('manualTransactions', transactionData);
-
-            showToast(`El ${transactionType} se guardo; correctamente.`, 'success');
-            modalManager.close('transaction-modal');
-
-        } catch (error) {
-            console.error("Error al guardar la transacci&#243;n:", error);
-            showToast('Hubo un error al guardar la transacción.', 'error');
-        } finally {
-            saveButton.disabled = false;
-            saveButton.textContent = 'Guardar';
-        }
-    });
-
-    const setupThemePreview = (selectorId, applyFunction) => {
-        const selectorContainer = document.getElementById(selectorId);
-        if (selectorContainer) {
-            selectorContainer.addEventListener('change', (e) => {
-                if (e.target.type === 'radio' && e.target.name) {
-                    const selectedValue = e.target.value;
-                    applyFunction(selectedValue);
-                }
-            });
-        }
-    };
-
-    setupThemePreview('theme-selector', applyTheme);
-    setupThemePreview('sidebar-theme-selector', applySidebarTheme);
-    setupThemePreview('bottom-nav-theme-selector', applyBottomNavTheme);
+        setupThemePreview('theme-selector', applyTheme);
+        setupThemePreview('sidebar-theme-selector', applySidebarTheme);
+        setupThemePreview('bottom-nav-theme-selector', applyBottomNavTheme);
 
         document.getElementById('mark-novedades-read').addEventListener('click', async () => {
             const unreadNovedades = novedades.filter(n => n.read === false);
@@ -2339,7 +2290,7 @@ if (filterAffiliatePaymentStatus) {
         doc.text(`NIT: ${companyProfileData.nit || 'N/D'}`, 190, 25, { align: 'right' });
         doc.text(`Contacto: ${companyProfileData.phone || companyProfileData.email || 'N/D'}`, 190, 30, { align: 'right' });
         doc.setFont("helvetica", "bold");
-        doc.text(`Recibo N176;: ${affiliateData.id.slice(-7).toUpperCase()}`, 190, 45, { align: 'right' });
+        doc.text(`Recibo N°: ${affiliateData.id.slice(-7).toUpperCase()}`, 190, 45, { align: 'right' });
         doc.setFont("helvetica", "normal");
         doc.text(`Fecha de Emisión: ${generationDate}`, 190, 50, { align: 'right' });
 
@@ -2417,10 +2368,10 @@ if (filterAffiliatePaymentStatus) {
             const modal = document.getElementById(modalId); if (!modal) return;
             const form = modal.querySelector('form'); if(form) form.reset();
             const titles = { 'affiliate-modal': 'Afiliado', 'advisor-modal': 'Asesor', 'settings-modal': 'Configuración', 'plan-modal': 'Plan de Salud', 'transaction-modal': 'Transacción', 'license-modal': 'Activar Licencia' };
-            const titleText = titles[modalId];
-            if (titleText) {
-                modal.querySelector('h2').textContent = data?.id ? `Editar ${titleText}` : (data?.title || `Nuevo ${titleText}`);
-            }
+            const titleText = titles[modalId];
+            if (titleText) {
+                modal.querySelector('h2').textContent = data?.id ? `Editar ${titleText}` : (data?.title || `Nuevo ${titleText}`);
+            }
             if (modalId === 'license-modal') { document.getElementById('license-error-message').textContent = ''; }
             else if (modalId === 'affiliate-modal') {
                 populateAdvisorSelect(); renderHealthPlanCards();
@@ -2461,28 +2412,21 @@ if (filterAffiliatePaymentStatus) {
     function exportToCSV(headers, data, filename) { const csvRows = [headers.join(',')]; for (const row of data) { const values = headers.map(header => `"${('' + row[header]).replace(/"/g, '\\"')}"`); csvRows.push(values.join(',')); } const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); window.URL.revokeObjectURL(url); }
     function handleExportAffiliates() { const headers = ['Nombre', 'Documento', 'Email', 'Telefono', 'Direccion', 'Asesor', 'Estado', 'Fecha de Inicio', 'Plan de Salud', 'Fondo Pension', 'ARL', 'Caja Comp.']; const dataToExport = affiliates.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const plan = healthPlans.find(p=> p.id === aff.healthPlan); return { 'Nombre': aff.name, 'Documento': aff.documentId, 'Email': aff.email, 'Telefono': aff.phone, 'Direccion': aff.address, 'Asesor': advisor ? advisor.name : 'N/A', 'Estado': aff.status, 'Fecha de Inicio': aff.startDate, 'Plan de Salud': plan ? plan.name : 'N/A', 'Fondo Pension': aff.pensionPlan, 'ARL': aff.arlPlan, 'Caja Comp.': aff.ccfPlan }; }); exportToCSV(headers, dataToExport, 'afiliados_seb_salud.csv'); showToast('Exportando afiliados a CSV.'); }
     function handleExportAdvisors() { const headers = ['Nombre', 'Comision (%)', 'Total Afiliados', 'Comision Total Generada']; const dataToExport = advisors.map(advisor => { const advisorAffiliates = affiliates.filter(a => a.advisorId === advisor.id); const totalCommission = advisorAffiliates.reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0); return { 'Nombre': advisor.name, 'Comision (%)': advisor.commissionRate, 'Total Afiliados': advisorAffiliates.length, 'Comision Total Generada': totalCommission }; }); exportToCSV(headers, dataToExport, 'asesores_seb_salud.csv'); showToast('Exportando asesores a CSV.'); }
-    function getFirebaseAuthErrorMessage(error) { switch (error.code) { case 'auth/invalid-email': return 'El correo es inv&#225;lido.'; case 'auth/user-not-found': return 'Usuario no encontrado.'; case 'auth/wrong-password': return 'Contrase&#241;a incorrecta.'; case 'auth/email-already-in-use': return 'El correo ya est&#225; en uso.'; case 'auth/weak-password': return 'La contrase&#241;a es muy d&#233;bil (m&#237;nimo 6 caracteres).'; default: 'Ocurri&#243; un error inesperado. Intenta de nuevo.'; } }
+    function getFirebaseAuthErrorMessage(error) { switch (error.code) { case 'auth/invalid-email': return 'El correo es inválido.'; case 'auth/user-not-found': return 'Usuario no encontrado.'; case 'auth/wrong-password': return 'Contraseña incorrecta.'; case 'auth/email-already-in-use': return 'El correo ya está en uso.'; case 'auth/weak-password': return 'La contraseña es muy débil (mínimo 6 caracteres).'; default: 'Ocurrió un error inesperado. Intenta de nuevo.'; } }
 </script>
-
 <script>
-  // SCRIPT DEL SERVICE WORKER CON RUTA CORREGIDA
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js') // RUTA CORREGIDA
-        .then(registration => {
-          console.log('Service Worker registrado con Éxito:', registration.scope);
-        })
-        .catch(error => {
-          console.log('Error al registrar el Service Worker:', error);
-        });
-    });
-  }
+  // SCRIPT DEL SERVICE WORKER CON RUTA CORREGIDA
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js') // RUTA CORREGIDA
+        .then(registration => {
+          console.log('Service Worker registrado con Éxito:', registration.scope);
+        })
+        .catch(error => {
+          console.log('Error al registrar el Service Worker:', error);
+        });
+    });
+  }
 </script>
 </body>
 </html>
-
-
-
-
-
-
