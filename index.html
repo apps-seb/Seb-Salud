@@ -1446,62 +1446,90 @@
         `).join('');
     }
 
-    function renderCalendarAsList() {
-        const range = parseInt(document.getElementById('calendar-list-range-filter').value, 10);
-        const headContainer = document.getElementById('calendar-list-head');
-        const bodyContainer = document.getElementById('calendar-list-body');
-        const monthsLocale = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    // CÓDIGO MODIFICADO Y MEJORADO
+function renderCalendarAsList() {
+    const range = parseInt(document.getElementById('calendar-list-range-filter').value, 10);
+    const headContainer = document.getElementById('calendar-list-head');
+    const bodyContainer = document.getElementById('calendar-list-body');
+    const monthsLocale = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
-        const endDate = new Date();
-        const startDate = new Date();
-        startDate.setMonth(endDate.getMonth() - range + 1);
-        startDate.setDate(1);
+    // 1. OBTENER LOS MESES PARA LAS CABECERAS (lógica sin cambios)
+    const monthHeaders = [];
+    let currentDate = new Date();
+    currentDate.setDate(1); // Normalizar al primer día del mes
+    for (let i = 0; i < range; i++) {
+        monthHeaders.unshift({ // Usamos unshift para que queden en orden cronológico
+            year: currentDate.getFullYear(),
+            month: currentDate.getMonth(),
+            label: `${monthsLocale[currentDate.getMonth()]} ${currentDate.getFullYear()}`
+        });
+        currentDate.setMonth(currentDate.getMonth() - 1);
+    }
+    const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+    const endDate = new Date();
 
-        const monthHeaders = [];
-        let currentDate = new Date(endDate);
-        for(let i=0; i < range; i++) {
-            monthHeaders.push({
-                year: currentDate.getFullYear(),
-                month: currentDate.getMonth(),
-                label: `${monthsLocale[currentDate.getMonth()]} ${currentDate.getFullYear()}`
-            });
-            currentDate.setMonth(currentDate.getMonth() - 1);
-        }
+    // 2. GENERAR LAS CABECERAS DE LA TABLA (lógica sin cambios)
+    headContainer.innerHTML = `
+        <tr>
+            <th class="p-3 text-xs font-semibold text-slate-600 uppercase text-left sticky left-0 bg-slate-100 z-10">Asesor</th>
+            ${monthHeaders.map(h => `<th class="p-3 text-xs font-semibold text-slate-600 uppercase text-center">${h.label}</th>`).join('')}
+        </tr>`;
 
-        headContainer.innerHTML = `
-            <tr>
-                <th class="p-3 text-xs font-semibold text-slate-600 uppercase text-left">Asesor</th>
-                ${monthHeaders.map(h => `<th class="p-3 text-xs font-semibold text-slate-600 uppercase text-left">${h.label}</th>`).join('')}
+    // 3. FILTRAR Y AGRUPAR LOS DATOS (lógica sin cambios)
+    const affiliatesInRange = affiliates.filter(aff => aff.createdAt && aff.createdAt >= startDate && aff.createdAt <= endDate);
+    const groupedData = affiliatesInRange.reduce((acc, aff) => {
+        const key = `${aff.createdAt.getFullYear()}-${aff.createdAt.getMonth()}`;
+        if (!acc[aff.advisorId]) acc[aff.advisorId] = {};
+        if (!acc[aff.advisorId][key]) acc[aff.advisorId][key] = [];
+        acc[aff.advisorId][key].push(aff);
+        return acc;
+    }, {});
+
+    if (advisors.length === 0) {
+        bodyContainer.innerHTML = `<tr><td colspan="${range + 1}" class="text-center p-6 text-slate-500">No hay asesores registrados.</td></tr>`;
+        return;
+    }
+
+    // 4. GENERAR EL CUERPO DE LA TABLA CON LA NUEVA LÓGICA DE DESGLOSE
+    bodyContainer.innerHTML = advisors.map(advisor => {
+        const cells = monthHeaders.map(header => {
+            const key = `${header.year}-${header.month}`;
+            const affiliatesForMonth = groupedData[advisor.id]?.[key];
+            const cellId = `${advisor.id}-${key}`; // ID único para cada celda
+
+            if (affiliatesForMonth && affiliatesForMonth.length > 0) {
+                const count = affiliatesForMonth.length;
+                // Generamos el HTML para la celda con el contador, el botón y la lista oculta
+                return `
+                    <td class="p-3 align-top text-center">
+                        <div class="flex items-center justify-center gap-2">
+                            <span class="font-bold text-lg text-primary-600">${count}</span>
+                            <button class="calendar-details-toggle p-1 rounded-full hover:bg-slate-200" data-toggle-cell="${cellId}" title="Ver desglose">
+                                <i data-lucide="chevron-down" class="h-5 w-5 text-slate-500 pointer-events-none details-toggle-icon"></i>
+                            </button>
+                        </div>
+                        <ul id="details-${cellId}" class="hidden text-left mt-2 space-y-1 text-sm max-h-40 overflow-y-auto pr-2">
+                            ${affiliatesForMonth.map(aff => `
+                                <li class="p-1.5 rounded hover:bg-slate-100">
+                                    <p class="font-medium text-slate-800">${aff.name}</p>
+                                    <p class="text-xs text-slate-500">Registrado: ${aff.createdAt.toLocaleDateString('es-CO')}</p>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </td>`;
+            } else {
+                // Si no hay afiliados, mostramos un guion
+                return `<td class="p-3 align-top text-center"><span class="text-slate-400">-</span></td>`;
+            }
+        }).join('');
+
+        return `
+            <tr class="border-b">
+                <td class="p-3 font-semibold text-slate-800 align-top sticky left-0 bg-white z-10">${advisor.name}</td>
+                ${cells}
             </tr>`;
-
-        const affiliatesInRange = affiliates.filter(aff => aff.createdAt && aff.createdAt >= startDate && aff.createdAt <= endDate);
-        
-        const groupedData = affiliatesInRange.reduce((acc, aff) => {
-            const key = `${aff.createdAt.getFullYear()}-${aff.createdAt.getMonth()}`;
-            if (!acc[aff.advisorId]) {
-                acc[aff.advisorId] = {};
-            }
-            if (!acc[aff.advisorId][key]) {
-                acc[aff.advisorId][key] = [];
-            }
-            acc[aff.advisorId][key].push(aff);
-            return acc;
-        }, {});
-
-        if (advisors.length === 0) {
-            bodyContainer.innerHTML = `<tr><td colspan="${range + 1}" class="text-center p-6 text-slate-500">No hay asesores registrados.</td></tr>`;
-            return;
-        }
-
-        bodyContainer.innerHTML = advisors.map(advisor => {
-            const cells = monthHeaders.map(header => {
-                const key = `${header.year}-${header.month}`;
-                const affiliatesForMonth = groupedData[advisor.id]?.[key];
-                const listItems = affiliatesForMonth
-                    ? `<ul>${affiliatesForMonth.map(aff => `<li class="py-1">${aff.name}</li>`).join('')}</ul>`
-                    : '<span class="text-slate-400">-</span>';
-                return `<td class="p-3 align-top">${listItems}</td>`;
-            }).join('');
+    }).join('');
+}
             return `
                 <tr>
                     <td class="p-3 font-semibold text-slate-800 align-top">${advisor.name}</td>
@@ -1936,6 +1964,31 @@ if (filterAffiliatePaymentStatus) {
             }
             else if (button.id === 'sell-plan-btn') { if (!lastQuoteResult) { showToast('Por favor, realiza una cotizaci&#243;n primero.', 'error'); return; } modalManager.open('affiliate-modal'); setTimeout(() => { const form = document.getElementById('affiliate-form'); if (!form) return; form['manual-override-checkbox'].checked = true; document.getElementById('manual-override-container').classList.remove('hidden'); form['manual-cost-health'].value = lastQuoteResult.health ? Math.round(lastQuoteResult.health.total) : ''; form['manual-cost-pension'].value = lastQuoteResult.pension ? Math.round(lastQuoteResult.pension.total) : ''; form['manual-cost-arl'].value = lastQuoteResult.arl ? Math.round(lastQuoteResult.arl.total) : ''; form['manual-cost-ccf'].value = lastQuoteResult.ccf ? Math.round(lastQuoteResult.ccf.total) : ''; const incomeValue = Number(document.getElementById('income').value); form['affiliate-notes'].value = `Cotizaci&#243;n inicial basada en un ingreso mensual de ${formatCurrency(incomeValue)}. IBC: ${formatCurrency(lastQuoteResult.ibc)}.`; showToast('Datos de cotizaci&#243;n precargados.'); }, 100); } 
         });
+        // --- Lógica de desglose para la vista de Calendario ---
+        const calendarListBody = document.getElementById('calendar-list-body');
+        if(calendarListBody) {
+            calendarListBody.addEventListener('click', (e) => {
+                const toggleButton = e.target.closest('.calendar-details-toggle');
+  
+                if (!toggleButton) return; // Si no se hizo clic en un botón, no hacer nada
+  
+                e.preventDefault();
+                
+                const cellId = toggleButton.dataset.toggleCell;
+                const detailsList = document.getElementById(`details-${cellId}`);
+                const icon = toggleButton.querySelector('.details-toggle-icon');
+  
+                if (detailsList) {
+                    // Alternar la visibilidad de la lista de nombres
+                    detailsList.classList.toggle('hidden');
+                    
+                    // Alternar la clase en el botón para manejar el estado visual (opcional pero recomendado)
+                    toggleButton.classList.toggle('details-shown');
+                    
+                    // La clase 'details-shown' con el CSS existente rotará el ícono
+                }
+            });
+        }
         
         document.getElementById('login-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { await signInWithEmailAndPassword(auth, e.target['login-email'].value, e.target['login-password'].value); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('register-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { const userCredential = await createUserWithEmailAndPassword(auth, e.target['register-email'].value, e.target['register-password'].value); await setupNewUserDocument(userCredential.user); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
@@ -2427,6 +2480,7 @@ if (filterAffiliatePaymentStatus) {
 </script>
 </body>
 </html>
+
 
 
 
