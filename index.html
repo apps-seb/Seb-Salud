@@ -1786,6 +1786,41 @@ document.addEventListener('click', (e) => {
     }
 });
 // --- FIN LÓGICA DEL BUSCADOR GLOBAL ---
+        // --- INICIO LÓGICA DE FILTROS EN TIEMPO REAL (SECCIÓN AFILIADOS) ---
+
+// 1. Obtenemos las referencias a los controles de filtro de la sección "Afiliados"
+const searchAffiliateInput = document.getElementById('search-affiliate');
+const filterAffiliateStatus = document.getElementById('filter-affiliate-status');
+const filterAffiliatePaymentStatus = document.getElementById('filter-affiliate-payment-status');
+
+// 2. Creamos una versión "debounced" de la función que renderiza la lista.
+// Esto evita que la lista se redibuje con cada letra que escribes, mejorando el rendimiento.
+// ¡Reutilizamos la función debounce que ya creamos para el buscador principal!
+const debouncedRenderAffiliates = debounce(renderAffiliatesList, 300);
+
+// 3. Añadimos los event listeners a cada control de filtro
+if (searchAffiliateInput) {
+    searchAffiliateInput.addEventListener('input', () => {
+        // Cuando el usuario escribe en la barra de búsqueda, llamamos a la función optimizada
+        debouncedRenderAffiliates();
+    });
+}
+
+if (filterAffiliateStatus) {
+    filterAffiliateStatus.addEventListener('change', () => {
+        // Cuando el usuario cambia el selector de estado, redibujamos la lista inmediatamente
+        renderAffiliatesList();
+    });
+}
+
+if (filterAffiliatePaymentStatus) {
+    filterAffiliatePaymentStatus.addEventListener('change', () => {
+        // Cuando el usuario cambia el selector de estado de pago, redibujamos la lista
+        renderAffiliatesList();
+    });
+}
+
+// --- FIN LÓGICA DE FILTROS EN TIEMPO REAL ---
         document.getElementById('invite-user-form').addEventListener('submit', handleInviteUser);
         const inviteRoleSelect = document.getElementById('invite-role');
         const inviteLinkContainer = document.getElementById('invite-link-container');
@@ -2392,4 +2427,5 @@ document.addEventListener('click', (e) => {
 </script>
 </body>
 </html>
+
 
