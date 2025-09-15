@@ -617,12 +617,13 @@ window.firebase.enableIndexedDbPersistence(db)
   });
 // FIN DEL BLOQUE CORREGIDO
 
-    let currentUser = null;
 
     // --- ESTADO GLOBAL PARA ROLES ---
+    let currentUser = null;
     let currentUserRole = null; // 'admin', 'asesor', 'afiliado'
     let adminUidForRole = null; // UID del admin al que pertenece el usuario con rol
     let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
+    
 
     // --- ESTADO GLOBAL Y CONFIGURACIÓN ---
     let affiliates = [], advisors = [], manualTransactions = [], novedades = [], healthPlans = [], userRoles = [];
@@ -2321,6 +2322,7 @@ inviteRoleSelect.addEventListener('change', (e) => {
 </script>
 </body>
 </html>
+
 
 
 
