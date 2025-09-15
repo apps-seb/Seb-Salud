@@ -2224,7 +2224,13 @@ inviteRoleSelect.addEventListener('change', (e) => {
             const modal = document.getElementById(modalId); if (!modal) return;
             const form = modal.querySelector('form'); if(form) form.reset();
             const titles = { 'affiliate-modal': 'Afiliado', 'advisor-modal': 'Asesor', 'settings-modal': 'Configuración', 'plan-modal': 'Plan de Salud', 'transaction-modal': 'Transacción', 'license-modal': 'Activar Licencia' };
-            modal.querySelector('h2').textContent = data?.id ? `Editar ${titles[modalId]}` : (data?.title || `Nuevo ${titles[modalId]}`);
+            // --- INICIO DE LA MODIFICACIÓN ---
+            const titleText = titles[modalId];
+            // Solo cambiamos el h2 si el modalId existe en nuestra lista de titles
+            if (titleText) {
+                modal.querySelector('h2').textContent = data?.id ? `Editar ${titleText}` : (data?.title || `Nuevo ${titleText}`);
+            }
+            // --- FIN DE LA MODIFICACIÓN ---
             if (modalId === 'license-modal') { document.getElementById('license-error-message').textContent = ''; }
             else if (modalId === 'affiliate-modal') {
                 populateAdvisorSelect(); renderHealthPlanCards();
@@ -2269,6 +2275,7 @@ inviteRoleSelect.addEventListener('change', (e) => {
 </script>
 </body>
 </html>
+
 
 
 
