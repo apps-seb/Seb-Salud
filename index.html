@@ -131,6 +131,17 @@
         [data-theme="spotify"] ::-webkit-scrollbar-track { background: #181818; }
         [data-theme="spotify"] ::-webkit-scrollbar-thumb { background: #535353; }
         [data-theme="spotify"] ::-webkit-scrollbar-thumb:hover { background: #b3b3b3; }
+        [data-theme="spotify"] .bg-slate-100 {
+    background-color: #282828;
+    color: white;
+}
+[data-theme="spotify"] #header-search-results {
+    background-color: #282828 !important;
+    border-color: #404040 !important;
+}
+[data-theme="spotify"] .search-result-item:hover {
+    background-color: #3a3a3a !important;
+}
         [data-theme="spotify"] .health-plan-card { border-color: #404040; }
 
 
@@ -194,26 +205,53 @@
             <div class="px-4 py-4 border-t flex-shrink-0"><p class="text-xs text-slate-400 uppercase tracking-wider">Usuario Conectado</p><p id="user-email-display" class="font-mono rounded p-1 text-xs break-words mt-1"></p><button id="logout-btn" class="w-full mt-3 text-left text-sm flex items-center"><i data-lucide="log-out" class="w-4 h-4 mr-2"></i>Cerrar Sesi&#243;n</button></div></aside>
             <div class="flex-1 flex flex-col md:ml-64 relative">
                 <header class="fixed top-0 inset-x-0 md:left-64 bg-white/80 backdrop-blur-md shadow-sm h-16 flex items-center justify-between px-4 z-20 border-b border-slate-200/75">
-                    <div class="flex items-center">
-                        <h1 id="header-title" class="text-xl font-semibold text-slate-700 hidden md:block">Dashboard</h1>
-                        <div class="flex items-center md:hidden">
-                            <i data-lucide="shield-check" class="h-6 w-6 text-primary-500 logo-icon"></i>
-                            <span class="ml-2 text-lg font-bold">Seb Salud</span>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button id="novedades-toggle-btn" class="relative text-slate-600 focus:outline-none p-2 rounded-full hover:bg-slate-200">
-                            <i data-lucide="bell" class="h-6 w-6 pointer-events-none"></i>
-                            <span id="novedades-header-badge" class="novedades-badge hidden"></span>
-                        </button>
-                        <button id="profile-toggle-btn" class="relative text-slate-600 focus:outline-none p-2 rounded-full hover:bg-slate-200">
-                            <i data-lucide="user-circle-2" class="h-6 w-6 pointer-events-none"></i>
-                        </button>
-                        <button id="menu-toggle" class="text-slate-600 focus:outline-none md:hidden p-2 rounded-full hover:bg-slate-200">
-                            <i data-lucide="menu" class="h-6 w-6 pointer-events-none"></i>
-                        </button>
-                    </div>
-                </header>
+    
+    <div id="header-main-content" class="flex items-center flex-1">
+        <div class="flex items-center">
+            <h1 id="header-title" class="text-xl font-semibold text-slate-700 hidden md:block">Dashboard</h1>
+            <div class="flex items-center md:hidden">
+                <i data-lucide="shield-check" class="h-6 w-6 text-primary-500 logo-icon"></i>
+                <span class="ml-2 text-lg font-bold">Seb Salud</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="header-search-container" class="relative flex-1 max-w-xl mx-auto hidden md:flex items-center">
+        <div class="relative w-full">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i data-lucide="search" class="h-5 w-5 text-slate-400"></i>
+            </div>
+            <input type="text" id="header-search-input" placeholder="Buscar afiliado..." 
+                   class="block w-full bg-slate-100 border border-transparent rounded-lg py-2 pl-10 pr-4 
+                          focus:outline-none focus:ring-2 focus:ring-primary-600 focus:bg-white"
+                   autocomplete="off">
+        </div>
+        <button id="close-search-mobile" class="ml-2 p-2 text-slate-500 hover:text-slate-800 md:hidden">
+            <i data-lucide="x" class="h-6 w-6"></i>
+        </button>
+        <div id="header-search-results" 
+             class="absolute top-full mt-2 w-full bg-white rounded-lg shadow-2xl border border-slate-200/50 
+                    overflow-y-auto max-h-80 z-50 hidden">
+            </div>
+    </div>
+
+    <div id="header-actions" class="flex items-center gap-2 flex-shrink-0">
+        <button id="search-toggle-mobile" class="text-slate-600 focus:outline-none p-2 rounded-full hover:bg-slate-200 md:hidden">
+            <i data-lucide="search" class="h-6 w-6 pointer-events-none"></i>
+        </button>
+        
+        <button id="novedades-toggle-btn" class="relative text-slate-600 focus:outline-none p-2 rounded-full hover:bg-slate-200">
+            <i data-lucide="bell" class="h-6 w-6 pointer-events-none"></i>
+            <span id="novedades-header-badge" class="novedades-badge hidden"></span>
+        </button>
+        <button id="profile-toggle-btn" class="relative text-slate-600 focus:outline-none p-2 rounded-full hover:bg-slate-200">
+            <i data-lucide="user-circle-2" class="h-6 w-6 pointer-events-none"></i>
+        </button>
+        <button id="menu-toggle" class="text-slate-600 focus:outline-none md:hidden p-2 rounded-full hover:bg-slate-200">
+            <i data-lucide="menu" class="h-6 w-6 pointer-events-none"></i>
+        </button>
+    </div>
+</header>
 
                 <div id="profile-modal" class="absolute top-[68px] right-4 z-30 w-64 bg-white rounded-xl shadow-2xl border border-slate-200/50 p-1.5 origin-top-right transition-transform duration-200 ease-out transform scale-95 opacity-0 pointer-events-none">
                     <div class="p-2">
@@ -1628,6 +1666,126 @@
 
 
     document.addEventListener('DOMContentLoaded', () => {
+        // --- INICIO LÓGICA DEL BUSCADOR GLOBAL (VERSIÓN MÓVIL INCLUIDA) ---
+
+// 1. Función de utilidad para optimizar la búsqueda (debounce)
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        const context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), delay);
+    };
+}
+
+// 2. Obtener referencias a todos los elementos que controlaremos
+const headerSearchInput = document.getElementById('header-search-input');
+const headerSearchResults = document.getElementById('header-search-results');
+const headerSearchContainer = document.getElementById('header-search-container');
+const headerMainContent = document.getElementById('header-main-content');
+const searchToggleMobile = document.getElementById('search-toggle-mobile');
+const closeSearchMobile = document.getElementById('close-search-mobile');
+const headerActions = document.getElementById('header-actions');
+
+// 3. Función para mostrar u ocultar la interfaz de búsqueda en móvil
+const toggleMobileSearch = (show) => {
+    if (show) {
+        headerMainContent.classList.add('hidden');
+        headerSearchContainer.classList.remove('hidden');
+        headerSearchContainer.classList.add('flex');
+        headerSearchInput.focus();
+    } else {
+        headerMainContent.classList.remove('hidden');
+        headerSearchContainer.classList.add('hidden');
+        headerSearchContainer.classList.remove('flex');
+        headerSearchResults.classList.add('hidden');
+        headerSearchInput.value = '';
+    }
+};
+
+// 4. Asignar los eventos a los botones de abrir y cerrar en móvil
+searchToggleMobile.addEventListener('click', () => toggleMobileSearch(true));
+closeSearchMobile.addEventListener('click', () => toggleMobileSearch(false));
+
+// 5. Función que dibuja los resultados encontrados en la lista desplegable
+const renderHeaderSearchResults = (results) => {
+    if (results.length === 0) {
+        headerSearchResults.innerHTML = `<div class="p-4 text-center text-sm text-slate-500">No se encontraron afiliados.</div>`;
+    } else {
+        headerSearchResults.innerHTML = results.map(aff => `
+            <div class="search-result-item p-3 border-b border-slate-200/50 hover:bg-slate-50 cursor-pointer" 
+                 data-affiliate-id="${aff.id}" data-affiliate-doc="${aff.documentId}">
+                <p class="font-semibold text-slate-800">${aff.name}</p>
+                <p class="text-sm text-slate-500">Doc: ${aff.documentId}</p>
+            </div>
+        `).join('');
+    }
+    // Ajuste de color para temas oscuros
+    if (document.documentElement.dataset.theme === 'spotify') {
+        headerSearchResults.querySelectorAll('p').forEach(p => {
+             if (p.classList.contains('text-slate-800')) { p.style.color = '#f9fafb'; }
+             if (p.classList.contains('text-slate-500')) { p.style.color = '#b3b3b3'; }
+        });
+    }
+    headerSearchResults.classList.remove('hidden');
+};
+
+// 6. Función que filtra los afiliados según lo que se escribe
+const handleHeaderSearch = () => {
+    const searchTerm = headerSearchInput.value.trim().toLowerCase();
+    if (searchTerm.length < 2) {
+        headerSearchResults.classList.add('hidden');
+        return;
+    }
+    const filteredAffiliates = affiliates.filter(aff => 
+        aff.name.toLowerCase().includes(searchTerm) || 
+        aff.documentId.toLowerCase().includes(searchTerm)
+    );
+    renderHeaderSearchResults(filteredAffiliates);
+};
+
+// 7. Crear la versión optimizada de la búsqueda y asignarla al input
+const debouncedSearch = debounce(handleHeaderSearch, 300);
+headerSearchInput.addEventListener('input', debouncedSearch);
+
+// 8. Programar la acción al hacer clic en un resultado de la lista
+headerSearchResults.addEventListener('click', (e) => {
+    const resultItem = e.target.closest('.search-result-item');
+    if (!resultItem) return;
+
+    const affiliateDoc = resultItem.dataset.affiliateDoc;
+    
+    // Navegar a la sección de afiliados
+    renderContent('afiliados');
+    document.querySelectorAll('[data-target]').forEach(l => l.classList.remove('active'));
+    document.querySelectorAll(`[data-target="afiliados"]`).forEach(l => l.classList.add('active'));
+
+    // Usar el buscador de esa sección para mostrar al afiliado
+    const mainAffiliateSearchInput = document.getElementById('search-affiliate');
+    if (mainAffiliateSearchInput) {
+        mainAffiliateSearchInput.value = affiliateDoc;
+        mainAffiliateSearchInput.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    
+    // Cerrar la interfaz de búsqueda
+    if (window.innerWidth < 768) { // Si es móvil
+        toggleMobileSearch(false);
+    } else { // Si es escritorio
+        headerSearchResults.classList.add('hidden');
+        headerSearchInput.value = '';
+    }
+});
+
+// 9. Ocultar la interfaz de búsqueda si se hace clic fuera de ella
+document.addEventListener('click', (e) => {
+    if (!headerSearchContainer.contains(e.target) && !headerActions.contains(e.target)) {
+        headerSearchResults.classList.add('hidden');
+        if (window.innerWidth < 768 && !headerSearchContainer.classList.contains('hidden')) {
+            toggleMobileSearch(false);
+        }
+    }
+});
+// --- FIN LÓGICA DEL BUSCADOR GLOBAL ---
         document.getElementById('invite-user-form').addEventListener('submit', handleInviteUser);
         const inviteRoleSelect = document.getElementById('invite-role');
         const inviteLinkContainer = document.getElementById('invite-link-container');
@@ -2234,6 +2392,7 @@
 </script>
 </body>
 </html>
+
 
 
 
