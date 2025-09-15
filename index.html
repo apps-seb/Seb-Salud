@@ -1908,6 +1908,16 @@ inviteRoleSelect.addEventListener('change', (e) => {
         }
     });
         
+        // --- MANEJO PARA MOSTRAR/OCULTAR COSTOS MANUALES EN EL MODAL DE AFILIADO ---
+    document.getElementById('affiliate-modal').addEventListener('change', (e) => {
+        if (e.target.id === 'manual-override-checkbox') {
+            const manualContainer = document.getElementById('manual-override-container');
+            const isChecked = e.target.checked;
+            manualContainer.classList.toggle('hidden', !isChecked);
+        }
+    });
+        
+        
         // CÓDIGO NUEVO PARA GUARDAR PLANES
         document.getElementById('plan-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -2275,6 +2285,7 @@ inviteRoleSelect.addEventListener('change', (e) => {
 </script>
 </body>
 </html>
+
 
 
 
