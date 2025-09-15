@@ -1784,12 +1784,7 @@ const renderHeaderSearchResults = (results) => {
         headerSearchResults.querySelectorAll('p').forEach(p => {
              if (p.classList.contains('text-slate-800')) { p.style.color = '#f9fafb'; }
              if (p.classList.contains('text-slate-500')) { p.style.color = '#b3b3b3'; }
-
-            // ========= PEGA ESTAS LÍNEAS PARA ACTIVAR LOS FILTROS =========
-document.getElementById('search-affiliate').addEventListener('input', renderAffiliatesList);
-document.getElementById('filter-affiliate-status').addEventListener('change', renderAffiliatesList);
-document.getElementById('filter-affiliate-payment-status').addEventListener('change', renderAffiliatesList);
-// ==============================================================
+        
         });
     }
     headerSearchResults.classList.remove('hidden');
@@ -1849,6 +1844,9 @@ document.addEventListener('click', (e) => {
             toggleMobileSearch(false);
         }
     }
+    document.getElementById('search-affiliate').addEventListener('input', renderAffiliatesList);
+    document.getElementById('filter-affiliate-status').addEventListener('change', renderAffiliatesList);
+    document.getElementById('filter-affiliate-payment-status').addEventListener('change', renderAffiliatesList);
 });
 // --- FIN LÓGICA DEL BUSCADOR GLOBAL ---
         document.getElementById('invite-user-form').addEventListener('submit', handleInviteUser);
@@ -2470,6 +2468,7 @@ document.addEventListener('click', (e) => {
 </script>
 </body>
 </html>
+
 
 
 
