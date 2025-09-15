@@ -1446,14 +1446,14 @@
         `).join('');
     }
 
-    // CÓDIGO MODIFICADO Y MEJORADO
+// REEMPLAZA EL BLOQUE DAÑADO CON ESTA VERSIÓN COMPLETA Y CORRECTA
 function renderCalendarAsList() {
     const range = parseInt(document.getElementById('calendar-list-range-filter').value, 10);
     const headContainer = document.getElementById('calendar-list-head');
     const bodyContainer = document.getElementById('calendar-list-body');
     const monthsLocale = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
-    // 1. OBTENER LOS MESES PARA LAS CABECERAS (lógica sin cambios)
+    // 1. OBTENER LOS MESES PARA LAS CABECERAS
     const monthHeaders = [];
     let currentDate = new Date();
     currentDate.setDate(1); // Normalizar al primer día del mes
@@ -1468,14 +1468,14 @@ function renderCalendarAsList() {
     const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
     const endDate = new Date();
 
-    // 2. GENERAR LAS CABECERAS DE LA TABLA (lógica sin cambios)
+    // 2. GENERAR LAS CABECERAS DE LA TABLA
     headContainer.innerHTML = `
         <tr>
             <th class="p-3 text-xs font-semibold text-slate-600 uppercase text-left sticky left-0 bg-slate-100 z-10">Asesor</th>
             ${monthHeaders.map(h => `<th class="p-3 text-xs font-semibold text-slate-600 uppercase text-center">${h.label}</th>`).join('')}
         </tr>`;
 
-    // 3. FILTRAR Y AGRUPAR LOS DATOS (lógica sin cambios)
+    // 3. FILTRAR Y AGRUPAR LOS DATOS
     const affiliatesInRange = affiliates.filter(aff => aff.createdAt && aff.createdAt >= startDate && aff.createdAt <= endDate);
     const groupedData = affiliatesInRange.reduce((acc, aff) => {
         const key = `${aff.createdAt.getFullYear()}-${aff.createdAt.getMonth()}`;
@@ -1490,7 +1490,7 @@ function renderCalendarAsList() {
         return;
     }
 
-    // 4. GENERAR EL CUERPO DE LA TABLA CON LA NUEVA LÓGICA DE DESGLOSE
+    // 4. GENERAR EL CUERPO DE LA TABLA CON LA LÓGICA DE DESGLOSE
     bodyContainer.innerHTML = advisors.map(advisor => {
         const cells = monthHeaders.map(header => {
             const key = `${header.year}-${header.month}`;
@@ -2480,6 +2480,7 @@ if (filterAffiliatePaymentStatus) {
 </script>
 </body>
 </html>
+
 
 
 
