@@ -2,10 +2,10 @@ const CACHE_NAME = 'seb-salud-cache-v1';
 
 // Lista de recursos básicos para que la app cargue offline.
 const URLS_TO_CACHE = [
-  './', // Representa el index.html
-  './manifest.json',
-  './icons/icon-192x192.png',
-  './icons/icon-512x512.png',
+  '/Seb-Salud/', // Ruta corregida para index.html
+  '/Seb-Salud/manifest.json', // Ruta corregida
+  '/Seb-Salud/icons/icon-192x192.png', // Ruta corregida
+  '/Seb-Salud/icons/icon-512x512.png', // Ruta corregida
   'https://cdn.tailwindcss.com',
   'https://unpkg.com/lucide@latest',
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
