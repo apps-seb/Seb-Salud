@@ -148,61 +148,73 @@
         /* --- NUEVAS ANIMACIONES Y ESTILOS --- */
     
 /* ============================================================== */
-/* === NUEVOS ESTILOS PARA PRELOADER DE EXPANSIÓN Y ROTACIÓN === */
+/* === CÓDIGO CSS MODIFICADO PARA DESORDEN Y EXPANSIÓN DINÁMICA === */
 /* ============================================================== */
 
 .loader-container {
-    height: 60px; /* Mantenemos un alto fijo para alinear */
+    height: 60px;
 }
 
 .loader-circle {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    
-    /* La animación se ejecutará una sola vez y se quedará en su estado final */
-    animation: expand-and-rotate 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 1 forwards;
-    
-    /* Empezamos con los círculos invisibles y listos para animarse */
+    animation: chaotic-expand-and-rotate 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) 1 forwards;
     opacity: 0;
 }
 
-/* Keyframes para la animación de expandir, rotar y aparecer */
-@keyframes expand-and-rotate {
+/* Keyframes para la animación de desorden, expansión y rotación */
+@keyframes chaotic-expand-and-rotate {
     0% {
         opacity: 0;
-        transform: translateY(20px) scale(0.3) rotate(0deg);
+        transform: translate(0px, 20px) scale(0.3) rotate(0deg);
     }
-    60% {
-        opacity: 1;
-        transform: translateY(0) scale(1.1) rotate(360deg);
+    20% { /* Momento de mayor desorden y tamaño */
+        opacity: 0.8;
+        /* Estos valores serán sobrescritos por cada círculo para el desorden */
+        transform: translate(var(--chaos-x), var(--chaos-y)) scale(1.5) rotate(720deg);
     }
-    100% {
+    80% { /* Volviendo a la línea original, pero ligeramente más grande */
         opacity: 1;
-        transform: translateY(0) scale(1) rotate(360deg);
+        transform: translate(0px, 0px) scale(1.1) rotate(720deg);
+    }
+    100% { /* Posición final */
+        opacity: 1;
+        transform: translate(0px, 0px) scale(1) rotate(720deg);
     }
 }
 
 /* --- Paleta de 5 colores fijos para cada círculo --- */
+/* y ahora añadimos variables CSS para el desorden de cada círculo */
 .loader-circle:nth-child(1) {
     background-color: #1DB954; /* Verde Spotify */
     animation-delay: 0.0s;
+    --chaos-x: -15px; /* Movimiento horizontal para el desorden */
+    --chaos-y: 10px;  /* Movimiento vertical para el desorden */
 }
 .loader-circle:nth-child(2) {
     background-color: #38BDF8; /* Azul Espacial */
     animation-delay: 0.1s;
+    --chaos-x: 10px;
+    --chaos-y: -10px;
 }
 .loader-circle:nth-child(3) {
     background-color: #FBBF24; /* Amarillo Elegant */
     animation-delay: 0.2s;
+    --chaos-x: -5px;
+    --chaos-y: 15px;
 }
 .loader-circle:nth-child(4) {
     background-color: #8B5CF6; /* Morado Espacial */
     animation-delay: 0.3s;
+    --chaos-x: 15px;
+    --chaos-y: -5px;
 }
 .loader-circle:nth-child(5) {
     background-color: #DB2777; /* Fucsia Verano Tropical */
     animation-delay: 0.4s;
+    --chaos-x: -10px;
+    --chaos-y: -15px;
 }
         
         .auth-banner {
@@ -2716,6 +2728,7 @@ function formatPhoneNumberForWhatsApp(phone) {
 </script>
 </body>
 </html>
+
 
 
 
