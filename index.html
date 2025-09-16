@@ -195,21 +195,34 @@ button svg {
         <div class="flex h-screen overflow-hidden">
             <div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-30 opacity-0 pointer-events-none md:hidden"></div>
 
-            <aside id="sidebar" class="sidebar w-64 fixed top-0 bottom-16 md:bottom-0 left-0 transform -translate-x-full md:translate-x-0 z-40 flex flex-col">
-                <nav id="sidebar-nav" class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-                    <a href="#" data-target="dashboard" class="nav-link active flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>Dashboard</a>
-                    <a href="#" data-target="empresa" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="building-2" class="w-5 h-5 mr-3"></i>Perfil Empresa</a>
-                    <a href="#" data-target="calendario" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="calendar-days" class="w-5 h-5 mr-3"></i>Calendario</a>
-                    <a href="#" data-target="flujo-caja" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="wallet" class="w-5 h-5 mr-3"></i>Flujo de Caja</a>
-                    <a href="#" data-target="afiliados" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="users" class="w-5 h-5 mr-3"></i>Afiliados</a>
-                    <a href="#" data-target="asesores" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="user-circle" class="w-5 h-5 mr-3"></i>Asesores</a>
-                    <a href="#" data-target="ranking-vendedores" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="award" class="w-5 h-5 mr-3"></i>Ranking Vendedores</a>
-                    <a href="#" data-target="planes" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="shield-plus" class="w-5 h-5 mr-3"></i>Planes de Salud</a>
-                    <a href="#" data-target="cotizador" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="calculator" class="w-5 h-5 mr-3"></i>Cotizador</a>
-                    <a href="#" data-target="gestion-roles" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="users-2" class="w-5 h-5 mr-3"></i>Gesti&#243;n de Roles</a>
-                    <a href="#" data-target="perfil-afiliado" data-role="afiliado" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="user" class="w-5 h-5 mr-3"></i>Mi Perfil</a>
-                </nav>
-            <div class="px-4 py-4 border-t flex-shrink-0"><p class="text-xs text-slate-400 uppercase tracking-wider">Usuario Conectado</p><p id="user-email-display" class="font-mono rounded p-1 text-xs break-words mt-1"></p><button id="logout-btn" class="w-full mt-3 text-left text-sm flex items-center"><i data-lucide="log-out" class="w-4 h-4 mr-2"></i>Cerrar Sesi&#243;n</button></div></aside>
+          <aside id="sidebar" class="sidebar w-64 fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 z-40 flex flex-col">
+        <div class="flex items-center justify-center h-16 border-b flex-shrink-0">
+            <i data-lucide="shield-check" class="h-8 w-8 text-primary-500 logo-icon"></i>
+            <span class="ml-3 text-xl font-bold">Seb Salud</span>
+        </div>
+
+        <div class="flex-1 flex flex-col overflow-y-auto pb-16 md:pb-0">
+            <nav id="sidebar-nav" class="px-4 py-6 space-y-2">
+                <a href="#" data-target="dashboard" class="nav-link active flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>Dashboard</a>
+                <a href="#" data-target="empresa" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="building-2" class="w-5 h-5 mr-3"></i>Perfil Empresa</a>
+                <a href="#" data-target="calendario" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="calendar-days" class="w-5 h-5 mr-3"></i>Calendario</a>
+                <a href="#" data-target="flujo-caja" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="wallet" class="w-5 h-5 mr-3"></i>Flujo de Caja</a>
+                <a href="#" data-target="afiliados" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="users" class="w-5 h-5 mr-3"></i>Afiliados</a>
+                <a href="#" data-target="asesores" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="user-circle" class="w-5 h-5 mr-3"></i>Asesores</a>
+                <a href="#" data-target="ranking-vendedores" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="award" class="w-5 h-5 mr-3"></i>Ranking Vendedores</a>
+                <a href="#" data-target="planes" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="shield-plus" class="w-5 h-5 mr-3"></i>Planes de Salud</a>
+                <a href="#" data-target="cotizador" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="calculator" class="w-5 h-5 mr-3"></i>Cotizador</a>
+                <a href="#" data-target="gestion-roles" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="users-2" class="w-5 h-5 mr-3"></i>Gesti&#243;n de Roles</a>
+                <a href="#" data-target="perfil-afiliado" data-role="afiliado" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="user" class="w-5 h-5 mr-3"></i>Mi Perfil</a>
+            </nav>
+
+            <div class="px-4 py-4 border-t mt-auto flex-shrink-0">
+                <p class="text-xs text-slate-400 uppercase tracking-wider">Usuario Conectado</p>
+                <p id="user-email-display" class="font-mono rounded p-1 text-xs break-words mt-1"></p>
+                <button id="logout-btn" class="w-full mt-3 text-left text-sm flex items-center"><i data-lucide="log-out" class="w-4 h-4 mr-2"></i>Cerrar Sesi&#243;n</button>
+            </div>
+        </div>
+    </aside>
             <div class="flex-1 flex flex-col md:ml-64 relative">
                 <header class="fixed top-0 inset-x-0 md:left-64 bg-white/80 backdrop-blur-md shadow-sm h-16 flex items-center justify-between px-4 z-20 border-b border-slate-200/75">
     
@@ -2548,6 +2561,7 @@ function formatPhoneNumberForWhatsApp(phone) {
 </script>
 </body>
 </html>
+
 
 
 
