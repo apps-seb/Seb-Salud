@@ -724,8 +724,25 @@ button svg {
                 const userRoleDataSnap = await getDoc(userRoleDataRef);
                 userRoleData = userRoleDataSnap.exists() ? userRoleDataSnap.data() : {};
 
-                await initializeAppForUser();
+                // --- INICIO DE LA SOLUCIÓN ---
+                // Precargamos los datos de la empresa ANTES de inicializar la app.
+                try {
+                    const adminProfileRef = doc(db, "users", adminUidForRole);
+                    const adminProfileSnap = await getDoc(adminProfileRef);
+                    if (adminProfileSnap.exists()) {
+                        // Llenamos la variable global 'companyProfile' con los datos.
+                        companyProfile = adminProfileSnap.data().companyProfile || defaultCompanyProfile;
+                    }
+                } catch (error) {
+                    console.error("Error precargando el perfil de la empresa:", error);
+                    // Si falla, usamos el perfil por defecto para que la app no se rompa.
+                    companyProfile = defaultCompanyProfile;
+                }
+                // --- FIN DE LA SOLUCIÓN ---
+
+                await initializeAppForUser(); // Ahora esta función ya tendrá los datos listos.
                 showView(appContainer);
+
             } else {
                 // Es un Administrador
                 currentUserRole = 'admin';
@@ -749,7 +766,7 @@ button svg {
             adminUidForRole = null;
             unsubscribeAllListeners();
             resetLocalData();
-            applyTheme('spotify'); // Regresar al tema spotify al cerrar sesión para la pantalla de login
+            applyTheme('spotify'); 
             showView(authContainer);
             document.getElementById('login-view').style.display = 'block';
             document.getElementById('register-view').style.display = 'none';
@@ -2631,6 +2648,7 @@ function formatPhoneNumberForWhatsApp(phone) {
 </script>
 </body>
 </html>
+
 
 
 
