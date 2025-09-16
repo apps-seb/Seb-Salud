@@ -146,44 +146,62 @@
 
 
         /* --- NUEVAS ANIMACIONES Y ESTILOS --- */
-        /* ============================================= */
-/* === CÓDIGO CSS NUEVO Y FINAL PARA EL PRELOADER DE CÍRCULOS === */
-/* ============================================================= */
+    
+/* ============================================================== */
+/* === NUEVOS ESTILOS PARA PRELOADER DE EXPANSIÓN Y ROTACIÓN === */
+/* ============================================================== */
+
 .loader-container {
-    height: 60px; /* Damos un alto fijo al contenedor para alinear bien */
+    height: 60px; /* Mantenemos un alto fijo para alinear */
 }
 
 .loader-circle {
-    width: 16px;  /* Tamaño de los círculos */
-    height: 16px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    background-color: rgb(var(--color-primary-500)); /* ¡Usa el color primario del tema! */
-    transform: scale(0); /* Empiezan invisibles/pequeños */
-    /* Aplicamos la animación */
-    animation: bounce-loader 1.2s ease-in-out infinite;
+    
+    /* La animación se ejecutará una sola vez y se quedará en su estado final */
+    animation: expand-and-rotate 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 1 forwards;
+    
+    /* Empezamos con los círculos invisibles y listos para animarse */
+    opacity: 0;
 }
 
-/* La animación de "rebote" (crecer y encogerse) */
-@keyframes bounce-loader {
-    0%, 80%, 100% { 
-        transform: scale(0);
-    } 
-    40% { 
-        transform: scale(1.0);
+/* Keyframes para la animación de expandir, rotar y aparecer */
+@keyframes expand-and-rotate {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.3) rotate(0deg);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(0) scale(1.1) rotate(360deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(360deg);
     }
 }
 
-/* Retrasos para crear el efecto de onda secuencial */
+/* --- Paleta de 5 colores fijos para cada círculo --- */
+.loader-circle:nth-child(1) {
+    background-color: #1DB954; /* Verde Spotify */
+    animation-delay: 0.0s;
+}
 .loader-circle:nth-child(2) {
+    background-color: #38BDF8; /* Azul Espacial */
     animation-delay: 0.1s;
 }
 .loader-circle:nth-child(3) {
+    background-color: #FBBF24; /* Amarillo Elegant */
     animation-delay: 0.2s;
 }
 .loader-circle:nth-child(4) {
+    background-color: #8B5CF6; /* Morado Espacial */
     animation-delay: 0.3s;
 }
 .loader-circle:nth-child(5) {
+    background-color: #DB2777; /* Fucsia Verano Tropical */
     animation-delay: 0.4s;
 }
         
@@ -211,14 +229,14 @@ button svg {
 
     <div id="loader" class="fixed inset-0 bg-white z-[101] flex items-center justify-center">
     <div class="flex flex-col items-center">
-        <div class="loader-container flex items-center justify-center space-x-2">
+        <div class="loader-container flex items-center justify-center space-x-3">
             <div class="loader-circle"></div>
             <div class="loader-circle"></div>
             <div class="loader-circle"></div>
             <div class="loader-circle"></div>
             <div class="loader-circle"></div>
         </div>
-        <p class="mt-6 text-slate-600 text-lg">Cargando aplicación...</p>
+        <p class="mt-8 text-slate-500 text-lg font-medium tracking-wide">Preparando tu espacio...</p>
     </div>
 </div>
     <div id="toast" class="fixed top-5 right-5 z-[100] bg-green-500 text-white py-2 px-4 rounded-lg shadow-xl opacity-0 transform translate-y-2 transition-all duration-300"><span id="toast-message"></span></div>
@@ -2698,6 +2716,7 @@ function formatPhoneNumberForWhatsApp(phone) {
 </script>
 </body>
 </html>
+
 
 
 
