@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth" data-theme="spotify">
+<html lang="es" class="scroll-smooth" data-theme="bosque">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -729,6 +729,13 @@ button svg {
     import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query, where, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    /* === INICIO DE LA SOLUCIÓN: APLICAR TEMA AL CARGAR LA PÁGINA === */
+(() => {
+    const savedTheme = localStorage.getItem('userTheme') || 'bosque';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+})();
+/* === FIN DE LA SOLUCIÓN === */
     
     // --- INICIALIZACIÓN Y CONFIGURACIÓN DE FIREBASE ---
     const firebaseConfig = {
@@ -2397,6 +2404,10 @@ function formatPhoneNumberForWhatsApp(phone) {
                     bottomNavTheme: document.querySelector('#bottom-nav-theme-selector input[name="bottom-nav-theme"]:checked').value,
                 };
 
+                /* === INICIO DE LA SOLUCIÓN: GUARDAR TEMA EN NAVEGADOR === */
+localStorage.setItem('userTheme', profileData.theme);
+/* === FIN DE LA SOLUCIÓN === */
+
                 const userDocRef = doc(db, `users/${adminUidForRole}`);
                 
                 await setDoc(userDocRef, {
@@ -2728,6 +2739,7 @@ function formatPhoneNumberForWhatsApp(phone) {
 </script>
 </body>
 </html>
+
 
 
 
