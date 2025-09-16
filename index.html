@@ -2309,35 +2309,28 @@ function formatPhoneNumberForWhatsApp(phone) {
         });
     });
     
-    // Esta es la nueva función mejorada. Reemplaza la anterior por completo.
-async function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, companyProfileData) {
+    async function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, companyProfileData) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
+    const primaryColorRGB = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim().split(' ').map(Number);
+    const formatDate = (dateString) => dateString ? new Date(dateString + 'T00:00:00').toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
 
-    // --- MEJORA DE BRANDING: Carga del Logo ---
+    // --- 1. ENCABEZADO PROFESIONAL ---
     let logoBase64 = null;
     try {
-        const response = await fetch('logo.png'); // Intenta cargar el logo
+        const response = await fetch('logo.png');
         if (response.ok) {
             const blob = await response.blob();
-            logoBase64 = await new Promise((resolve, reject) => {
+            logoBase64 = await new Promise(resolve => {
                 const reader = new FileReader();
                 reader.onloadend = () => resolve(reader.result);
-                reader.onerror = reject;
                 reader.readAsDataURL(blob);
             });
         }
-    } catch (error) {
-        console.warn("No se pudo cargar el logo.png. El PDF se generará sin él.");
-    }
+    } catch (e) { console.warn("logo.png no encontrado."); }
 
-    const primaryColorRGB = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim().split(' ').map(Number);
-    const formatDate = (dateString) => dateString ? new Date(dateString + 'T00:00:00').toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
-    const generationDate = new Date().toLocaleDateString('es-CO', { hour: '2-digit', minute: '2-digit' });
-
-    // --- CABECERA MEJORADA ---
     if (logoBase64) {
-        doc.addImage(logoBase64, 'PNG', 14, 15, 50, 15); // x, y, ancho, alto
+        doc.addImage(logoBase64, 'PNG', 14, 15, 50, 15);
     } else {
         doc.setFontSize(20);
         doc.setFont("helvetica", "bold");
@@ -2348,113 +2341,109 @@ async function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, 
     doc.setFontSize(9);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(100);
-    doc.text(`NIT: ${companyProfileData.nit || 'N/D'}`, 196, 20, { align: 'right' });
-    doc.text(companyProfileData.address || '', 196, 25, { align: 'right' });
-    doc.text(`Tel: ${companyProfileData.phone || 'N/D'}`, 196, 30, { align: 'right' });
+    doc.text(`NIT: ${companyProfileData.nit || 'N/D'}`, 196, 18, { align: 'right' });
+    doc.text(companyProfileData.address || '', 196, 23, { align: 'right' });
+    doc.text(`Tel: ${companyProfileData.phone || 'N/D'}`, 196, 28, { align: 'right' });
 
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(40);
     doc.text("Comprobante de Afiliación", 14, 45);
+    
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.text(`Recibo N°: ${affiliateData.id.slice(-7).toUpperCase()}`, 196, 45, { align: 'right' });
+
     doc.setLineWidth(0.5);
     doc.setDrawColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
     doc.line(14, 48, 196, 48);
 
-    // --- DATOS DEL AFILIADO (Sin cambios) ---
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
-    doc.text("Datos del Afiliado", 14, 60);
+    // --- 2. DATOS DEL AFILIADO (Tabla detallada) ---
     doc.autoTable({
-        startY: 63, theme: 'plain',
+        startY: 55,
+        theme: 'grid',
+        head: [['Datos del Afiliado', 'Información Registrada']],
         body: [
-            ['Nombre Completo:', affiliateData.name],
-            ['Documento:', affiliateData.documentId],
-            ['Correo y Teléfono:', `${affiliateData.email || 'N/D'} / ${affiliateData.phone || 'N/D'}`],
+            ['Nombre Completo', affiliateData.name],
+            ['Documento de Identidad', affiliateData.documentId],
+            ['Correo Electrónico', affiliateData.email || 'No registrado'],
+            ['Teléfono de Contacto', affiliateData.phone || 'No registrado'],
+            ['Dirección de Residencia', affiliateData.address || 'No registrada']
         ],
-        styles: { fontSize: 10, cellPadding: 1.5 },
+        headStyles: { fillColor: primaryColorRGB, fontStyle: 'bold', textColor: [255, 255, 255] },
+        styles: { fontSize: 10, cellPadding: 2.5 },
         columnStyles: { 0: { fontStyle: 'bold' } }
     });
 
     let finalY = doc.lastAutoTable.finalY + 8;
 
-    // --- LÓGICA DE COSTOS MANUALES ---
+    // --- 3. RESUMEN DE SERVICIO Y COSTOS (Sin cambios, ya era robusto) ---
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(40);
+    doc.text("Resumen de Servicio y Costos", 14, finalY);
+
     const hasManualCosts = affiliateData.manualCosts && Object.values(affiliateData.manualCosts).some(cost => cost > 0);
-    
+    let serviceBody = [];
+    let serviceTotal = 0;
+
     if (hasManualCosts) {
-        doc.setFontSize(12);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
-        doc.text("Desglose de Costos de Afiliación", 14, finalY);
-
-        const costsBody = [];
-        const costLabels = { health: 'Salud (EPS)', pension: 'Pensión', arl: 'ARL', ccf: 'Caja de Compensación' };
-        let totalManual = 0;
-
+        const costLabels = { health: 'Aporte Salud (EPS)', pension: 'Aporte Pensión', arl: 'Aporte ARL', ccf: 'Aporte Caja de Compensación' };
         for (const [key, value] of Object.entries(affiliateData.manualCosts)) {
             if (value > 0) {
-                costsBody.push([costLabels[key], formatCurrency(value)]);
-                totalManual += value;
+                serviceBody.push([costLabels[key], formatCurrency(value)]);
+                serviceTotal += value;
             }
         }
-        
-        doc.autoTable({
-            startY: finalY + 3,
-            theme: 'striped',
-            headStyles: { fillColor: [241, 245, 249], textColor: [51, 65, 85], fontStyle: 'bold' },
-            head: [['Concepto', 'Valor Mensual']],
-            body: costsBody,
-            foot: [['TOTAL A PAGAR', formatCurrency(totalManual)]],
-            footStyles: { fillColor: primaryColorRGB, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 11 },
-            styles: { fontSize: 10 },
-            columnStyles: { 1: { halign: 'right' } }
-        });
-
     } else {
-        // --- Si NO hay costos manuales, muestra los detalles del plan como antes ---
-        doc.setFontSize(12);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
-        doc.text("Detalles del Plan Adquirido", 14, finalY);
-
-        const plan = planData || {};
-        doc.autoTable({
-            startY: finalY + 3,
-            theme: 'grid',
-            headStyles: { fillColor: primaryColorRGB, textColor: 255 },
-            head: [['Plan de Salud', 'Valor Mensual']],
-            body: [[plan.name || 'N/A', formatCurrency(plan.price || 0)]],
-            styles: { fontSize: 10, cellPadding: 2 }
-        });
+        serviceBody.push([`Plan de Salud: ${planData.name || 'N/A'}`, formatCurrency(planData.price || 0)]);
+        serviceTotal = planData.price || 0;
     }
 
-    finalY = doc.lastAutoTable.finalY + 8;
-
-    // --- DETALLES ADMINISTRATIVOS (Común para ambos casos) ---
     doc.autoTable({
-        startY: finalY,
-        theme: 'plain',
-        body: [
-            ['Asesor Asignado:', advisorData.name || 'No asignado'],
-            ['Fecha de Inicio:', formatDate(affiliateData.startDate)],
-            ['Próximo Pago:', formatDate(affiliateData.endDate) || 'Indefinido'],
-            ['Estado de Afiliación:', affiliateData.status],
-        ],
-        styles: { fontSize: 10, cellPadding: 1 },
-        columnStyles: { 0: { fontStyle: 'bold', cellWidth: 50 } }
+        startY: finalY + 3,
+        theme: 'striped',
+        head: [['Concepto de Pago Mensual', 'Valor']],
+        body: serviceBody,
+        foot: [['TOTAL MENSUAL A PAGAR', formatCurrency(serviceTotal)]],
+        headStyles: { fillColor: [67, 56, 202], fontStyle: 'bold', textColor: [255, 255, 255] },
+        footStyles: { fillColor: [67, 56, 202], fontStyle: 'bold', textColor: [255, 255, 255], fontSize: 11 },
+        styles: { fontSize: 10, cellPadding: 2.5 },
+        columnStyles: { 1: { halign: 'right' } }
+    });
+    
+    finalY = doc.lastAutoTable.finalY;
+
+    // --- 4. DETALLES ADMINISTRATIVOS (Comisión eliminada) ---
+    const adminDetails = [
+        ['Asesor Asignado:', advisorData.name || 'No asignado'],
+        ['Fecha de Inicio de Cobertura:', formatDate(affiliateData.startDate)],
+        ['Próximo Pago / Vencimiento:', affiliateData.endDate ? formatDate(affiliateData.endDate) : 'Indefinido'],
+        ['Estado Actual:', affiliateData.status]
+    ];
+    // La comisión ya NO se agrega aquí.
+
+    doc.autoTable({
+        startY: finalY + 8,
+        theme: 'grid',
+        head: [['Detalles Administrativos', '']],
+        body: adminDetails,
+        headStyles: { fillColor: [241, 245, 249], textColor: [51, 65, 85], fontStyle: 'bold', halign: 'center' },
+        styles: { fontSize: 9, cellPadding: 2 },
+        columnStyles: { 0: { fontStyle: 'bold' } }
     });
 
-    // --- PIE DE PÁGINA MEJORADO ---
+    // --- 5. PIE DE PÁGINA PROFESIONAL (Sin cambios) ---
     finalY = doc.internal.pageSize.height - 30;
     doc.setLineWidth(0.2);
     doc.setDrawColor(180);
     doc.line(14, finalY, 196, finalY);
-    doc.setFontSize(8);
+    doc.setFontSize(9);
     doc.setTextColor(150);
-    doc.text("Este documento es un comprobante de su afiliación. Para cualquier consulta, no dude en contactarnos.", doc.internal.pageSize.width / 2, finalY + 8, { align: 'center' });
-    doc.text(`Generado el ${new Date().toLocaleDateString('es-CO')} a las ${generationDate} por Seb Salud.`, doc.internal.pageSize.width / 2, finalY + 12, { align: 'center' });
-    
-    doc.save(`Comprobante_${affiliateData.name.replace(/\s/g, '_')}.pdf`);
+    doc.text("Gracias por confiar en nuestros servicios. Este documento es un comprobante de su afiliación y no representa una factura.", doc.internal.pageSize.width / 2, finalY + 8, { align: 'center' });
+    doc.text(`Generado el ${new Date().toLocaleString('es-CO')} por ${companyProfileData.name}.`, doc.internal.pageSize.width / 2, finalY + 12, { align: 'center' });
+
+    doc.save(`Comprobante_Afiliacion_${affiliateData.name.replace(/\s/g, '_')}.pdf`);
 }
 
     const modalManager = {
@@ -2524,6 +2513,7 @@ async function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, 
 </script>
 </body>
 </html>
+
 
 
 
