@@ -912,20 +912,20 @@ button svg {
         }
     }
 
-    // =========================================================================
-// INICIO DE LA SOLUCIÓN DEFINITIVA - Versión 2.0
+// =========================================================================
+// INICIO DE LA SOLUCIÓN FINAL Y CORRECTA v3.0
 // =========================================================================
 function updateUIVisibilityByRole() {
-    // 1. Obtenemos referencias a los elementos del header. (Igual que antes)
+    // 1. Obtenemos referencias a los elementos que queremos controlar.
     const notificacionesBtn = document.getElementById('novedades-toggle-btn');
     const buscadorDesktop = document.getElementById('header-search-container');
     const buscadorMobileBtn = document.getElementById('search-toggle-mobile');
-    const elementosControlados = [notificacionesBtn, buscadorDesktop, buscadorMobileBtn];
+    const elementosHeaderControlados = [notificacionesBtn, buscadorDesktop, buscadorMobileBtn];
 
-    // 2. Quitamos la clase 'hidden' para resetear la visibilidad.
-    // Esto asegura que las clases responsivas de Tailwind puedan funcionar.
-    elementosControlados.forEach(el => {
-        if (el) el.classList.remove('hidden');
+    // 2. Reseteamos cualquier estilo en línea que hayamos puesto antes.
+    // Esto es CRUCIAL para dejar que las clases de Tailwind funcionen.
+    elementosHeaderControlados.forEach(el => {
+        if (el) el.style.display = ''; // Un string vacío elimina el estilo en línea.
     });
 
     // Lógica original para los menús (se mantiene igual)
@@ -943,9 +943,9 @@ function updateUIVisibilityByRole() {
         visibleTargets = ['dashboard', 'afiliados', 'cotizador'];
 
     } else if (currentUserRole === 'afiliado') {
-        // Para el afiliado, OCULTAMOS los elementos añadiendo la clase 'hidden'.
-        elementosControlados.forEach(el => {
-            if (el) el.classList.add('hidden');
+        // Para el afiliado, OCULTAMOS explícitamente los elementos del header.
+        elementosHeaderControlados.forEach(el => {
+            if (el) el.style.display = 'none';
         });
         visibleTargets = ['perfil-afiliado', 'cotizador'];
     }
@@ -958,7 +958,7 @@ function updateUIVisibilityByRole() {
     });
 }
 // =========================================================================
-// FIN DE LA SOLUCIÓN DEFINITIVA
+// FIN DE LA SOLUCIÓN FINAL
 // =========================================================================
     
     function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme); }
@@ -2547,5 +2547,6 @@ function formatPhoneNumberForWhatsApp(phone) {
 </script>
 </body>
 </html>
+
 
 
