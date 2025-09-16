@@ -853,7 +853,12 @@ button svg {
             adminUidForRole = null;
             unsubscribeAllListeners();
             resetLocalData();
-            applyTheme('spotify'); 
+            
+            /* === INICIO DE LA SOLUCIÓN: APLICAR TEMA AL CERRAR SESIÓN === */
+const savedTheme = localStorage.getItem('userTheme') || 'bosque';
+applyTheme(savedTheme);
+/* === FIN DE LA SOLUCIÓN === */ 
+            
             showView(authContainer);
             document.getElementById('login-view').style.display = 'block';
             document.getElementById('register-view').style.display = 'none';
@@ -2739,6 +2744,7 @@ localStorage.setItem('userTheme', profileData.theme);
 </script>
 </body>
 </html>
+
 
 
 
