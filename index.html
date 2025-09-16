@@ -158,6 +158,12 @@
         .shimmer-button { position: relative; overflow: hidden; }
         .shimmer-button::after { content: ''; position: absolute; top: 0; left: -150%; width: 100%; height: 100%; background-image: linear-gradient( to right, transparent, rgba(255, 255, 255, 0.4), transparent ); transform: skewX(-25deg); animation: shimmer-effect 3.5s infinite linear; }
         @keyframes shimmer-effect { from { left: -150%; } to { left: 150%; } }
+        /* --- CORRECCIÓN GLOBAL PARA BOTONES CON ÍCONOS --- */
+/* Esta regla asegura que los clics en los íconos SVG se registren 
+   en el botón contenedor, solucionando el problema del "un solo clic". */
+button svg {
+    pointer-events: none;
+}
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased" data-sidebar-theme="dark" data-bottom-nav-theme="dark">
@@ -2513,6 +2519,7 @@ function formatPhoneNumberForWhatsApp(phone) {
 </script>
 </body>
 </html>
+
 
 
 
