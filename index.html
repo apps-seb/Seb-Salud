@@ -930,7 +930,7 @@ button svg {
     }
 
 // =========================================================================
-// INICIO DE LA SOLUCIÓN FINAL v2 - Tarjeta de Usuario Consciente del Tema
+// INICIO DE LA SOLUCIÓN FINAL v3 - Corrigiendo la Herencia de Color
 // =========================================================================
 
 function renderSidebarUserInfo() {
@@ -938,13 +938,16 @@ function renderSidebarUserInfo() {
     const userInfoContainer = document.getElementById('sidebar-user-info');
     if (!userInfoContainer) return;
 
-    // --- LÓGICA DE DETECCIÓN DE TEMA (El cambio principal) ---
-    // 1. Verificamos qué tema tiene aplicado el sidebar.
+    // --- LÓGICA DE DETECCIÓN DE TEMA (Con la corrección clave) ---
     const isLightTheme = document.body.getAttribute('data-sidebar-theme') === 'light';
 
-    // 2. Definimos las clases que cambiarán según el tema.
+    // ▼▼▼ LA CORRECCIÓN ESTÁ AQUÍ ▼▼▼
+    // En el tema claro, no le asignamos clase de color ('') para que herede el color oscuro del sidebar.
+    // En el tema oscuro, sí forzamos el color blanco.
+    const companyNameColor = isLightTheme ? '' : 'text-white';
+    
+    // Clases que cambiarán según el tema.
     const cardBgClass = isLightTheme ? 'bg-slate-100' : 'bg-white/5';
-    const companyNameColor = isLightTheme ? 'text-slate-800' : 'text-white';
     const emailColor = isLightTheme ? 'text-slate-500' : 'text-slate-300';
     const borderColor = isLightTheme ? 'border-slate-200' : 'border-slate-700/50';
 
@@ -957,7 +960,7 @@ function renderSidebarUserInfo() {
         case 'afiliado': userRoleText = 'Afiliado'; break;
     }
 
-    // 3. Creamos el nuevo HTML para la tarjeta usando las clases dinámicas.
+    // Creamos el nuevo HTML para la tarjeta usando las clases dinámicas.
     const cardHTML = `
         <div class="${cardBgClass} p-3 rounded-lg">
             <div class="flex items-center gap-2">
@@ -984,9 +987,8 @@ function renderSidebarUserInfo() {
         </button>
     `;
 
-    // 4. Actualizamos el HTML del contenedor.
+    // Actualizamos el HTML del contenedor.
     userInfoContainer.innerHTML = cardHTML;
-    // El propio CSS de tu tema se encargará del color del botón logout a través de su ID.
     lucide.createIcons();
 }
 
@@ -2629,6 +2631,7 @@ function formatPhoneNumberForWhatsApp(phone) {
 </script>
 </body>
 </html>
+
 
 
 
