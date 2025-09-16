@@ -2309,102 +2309,153 @@ function formatPhoneNumberForWhatsApp(phone) {
         });
     });
     
-    function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, companyProfileData) {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+    // Esta es la nueva función mejorada. Reemplaza la anterior por completo.
+async function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, companyProfileData) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-        const primaryColorRGB = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim().split(' ').map(Number);
-        const formatDate = (dateString) => dateString ? new Date(dateString + 'T00:00:00').toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
-        const generationDate = new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    // --- MEJORA DE BRANDING: Carga del Logo ---
+    let logoBase64 = null;
+    try {
+        const response = await fetch('logo.png'); // Intenta cargar el logo
+        if (response.ok) {
+            const blob = await response.blob();
+            logoBase64 = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        }
+    } catch (error) {
+        console.warn("No se pudo cargar el logo.png. El PDF se generará sin él.");
+    }
 
+    const primaryColorRGB = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim().split(' ').map(Number);
+    const formatDate = (dateString) => dateString ? new Date(dateString + 'T00:00:00').toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
+    const generationDate = new Date().toLocaleDateString('es-CO', { hour: '2-digit', minute: '2-digit' });
+
+    // --- CABECERA MEJORADA ---
+    if (logoBase64) {
+        doc.addImage(logoBase64, 'PNG', 14, 15, 50, 15); // x, y, ancho, alto
+    } else {
         doc.setFontSize(20);
         doc.setFont("helvetica", "bold");
         doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
-        doc.text(companyProfileData.name || "Seb Salud", 20, 25);
-        doc.setFontSize(14);
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(40);
-        doc.text("Recibo de Afiliación", 20, 35);
-        doc.setLineWidth(0.5);
-        doc.setDrawColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
-        doc.line(20, 38, 190, 38);
-        doc.setFontSize(10);
-        doc.setTextColor(100);
-        doc.text(`NIT: ${companyProfileData.nit || 'N/D'}`, 190, 25, { align: 'right' });
-        doc.text(`Contacto: ${companyProfileData.phone || companyProfileData.email || 'N/D'}`, 190, 30, { align: 'right' });
-        doc.setFont("helvetica", "bold");
-        doc.text(`Recibo N°: ${affiliateData.id.slice(-7).toUpperCase()}`, 190, 45, { align: 'right' });
-        doc.setFont("helvetica", "normal");
-        doc.text(`Fecha de Emisión: ${generationDate}`, 190, 50, { align: 'right' });
+        doc.text(companyProfileData.name || "Seb Salud", 14, 25);
+    }
+    
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(100);
+    doc.text(`NIT: ${companyProfileData.nit || 'N/D'}`, 196, 20, { align: 'right' });
+    doc.text(companyProfileData.address || '', 196, 25, { align: 'right' });
+    doc.text(`Tel: ${companyProfileData.phone || 'N/D'}`, 196, 30, { align: 'right' });
 
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(40);
+    doc.text("Comprobante de Afiliación", 14, 45);
+    doc.setLineWidth(0.5);
+    doc.setDrawColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
+    doc.line(14, 48, 196, 48);
+
+    // --- DATOS DEL AFILIADO (Sin cambios) ---
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
+    doc.text("Datos del Afiliado", 14, 60);
+    doc.autoTable({
+        startY: 63, theme: 'plain',
+        body: [
+            ['Nombre Completo:', affiliateData.name],
+            ['Documento:', affiliateData.documentId],
+            ['Correo y Teléfono:', `${affiliateData.email || 'N/D'} / ${affiliateData.phone || 'N/D'}`],
+        ],
+        styles: { fontSize: 10, cellPadding: 1.5 },
+        columnStyles: { 0: { fontStyle: 'bold' } }
+    });
+
+    let finalY = doc.lastAutoTable.finalY + 8;
+
+    // --- LÓGICA DE COSTOS MANUALES ---
+    const hasManualCosts = affiliateData.manualCosts && Object.values(affiliateData.manualCosts).some(cost => cost > 0);
+    
+    if (hasManualCosts) {
         doc.setFontSize(12);
         doc.setFont("helvetica", "bold");
         doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
-        doc.text("Datos del Afiliado", 20, 60);
+        doc.text("Desglose de Costos de Afiliación", 14, finalY);
+
+        const costsBody = [];
+        const costLabels = { health: 'Salud (EPS)', pension: 'Pensión', arl: 'ARL', ccf: 'Caja de Compensación' };
+        let totalManual = 0;
+
+        for (const [key, value] of Object.entries(affiliateData.manualCosts)) {
+            if (value > 0) {
+                costsBody.push([costLabels[key], formatCurrency(value)]);
+                totalManual += value;
+            }
+        }
+        
         doc.autoTable({
-            startY: 63,
-            theme: 'plain',
-            body: [
-                ['Nombre Completo:', affiliateData.name],
-                ['Documento de Identidad:', affiliateData.documentId],
-                ['Correo Electrónico:', affiliateData.email],
-                ['Teléfono de Contacto:', affiliateData.phone],
-                ['Dirección:', affiliateData.address],
-            ],
-            styles: { fontSize: 10, cellPadding: 1.5 },
-            columnStyles: { 0: { fontStyle: 'bold' } }
+            startY: finalY + 3,
+            theme: 'striped',
+            headStyles: { fillColor: [241, 245, 249], textColor: [51, 65, 85], fontStyle: 'bold' },
+            head: [['Concepto', 'Valor Mensual']],
+            body: costsBody,
+            foot: [['TOTAL A PAGAR', formatCurrency(totalManual)]],
+            footStyles: { fillColor: primaryColorRGB, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 11 },
+            styles: { fontSize: 10 },
+            columnStyles: { 1: { halign: 'right' } }
         });
 
-        let finalY = doc.lastAutoTable.finalY + 10;
+    } else {
+        // --- Si NO hay costos manuales, muestra los detalles del plan como antes ---
         doc.setFontSize(12);
         doc.setFont("helvetica", "bold");
         doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
-        doc.text("Detalles del Plan de Salud", 20, finalY);
+        doc.text("Detalles del Plan Adquirido", 14, finalY);
+
         const plan = planData || {};
-        const advisor = advisorData || {};
         doc.autoTable({
             startY: finalY + 3,
             theme: 'grid',
             headStyles: { fillColor: primaryColorRGB, textColor: 255 },
-            head: [['Concepto', 'Detalle']],
-            body: [
-                ['Plan Adquirido', plan.name || 'No especificado (Costos Manuales)'],
-                ['Valor Mensual del Plan', plan.price ? formatCurrency(plan.price) : 'Según costos manuales'],
-                ['Asesor Asignado', advisor.name || 'No asignado'],
-                ['Fecha de Inicio de Cobertura', formatDate(affiliateData.startDate)],
-                ['Próximo Pago / Vencimiento', formatDate(affiliateData.endDate) || 'Indefinido'],
-            ],
-            styles: { fontSize: 10 },
+            head: [['Plan de Salud', 'Valor Mensual']],
+            body: [[plan.name || 'N/A', formatCurrency(plan.price || 0)]],
+            styles: { fontSize: 10, cellPadding: 2 }
         });
-
-        if (plan.features) {
-            finalY = doc.lastAutoTable.finalY + 10;
-            doc.setFontSize(12);
-            doc.setFont("helvetica", "bold");
-            doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
-            doc.text("Características Incluidas en el Plan", 20, finalY);
-            const features = plan.features.split('\n').map(feature => [feature.trim()]);
-            doc.autoTable({
-                startY: finalY + 3,
-                theme: 'striped',
-                head: [['Beneficios']],
-                body: features,
-                styles: { fontSize: 9 },
-                headStyles: { fillColor: [241, 245, 249], textColor: [51, 65, 85] }
-            });
-        }
-        
-        finalY = doc.internal.pageSize.height - 30;
-        doc.setLineWidth(0.2);
-        doc.setDrawColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
-        doc.line(20, finalY, 190, finalY);
-        doc.setFontSize(9);
-        doc.setTextColor(150);
-        doc.text("Gracias por confiar en nuestros servicios. Este documento es un comprobante de su afiliación.", doc.internal.pageSize.width / 2, finalY + 8, { align: 'center' });
-        doc.text("Para cualquier consulta, no dude en contactarnos.", doc.internal.pageSize.width / 2, finalY + 13, { align: 'center' });
-
-        doc.save(`Recibo_Afiliacion_${affiliateData.name.replace(/\s/g, '_')}.pdf`);
     }
+
+    finalY = doc.lastAutoTable.finalY + 8;
+
+    // --- DETALLES ADMINISTRATIVOS (Común para ambos casos) ---
+    doc.autoTable({
+        startY: finalY,
+        theme: 'plain',
+        body: [
+            ['Asesor Asignado:', advisorData.name || 'No asignado'],
+            ['Fecha de Inicio:', formatDate(affiliateData.startDate)],
+            ['Próximo Pago:', formatDate(affiliateData.endDate) || 'Indefinido'],
+            ['Estado de Afiliación:', affiliateData.status],
+        ],
+        styles: { fontSize: 10, cellPadding: 1 },
+        columnStyles: { 0: { fontStyle: 'bold', cellWidth: 50 } }
+    });
+
+    // --- PIE DE PÁGINA MEJORADO ---
+    finalY = doc.internal.pageSize.height - 30;
+    doc.setLineWidth(0.2);
+    doc.setDrawColor(180);
+    doc.line(14, finalY, 196, finalY);
+    doc.setFontSize(8);
+    doc.setTextColor(150);
+    doc.text("Este documento es un comprobante de su afiliación. Para cualquier consulta, no dude en contactarnos.", doc.internal.pageSize.width / 2, finalY + 8, { align: 'center' });
+    doc.text(`Generado el ${new Date().toLocaleDateString('es-CO')} a las ${generationDate} por Seb Salud.`, doc.internal.pageSize.width / 2, finalY + 12, { align: 'center' });
+    
+    doc.save(`Comprobante_${affiliateData.name.replace(/\s/g, '_')}.pdf`);
+}
 
     const modalManager = {
         open(modalId, data = null) {
@@ -2473,6 +2524,7 @@ function formatPhoneNumberForWhatsApp(phone) {
 </script>
 </body>
 </html>
+
 
 
 
