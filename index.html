@@ -1683,6 +1683,32 @@
         lucide.createIcons();
     }
 
+   /**
+ * Limpia y formatea un número de teléfono al estándar de WhatsApp para Colombia.
+ * @param {string} phone El número de teléfono a formatear.
+ * @returns {string|null} El número formateado (ej: 573001234567) o null si el número es inválido.
+ */
+function formatPhoneNumberForWhatsApp(phone) {
+    if (!phone || typeof phone !== 'string') {
+        return null;
+    }
+
+    // 1. Eliminar todos los caracteres que no sean dígitos
+    let cleaned = phone.replace(/\D/g, '');
+
+    // 2. Validar si es un número colombiano válido (10 dígitos) o ya tiene el código de país
+    if (cleaned.length === 12 && cleaned.startsWith('57')) {
+        // El número ya está en el formato correcto (ej: 573001234567)
+        return cleaned;
+    } else if (cleaned.length === 10) {
+        // Es un número de 10 dígitos, le añadimos el código de país
+        return '57' + cleaned;
+    } else {
+        // El número no parece ser un celular colombiano válido
+        console.warn(`Número de teléfono no válido para WhatsApp: ${phone}`);
+        return null;
+    }
+}
 
     document.addEventListener('DOMContentLoaded', () => {
         // --- INICIO LÓGICA DEL BUSCADOR GLOBAL (VERSIÓN MÓVIL INCLUIDA) ---
@@ -2056,26 +2082,44 @@
         });
 
         document.getElementById('success-share-btn').addEventListener('click', async () => {
-            if (!lastCreatedAffiliate) return;
+    if (!lastCreatedAffiliate) {
+        showToast('No se encontró información del afiliado recién creado.', 'error');
+        return;
+    }
 
-            const affiliateName = lastCreatedAffiliate.name;
-            const companyName = companyProfile.name || 'nuestros servicios de salud';
-            const shareText = `¡Hola, ${affiliateName}! Tu afiliación en ${companyName} ha sido exitosa. ¡Bienvenido/a!`;
+    // Obtener y formatear el número de teléfono
+    const affiliatePhone = lastCreatedAffiliate.phone;
+    const whatsappNumber = formatPhoneNumberForWhatsApp(affiliatePhone);
 
-            if (navigator.share) {
-                try {
-                    await navigator.share({
-                        title: 'Afiliación Exitosa',
-                        text: shareText,
-                    });
-                } catch (error) {
-                    console.error('Error al intentar compartir:', error);
-                    showToast('No se pudo completar la acción de compartir.', 'error');
-                }
-            } else {
-                showToast('La función de compartir no está disponible en este navegador.', 'error');
+    // Preparar el mensaje
+    const affiliateName = lastCreatedAffiliate.name;
+    const companyName = companyProfile.name || 'nuestros servicios de salud';
+    const shareText = `¡Hola, ${affiliateName}! Tu afiliación en ${companyName} ha sido exitosa. ¡Bienvenido/a!`;
+    const encodedText = encodeURIComponent(shareText);
+
+    if (whatsappNumber) {
+        // Si tenemos un número de WhatsApp válido, creamos y abrimos el enlace directo
+        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedText}`;
+        window.open(whatsappUrl, '_blank');
+    } else {
+        // --- FALLBACK (Plan B) ---
+        // Si no hay un número válido, usamos la API de compartir genérica como antes.
+        showToast('Número no disponible. Usando opción de compartir genérica.', 'error');
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'Afiliación Exitosa',
+                    text: shareText,
+                });
+            } catch (error) {
+                console.error('Error al intentar compartir:', error);
+                showToast('No se pudo completar la acción de compartir.', 'error');
             }
-        });
+        } else {
+            showToast('La función de compartir no está disponible en este navegador.', 'error');
+        }
+    }
+});
         
         document.getElementById('affiliate-modal').addEventListener('change', (e) => {
             if (e.target.id === 'manual-override-checkbox') {
@@ -2429,4 +2473,5 @@
 </script>
 </body>
 </html>
+
 
