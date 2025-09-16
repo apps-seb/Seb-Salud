@@ -913,61 +913,53 @@ button svg {
     }
 
     // =========================================================================
-    // INICIO DE LA SOLUCIÓN - Función de Visibilidad por Rol Mejorada
-    // =========================================================================
-    function updateUIVisibilityByRole() {
-        // 1. Obtenemos referencias a los elementos del header que queremos controlar.
-        const notificacionesBtn = document.getElementById('novedades-toggle-btn');
-        const buscadorDesktop = document.getElementById('header-search-container');
-        const buscadorMobileBtn = document.getElementById('search-toggle-mobile');
+// INICIO DE LA SOLUCIÓN DEFINITIVA - Versión 2.0
+// =========================================================================
+function updateUIVisibilityByRole() {
+    // 1. Obtenemos referencias a los elementos del header. (Igual que antes)
+    const notificacionesBtn = document.getElementById('novedades-toggle-btn');
+    const buscadorDesktop = document.getElementById('header-search-container');
+    const buscadorMobileBtn = document.getElementById('search-toggle-mobile');
+    const elementosControlados = [notificacionesBtn, buscadorDesktop, buscadorMobileBtn];
 
-        // Lógica original para ocultar/mostrar elementos con data-role y enlaces de navegación.
-        // Esto lo mantenemos tal cual.
-        document.querySelectorAll('[data-role]').forEach(el => el.style.display = 'none');
-        document.querySelectorAll('#sidebar-nav .nav-link, .bottom-nav > a').forEach(el => el.style.display = 'none');
+    // 2. Quitamos la clase 'hidden' para resetear la visibilidad.
+    // Esto asegura que las clases responsivas de Tailwind puedan funcionar.
+    elementosControlados.forEach(el => {
+        if (el) el.classList.remove('hidden');
+    });
 
-        // 2. Lógica principal para mostrar/ocultar elementos según el rol.
-        let visibleTargets = [];
+    // Lógica original para los menús (se mantiene igual)
+    document.querySelectorAll('[data-role]').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('#sidebar-nav .nav-link, .bottom-nav > a').forEach(el => el.style.display = 'none');
 
-        if (currentUserRole === 'admin' || currentUserRole === 'asesor') {
-            // --- PARA ADMIN Y ASESOR ---
-            
-            // Hacemos visibles los elementos del header.
-            if (notificacionesBtn) notificacionesBtn.style.display = ''; // '' revierte al estilo por defecto de la hoja CSS.
-            if (buscadorDesktop) buscadorDesktop.style.display = 'flex'; // Este contenedor usa flexbox en desktop.
-            if (buscadorMobileBtn) buscadorMobileBtn.style.display = '';
+    let visibleTargets = [];
 
-            // Definimos las secciones visibles para cada rol.
-            if (currentUserRole === 'admin') {
-                visibleTargets = ['dashboard', 'empresa', 'calendario', 'flujo-caja', 'afiliados', 'asesores', 'ranking-vendedores', 'planes', 'cotizador', 'gestion-roles'];
-                document.querySelectorAll('[data-role="admin"]').forEach(el => el.style.display = '');
-            } else { // Es 'asesor'
-                visibleTargets = ['dashboard', 'afiliados', 'cotizador'];
-            }
+    // 3. Aplicamos la lógica de visibilidad por rol
+    if (currentUserRole === 'admin') {
+        visibleTargets = ['dashboard', 'empresa', 'calendario', 'flujo-caja', 'afiliados', 'asesores', 'ranking-vendedores', 'planes', 'cotizador', 'gestion-roles'];
+        document.querySelectorAll('[data-role="admin"]').forEach(el => el.style.display = '');
+    
+    } else if (currentUserRole === 'asesor') {
+        visibleTargets = ['dashboard', 'afiliados', 'cotizador'];
 
-        } else if (currentUserRole === 'afiliado') {
-            // --- SOLO PARA AFILIADO ---
-
-            // Ocultamos explícitamente los elementos del header.
-            if (notificacionesBtn) notificacionesBtn.style.display = 'none';
-            if (buscadorDesktop) buscadorDesktop.style.display = 'none';
-            if (buscadorMobileBtn) buscadorMobileBtn.style.display = 'none';
-
-            // Definimos las secciones visibles.
-            visibleTargets = ['perfil-afiliado', 'cotizador'];
-        }
-
-        // Lógica original para mostrar los enlaces de navegación correspondientes.
-        // Esto también se mantiene.
-        document.querySelectorAll('.nav-link, .bottom-nav-link').forEach(el => {
-            if (visibleTargets.includes(el.dataset.target)) {
-                el.style.display = 'flex';
-            }
+    } else if (currentUserRole === 'afiliado') {
+        // Para el afiliado, OCULTAMOS los elementos añadiendo la clase 'hidden'.
+        elementosControlados.forEach(el => {
+            if (el) el.classList.add('hidden');
         });
+        visibleTargets = ['perfil-afiliado', 'cotizador'];
     }
-    // =========================================================================
-    // FIN DE LA SOLUCIÓN
-    // =========================================================================
+
+    // Lógica final para mostrar los enlaces de navegación (se mantiene igual)
+    document.querySelectorAll('.nav-link, .bottom-nav-link').forEach(el => {
+        if (visibleTargets.includes(el.dataset.target)) {
+            el.style.display = 'flex';
+        }
+    });
+}
+// =========================================================================
+// FIN DE LA SOLUCIÓN DEFINITIVA
+// =========================================================================
     
     function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme); }
     function applySidebarTheme(theme) { document.body.setAttribute('data-sidebar-theme', theme || 'dark'); }
@@ -2555,4 +2547,5 @@ function formatPhoneNumberForWhatsApp(phone) {
 </script>
 </body>
 </html>
+
 
