@@ -147,67 +147,44 @@
 
         /* --- NUEVAS ANIMACIONES Y ESTILOS --- */
         /* ============================================= */
-/* === NUEVOS ESTILOS PARA EL PRELOADER DE EKG === */
-/* ============================================= */
-.preloader-ekg-container {
-    transform: scale(1.5); /* Hacemos la animación un poco más grande */
+/* === CÓDIGO CSS NUEVO Y FINAL PARA EL PRELOADER DE CÍRCULOS === */
+/* ============================================================= */
+.loader-container {
+    height: 60px; /* Damos un alto fijo al contenedor para alinear bien */
 }
 
-.ekg-path {
-    stroke: rgb(var(--color-primary-500)); /* Usa el color primario del tema */
-    stroke-width: 3;
-    fill: none;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    /* La magia del dibujo: preparamos la línea para ser animada */
-    stroke-dasharray: 450;
-    stroke-dashoffset: 450;
-    animation: draw-ekg 2.5s ease-in-out infinite;
+.loader-circle {
+    width: 16px;  /* Tamaño de los círculos */
+    height: 16px;
+    border-radius: 50%;
+    background-color: rgb(var(--color-primary-500)); /* ¡Usa el color primario del tema! */
+    transform: scale(0); /* Empiezan invisibles/pequeños */
+    /* Aplicamos la animación */
+    animation: bounce-loader 1.2s ease-in-out infinite;
 }
 
-.heart-icon {
-    color: rgb(var(--color-primary-500)); /* Usa el color primario del tema */
-    animation: pulse-heart 2.5s ease-in-out infinite;
-    opacity: 0; /* Empieza invisible hasta que la animación lo muestre */
-}
-
-/* Animación que "dibuja" la línea del EKG moviendo su 'offset' */
-@keyframes draw-ekg {
-    0% {
-        stroke-dashoffset: 450;
-    }
-    40% {
-        stroke-dashoffset: 0;
-    }
-    60% {
-        stroke-dashoffset: 0;
-    }
-    90% {
-        stroke-dashoffset: 450;
-    }
-    100% {
-        stroke-dashoffset: 450;
+/* La animación de "rebote" (crecer y encogerse) */
+@keyframes bounce-loader {
+    0%, 80%, 100% { 
+        transform: scale(0);
+    } 
+    40% { 
+        transform: scale(1.0);
     }
 }
 
-/* Animación que hace latir al corazón en sincronía con el final del EKG */
-@keyframes pulse-heart {
-    0%, 30%, 80%, 100% {
-        transform: scale(1);
-        opacity: 0;
-    }
-    40% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.25);
-        opacity: 1;
-    }
-    60% {
-        transform: scale(1);
-        opacity: 1;
-    }
+/* Retrasos para crear el efecto de onda secuencial */
+.loader-circle:nth-child(2) {
+    animation-delay: 0.1s;
+}
+.loader-circle:nth-child(3) {
+    animation-delay: 0.2s;
+}
+.loader-circle:nth-child(4) {
+    animation-delay: 0.3s;
+}
+.loader-circle:nth-child(5) {
+    animation-delay: 0.4s;
 }
         
         .auth-banner {
@@ -232,22 +209,16 @@ button svg {
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased" data-sidebar-theme="dark" data-bottom-nav-theme="dark">
 
-    <div id="loader" class="fixed inset-0 bg-slate-100/80 dark:[data-theme='spotify']:bg-black/50 dark:[data-theme='apple']:bg-black/50 backdrop-blur-sm z-[101] flex items-center justify-center">
-    <div class="flex flex-col items-center space-y-6">
-
-        <div class="relative w-64 h-24 preloader-ekg-container">
-            <div class="absolute top-1/2 left-full -translate-y-1/2 -translate-x-2">
-                 <i data-lucide="heart" class="w-8 h-8 heart-icon"></i>
-            </div>
-
-            <svg viewBox="0 0 160 60" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                <path class="ekg-path" d="M0 30 H20 L25 20 L35 40 L45 10 L55 50 L65 25 L70 30 H160" />
-            </svg>
+    <div id="loader" class="fixed inset-0 bg-white z-[101] flex items-center justify-center">
+    <div class="flex flex-col items-center">
+        <div class="loader-container flex items-center justify-center space-x-2">
+            <div class="loader-circle"></div>
+            <div class="loader-circle"></div>
+            <div class="loader-circle"></div>
+            <div class="loader-circle"></div>
+            <div class="loader-circle"></div>
         </div>
-
-        <p class="text-slate-600 dark:[data-theme='spotify']:text-slate-400 dark:[data-theme='apple']:text-slate-400 text-lg font-medium tracking-wide">
-            Conectando de forma segura...
-        </p>
+        <p class="mt-6 text-slate-600 text-lg">Cargando aplicación...</p>
     </div>
 </div>
     <div id="toast" class="fixed top-5 right-5 z-[100] bg-green-500 text-white py-2 px-4 rounded-lg shadow-xl opacity-0 transform translate-y-2 transition-all duration-300"><span id="toast-message"></span></div>
@@ -2727,6 +2698,7 @@ function formatPhoneNumberForWhatsApp(phone) {
 </script>
 </body>
 </html>
+
 
 
 
