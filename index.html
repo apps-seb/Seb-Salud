@@ -707,78 +707,71 @@ button svg {
     
     const showView = (view) => { loader.style.display = 'none'; authContainer.style.display = 'none'; appContainer.style.display = 'none'; view.style.display = view === appContainer ? 'block' : 'flex'; lucide.createIcons(); };
 
-    // =========================================================================
-// INICIO DE LA SOLUCIÓN - onAuthStateChanged Mejorado
-// =========================================================================
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        currentUser = user;
-        const roleDocRef = doc(db, "userRoles", user.uid);
-        const roleDocSnap = await getDoc(roleDocRef);
+    // --- FLUJO DE AUTENTICACIÓN MEJORADO CON ROLES ---
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            currentUser = user;
+            const roleDocRef = doc(db, "userRoles", user.uid);
+            const roleDocSnap = await getDoc(roleDocRef);
 
-        let userProfileData = {}; // Variable para guardar los datos del perfil
+            if (roleDocSnap.exists()) {
+                // Es un Asesor o Afiliado
+                const roleData = roleDocSnap.data();
+                currentUserRole = roleData.role;
+                adminUidForRole = roleData.adminUid;
+                
+                const userRoleDataRef = doc(db, `users/${adminUidForRole}/roles`, user.uid);
+                const userRoleDataSnap = await getDoc(userRoleDataRef);
+                userRoleData = userRoleDataSnap.exists() ? userRoleDataSnap.data() : {};
 
-        if (roleDocSnap.exists()) {
-            // Es un Asesor o Afiliado
-            const roleData = roleDocSnap.data();
-            currentUserRole = roleData.role;
-            adminUidForRole = roleData.adminUid;
-            
-            const userRoleDataRef = doc(db, `users/${adminUidForRole}/roles`, user.uid);
-            const userRoleDataSnap = await getDoc(userRoleDataRef);
-            userRoleData = userRoleDataSnap.exists() ? userRoleDataSnap.data() : {};
-
-            // Precargamos los datos del perfil del ADMIN al que pertenecen
-            const adminProfileRef = doc(db, "users", adminUidForRole);
-            const adminProfileSnap = await getDoc(adminProfileRef);
-            if (adminProfileSnap.exists()) {
-                userProfileData = adminProfileSnap.data();
-            }
-
-        } else {
-            // Es un Administrador
-            currentUserRole = 'admin';
-            adminUidForRole = user.uid;
-            const userDocRef = doc(db, "users", user.uid);
-            const userDocSnap = await getDoc(userDocRef);
-            
-            if (userDocSnap.exists()) {
-                if (!userDocSnap.data().licenseActivated) {
-                    loader.style.display = 'none';
-                    modalManager.open('license-modal');
-                    return; // Detenemos la ejecución si la licencia no está activa
+                // --- INICIO DE LA SOLUCIÓN ---
+                // Precargamos los datos de la empresa ANTES de inicializar la app.
+                try {
+                    const adminProfileRef = doc(db, "users", adminUidForRole);
+                    const adminProfileSnap = await getDoc(adminProfileRef);
+                    if (adminProfileSnap.exists()) {
+                        // Llenamos la variable global 'companyProfile' con los datos.
+                        companyProfile = adminProfileSnap.data().companyProfile || defaultCompanyProfile;
+                    }
+                } catch (error) {
+                    console.error("Error precargando el perfil de la empresa:", error);
+                    // Si falla, usamos el perfil por defecto para que la app no se rompa.
+                    companyProfile = defaultCompanyProfile;
                 }
-                userProfileData = userDocSnap.data();
+                // --- FIN DE LA SOLUCIÓN ---
+
+                await initializeAppForUser(); // Ahora esta función ya tendrá los datos listos.
+                showView(appContainer);
+
+            } else {
+                // Es un Administrador
+                currentUserRole = 'admin';
+                adminUidForRole = user.uid;
+                const userDocRef = doc(db, "users", user.uid);
+                const userDocSnap = await getDoc(userDocRef);
+                
+                if (userDocSnap.exists() && userDocSnap.data().licenseActivated) {
+                    await initializeAppForUser();
+                    showView(appContainer);
+                } else {
+                    loader.style.display = 'none';
+                    appContainer.style.display = 'none';
+                    authContainer.style.display = 'none';
+                    modalManager.open('license-modal');
+                }
             }
+        } else {
+            currentUser = null;
+            currentUserRole = null;
+            adminUidForRole = null;
+            unsubscribeAllListeners();
+            resetLocalData();
+            applyTheme('spotify'); 
+            showView(authContainer);
+            document.getElementById('login-view').style.display = 'block';
+            document.getElementById('register-view').style.display = 'none';
         }
-
-        // --- Lógica Centralizada de Aplicación de Tema ---
-        // Una vez tenemos los datos, aplicamos la configuración ANTES de mostrar nada.
-        companyProfile = userProfileData.companyProfile || defaultCompanyProfile;
-        applyTheme(companyProfile.theme || 'spotify');
-        applySidebarTheme(companyProfile.sidebarTheme || 'dark');
-        applyBottomNavTheme(companyProfile.bottomNavTheme || 'dark');
-        
-        // Ahora sí, inicializamos y mostramos la app con el tema ya aplicado.
-        await initializeAppForUser();
-        showView(appContainer);
-
-    } else {
-        // Lógica de cierre de sesión (sin cambios)
-        currentUser = null;
-        currentUserRole = null;
-        adminUidForRole = null;
-        unsubscribeAllListeners();
-        resetLocalData();
-        applyTheme('spotify'); 
-        showView(authContainer);
-        document.getElementById('login-view').style.display = 'block';
-        document.getElementById('register-view').style.display = 'none';
-    }
-});
-// =========================================================================
-// FIN DE LA SOLUCIÓN
-// =========================================================================
+    });
     
     // --- LÓGICA DE DATOS CON FIRESTORE ---
     async function setupNewUserDocument(user) { const userDocRef = doc(db, "users", user.uid); const batch = writeBatch(db); batch.set(userDocRef, { email: user.email, createdAt: serverTimestamp(), licenseActivated: false, companyProfile: defaultCompanyProfile, settings: defaultSettings }); const advisorRef = doc(collection(userDocRef, "advisors")); batch.set(advisorRef, { id: advisorRef.id, name: 'Asesor Inicial', commissionRate: 10 }); const planRef = doc(collection(userDocRef, "healthPlans")); batch.set(planRef, { id: planRef.id, name: 'Plan de Ejemplo', price: 100000, features: 'Característica 1\nCaracterística 2' }); await batch.commit(); }
@@ -826,42 +819,32 @@ onAuthStateChanged(auth, async (user) => {
         
         const basePath = `users/${adminUidForRole}`;
 
-        // =========================================================================
-// INICIO DE LA SOLUCIÓN - Corrección de Orden en onSnapshot
-// =========================================================================
-const unsubUser = onSnapshot(doc(db, basePath), (docSnap) => {
+        const unsubUser = onSnapshot(doc(db, basePath), (docSnap) => {
     if (docSnap.exists()) {
         const data = docSnap.data();
         companyProfile = data.companyProfile || defaultCompanyProfile;
-        settings = {
-            ...defaultSettings,
-            ...(data.settings || {}),
-            CONTRIBUTION_RATES: {
-                ...defaultSettings.CONTRIBUTION_RATES,
-                ...(data.settings?.CONTRIBUTION_RATES || {})
-            },
-            ARL_RATES: {
-                ...defaultSettings.ARL_RATES,
-                ...(data.settings?.ARL_RATES || {})
+        
+        renderSidebarUserInfo(); // <--- AÑADE LA LLAMADA AQUÍ
+
+                settings = {
+                    ...defaultSettings,
+                    ...(data.settings || {}),
+                    CONTRIBUTION_RATES: {
+                        ...defaultSettings.CONTRIBUTION_RATES,
+                        ...(data.settings?.CONTRIBUTION_RATES || {})
+                    },
+                    ARL_RATES: {
+                        ...defaultSettings.ARL_RATES,
+                        ...(data.settings?.ARL_RATES || {})
+                    }
+                };
+                applyTheme(companyProfile.theme);
+                applySidebarTheme(companyProfile.sidebarTheme);
+                applyBottomNavTheme(companyProfile.bottomNavTheme);
+                if (document.getElementById('empresa').classList.contains('active')) renderEmpresaSection();
+                if (document.getElementById('dashboard').classList.contains('active')) renderDashboard();
             }
-        };
-        
-        // 1. PRIMERO, aplicamos los temas visuales.
-        applyTheme(companyProfile.theme);
-        applySidebarTheme(companyProfile.sidebarTheme);
-        applyBottomNavTheme(companyProfile.bottomNavTheme);
-        
-        // 2. DESPUÉS, volvemos a dibujar la tarjeta de usuario con el tema ya aplicado.
-        renderSidebarUserInfo(); 
-        
-        // Actualizamos otras secciones si es necesario
-        if (document.getElementById('empresa').classList.contains('active')) renderEmpresaSection();
-        if (document.getElementById('dashboard').classList.contains('active')) renderDashboard();
-    }
-});
-// =========================================================================
-// FIN DE LA SOLUCIÓN
-// =========================================================================
+        });
         activeListeners.push(unsubUser);
 
         const collectionsToListen = {
@@ -2665,8 +2648,6 @@ function formatPhoneNumberForWhatsApp(phone) {
 </script>
 </body>
 </html>
-
-
 
 
 
