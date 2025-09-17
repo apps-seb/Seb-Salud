@@ -2747,16 +2747,21 @@ function formatPhoneNumberForWhatsApp(phone) {
             saveButton.textContent = 'Guardando...';
 
             try {
-                const profileData = {
-                    name: document.getElementById('company-name').value,
-                    nit: document.getElementById('company-nit').value,
-                    address: document.getElementById('company-address').value,
-                    phone: document.getElementById('company-phone').value,
-                    email: document.getElementById('company-email').value,
-                    theme: document.querySelector('#theme-selector input[name="theme"]:checked').value,
-                    sidebarTheme: document.querySelector('#sidebar-theme-selector input[name="sidebar-theme"]:checked').value,
-                    bottomNavTheme: document.querySelector('#bottom-nav-theme-selector input[name="bottom-nav-theme"]:checked').value,
-                };
+                // CÓDIGO CORREGIDO Y MÁS SEGURO
+const profileData = {
+    name: document.getElementById('company-name').value,
+    nit: document.getElementById('company-nit').value,
+    address: document.getElementById('company-address').value,
+    phone: document.getElementById('company-phone').value,
+    email: document.getElementById('company-email').value,
+    
+    // Aquí está la corrección:
+    // Usamos el operador de encadenamiento opcional (?.) para evitar el error si no hay nada seleccionado.
+    // Luego, usamos el operador OR (||) para asignar un valor por defecto ('default' o 'dark').
+    theme: document.querySelector('#theme-selector input[name="theme"]:checked')?.value || 'default',
+    sidebarTheme: document.querySelector('#sidebar-theme-selector input[name="sidebar-theme"]:checked')?.value || 'dark',
+    bottomNavTheme: document.querySelector('#bottom-nav-theme-selector input[name="bottom-nav-theme"]:checked')?.value || 'dark',
+};
 
                 /* === INICIO DE LA SOLUCIÓN: GUARDAR TEMA EN NAVEGADOR === */
 localStorage.setItem('userTheme', profileData.theme);
@@ -3106,3 +3111,4 @@ localStorage.setItem('userTheme', profileData.theme);
 </script>
 </body>
 </html>
+
