@@ -410,6 +410,24 @@ button svg {
                                 </div>
                                 <div class="mt-6 pt-6 border-t"><h3 class="text-lg font-medium text-slate-700 mb-4">Tema del Panel Lateral</h3><div id="sidebar-theme-selector" class="grid grid-cols-2 gap-4"><label class="cursor-pointer"><input type="radio" name="sidebar-theme" value="dark" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-slate-800 peer-checked:ring-2 peer-checked:ring-slate-800/50"><div class="flex items-center justify-between"><span class="font-semibold">Oscuro</span><div class="w-6 h-6 rounded-full bg-slate-900 border-2"></div></div></div></label><label class="cursor-pointer"><input type="radio" name="sidebar-theme" value="light" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-slate-400 peer-checked:ring-2 peer-checked:ring-slate-400/50"><div class="flex items-center justify-between"><span class="font-semibold">Claro</span><div class="w-6 h-6 rounded-full bg-white border-2"></div></div></div></label></div></div>
                                 <div class="mt-6 pt-6 border-t"><h3 class="text-lg font-medium text-slate-700 mb-4">Tema del Men&#250; Inferior (M&#243;vil)</h3><div id="bottom-nav-theme-selector" class="grid grid-cols-2 gap-4"><label class="cursor-pointer"><input type="radio" name="bottom-nav-theme" value="dark" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-slate-800 peer-checked:ring-2 peer-checked:ring-slate-800/50"><div class="flex items-center justify-between"><span class="font-semibold">Oscuro</span><div class="w-6 h-6 rounded-full bg-slate-900 border-2"></div></div></div></label><label class="cursor-pointer"><input type="radio" name="bottom-nav-theme" value="light" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-slate-400 peer-checked:ring-2 peer-checked:ring-slate-400/50"><div class="flex items-center justify-between"><span class="font-semibold">Claro</span><div class="w-6 h-6 rounded-full bg-white border-2"></div></div></div></label></div></div>
+                                <div class="mt-6 pt-6 border-t">
+    <h3 class="text-lg font-medium text-slate-700 mb-4">Logo de la Empresa</h3>
+    <div class="flex items-center gap-6">
+        <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center border-2 border-dashed overflow-hidden">
+            <img id="logo-preview" src="" alt="Logo" class="w-full h-full object-contain hidden">
+            <i id="logo-placeholder-icon" data-lucide="image" class="w-8 h-8 text-slate-400"></i>
+        </div>
+        <div class="flex-1">
+            <label for="company-logo-input" class="cursor-pointer bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center whitespace-nowrap">
+                <i data-lucide="upload" class="w-5 h-5 mr-2"></i>
+                <span>Seleccionar Logo</span>
+            </label>
+            <input type="file" id="company-logo-input" class="hidden" accept="image/png, image/jpeg">
+            <p class="text-xs text-slate-500 mt-2">Recomendado: .PNG con fondo transparente, máx 1MB.</p>
+            <button type="button" id="remove-logo-btn" class="hidden text-xs text-red-600 hover:underline mt-1">Quitar logo actual</button>
+        </div>
+    </div>
+</div>
                                 <div class="pt-4"><button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg">Guardar Cambios</button></div>
                             </form>
                         </div>
@@ -729,7 +747,7 @@ button svg {
     import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query, where, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
     
     /* === INICIO DE LA SOLUCIÓN: APLICAR TEMA AL CARGAR LA PÁGINA === */
 (() => {
@@ -775,6 +793,8 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstati
     let affiliates = [], advisors = [], manualTransactions = [], novedades = [], healthPlans = [], userRoles = [];
     let companyProfile = {};
     let settings = {};
+    let selectedLogoFile = null;   // <-- Añade esta línea
+    let logoWasRemoved = false;    // <-- Añade esta línea
     let affiliatesViewMode = 'card';
     let calendarViewMode = 'list'; // <--- VISTA POR DEFECTO DEL CALENDARIO
     let lastQuoteResult = null;
@@ -2818,6 +2838,7 @@ async function imageToBase64(url) {
 </script>
 </body>
 </html>
+
 
 
 
