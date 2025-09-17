@@ -395,32 +395,6 @@ button svg {
                                 <div><label for="company-address" class="block text-sm font-medium text-slate-600">Dirección</label><input type="text" id="company-address" class="w-full mt-1 p-2 border rounded-lg"></div>
                                 <div><label for="company-phone" class="block text-sm font-medium text-slate-600">Tel&#233;fono</label><input type="tel" id="company-phone" class="w-full mt-1 p-2 border rounded-lg"></div>
                                 <div><label for="company-email" class="block text-sm font-medium text-slate-600">Email</label><input type="email" id="company-email" class="w-full mt-1 p-2 border rounded-lg"></div>
-                                <div><label for="company-email" class="block text-sm font-medium text-slate-600">Email</label><input type="email" id="company-email" class="w-full mt-1 p-2 border rounded-lg"></div>
-
-<div class="mt-6 pt-6 border-t">
-    <h3 class="text-lg font-medium text-slate-700 mb-4">Logotipo de la Empresa</h3>
-    <div class="flex items-center gap-6">
-        <div class="flex-shrink-0 w-32 h-32 bg-slate-100 rounded-lg border-2 border-dashed flex items-center justify-center">
-            <img id="logo-preview" src="" alt="Previsualización del logo" class="max-w-full max-h-full hidden object-contain">
-            <i id="logo-placeholder-icon" data-lucide="image" class="w-12 h-12 text-slate-400"></i>
-        </div>
-        <div class="flex-grow">
-            <p class="text-sm text-slate-500 mb-3">Sube una imagen (PNG, JPG). Se recomienda una imagen horizontal para una mejor visualización en el PDF.</p>
-            
-            <input type="file" id="company-logo-input" class="hidden" accept="image/png, image/jpeg">
-            
-            <label for="company-logo-input" class="cursor-pointer bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center whitespace-nowrap w-fit">
-                <i data-lucide="upload-cloud" class="w-5 h-5 mr-2"></i>
-                <span>Seleccionar Archivo</span>
-            </label>
-            
-            <button type="button" id="remove-logo-btn" class="mt-2 text-sm text-red-600 hover:text-red-800 flex items-center gap-1 hidden">
-                <i data-lucide="x-circle" class="w-4 h-4"></i>
-                Quitar logo actual
-            </button>
-        </div>
-    </div>
-</div>
                                 <div class="mt-6 pt-6 border-t"><h3 class="text-lg font-medium text-slate-700 mb-4">Color del Tema Principal</h3>
                                     <div id="theme-selector" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                                         <label class="cursor-pointer"><input type="radio" name="theme" value="default" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500/50"><div class="flex items-center justify-between"><span class="font-semibold">&#205;ndigo</span><div class="w-6 h-6 rounded-full bg-[#4f46e5]"></div></div></div></label>
@@ -755,14 +729,6 @@ button svg {
     import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query, where, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    // V V V AÑADE ESTA LÍNEA COMPLETA V V V
-// Explica qué hace cada función importada:
-// getStorage: Establece la conexión con el servicio de Firebase Storage.
-// ref: Crea una referencia (un "puntero") a un archivo específico en la nube, como si fuera una ruta de archivo (ej: "logos/mi_logo.png").
-// uploadBytes: Es la función que toma el archivo de tu computadora y lo sube a la referencia que creaste.
-// getDownloadURL: Después de subir un archivo, esta función te devuelve el enlace público y permanente para acceder a él.
-// deleteObject: Elimina un archivo de Storage usando su referencia.
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject, uploadString } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
     /* === INICIO DE LA SOLUCIÓN: APLICAR TEMA AL CARGAR LA PÁGINA === */
 (() => {
@@ -785,8 +751,6 @@ import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject, uploadStrin
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const storage = getStorage(app); // <--- AÑADE ESTA LÍNEA para crear el objeto de conexión.
-
 
     enableIndexedDbPersistence(db)
       .catch((err) => {
@@ -807,13 +771,6 @@ import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject, uploadStrin
     // --- ESTADO GLOBAL Y CONFIGURACIÓN ---
     let affiliates = [], advisors = [], manualTransactions = [], novedades = [], healthPlans = [], userRoles = [];
     let companyProfile = {};
-    
-// V V V AÑADE ESTA LÍNEA V V V
-// Esta variable actuará como memoria temporal. Cuando el usuario selecciona un archivo,
-// lo guardaremos aquí. Si permanece 'null', significa que el usuario no ha cambiado el logo.
-// Si tiene un archivo, en el momento de guardar, sabremos que tenemos que subirlo.
-let logoFileToUpload = null; 
-    
     let settings = {};
     let affiliatesViewMode = 'card';
     let calendarViewMode = 'list'; // <--- VISTA POR DEFECTO DEL CALENDARIO
@@ -1479,102 +1436,7 @@ function updateUIVisibilityByRole() {
         lucide.createIcons();
     }
 
-    // REEMPLAZA LA FUNCIÓN ENTERA CON ESTO:
-function renderEmpresaSection() {
-    // Esta parte sigue igual, llenando los campos de texto
-    if (!companyProfile.name) return;
-    document.getElementById("company-name").value = companyProfile.name;
-    document.getElementById("company-nit").value = companyProfile.nit;
-    document.getElementById("company-address").value = companyProfile.address;
-    document.getElementById("company-phone").value = companyProfile.phone;
-    document.getElementById("company-email").value = companyProfile.email;
-    document.querySelector(`#theme-selector input[value="${companyProfile.theme || "default"}"]`).checked = true;
-    document.querySelector(`#sidebar-theme-selector input[value="${companyProfile.sidebarTheme || "dark"}"]`).checked = true;
-    document.querySelector(`#bottom-nav-theme-selector input[value="${companyProfile.bottomNavTheme || "dark"}"]`).checked = true;
-
-    // =======================================================
-    // === INICIO: LÓGICA NUEVA PARA MANEJAR EL LOGOTIPO ===
-    // =======================================================
-    // 1. Obtenemos referencias a nuestros elementos HTML
-    const logoPreview = document.getElementById('logo-preview');
-    const logoPlaceholder = document.getElementById('logo-placeholder-icon');
-    const logoInput = document.getElementById('company-logo-input');
-    const removeLogoBtn = document.getElementById('remove-logo-btn');
-    
-    // 2. Reseteamos el estado. Cada vez que se renderiza esta sección,
-    // asumimos que no hay un nuevo logo pendiente de subida.
-    logoFileToUpload = null; 
-
-    // 3. Lógica de visualización inicial
-    // Verificamos si en la base de datos (en nuestro objeto companyProfile) existe una URL de logo.
-    if (companyProfile.logoUrl) {
-        // Si existe:
-        logoPreview.src = companyProfile.logoUrl; // Asignamos la URL a la etiqueta <img>
-        logoPreview.classList.remove('hidden');   // Hacemos visible la imagen
-        logoPlaceholder.classList.add('hidden');  // Ocultamos el ícono de placeholder
-        removeLogoBtn.classList.remove('hidden'); // Mostramos el botón "Quitar logo"
-    } else {
-        // Si NO existe:
-        logoPreview.classList.add('hidden');     // Ocultamos la etiqueta <img>
-        logoPreview.src = '';                    // Limpiamos su contenido por si acaso
-        logoPlaceholder.classList.remove('hidden'); // Mostramos el ícono de placeholder
-        removeLogoBtn.classList.add('hidden');   // Mantenemos oculto el botón "Quitar logo"
-    }
-
-    // 4. Lógica de previsualización al seleccionar archivo
-    // Asignamos una función al evento 'onchange' del input de archivo.
-    logoInput.onchange = (e) => {
-        const file = e.target.files[0]; // Obtenemos el primer archivo seleccionado
-        if (file) {
-            // Si el usuario seleccionó un archivo:
-            logoFileToUpload = file; // Guardamos el archivo en nuestra variable de estado.
-            
-            // Usamos FileReader para leer el archivo y generar una URL temporal
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                // Cuando el archivo se ha leído, 'event.target.result' contiene los datos de la imagen
-                logoPreview.src = event.target.result; // Mostramos la previsualización
-                logoPreview.classList.remove('hidden');
-                logoPlaceholder.classList.add('hidden');
-            };
-            reader.readAsDataURL(file); // Iniciamos la lectura del archivo.
-        }
-    };
-
-    // 5. Lógica para el botón de eliminar
-    removeLogoBtn.onclick = async () => {
-        if (confirm('¿Estás seguro de que deseas eliminar el logotipo actual?')) {
-            showToast('Eliminando logotipo...', 'success');
-            try {
-                // Creamos una referencia al archivo en Storage usando su URL pública
-                const logoRef = ref(storage, companyProfile.logoUrl);
-                await deleteObject(logoRef); // Enviamos la orden de borrarlo
-                
-                // Ahora actualizamos nuestra base de datos para quitar el enlace
-                const userDocRef = doc(db, `users/${adminUidForRole}`);
-                const updatedProfile = { ...companyProfile, logoUrl: null };
-                await setDoc(userDocRef, { companyProfile: updatedProfile }, { merge: true });
-
-                showToast('Logotipo eliminado correctamente.', 'success');
-                // La UI se actualizará sola porque estamos escuchando cambios en Firestore
-            } catch (error) {
-                console.error("Error al eliminar el logo:", error);
-                // Manejo de error robusto: si el archivo ya no existe en Storage, al menos lo quitamos de la DB
-                if (error.code === 'storage/object-not-found') {
-                    const userDocRef = doc(db, `users/${adminUidForRole}`);
-                    const updatedProfile = { ...companyProfile, logoUrl: null };
-                    await setDoc(userDocRef, { companyProfile: updatedProfile }, { merge: true });
-                    showToast('Logo eliminado de la base de datos (no se encontró en Storage).', 'success');
-                } else {
-                    showToast('Error al eliminar el logotipo.', 'error');
-                }
-            }
-        }
-    };
-    // =====================================================
-    // === FIN: LÓGICA NUEVA PARA MANEJAR EL LOGOTIPO ===
-    // =====================================================
-}
+    function renderEmpresaSection(){if(!companyProfile.name) return;document.getElementById("company-name").value=companyProfile.name;document.getElementById("company-nit").value=companyProfile.nit;document.getElementById("company-address").value=companyProfile.address;document.getElementById("company-phone").value=companyProfile.phone;document.getElementById("company-email").value=companyProfile.email;document.querySelector(`#theme-selector input[value="${companyProfile.theme||"default"}"]`).checked=!0;document.querySelector(`#sidebar-theme-selector input[value="${companyProfile.sidebarTheme||"dark"}"]`).checked=!0;document.querySelector(`#bottom-nav-theme-selector input[value="${companyProfile.bottomNavTheme||"dark"}"]`).checked=!0}
     function renderFlujoCajaSection(){const e=new Date,t=new Date(e.getFullYear(),e.getMonth(),1);document.getElementById("report-start-date").value=t.toISOString().split("T")[0],document.getElementById("report-end-date").value=e.toISOString().split("T")[0];const a=getAllTransactions(),n=a.filter(t=>{const a=new Date(t.date);return a.getMonth()===e.getMonth()&&a.getFullYear()===e.getFullYear()}),o=n.filter(e=>"ingreso"===e.type).reduce((e,t)=>e+t.amount,0),s=n.filter(e=>"egreso"===e.type).reduce((e,t)=>e+t.amount,0);document.getElementById("cashflow-income").textContent=formatCurrency(o),document.getElementById("cashflow-expenses").textContent=formatCurrency(s),document.getElementById("cashflow-profit").textContent=formatCurrency(o-s),renderTransactionsTable(a)}
     function getAllTransactions(){const e=[];return affiliates.forEach(t=>{if("Activo"===t.status){const a=getAffiliateCommissionBase(t);e.push({id:`auto-i-${t.id}`,type:"ingreso",concept:`Pago afiliado: ${t.name}`,amount:a,date:t.startDate});const n=getAdvisorCommissionForAffiliate(t);if(0<n){const o=advisors.find(e=>e.id===t.advisorId);e.push({id:`auto-e-${t.id}`,type:"egreso",concept:`Comisión ${o?.name||"N/A"} (Afiliado: ${t.name})`,amount:n,date:t.startDate})}}}),[...e,...manualTransactions].sort((e,t)=>new Date(t.date)-new Date(e.date))}
     function renderTransactionsTable(e){const t=document.getElementById("transactions-table-body");if(0===e.length){t.innerHTML='<tr><td colspan="3" class="text-center p-4 text-slate-500">No hay transacciones registradas.</td></tr>';return}t.innerHTML=e.map(e=>{const t="ingreso"===e.type;return`<tr class="border-b"><td class="p-3">${new Date(e.date).toLocaleDateString("es-CO")}</td><td class="p-3 text-slate-700">${e.concept}</td><td class="p-3 text-right font-semibold ${t?"text-emerald-600":"text-rose-600"}">${t?"+":"-"}${formatCurrency(e.amount)}</td></tr>`}).join("")}
@@ -2524,73 +2386,45 @@ function formatPhoneNumberForWhatsApp(phone) {
             }
         });
         
-        
-document.getElementById('company-profile-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const saveButton = e.target.querySelector('button[type="submit"]');
-    saveButton.disabled = true;
-    saveButton.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i> Guardando...';
-    lucide.createIcons();
+        document.getElementById('company-profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const saveButton = e.target.querySelector('button[type="submit"]');
+            saveButton.disabled = true;
+            saveButton.textContent = 'Guardando...';
 
-    try {
-        let logoUrl = companyProfile.logoUrl || null;
+            try {
+                const profileData = {
+                    name: document.getElementById('company-name').value,
+                    nit: document.getElementById('company-nit').value,
+                    address: document.getElementById('company-address').value,
+                    phone: document.getElementById('company-phone').value,
+                    email: document.getElementById('company-email').value,
+                    theme: document.querySelector('#theme-selector input[name="theme"]:checked').value,
+                    sidebarTheme: document.querySelector('#sidebar-theme-selector input[name="sidebar-theme"]:checked').value,
+                    bottomNavTheme: document.querySelector('#bottom-nav-theme-selector input[name="bottom-nav-theme"]:checked').value,
+                };
 
-        // ================== INICIO DEL CAMBIO IMPORTANTE ==================
-        if (logoFileToUpload) {
-            saveButton.textContent = 'Procesando logo...';
+                /* === INICIO DE LA SOLUCIÓN: GUARDAR TEMA EN NAVEGADOR === */
+localStorage.setItem('userTheme', profileData.theme);
+/* === FIN DE LA SOLUCIÓN === */
 
-            // 1. Convertimos el archivo a un string Base64
-            const base64String = await new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = (e) => resolve(e.target.result);
-                reader.onerror = (e) => reject(e);
-                reader.readAsDataURL(logoFileToUpload);
-            });
+                const userDocRef = doc(db, `users/${adminUidForRole}`);
+                
+                await setDoc(userDocRef, {
+                    companyProfile: profileData
+                }, { merge: true });
 
-            saveButton.textContent = 'Subiendo logo...';
-            
-            // 2. Creamos la referencia en Storage como antes
-            const storageRef = ref(storage, `logos/${adminUidForRole}/${Date.now()}_${logoFileToUpload.name}`);
-            
-            // 3. Usamos el nuevo método 'uploadString'
-            await uploadString(storageRef, base64String, 'data_url');
-            
-            // 4. Obtenemos la URL de descarga como antes
-            logoUrl = await getDownloadURL(storageRef);
-            
-            logoFileToUpload = null;
-        }
-        // =================== FIN DEL CAMBIO IMPORTANTE ====================
+                showToast('Perfil de la empresa guardado con Éxito.', 'success');
 
-        saveButton.textContent = 'Guardando datos...';
-        const profileData = {
-            name: document.getElementById('company-name').value,
-            nit: document.getElementById('company-nit').value,
-            address: document.getElementById('company-address').value,
-            phone: document.getElementById('company-phone').value,
-            email: document.getElementById('company-email').value,
-            theme: document.querySelector('#theme-selector input[name="theme"]:checked').value,
-            sidebarTheme: document.querySelector('#sidebar-theme-selector input[name="sidebar-theme"]:checked').value,
-            bottomNavTheme: document.querySelector('#bottom-nav-theme-selector input[name="bottom-nav-theme"]:checked').value,
-            logoUrl: logoUrl
-        };
+            } catch (error) {
+                console.error("Error al guardar el perfil de la empresa:", error);
+                showToast('Error al guardar los cambios. Intenta de nuevo.', 'error');
+            } finally {
+                saveButton.disabled = false;
+                saveButton.textContent = 'Guardar Cambios';
+            }
+        });
 
-        localStorage.setItem('userTheme', profileData.theme);
-
-        const userDocRef = doc(db, `users/${adminUidForRole}`);
-        await setDoc(userDocRef, { companyProfile: profileData }, { merge: true });
-
-        showToast('Perfil de la empresa guardado con éxito.', 'success');
-
-    } catch (error) {
-        console.error("Error definitivo al guardar:", error);
-        showToast('Error al guardar. Revisa la consola para más detalles.', 'error');
-    } finally {
-        saveButton.disabled = false;
-        saveButton.innerHTML = 'Guardar Cambios';
-        lucide.createIcons();
-    }
-});
         document.getElementById('transaction-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const saveButton = e.target.querySelector('button[type="submit"]');
@@ -2701,74 +2535,34 @@ document.getElementById('company-profile-form').addEventListener('submit', async
         });
     });
     
-    // REEMPLAZA LA FUNCIÓN ENTERA CON ESTA VERSIÓN ASÍNCRONA
-async function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, companyProfileData) {
+    async function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, companyProfileData) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     const primaryColorRGB = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim().split(' ').map(Number);
     const formatDate = (dateString) => dateString ? new Date(dateString + 'T00:00:00').toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
-    
-    // --- NUEVA FUNCIÓN AUXILIAR ---
-    // Esta pequeña función es crucial. Toma una URL de internet, descarga la imagen
-    // en segundo plano y la convierte a formato Base64, que es lo que jsPDF necesita
-    // para incrustar una imagen en el PDF. La hacemos robusta con un try-catch.
-    const imageToDataUrl = async (url) => {
-        try {
-            const response = await fetch(url);
-            if (!response.ok) return null;
+
+    // --- 1. ENCABEZADO PROFESIONAL ---
+    let logoBase64 = null;
+    try {
+        const response = await fetch('logo.png');
+        if (response.ok) {
             const blob = await response.blob();
-            return new Promise((resolve, reject) => {
+            logoBase64 = await new Promise(resolve => {
                 const reader = new FileReader();
                 reader.onloadend = () => resolve(reader.result);
-                reader.onerror = reject;
                 reader.readAsDataURL(blob);
             });
-        } catch (error) {
-            console.error("Error al cargar la imagen para el PDF:", error);
-            return null;
         }
-    };
+    } catch (e) { console.warn("logo.png no encontrado."); }
 
-    // --- 1. ENCABEZADO PROFESIONAL CON LÓGICA DE LOGO ---
-    // Primero, verificamos si existe una URL del logo en los datos de la empresa.
-    if (companyProfileData.logoUrl) {
-        // Si existe, llamamos a nuestra función auxiliar para obtener los datos de la imagen.
-        // Usamos 'await' para esperar a que la descarga y conversión terminen.
-        const logoBase64 = await imageToDataUrl(companyProfileData.logoUrl);
-        
-        // Si la conversión fue exitosa...
-        if (logoBase64) {
-             try {
-                 // Usamos doc.addImage para poner el logo en el PDF.
-                 // Parámetros: (datos, formato, pos-X, pos-Y, ancho, alto, ...)
-                 // Ajustamos el ancho a 40 y el alto a 15 para que no sea demasiado grande.
-                 doc.addImage(logoBase64, 'PNG', 14, 15, 40, 15, undefined, 'FAST'); 
-             } catch (e) {
-                console.error("Error de jsPDF al añadir imagen, usando texto de fallback", e);
-                // Fallback si el logo está corrupto
-                doc.setFontSize(20);
-                doc.setFont("helvetica", "bold");
-                doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
-                doc.text(companyProfileData.name || "Seb Salud", 14, 25);
-             }
-        } else {
-            // Fallback: Si la carga de la imagen falló, imprimimos el nombre de la empresa.
-            doc.setFontSize(20);
-            doc.setFont("helvetica", "bold");
-            doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
-            doc.text(companyProfileData.name || "Seb Salud", 14, 25);
-        }
+    if (logoBase64) {
+        doc.addImage(logoBase64, 'PNG', 14, 15, 50, 15);
     } else {
-        // Fallback: Si no hay una URL de logo, también imprimimos el nombre.
-        // Esto asegura que el PDF siempre tenga un encabezado.
         doc.setFontSize(20);
         doc.setFont("helvetica", "bold");
         doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
         doc.text(companyProfileData.name || "Seb Salud", 14, 25);
     }
-    
-    // --- El resto de la función para generar el PDF continúa desde aquí ---
-    // (No es necesario pegar el resto del código de la función, ya que es idéntico al de la respuesta anterior)
     
     doc.setFontSize(9);
     doc.setFont("helvetica", "normal");
@@ -2790,6 +2584,7 @@ async function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, 
     doc.setDrawColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
     doc.line(14, 48, 196, 48);
 
+    // --- 2. DATOS DEL AFILIADO (Tabla detallada) ---
     doc.autoTable({
         startY: 55,
         theme: 'grid',
@@ -2808,6 +2603,7 @@ async function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, 
 
     let finalY = doc.lastAutoTable.finalY + 8;
 
+    // --- 3. RESUMEN DE SERVICIO Y COSTOS (Sin cambios, ya era robusto) ---
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(40);
@@ -2844,12 +2640,14 @@ async function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, 
     
     finalY = doc.lastAutoTable.finalY;
 
+    // --- 4. DETALLES ADMINISTRATIVOS (Comisión eliminada) ---
     const adminDetails = [
         ['Asesor Asignado:', advisorData.name || 'No asignado'],
         ['Fecha de Inicio de Cobertura:', formatDate(affiliateData.startDate)],
         ['Próximo Pago / Vencimiento:', affiliateData.endDate ? formatDate(affiliateData.endDate) : 'Indefinido'],
         ['Estado Actual:', affiliateData.status]
     ];
+    // La comisión ya NO se agrega aquí.
 
     doc.autoTable({
         startY: finalY + 8,
@@ -2861,6 +2659,7 @@ async function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, 
         columnStyles: { 0: { fontStyle: 'bold' } }
     });
 
+    // --- 5. PIE DE PÁGINA PROFESIONAL (Sin cambios) ---
     finalY = doc.internal.pageSize.height - 30;
     doc.setLineWidth(0.2);
     doc.setDrawColor(180);
@@ -2872,6 +2671,7 @@ async function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, 
 
     doc.save(`Comprobante_Afiliacion_${affiliateData.name.replace(/\s/g, '_')}.pdf`);
 }
+
     const modalManager = {
         open(modalId, data = null) {
             const modal = document.getElementById(modalId); if (!modal) return;
@@ -2939,6 +2739,3 @@ async function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, 
 </script>
 </body>
 </html>
-
-
-
