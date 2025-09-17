@@ -36,6 +36,9 @@
         [data-theme="neon-amarillo"] { --color-primary-400: 234 255 102; --color-primary-500: 227 255 0; --color-primary-600: 204 255 0; --color-primary-700: 170 204 0; --auth-gradient-from: #eaff66; --auth-gradient-to: #aacc00;}
         [data-theme="spotify"] { --color-primary-400: 30 215 96; --color-primary-500: 29 185 84; --color-primary-600: 29 185 84; --color-primary-700: 25 158 71; --auth-gradient-from: rgb(var(--color-primary-500)); --auth-gradient-to: #054120;}
 
+        /* =================== LÍNEA AÑADIDA =================== */
+[data-theme="liquid-glass"] { --color-primary-400: 129 203 255; --color-primary-500: 59 167 255; --color-primary-600: 0 131 255; --color-primary-700: 0 108 212; --auth-gradient-from: #0083ff; --auth-gradient-to: #00c8ff; }
+/* ================= FIN DE LÍNEA AÑADIDA ============== */
 
         body { font-family: 'Inter', sans-serif; }
         .bg-primary-600 { background-color: rgb(var(--color-primary-600)); }
@@ -144,7 +147,106 @@
 }
         [data-theme="spotify"] .health-plan-card { border-color: #404040; }
 
+/* ========================================================= */
+/* ===         ESTILOS PARA EL TEMA LIQUID GLASS         === */
+/* ========================================================= */
 
+/* 1. Keyframes para el fondo animado */
+@keyframes animated-gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* 2. Estilo del cuerpo y fondo */
+[data-theme="liquid-glass"] body.bg-slate-50 {
+    color: #ffffff;
+    background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #0083ff, #00c8ff);
+    background-size: 400% 400%;
+    animation: animated-gradient 25s ease infinite;
+    transition: background 0.5s ease-in-out;
+}
+
+/* 3. Estilo principal para los elementos "de cristal" */
+[data-theme="liquid-glass"] .bg-white,
+[data-theme="liquid-glass"] .bg-white\/80,
+[data-theme="liquid-glass"] .modal-content,
+[data-theme="liquid-glass"] header,
+[data-theme="liquid-glass"] #sidebar,
+[data-theme="liquid-glass"] .bottom-nav,
+[data-theme="liquid-glass"] button,
+[data-theme="liquid-glass"] input,
+[data-theme="liquid-glass"] select,
+[data-theme="liquid-glass"] textarea,
+[data-theme="liquid-glass"] .bg-slate-50,
+[data-theme="liquid-glass"] .bg-slate-100,
+[data-theme="liquid-glass"] #header-search-results {
+    background-color: rgba(30, 30, 45, 0.5) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important; /* Para Safari */
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2) !important;
+}
+
+/* 4. Estilos para texto y colores */
+[data-theme="liquid-glass"] .text-slate-800,
+[data-theme="liquid-glass"] .text-slate-700 {
+    color: #f8fafc !important;
+}
+[data-theme="liquid-glass"] .text-slate-600,
+[data-theme="liquid-glass"] .text-slate-500,
+[data-theme="liquid-glass"] .text-slate-400 {
+    color: #cbd5e1 !important;
+}
+
+/* 5. Ajustes específicos para componentes */
+
+/* Botones y Elementos Interactivos */
+[data-theme="liquid-glass"] button:hover,
+[data-theme="liquid-glass"] .hover\:bg-slate-50:hover,
+[data-theme="liquid-glass"] .search-result-item:hover {
+    background-color: rgba(50, 50, 70, 0.7) !important;
+    transition: background-color 0.2s;
+}
+[data-theme="liquid-glass"] .bg-primary-600 {
+    background-color: rgb(var(--color-primary-600)) !important;
+    backdrop-filter: none !important; /* Quitar filtro a botones primarios para que destaquen */
+}
+
+/* Inputs y Selects */
+[data-theme="liquid-glass"] input::placeholder,
+[data-theme="liquid-glass"] textarea::placeholder {
+    color: #94a3b8 !important;
+}
+
+/* Enlaces de Navegación */
+[data-theme="liquid-glass"] #sidebar .nav-link.active,
+[data-theme="liquid-glass"] [data-sidebar-theme="light"] #sidebar .nav-link.active {
+     background-color: rgba(0, 131, 255, 0.5) !important;
+     color: white !important;
+}
+[data-theme="liquid-glass"] .bottom-nav .bottom-nav-link.active,
+[data-theme="liquid-glass"] [data-bottom-nav-theme="light"] .bottom-nav .bottom-nav-link.active {
+    color: rgb(var(--color-primary-400)) !important;
+    background-color: transparent !important;
+}
+
+/* Bordes y Divisores */
+[data-theme="liquid-glass"] .border,
+[data-theme="liquid-glass"] .border-b,
+[data-theme="liquid-glass"] .border-t,
+[data-theme="liquid-glass"] .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Scrollbar */
+[data-theme="liquid-glass"] ::-webkit-scrollbar-track { background: transparent; }
+[data-theme="liquid-glass"] ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); }
+[data-theme="liquid-glass"] ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.5); }
+
+/* --- FIN ESTILOS LIQUID GLASS --- */
+
+        
         /* --- NUEVAS ANIMACIONES Y ESTILOS --- */
     
 /* ============================================================== */
@@ -405,6 +507,17 @@ button svg {
                                         <label class="cursor-pointer"><input type="radio" name="theme" value="verano-tropical" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-fuchsia-600 peer-checked:ring-2 peer-checked:ring-fuchsia-600/50"><div class="flex items-center justify-between"><span class="font-semibold">Tropical</span><div class="w-6 h-6 rounded-full bg-gradient-to-br from-[#a3e635] to-[#ec4899]"></div></div></div></label>
                                         <label class="cursor-pointer"><input type="radio" name="theme" value="apple" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-gray-300 peer-checked:ring-2 peer-checked:ring-gray-300/50"><div class="flex items-center justify-between"><span class="font-semibold">Apple</span><div class="w-6 h-6 rounded-full bg-black border-2 border-white"></div></div></div></label>
                                         <label class="cursor-pointer"><input type="radio" name="theme" value="neon-amarillo" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-yellow-400 peer-checked:ring-2 peer-checked:ring-yellow-400/50"><div class="flex items-center justify-between"><span class="font-semibold">Ne&#243;n</span><div class="w-6 h-6 rounded-full bg-[#ccff00]"></div></div></div></label>
+                                        <label class="cursor-pointer">
+        <input type="radio" name="theme" value="liquid-glass" class="sr-only peer">
+        <div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-sky-400 peer-checked:ring-2 peer-checked:ring-sky-400/50">
+            <div class="flex items-center justify-between">
+                <span class="font-semibold">Liquid Glass</span>
+                <div style="background-image: linear-gradient(to top, #0c2b64, #0075a1, #00b9a8, #00f871); position: relative; overflow: hidden;" class="w-6 h-6 rounded-full">
+                    <div style="backdrop-filter: blur(2px); background: rgba(255,255,255,0.4);" class="w-full h-full"></div>
+                </div>
+            </div>
+        </div>
+    </label>
                                         <label class="cursor-pointer"><input type="radio" name="theme" value="spotify" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-green-500 peer-checked:ring-2 peer-checked:ring-green-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Spotify</span><div class="w-6 h-6 rounded-full bg-[#1DB954]"></div></div></div></label>
                                     </div>
                                 </div>
@@ -2752,4 +2865,5 @@ localStorage.setItem('userTheme', profileData.theme);
 </script>
 </body>
 </html>
+
 
