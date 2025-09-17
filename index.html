@@ -40,6 +40,10 @@
 [data-theme="liquid-glass"] { --color-primary-400: 129 203 255; --color-primary-500: 59 167 255; --color-primary-600: 0 131 255; --color-primary-700: 0 108 212; --auth-gradient-from: #0083ff; --auth-gradient-to: #00c8ff; }
 /* ================= FIN DE LÍNEA AÑADIDA ============== */
 
+/* =================== LÍNEA AÑADIDA =================== */
+[data-theme="aurora"] { --color-primary-400: 103 239 229; --color-primary-500: 34 211 200; --color-primary-600: 20 184 175; --color-primary-700: 15 149 141; --auth-gradient-from: #22d3d0; --auth-gradient-to: #9d4edd; }
+/* ================= FIN DE LÍNEA AÑADIDA ============== */
+
         body { font-family: 'Inter', sans-serif; }
         .bg-primary-600 { background-color: rgb(var(--color-primary-600)); }
         .bg-primary-700 { background-color: rgb(var(--color-primary-700)); }
@@ -246,6 +250,144 @@ html[data-theme="liquid-glass"] ::-webkit-scrollbar-thumb:hover { background: rg
 
 
 /* --- FIN ESTILOS LIQUID GLASS --- */
+
+/* ========================================================= */
+/* ===      ESTILOS PARA EL TEMA AURORA BOREAL (AÑADIDO) === */
+/* ========================================================= */
+
+@keyframes aurora-glow {
+    0% { transform: translate(-50%, -50%) rotate(0deg) scale(1.2); opacity: 0.4; }
+    50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.5); opacity: 0.7; }
+    100% { transform: translate(-50%, -50%) rotate(360deg) scale(1.2); opacity: 0.4; }
+}
+
+@keyframes aurora-move {
+    0% { transform: translate(10%, -10%) rotate(0deg); }
+    25% { transform: translate(-20%, 20%) rotate(90deg); }
+    50% { transform: translate(15%, -25%) rotate(180deg); }
+    75% { transform: translate(-10%, 15%) rotate(270deg); }
+    100% { transform: translate(10%, -10%) rotate(360deg); }
+}
+
+html[data-theme="aurora"] body.bg-slate-50 {
+    background-color: #03040B;
+    color: #f0f0f5;
+    overflow: hidden; /* Evita que las auroras generen scrollbars */
+    position: relative;
+}
+
+/* Creamos las luces de la aurora con pseudo-elementos */
+html[data-theme="aurora"] body.bg-slate-50::before,
+html[data-theme="aurora"] body.bg-slate-50::after {
+    content: '';
+    position: fixed; /* Usamos fixed para que se queden detrás incluso con scroll */
+    left: 50%;
+    top: 50%;
+    width: 150vw;
+    height: 150vw;
+    max-width: 1200px;
+    max-height: 1200px;
+    border-radius: 50%;
+    filter: blur(100px);
+    z-index: -1;
+}
+
+html[data-theme="aurora"] body.bg-slate-50::before {
+    background-image: radial-gradient(circle, #5e2ab2, #3a228d, #1c1869, #0d1045, #03040b);
+    animation: aurora-glow 18s linear infinite;
+}
+
+html[data-theme="aurora"] body.bg-slate-50::after {
+    background-image: radial-gradient(circle, #00c6a7, #00a498, #008387, #006374, #0b455f);
+    animation: aurora-move 24s linear infinite alternate;
+}
+
+/* Estilo para los paneles principales */
+html[data-theme="aurora"] .bg-white,
+html[data-theme="aurora"] .bg-white\/80,
+html[data-theme="aurora"] .modal-content,
+html[data-theme="aurora"] header,
+html[data-theme="aurora"] #sidebar,
+html[data-theme="aurora"] .bottom-nav,
+html[data-theme="aurora"] input,
+html[data-theme="aurora"] select,
+html[data-theme="aurora"] textarea,
+html[data-theme="aurora"] .bg-slate-50,
+html[data-theme="aurora"] .bg-slate-100,
+html[data-theme="aurora"] #header-search-results {
+    background-color: rgba(10, 10, 20, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(4px); /* Un desenfoque más sutil */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+}
+
+/* Textos */
+html[data-theme="aurora"] .text-slate-800,
+html[data-theme="aurora"] .text-slate-700 { color: #f8fafc !important; }
+html[data-theme="aurora"] .text-slate-600,
+html[data-theme="aurora"] .text-slate-500,
+html[data-theme="aurora"] .text-slate-400 { color: #a0a0b0 !important; }
+html[data-theme="aurora"] input::placeholder,
+html[data-theme="aurora"] textarea::placeholder { color: #888898 !important; }
+
+/* Botones y el EFECTO DE BORDE ILUMINADO */
+html[data-theme="aurora"] button {
+    background-color: transparent !important;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.3s ease;
+}
+
+html[data-theme="aurora"] button::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border-radius: inherit;
+    background: conic-gradient(from 180deg at 50% 50%, #00ffc3, #a94cf2, #0084ff, #00ffc3);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: -1;
+}
+
+html[data-theme="aurora"] button:hover::before {
+    opacity: 1;
+}
+
+html[data-theme="aurora"] button span,
+html[data-theme="aurora"] button i {
+    z-index: 1;
+}
+
+/* Botón Primario */
+html[data-theme="aurora"] .bg-primary-600,
+html[data-theme="aurora"] .bg-primary-600:hover {
+    background: linear-gradient(90deg, #22d3d0, #5e2ab2) !important;
+    border: none !important;
+    color: white !important;
+}
+html[data-theme="aurora"] .bg-primary-600::before {
+    display: none; /* Desactivamos el efecto de borde para el primario */
+}
+
+/* Bordes y Divisores */
+html[data-theme="aurora"] .border,
+html[data-theme="aurora"] .border-b,
+html[data-theme="aurora"] .border-t,
+html[data-theme="aurora"] .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Enlaces de Navegación */
+html[data-theme="aurora"] #sidebar .nav-link.active,
+html[data-theme="aurora"] [data-sidebar-theme="light"] #sidebar .nav-link.active {
+     background-color: rgba(34, 211, 200, 0.2) !important;
+     color: #67e8de !important;
+     border-color: rgba(34, 211, 200, 0.5) !important;
+}
+
+/* --- FIN ESTILOS AURORA BOREAL --- */
+        
         
         /* --- NUEVAS ANIMACIONES Y ESTILOS --- */
     
@@ -546,6 +688,30 @@ button svg {
         </div>
     </div>
 </label>
+
+                                        <label class="cursor-pointer">
+        <input type="radio" name="theme" value="liquid-glass" class="sr-only peer">
+        </label>
+
+    <label class="cursor-pointer">
+        <input type="radio" name="theme" value="aurora" class="sr-only peer">
+        <div class="relative p-4 rounded-lg border-2 border-slate-200 peer-checked:border-purple-500 peer-checked:ring-2 peer-checked:ring-purple-500/50">
+
+            <span class="premium-theme-tag" style="background-image: linear-gradient(to right, #4c2889, #9d4edd);">
+                <i data-lucide="crown" class="w-3 h-3"></i>
+            </span>
+
+            <div class="flex items-center justify-between">
+                <span class="font-semibold">Aurora</span>
+                <div style="background-image: linear-gradient(135deg, #00ffc3, #a94cf2, #0084ff);" class="w-6 h-6 rounded-full"></div>
+            </div>
+        </div>
+    </label>
+    <label class="cursor-pointer">
+        <input type="radio" name="theme" value="spotify" class="sr-only peer">
+        </label>
+
+                                        
                                         <label class="cursor-pointer"><input type="radio" name="theme" value="spotify" class="sr-only peer"><div class="p-4 rounded-lg border-2 border-slate-200 peer-checked:border-green-500 peer-checked:ring-2 peer-checked:ring-green-500/50"><div class="flex items-center justify-between"><span class="font-semibold">Spotify</span><div class="w-6 h-6 rounded-full bg-[#1DB954]"></div></div></div></label>
                                     </div>
                                 </div>
@@ -2893,6 +3059,7 @@ localStorage.setItem('userTheme', profileData.theme);
 </script>
 </body>
 </html>
+
 
 
 
