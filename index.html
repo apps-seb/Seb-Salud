@@ -1012,7 +1012,7 @@ applyTheme(savedTheme);
     async function deleteDataFromFirestore(collectionName, docId) { if (!currentUser) return; const docRef = doc(db, `users/${adminUidForRole}/${collectionName}/${docId}`); await deleteDoc(docRef); }
     
     async function initializeAppForUser() {
-    renderSidebarUserInfo(); // <--- AÑADE ESTA LLAMADA AQUÍ
+    renderSidebarUserInfo();
     document.getElementById('profile-modal-name').textContent = currentUser.email;
         
         setupRealtimeListeners();
@@ -1039,7 +1039,7 @@ applyTheme(savedTheme);
     }
 
 // =========================================================================
-// INICIO DE LA SOLUCIÓN FINAL v3 - Corrigiendo la Herencia de Color
+// INICIO DE LA SOLUCIÓN - CÓDIGO CORREGIDO Y MEJORADO
 // =========================================================================
 
 function renderSidebarUserInfo() {
@@ -1051,11 +1051,11 @@ function renderSidebarUserInfo() {
     const isLightTheme = document.body.getAttribute('data-sidebar-theme') === 'light';
 
     // ▼▼▼ LA CORRECCIÓN ESTÁ AQUÍ ▼▼▼
-    // En el tema claro, no le asignamos clase de color ('') para que herede el color oscuro del sidebar.
+    // En el tema claro, no le asignamos clase de color ('') para que herede el color oscuro por defecto del sidebar.
     // En el tema oscuro, sí forzamos el color blanco.
     const companyNameColor = isLightTheme ? '' : 'text-white';
     
-    // Clases que cambiarán según el tema.
+    // Clases que cambiarán según el tema para el resto de la tarjeta.
     const cardBgClass = isLightTheme ? 'bg-slate-100' : 'bg-white/5';
     const emailColor = isLightTheme ? 'text-slate-500' : 'text-slate-300';
     const borderColor = isLightTheme ? 'border-slate-200' : 'border-slate-700/50';
@@ -1069,7 +1069,7 @@ function renderSidebarUserInfo() {
         case 'afiliado': userRoleText = 'Afiliado'; break;
     }
 
-    // Creamos el nuevo HTML para la tarjeta usando las clases dinámicas.
+    // Creamos el nuevo HTML para una tarjeta de usuario más moderna y funcional.
     const cardHTML = `
         <div class="${cardBgClass} p-3 rounded-lg">
             <div class="flex items-center gap-2">
@@ -1096,7 +1096,7 @@ function renderSidebarUserInfo() {
         </button>
     `;
 
-    // Actualizamos el HTML del contenedor.
+    // Actualizamos el HTML del contenedor y refrescamos los íconos.
     userInfoContainer.innerHTML = cardHTML;
     lucide.createIcons();
 }
@@ -2744,6 +2744,7 @@ localStorage.setItem('userTheme', profileData.theme);
 </script>
 </body>
 </html>
+
 
 
 
