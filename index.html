@@ -729,7 +729,8 @@ button svg {
     import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query, where, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+    
     /* === INICIO DE LA SOLUCIÓN: APLICAR TEMA AL CARGAR LA PÁGINA === */
 (() => {
     const savedTheme = localStorage.getItem('userTheme') || 'bosque';
@@ -751,6 +752,8 @@ button svg {
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const storage = getStorage(app);
+    
 
     enableIndexedDbPersistence(db)
       .catch((err) => {
@@ -1436,114 +1439,162 @@ function updateUIVisibilityByRole() {
         lucide.createIcons();
     }
 
-    function renderEmpresaSection(){if(!companyProfile.name) return;document.getElementById("company-name").value=companyProfile.name;document.getElementById("company-nit").value=companyProfile.nit;document.getElementById("company-address").value=companyProfile.address;document.getElementById("company-phone").value=companyProfile.phone;document.getElementById("company-email").value=companyProfile.email;document.querySelector(`#theme-selector input[value="${companyProfile.theme||"default"}"]`).checked=!0;document.querySelector(`#sidebar-theme-selector input[value="${companyProfile.sidebarTheme||"dark"}"]`).checked=!0;document.querySelector(`#bottom-nav-theme-selector input[value="${companyProfile.bottomNavTheme||"dark"}"]`).checked=!0}
+   function renderEmpresaSection() {
+    if (!companyProfile.name) return;
+    document.getElementById("company-name").value = companyProfile.name;
+    document.getElementById("company-nit").value = companyProfile.nit;
+    document.getElementById("company-address").value = companyProfile.address;
+    document.getElementById("company-phone").value = companyProfile.phone;
+    document.getElementById("company-email").value = companyProfile.email;
+    document.querySelector(`#theme-selector input[value="${companyProfile.theme || "default"}"]`).checked = true;
+    document.querySelector(`#sidebar-theme-selector input[value="${companyProfile.sidebarTheme || "dark"}"]`).checked = true;
+    document.querySelector(`#bottom-nav-theme-selector input[value="${companyProfile.bottomNavTheme || "dark"}"]`).checked = true;
+    
+    // --- INICIO: Lógica añadida para mostrar el logo ---
+    const logoPreview = document.getElementById('logo-preview');
+    const logoPlaceholder = document.getElementById('logo-placeholder-icon');
+    const removeLogoBtn = document.getElementById('remove-logo-btn');
+    
+    if (companyProfile.logoUrl) {
+        logoPreview.src = companyProfile.logoUrl;
+        logoPreview.classList.remove('hidden');
+        logoPlaceholder.classList.add('hidden');
+        removeLogoBtn.classList.remove('hidden');
+    } else {
+        logoPreview.src = '';
+        logoPreview.classList.add('hidden');
+        logoPlaceholder.classList.remove('hidden');
+        removeLogoBtn.classList.add('hidden');
+    }
+    
+    // Reseteamos el estado al renderizar
+    selectedLogoFile = null;
+    logoWasRemoved = false;
+    // --- FIN: Lógica añadida ---
+}
     function renderFlujoCajaSection(){const e=new Date,t=new Date(e.getFullYear(),e.getMonth(),1);document.getElementById("report-start-date").value=t.toISOString().split("T")[0],document.getElementById("report-end-date").value=e.toISOString().split("T")[0];const a=getAllTransactions(),n=a.filter(t=>{const a=new Date(t.date);return a.getMonth()===e.getMonth()&&a.getFullYear()===e.getFullYear()}),o=n.filter(e=>"ingreso"===e.type).reduce((e,t)=>e+t.amount,0),s=n.filter(e=>"egreso"===e.type).reduce((e,t)=>e+t.amount,0);document.getElementById("cashflow-income").textContent=formatCurrency(o),document.getElementById("cashflow-expenses").textContent=formatCurrency(s),document.getElementById("cashflow-profit").textContent=formatCurrency(o-s),renderTransactionsTable(a)}
     function getAllTransactions(){const e=[];return affiliates.forEach(t=>{if("Activo"===t.status){const a=getAffiliateCommissionBase(t);e.push({id:`auto-i-${t.id}`,type:"ingreso",concept:`Pago afiliado: ${t.name}`,amount:a,date:t.startDate});const n=getAdvisorCommissionForAffiliate(t);if(0<n){const o=advisors.find(e=>e.id===t.advisorId);e.push({id:`auto-e-${t.id}`,type:"egreso",concept:`Comisión ${o?.name||"N/A"} (Afiliado: ${t.name})`,amount:n,date:t.startDate})}}}),[...e,...manualTransactions].sort((e,t)=>new Date(t.date)-new Date(e.date))}
     function renderTransactionsTable(e){const t=document.getElementById("transactions-table-body");if(0===e.length){t.innerHTML='<tr><td colspan="3" class="text-center p-4 text-slate-500">No hay transacciones registradas.</td></tr>';return}t.innerHTML=e.map(e=>{const t="ingreso"===e.type;return`<tr class="border-b"><td class="p-3">${new Date(e.date).toLocaleDateString("es-CO")}</td><td class="p-3 text-slate-700">${e.concept}</td><td class="p-3 text-right font-semibold ${t?"text-emerald-600":"text-rose-600"}">${t?"+":"-"}${formatCurrency(e.amount)}</td></tr>`}).join("")}
     
-    function generatePDFReport() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        const primaryColorRGB = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim().split(' ').map(Number);
-        const startDate = new Date(document.getElementById('report-start-date').value + 'T00:00:00');
-        const endDate = new Date(document.getElementById('report-end-date').value + 'T23:59:59');
+    async function generatePDFReport() { // <-- AÑADIDO "async"
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    const primaryColorRGB = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim().split(' ').map(Number);
+    const startDate = new Date(document.getElementById('report-start-date').value + 'T00:00:00');
+    const endDate = new Date(document.getElementById('report-end-date').value + 'T23:59:59');
 
-        if (isNaN(startDate) || isNaN(endDate)) {
-            return showToast("Por favor, selecciona un rango de fechas válido.", "error");
-        }
+    if (isNaN(startDate) || isNaN(endDate)) {
+        return showToast("Por favor, selecciona un rango de fechas válido.", "error");
+    }
 
-        const transactionsInPeriod = getAllTransactions().filter(t => {
-            const tDate = new Date(t.date);
-            return tDate >= startDate && tDate <= endDate;
-        });
-        const activeAffiliatesCount = affiliates.filter(a => a.status === 'Activo').length;
-        
-        const totalIncome = transactionsInPeriod.filter(t => t.type === 'ingreso').reduce((sum, t) => sum + t.amount, 0);
-        const advisorCommissions = transactionsInPeriod.filter(t => t.type === 'egreso' && t.id.startsWith('auto-e-')).reduce((sum, t) => sum + t.amount, 0);
-        const manualExpenses = transactionsInPeriod.filter(t => t.type === 'egreso' && !t.id.startsWith('auto-e-')).reduce((sum, t) => sum + t.amount, 0);
-        const totalExpenses = advisorCommissions + manualExpenses;
-        const adminProfit = activeAffiliatesCount * (settings.ADMIN_FEE_PER_AFFILIATE || 0);
-        const netProfit = totalIncome - totalExpenses;
+    const transactionsInPeriod = getAllTransactions().filter(t => {
+        const tDate = new Date(t.date);
+        return tDate >= startDate && tDate <= endDate;
+    });
+    const activeAffiliatesCount = affiliates.filter(a => a.status === 'Activo').length;
+    
+    const totalIncome = transactionsInPeriod.filter(t => t.type === 'ingreso').reduce((sum, t) => sum + t.amount, 0);
+    const advisorCommissions = transactionsInPeriod.filter(t => t.type === 'egreso' && t.id.startsWith('auto-e-')).reduce((sum, t) => sum + t.amount, 0);
+    const manualExpenses = transactionsInPeriod.filter(t => t.type === 'egreso' && !t.id.startsWith('auto-e-')).reduce((sum, t) => sum + t.amount, 0);
+    const totalExpenses = advisorCommissions + manualExpenses;
+    const adminProfit = activeAffiliatesCount * (settings.ADMIN_FEE_PER_AFFILIATE || 0);
+    const netProfit = totalIncome - totalExpenses;
 
-        const commissionBreakdown = advisors.map(advisor => {
-            const totalCommissionForAdvisor = transactionsInPeriod
-                .filter(t => t.type === 'egreso' && t.id.startsWith('auto-e-') && t.concept.includes(advisor.name))
-                .reduce((sum, t) => sum + t.amount, 0);
-            return { name: advisor.name, commission: totalCommissionForAdvisor };
-        }).filter(item => item.commission > 0);
+    const commissionBreakdown = advisors.map(advisor => {
+        const totalCommissionForAdvisor = transactionsInPeriod
+            .filter(t => t.type === 'egreso' && t.id.startsWith('auto-e-') && t.concept.includes(advisor.name))
+            .reduce((sum, t) => sum + t.amount, 0);
+        return { name: advisor.name, commission: totalCommissionForAdvisor };
+    }).filter(item => item.commission > 0);
 
+    // --- INICIO: Bloque de código modificado para el logo ---
+    const logoBase64 = await imageToBase64(companyProfile.logoUrl);
+
+    if (logoBase64) {
+        doc.addImage(logoBase64, 'PNG', 14, 15, 30, 30);
+        doc.setFontSize(18);
+        doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
+        doc.text(companyProfile.name || 'Reporte Financiero', 50, 22);
+        doc.setFontSize(11);
+        doc.setTextColor(100);
+        doc.text(`NIT: ${companyProfile.nit || 'N/A'}`, 50, 30);
+    } else {
+        // Fallback si no hay logo
         doc.setFontSize(18);
         doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
         doc.text(companyProfile.name || 'Reporte Financiero', 14, 22);
         doc.setFontSize(11);
         doc.setTextColor(100);
         doc.text(`NIT: ${companyProfile.nit || 'N/A'}`, 14, 30);
-        doc.text(`Reporte Financiero Detallado`, doc.internal.pageSize.getWidth() - 14, 22, { align: 'right' });
-        doc.setFontSize(10);
-        doc.text(`Periodo: ${startDate.toLocaleDateString('es-CO')} - ${endDate.toLocaleDateString('es-CO')}`, doc.internal.pageSize.getWidth() - 14, 30, { align: 'right' });
+    }
+    // --- FIN: Bloque de código modificado ---
+    
+    doc.text(`Reporte Financiero Detallado`, doc.internal.pageSize.getWidth() - 14, 22, { align: 'right' });
+    doc.setFontSize(10);
+    doc.text(`Periodo: ${startDate.toLocaleDateString('es-CO')} - ${endDate.toLocaleDateString('es-CO')}`, doc.internal.pageSize.getWidth() - 14, 30, { align: 'right' });
 
-        let currentY = 45;
+    let currentY = 45;
 
+    doc.autoTable({
+        startY: currentY,
+        head: [['Resumen Financiero', '']],
+        body: [
+            ['Ingresos Totales', formatCurrency(totalIncome)],
+            ['Egresos Totales', formatCurrency(totalExpenses)],
+            [{content: `   - Total Comisiones a Asesores`, styles: {cellPadding: {left: 8}}}, formatCurrency(advisorCommissions)],
+            [{content: `   - Otros Egresos Manuales`, styles: {cellPadding: {left: 8}}}, formatCurrency(manualExpenses)],
+            ['Ganancia por Administración (Afiliados Activos x Tarifa)', formatCurrency(adminProfit)],
+            [{content: 'Ganancia Neta (Saldo Real en Caja)', styles: {fontStyle: 'bold', fillColor: '#f0fdf4', textColor: '#15803d'}},
+             {content: formatCurrency(netProfit), styles: {fontStyle: 'bold', fillColor: '#f0fdf4', textColor: '#15803d'}}]
+        ],
+        theme: 'grid',
+        headStyles: { fillColor: primaryColorRGB, fontSize: 12, fontStyle: 'bold' },
+        didParseCell: function (data) {
+            if (data.row.index >= 2 && data.row.index <= 3) {
+                 data.cell.styles.fontSize = 9;
+                 data.cell.styles.textColor = '#475569';
+            }
+        }
+    });
+    currentY = doc.lastAutoTable.finalY + 10;
+
+    if (commissionBreakdown.length > 0) {
         doc.autoTable({
             startY: currentY,
-            head: [['Resumen Financiero', '']],
-            body: [
-                ['Ingresos Totales', formatCurrency(totalIncome)],
-                ['Egresos Totales', formatCurrency(totalExpenses)],
-                [{content: `   - Total Comisiones a Asesores`, styles: {cellPadding: {left: 8}}}, formatCurrency(advisorCommissions)],
-                [{content: `   - Otros Egresos Manuales`, styles: {cellPadding: {left: 8}}}, formatCurrency(manualExpenses)],
-                ['Ganancia por Administración (Afiliados Activos x Tarifa)', formatCurrency(adminProfit)],
-                [{content: 'Ganancia Neta (Saldo Real en Caja)', styles: {fontStyle: 'bold', fillColor: '#f0fdf4', textColor: '#15803d'}},
-                 {content: formatCurrency(netProfit), styles: {fontStyle: 'bold', fillColor: '#f0fdf4', textColor: '#15803d'}}]
-            ],
-            theme: 'grid',
-            headStyles: { fillColor: primaryColorRGB, fontSize: 12, fontStyle: 'bold' },
-            didParseCell: function (data) {
-                if (data.row.index >= 2 && data.row.index <= 3) {
-                     data.cell.styles.fontSize = 9;
-                     data.cell.styles.textColor = '#475569';
-                }
-            }
+            head: [['Desglose de Comisiones por Asesor', 'Comisión Generada']],
+            body: commissionBreakdown.map(item => [item.name, formatCurrency(item.commission)]),
+            theme: 'striped',
+            headStyles: { fillColor: primaryColorRGB }
         });
         currentY = doc.lastAutoTable.finalY + 10;
-
-        if (commissionBreakdown.length > 0) {
-            doc.autoTable({
-                startY: currentY,
-                head: [['Desglose de Comisiones por Asesor', 'Comisión Generada']],
-                body: commissionBreakdown.map(item => [item.name, formatCurrency(item.commission)]),
-                theme: 'striped',
-                headStyles: { fillColor: primaryColorRGB }
-            });
-            currentY = doc.lastAutoTable.finalY + 10;
-        }
-        
-        doc.autoTable({
-            startY: currentY,
-            head: [['Historial Detallado de Transacciones', 'Fecha', 'Tipo', 'Monto']],
-            body: transactionsInPeriod.map(t => [
-                t.concept,
-                new Date(t.date).toLocaleDateString('es-CO'),
-                t.type === 'ingreso' ? 'Ingreso' : 'Egreso',
-                {content: formatCurrency(t.amount), styles: {halign: 'right'}}
-            ]),
-            theme: 'striped',
-            headStyles: { fillColor: [45, 55, 72] }
-        });
-
-        const pageCount = doc.internal.getNumberOfPages();
-        for(var i = 1; i <= pageCount; i++) {
-            doc.setPage(i);
-            doc.setFontSize(8);
-            doc.setTextColor(150);
-            doc.text('Página ' + String(i) + ' de ' + String(pageCount), doc.internal.pageSize.width - 14, doc.internal.pageSize.height - 6, {align: 'right'});
-            doc.text(`Generado el ${new Date().toLocaleString('es-CO')}`, 14, doc.internal.pageSize.height - 6);
-        }
-        
-        doc.save(`Reporte_Financiero_${startDate.toLocaleDateString('es-CO').replace(/\//g, "-")}.pdf`);
-        showToast("Generando reporte financiero detallado.", "success");
     }
+    
+    doc.autoTable({
+        startY: currentY,
+        head: [['Historial Detallado de Transacciones', 'Fecha', 'Tipo', 'Monto']],
+        body: transactionsInPeriod.map(t => [
+            t.concept,
+            new Date(t.date).toLocaleDateString('es-CO'),
+            t.type === 'ingreso' ? 'Ingreso' : 'Egreso',
+            {content: formatCurrency(t.amount), styles: {halign: 'right'}}
+        ]),
+        theme: 'striped',
+        headStyles: { fillColor: [45, 55, 72] }
+    });
+
+    const pageCount = doc.internal.getNumberOfPages();
+    for(var i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text('Página ' + String(i) + ' de ' + String(pageCount), doc.internal.pageSize.width - 14, doc.internal.pageSize.height - 6, {align: 'right'});
+        doc.text(`Generado el ${new Date().toLocaleString('es-CO')}`, 14, doc.internal.pageSize.height - 6);
+    }
+    
+    doc.save(`Reporte_Financiero_${startDate.toLocaleDateString('es-CO').replace(/\//g, "-")}.pdf`);
+    showToast("Generando reporte financiero detallado.", "success");
+}
     
     function updateNovedadesBadge(){
         const unreadCount = novedades.filter(n => n.read === false).length;
@@ -2387,43 +2438,55 @@ function formatPhoneNumberForWhatsApp(phone) {
         });
         
         document.getElementById('company-profile-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const saveButton = e.target.querySelector('button[type="submit"]');
-            saveButton.disabled = true;
-            saveButton.textContent = 'Guardando...';
+    e.preventDefault();
+    const saveButton = e.target.querySelector('button[type="submit"]');
+    saveButton.disabled = true;
+    saveButton.innerHTML = '<i data-lucide="loader-2" class="animate-spin w-5 h-5 mr-2"></i>Guardando...';
+    lucide.createIcons();
 
-            try {
-                const profileData = {
-                    name: document.getElementById('company-name').value,
-                    nit: document.getElementById('company-nit').value,
-                    address: document.getElementById('company-address').value,
-                    phone: document.getElementById('company-phone').value,
-                    email: document.getElementById('company-email').value,
-                    theme: document.querySelector('#theme-selector input[name="theme"]:checked').value,
-                    sidebarTheme: document.querySelector('#sidebar-theme-selector input[name="sidebar-theme"]:checked').value,
-                    bottomNavTheme: document.querySelector('#bottom-nav-theme-selector input[name="bottom-nav-theme"]:checked').value,
-                };
+    try {
+        const profileData = {
+            name: document.getElementById('company-name').value,
+            nit: document.getElementById('company-nit').value,
+            address: document.getElementById('company-address').value,
+            phone: document.getElementById('company-phone').value,
+            email: document.getElementById('company-email').value,
+            theme: document.querySelector('#theme-selector input[name="theme"]:checked').value,
+            sidebarTheme: document.querySelector('#sidebar-theme-selector input[name="sidebar-theme"]:checked').value,
+            bottomNavTheme: document.querySelector('#bottom-nav-theme-selector input[name="bottom-nav-theme"]:checked').value,
+            // Por defecto, mantenemos la URL actual para no borrarla accidentalmente.
+            logoUrl: companyProfile.logoUrl || null,
+        };
+        localStorage.setItem('userTheme', profileData.theme);
+        
+        // --- INICIO: Lógica añadida para la subida del logo ---
+        if (selectedLogoFile) {
+            // Si el usuario seleccionó un nuevo archivo...
+            showToast('Subiendo logo...', 'success');
+            const logoRef = ref(storage, `logos/${currentUser.uid}/company_logo.png`);
+            await uploadBytes(logoRef, selectedLogoFile);
+            profileData.logoUrl = await getDownloadURL(logoRef); // Obtenemos y guardamos la nueva URL.
+        } else if (logoWasRemoved) {
+            // Si el usuario marcó el logo para ser eliminado...
+            profileData.logoUrl = null; // Asignamos null para que se borre de Firestore.
+        }
+        // --- FIN: Lógica añadida ---
 
-                /* === INICIO DE LA SOLUCIÓN: GUARDAR TEMA EN NAVEGADOR === */
-localStorage.setItem('userTheme', profileData.theme);
-/* === FIN DE LA SOLUCIÓN === */
-
-                const userDocRef = doc(db, `users/${adminUidForRole}`);
-                
-                await setDoc(userDocRef, {
-                    companyProfile: profileData
-                }, { merge: true });
-
-                showToast('Perfil de la empresa guardado con Éxito.', 'success');
-
-            } catch (error) {
-                console.error("Error al guardar el perfil de la empresa:", error);
-                showToast('Error al guardar los cambios. Intenta de nuevo.', 'error');
-            } finally {
-                saveButton.disabled = false;
-                saveButton.textContent = 'Guardar Cambios';
-            }
-        });
+        const userDocRef = doc(db, `users/${adminUidForRole}`);
+        await setDoc(userDocRef, { companyProfile: profileData }, { merge: true });
+        
+        showToast('Perfil de la empresa guardado con Éxito.', 'success');
+    } catch (error) {
+        console.error("Error al guardar el perfil de la empresa:", error);
+        showToast('Error al guardar los cambios. Intenta de nuevo.', 'error');
+    } finally {
+        saveButton.disabled = false;
+        saveButton.textContent = 'Guardar Cambios';
+        // Reseteamos el estado para la próxima vez.
+        selectedLogoFile = null;
+        logoWasRemoved = false;
+    }
+});
 
         document.getElementById('transaction-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -2541,23 +2604,18 @@ localStorage.setItem('userTheme', profileData.theme);
     const primaryColorRGB = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim().split(' ').map(Number);
     const formatDate = (dateString) => dateString ? new Date(dateString + 'T00:00:00').toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
 
-    // --- 1. ENCABEZADO PROFESIONAL ---
-    let logoBase64 = null;
-    try {
-        const response = await fetch('logo.png');
-        if (response.ok) {
-            const blob = await response.blob();
-            logoBase64 = await new Promise(resolve => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result);
-                reader.readAsDataURL(blob);
-            });
-        }
-    } catch (e) { console.warn("logo.png no encontrado."); }
+    // --- 1. ENCABEZADO PROFESIONAL CON LOGO DINÁMICO ---
+    const logoBase64 = await imageToBase64(companyProfileData.logoUrl);
 
     if (logoBase64) {
-        doc.addImage(logoBase64, 'PNG', 14, 15, 50, 15);
+        // Si tenemos un logo, lo añadimos y movemos el texto del nombre de la empresa a la derecha.
+        doc.addImage(logoBase64, 'PNG', 14, 15, 30, 30);
+        doc.setFontSize(20);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
+        doc.text(companyProfileData.name || "Seb Salud", 50, 25);
     } else {
+        // Fallback: si no hay logo, el texto se queda a la izquierda como en el código original.
         doc.setFontSize(20);
         doc.setFont("helvetica", "bold");
         doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
@@ -2603,7 +2661,7 @@ localStorage.setItem('userTheme', profileData.theme);
 
     let finalY = doc.lastAutoTable.finalY + 8;
 
-    // --- 3. RESUMEN DE SERVICIO Y COSTOS (Sin cambios, ya era robusto) ---
+    // --- 3. RESUMEN DE SERVICIO Y COSTOS ---
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(40);
@@ -2640,14 +2698,13 @@ localStorage.setItem('userTheme', profileData.theme);
     
     finalY = doc.lastAutoTable.finalY;
 
-    // --- 4. DETALLES ADMINISTRATIVOS (Comisión eliminada) ---
+    // --- 4. DETALLES ADMINISTRATIVOS ---
     const adminDetails = [
         ['Asesor Asignado:', advisorData.name || 'No asignado'],
         ['Fecha de Inicio de Cobertura:', formatDate(affiliateData.startDate)],
         ['Próximo Pago / Vencimiento:', affiliateData.endDate ? formatDate(affiliateData.endDate) : 'Indefinido'],
         ['Estado Actual:', affiliateData.status]
     ];
-    // La comisión ya NO se agrega aquí.
 
     doc.autoTable({
         startY: finalY + 8,
@@ -2659,7 +2716,7 @@ localStorage.setItem('userTheme', profileData.theme);
         columnStyles: { 0: { fontStyle: 'bold' } }
     });
 
-    // --- 5. PIE DE PÁGINA PROFESIONAL (Sin cambios) ---
+    // --- 5. PIE DE PÁGINA PROFESIONAL ---
     finalY = doc.internal.pageSize.height - 30;
     doc.setLineWidth(0.2);
     doc.setDrawColor(180);
@@ -2671,7 +2728,6 @@ localStorage.setItem('userTheme', profileData.theme);
 
     doc.save(`Comprobante_Afiliacion_${affiliateData.name.replace(/\s/g, '_')}.pdf`);
 }
-
     const modalManager = {
         open(modalId, data = null) {
             const modal = document.getElementById(modalId); if (!modal) return;
@@ -2718,6 +2774,29 @@ localStorage.setItem('userTheme', profileData.theme);
     
     function showToast(message, type = 'success') { const toast = document.getElementById('toast'); if (!toast) return; toast.textContent = message; toast.className = `fixed top-5 right-5 z-[100] text-white py-2 px-4 rounded-lg shadow-xl transition-all duration-300 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`; toast.classList.remove('opacity-0', 'translate-y-2'); setTimeout(() => toast.classList.add('opacity-0', 'translate-y-2'), 3000); }
     function formatCurrency(value, minimumFractionDigits = 0) { return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits }).format(value || 0); }
+    // CÓDIGO NUEVO A AÑADIR
+// Esta función toma una URL de imagen y la devuelve como texto Base64.
+async function imageToBase64(url) {
+    // Si no hay URL, no hacemos nada.
+    if (!url) return null;
+    try {
+        // 1. "Buscamos" la imagen en la URL proporcionada.
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('No se pudo cargar la imagen desde la URL.');
+        // 2. Convertimos la respuesta en datos binarios (un "blob").
+        const blob = await response.blob();
+        // 3. Usamos FileReader para leer ese blob y convertirlo a texto Base64.
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result); // Cuando termina, devuelve el resultado.
+            reader.onerror = reject; // Si hay un error, lo notifica.
+            reader.readAsDataURL(blob);
+        });
+    } catch (error) {
+        console.error("Error convirtiendo imagen a Base64:", error);
+        return null; // Si algo falla, devolvemos null para no romper el PDF.
+    }
+}
     function exportToCSV(headers, data, filename) { const csvRows = [headers.join(',')]; for (const row of data) { const values = headers.map(header => `"${('' + row[header]).replace(/"/g, '\\"')}"`); csvRows.push(values.join(',')); } const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); window.URL.revokeObjectURL(url); }
     function handleExportAffiliates() { const headers = ['Nombre', 'Documento', 'Email', 'Telefono', 'Direccion', 'Asesor', 'Estado', 'Fecha de Inicio', 'Plan de Salud', 'Fondo Pension', 'ARL', 'Caja Comp.']; const dataToExport = affiliates.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const plan = healthPlans.find(p=> p.id === aff.healthPlan); return { 'Nombre': aff.name, 'Documento': aff.documentId, 'Email': aff.email, 'Telefono': aff.phone, 'Direccion': aff.address, 'Asesor': advisor ? advisor.name : 'N/A', 'Estado': aff.status, 'Fecha de Inicio': aff.startDate, 'Plan de Salud': plan ? plan.name : 'N/A', 'Fondo Pension': aff.pensionPlan, 'ARL': aff.arlPlan, 'Caja Comp.': aff.ccfPlan }; }); exportToCSV(headers, dataToExport, 'afiliados_seb_salud.csv'); showToast('Exportando afiliados a CSV.'); }
     function handleExportAdvisors() { const headers = ['Nombre', 'Comision (%)', 'Total Afiliados', 'Comision Total Generada']; const dataToExport = advisors.map(advisor => { const advisorAffiliates = affiliates.filter(a => a.advisorId === advisor.id); const totalCommission = advisorAffiliates.reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0); return { 'Nombre': advisor.name, 'Comision (%)': advisor.commissionRate, 'Total Afiliados': advisorAffiliates.length, 'Comision Total Generada': totalCommission }; }); exportToCSV(headers, dataToExport, 'asesores_seb_salud.csv'); showToast('Exportando asesores a CSV.'); }
