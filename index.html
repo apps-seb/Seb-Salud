@@ -762,7 +762,7 @@ button svg {
 // uploadBytes: Es la función que toma el archivo de tu computadora y lo sube a la referencia que creaste.
 // getDownloadURL: Después de subir un archivo, esta función te devuelve el enlace público y permanente para acceder a él.
 // deleteObject: Elimina un archivo de Storage usando su referencia.
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject, uploadString } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
     /* === INICIO DE LA SOLUCIÓN: APLICAR TEMA AL CARGAR LA PÁGINA === */
 (() => {
@@ -2528,36 +2528,41 @@ function formatPhoneNumberForWhatsApp(phone) {
 document.getElementById('company-profile-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const saveButton = e.target.querySelector('button[type="submit"]');
-    // Deshabilitamos el botón para evitar clics duplicados
     saveButton.disabled = true;
     saveButton.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i> Guardando...';
     lucide.createIcons();
 
     try {
-        // 1. Partimos de la base de que usaremos el logo ya existente (si lo hay)
         let logoUrl = companyProfile.logoUrl || null;
 
-        // 2. Verificamos si el usuario seleccionó un nuevo archivo
+        // ================== INICIO DEL CAMBIO IMPORTANTE ==================
         if (logoFileToUpload) {
+            saveButton.textContent = 'Procesando logo...';
+
+            // 1. Convertimos el archivo a un string Base64
+            const base64String = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = (e) => reject(e);
+                reader.readAsDataURL(logoFileToUpload);
+            });
+
             saveButton.textContent = 'Subiendo logo...';
-            // Creamos una ruta única y segura para el archivo en Storage:
-            // 'logos/' -> Carpeta principal
-            // '${adminUidForRole}/' -> Subcarpeta única para este usuario (¡gracias a nuestras reglas de seguridad!)
-            // '${Date.now()}_${logoFileToUpload.name}' -> Nombre de archivo único para evitar sobreescrituras
+            
+            // 2. Creamos la referencia en Storage como antes
             const storageRef = ref(storage, `logos/${adminUidForRole}/${Date.now()}_${logoFileToUpload.name}`);
             
-            // 3. Subimos el archivo a la nube
-            const uploadResult = await uploadBytes(storageRef, logoFileToUpload);
+            // 3. Usamos el nuevo método 'uploadString'
+            await uploadString(storageRef, base64String, 'data_url');
             
-            // 4. Obtenemos la URL pública y permanente del archivo recién subido
-            logoUrl = await getDownloadURL(uploadResult.ref);
+            // 4. Obtenemos la URL de descarga como antes
+            logoUrl = await getDownloadURL(storageRef);
             
-            // 5. Limpiamos nuestra variable de estado, el trabajo está hecho
-            logoFileToUpload = null; 
+            logoFileToUpload = null;
         }
+        // =================== FIN DEL CAMBIO IMPORTANTE ====================
 
         saveButton.textContent = 'Guardando datos...';
-        // 6. Recopilamos todos los datos del formulario, incluyendo la URL del logo (sea la nueva o la antigua)
         const profileData = {
             name: document.getElementById('company-name').value,
             nit: document.getElementById('company-nit').value,
@@ -2567,29 +2572,25 @@ document.getElementById('company-profile-form').addEventListener('submit', async
             theme: document.querySelector('#theme-selector input[name="theme"]:checked').value,
             sidebarTheme: document.querySelector('#sidebar-theme-selector input[name="sidebar-theme"]:checked').value,
             bottomNavTheme: document.querySelector('#bottom-nav-theme-selector input[name="bottom-nav-theme"]:checked').value,
-            logoUrl: logoUrl // Aquí va la URL del logo
+            logoUrl: logoUrl
         };
 
         localStorage.setItem('userTheme', profileData.theme);
 
-        // 7. Guardamos el objeto completo en Firestore
         const userDocRef = doc(db, `users/${adminUidForRole}`);
-        await setDoc(userDocRef, {
-            companyProfile: profileData
-        }, { merge: true });
+        await setDoc(userDocRef, { companyProfile: profileData }, { merge: true });
 
         showToast('Perfil de la empresa guardado con éxito.', 'success');
 
     } catch (error) {
-        console.error("Error al guardar el perfil de la empresa:", error);
-        showToast('Error al guardar los cambios. Intenta de nuevo.', 'error');
+        console.error("Error definitivo al guardar:", error);
+        showToast('Error al guardar. Revisa la consola para más detalles.', 'error');
     } finally {
-        // 8. Pase lo que pase (éxito o error), reactivamos el botón
         saveButton.disabled = false;
         saveButton.innerHTML = 'Guardar Cambios';
+        lucide.createIcons();
     }
 });
-
         document.getElementById('transaction-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const saveButton = e.target.querySelector('button[type="submit"]');
@@ -2938,5 +2939,6 @@ async function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, 
 </script>
 </body>
 </html>
+
 
 
