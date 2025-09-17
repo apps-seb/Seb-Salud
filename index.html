@@ -19,7 +19,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         /* ... Tu CSS original va aquí, no necesita cambios ... */
@@ -44,11 +43,6 @@
 /* =================== LÍNEA AÑADIDA =================== */
 [data-theme="aurora"] { --color-primary-400: 103 239 229; --color-primary-500: 34 211 200; --color-primary-600: 20 184 175; --color-primary-700: 15 149 141; --auth-gradient-from: #22d3d0; --auth-gradient-to: #9d4edd; }
 /* ================= FIN DE LÍNEA AÑADIDA ============== */
-
-/* ========= INICIO DE LA LÍNEA A AÑADIR ========= --> */
-[data-theme="cyberpunk"] { --color-primary-400: 255 0 255; --color-primary-500: 247 255 0; --color-primary-600: 255 0 193; --color-primary-700: 209 0 159; --auth-gradient-from: #f7ff00; --auth-gradient-to: #ff00c1; }
-/* ========= FIN DE LA LÍNEA A AÑADIR ========= --> */
-        
 
         body { font-family: 'Inter', sans-serif; }
         .bg-primary-600 { background-color: rgb(var(--color-primary-600)); }
@@ -394,115 +388,7 @@ html[data-theme="aurora"] [data-sidebar-theme="light"] #sidebar .nav-link.active
 
 /* --- FIN ESTILOS AURORA BOREAL --- */
 
-        /* ========================================================= */
-/* ===         ESTILOS PARA EL TEMA CYBERPUNK GLITCH     === */
-/* ========================================================= */
-
-@keyframes scanline {
-    0% { background-position: 0 0; }
-    100% { background-position: 0 100%; }
-}
-
-@keyframes glitch {
-    0% { text-shadow: 2px 2px 0px #00ffff, -2px -2px 0px #ff00ff; }
-    25% { text-shadow: -2px -2px 0px #00ffff, 2px 2px 0px #ff00ff; }
-    50% { text-shadow: 2px -2px 0px #00ffff, -2px 2px 0px #ff00ff; }
-    75% { text-shadow: -2px 2px 0px #00ffff, 2px -2px 0px #ff00ff; }
-    100% { text-shadow: 2px 2px 0px #00ffff, -2px -2px 0px #ff00ff; }
-}
-
-html[data-theme="cyberpunk"] {
-    font-family: 'Roboto Mono', monospace;
-}
-
-html[data-theme="cyberpunk"] body.bg-slate-50 {
-    background-color: #010108;
-    color: #f0f0f5;
-    position: relative;
-    overflow-x: hidden;
-}
-
-html[data-theme="cyberpunk"] body.bg-slate-50::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-    background-size: 100% 4px, 100% 100%;
-    z-index: 2;
-    pointer-events: none;
-    animation: scanline 8s linear infinite;
-}
-
-html[data-theme="cyberpunk"] .bg-white,
-html[data-theme="cyberpunk"] .modal-content,
-html[data-theme="cyberpunk"] header,
-html[data-theme="cyberpunk"] #sidebar,
-html[data-theme="cyberpunk"] .bottom-nav,
-html[data-theme="cyberpunk"] input,
-html[data-theme="cyberpunk"] select,
-html[data-theme="cyberpunk"] textarea {
-    background: #0d0d1a !important;
-    border: 1px solid rgba(0, 255, 255, 0.5) !important;
-    border-radius: 0 !important; /* Bordes afilados */
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2) !important;
-}
-
-/* Efecto Glitch para títulos importantes */
-html[data-theme="cyberpunk"] h1,
-html[data-theme="cyberpunk"] h2,
-html[data-theme="cyberpunk"] #kpi-monthly-income,
-html[data-theme="cyberpunk"] #kpi-net-profit {
-    animation: glitch 0.3s linear infinite;
-    color: #f7ff00 !important;
-}
-
-/* Botones con borde de neón */
-html[data-theme="cyberpunk"] button {
-    border-radius: 0 !important;
-    background: rgba(13, 13, 26, 0.8) !important;
-    color: #00ffff !important;
-    border: 1px solid #00ffff !important;
-    box-shadow: inset 0 0 5px rgba(0, 255, 255, 0.5), 0 0 5px rgba(0, 255, 255, 0.5) !important;
-    transition: all 0.2s ease !important;
-}
-html[data-theme="cyberpunk"] button:hover {
-    color: #f7ff00 !important;
-    border-color: #f7ff00 !important;
-    box-shadow: inset 0 0 10px rgba(247, 255, 0, 0.8), 0 0 15px rgba(247, 255, 0, 0.8) !important;
-}
-
-/* Botón Primario */
-html[data-theme="cyberpunk"] .bg-primary-600,
-html[data-theme="cyberpunk"] .bg-primary-600:hover {
-    background: #ff00c1 !important;
-    color: #010108 !important;
-    border-color: #f7ff00 !important;
-    box-shadow: inset 0 0 10px rgba(247, 255, 0, 0.8), 0 0 15px #ff00c1 !important;
-}
-
-/* Textos */
-html[data-theme="cyberpunk"] .text-slate-800,
-html[data-theme="cyberpunk"] .text-slate-700 { color: #f0f0f5 !important; }
-html[data-theme="cyberpunk"] .text-slate-600,
-html[data-theme="cyberpunk"] .text-slate-500,
-html[data-theme="cyberpunk"] .text-slate-400 { color: #828292 !important; }
-html[data-theme="cyberpunk"] input, 
-html[data-theme="cyberpunk"] select, 
-html[data-theme="cyberpunk"] textarea { color: #f0f0f5 !important; }
-
-/* Enlaces de Navegación */
-html[data-theme="cyberpunk"] #sidebar .nav-link.active {
-     background-color: rgba(255, 0, 193, 0.3) !important;
-     color: #ff00c1 !important;
-     box-shadow: inset 0 0 10px #ff00c1;
-}
-
-/* --- FIN ESTILOS CYBERPUNK GLITCH --- */
-
-/* ================================================================= */
+        /* ================================================================= */
 /* ===   CORRECCIÓN DEFINITIVA PARA CENTRADO Y FONDO DEL PRELOADER === */
 /* ================================================================= */
 /*
@@ -868,23 +754,6 @@ button svg {
                 </div>
             </div>
         </label>
-
-<label class="cursor-pointer">
-    <input type="radio" name="theme" value="cyberpunk" class="sr-only peer">
-    <div class="relative p-4 rounded-lg border-2 border-slate-200 peer-checked:border-fuchsia-500 peer-checked:ring-2 peer-checked:ring-fuchsia-500/50">
-
-        <span class="premium-theme-tag" style="background-image: linear-gradient(to right, #ff00c1, #ff5e00);">
-            <i data-lucide="crown" class="w-3 h-3"></i>
-        </span>
-
-        <div class="flex items-center justify-between">
-            <span class="font-semibold">Cyberpunk</span>
-            <div style="background-color: #f7ff00; box-shadow: 0 0 5px #f7ff00;" class="w-6 h-6 rounded-sm"></div>
-        </div>
-    </div>
-</label>
-        
-<label class="cursor-pointer"><input type="radio" name="theme" value="spotify" class="sr-only peer">
 
         <label class="cursor-pointer">
             <input type="radio" name="theme" value="spotify" class="sr-only peer">
@@ -3237,12 +3106,3 @@ localStorage.setItem('userTheme', profileData.theme);
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
