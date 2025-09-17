@@ -154,98 +154,98 @@
 /* 1. Keyframes para el fondo animado */
 @keyframes animated-gradient {
     0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 /* 2. Estilo del cuerpo y fondo */
-[data-theme="liquid-glass"] body.bg-slate-50 {
-    color: #ffffff;
-    background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #0083ff, #00c8ff);
-    background-size: 400% 400%;
-    animation: animated-gradient 25s ease infinite;
-    transition: background 0.5s ease-in-out;
+html[data-theme="liquid-glass"] body.bg-slate-50 {
+    color: #ffffff;
+    background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #0083ff, #00c8ff);
+    background-size: 400% 400%;
+    animation: animated-gradient 25s ease infinite;
+    transition: background 0.5s ease-in-out;
 }
 
-/* 3. Estilo principal para los elementos "de cristal" */
-[data-theme="liquid-glass"] .bg-white,
-[data-theme="liquid-glass"] .bg-white\/80,
-[data-theme="liquid-glass"] .modal-content,
-[data-theme="liquid-glass"] header,
-[data-theme="liquid-glass"] #sidebar,
-[data-theme="liquid-glass"] .bottom-nav,
-[data-theme="liquid-glass"] button,
-[data-theme="liquid-glass"] input,
-[data-theme="liquid-glass"] select,
-[data-theme="liquid-glass"] textarea,
-[data-theme="liquid-glass"] .bg-slate-50,
-[data-theme="liquid-glass"] .bg-slate-100,
-[data-theme="liquid-glass"] #header-search-results {
-    background-color: rgba(30, 30, 45, 0.5) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important; /* Para Safari */
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2) !important;
+/* 3. Estilo principal para los elementos "de cristal" - CON ESPECIFICIDAD AUMENTADA */
+html[data-theme="liquid-glass"] .bg-white,
+html[data-theme="liquid-glass"] .bg-white\/80,
+html[data-theme="liquid-glass"] .modal-content,
+html[data-theme="liquid-glass"] header,
+html[data-theme="liquid-glass"] #sidebar,
+html[data-theme="liquid-glass"] .bottom-nav,
+html[data-theme="liquid-glass"] button,
+html[data-theme="liquid-glass"] input,
+html[data-theme="liquid-glass"] select,
+html[data-theme="liquid-glass"] textarea,
+html[data-theme="liquid-glass"] .bg-slate-50,
+html[data-theme="liquid-glass"] .bg-slate-100,
+html[data-theme="liquid-glass"] #header-search-results {
+    background-color: rgba(30, 30, 45, 0.5) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important; /* Para Safari */
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2) !important;
 }
 
 /* 4. Estilos para texto y colores */
-[data-theme="liquid-glass"] .text-slate-800,
-[data-theme="liquid-glass"] .text-slate-700 {
-    color: #f8fafc !important;
+html[data-theme="liquid-glass"] .text-slate-800,
+html[data-theme="liquid-glass"] .text-slate-700 {
+    color: #f8fafc !important;
 }
-[data-theme="liquid-glass"] .text-slate-600,
-[data-theme="liquid-glass"] .text-slate-500,
-[data-theme="liquid-glass"] .text-slate-400 {
-    color: #cbd5e1 !important;
+html[data-theme="liquid-glass"] .text-slate-600,
+html[data-theme="liquid-glass"] .text-slate-500,
+html[data-theme="liquid-glass"] .text-slate-400 {
+    color: #cbd5e1 !important;
 }
 
 /* 5. Ajustes específicos para componentes */
 
 /* Botones y Elementos Interactivos */
-[data-theme="liquid-glass"] button:hover,
-[data-theme="liquid-glass"] .hover\:bg-slate-50:hover,
-[data-theme="liquid-glass"] .search-result-item:hover {
-    background-color: rgba(50, 50, 70, 0.7) !important;
-    transition: background-color 0.2s;
+html[data-theme="liquid-glass"] button:hover,
+html[data-theme="liquid-glass"] .hover\:bg-slate-50:hover,
+html[data-theme="liquid-glass"] .search-result-item:hover {
+    background-color: rgba(50, 50, 70, 0.7) !important;
+    transition: background-color 0.2s;
 }
-[data-theme="liquid-glass"] .bg-primary-600 {
-    background-color: rgb(var(--color-primary-600)) !important;
-    backdrop-filter: none !important; /* Quitar filtro a botones primarios para que destaquen */
+html[data-theme="liquid-glass"] .bg-primary-600 {
+    background-color: rgb(var(--color-primary-600)) !important;
+    backdrop-filter: none !important; /* Quitar filtro a botones primarios para que destaquen */
 }
 
 /* Inputs y Selects */
-[data-theme="liquid-glass"] input::placeholder,
-[data-theme="liquid-glass"] textarea::placeholder {
-    color: #94a3b8 !important;
+html[data-theme="liquid-glass"] input::placeholder,
+html[data-theme="liquid-glass"] textarea::placeholder {
+    color: #94a3b8 !important;
 }
 
 /* Enlaces de Navegación */
-[data-theme="liquid-glass"] #sidebar .nav-link.active,
-[data-theme="liquid-glass"] [data-sidebar-theme="light"] #sidebar .nav-link.active {
-     background-color: rgba(0, 131, 255, 0.5) !important;
-     color: white !important;
+html[data-theme="liquid-glass"] #sidebar .nav-link.active,
+html[data-theme="liquid-glass"] [data-sidebar-theme="light"] #sidebar .nav-link.active {
+     background-color: rgba(0, 131, 255, 0.5) !important;
+     color: white !important;
 }
-[data-theme="liquid-glass"] .bottom-nav .bottom-nav-link.active,
-[data-theme="liquid-glass"] [data-bottom-nav-theme="light"] .bottom-nav .bottom-nav-link.active {
-    color: rgb(var(--color-primary-400)) !important;
-    background-color: transparent !important;
+html[data-theme="liquid-glass"] .bottom-nav .bottom-nav-link.active,
+html[data-theme="liquid-glass"] [data-bottom-nav-theme="light"] .bottom-nav .bottom-nav-link.active {
+    color: rgb(var(--color-primary-400)) !important;
+    background-color: transparent !important;
 }
 
 /* Bordes y Divisores */
-[data-theme="liquid-glass"] .border,
-[data-theme="liquid-glass"] .border-b,
-[data-theme="liquid-glass"] .border-t,
-[data-theme="liquid-glass"] .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
-    border-color: rgba(255, 255, 255, 0.15) !important;
+html[data-theme="liquid-glass"] .border,
+html[data-theme="liquid-glass"] .border-b,
+html[data-theme="liquid-glass"] .border-t,
+html[data-theme="liquid-glass"] .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+    border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 /* Scrollbar */
-[data-theme="liquid-glass"] ::-webkit-scrollbar-track { background: transparent; }
-[data-theme="liquid-glass"] ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); }
-[data-theme="liquid-glass"] ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.5); }
+html[data-theme="liquid-glass"] ::-webkit-scrollbar-track { background: transparent; }
+html[data-theme="liquid-glass"] ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); }
+html[data-theme="liquid-glass"] ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.5); }
+
 
 /* --- FIN ESTILOS LIQUID GLASS --- */
-
         
         /* --- NUEVAS ANIMACIONES Y ESTILOS --- */
     
@@ -2865,5 +2865,6 @@ localStorage.setItem('userTheme', profileData.theme);
 </script>
 </body>
 </html>
+
 
 
