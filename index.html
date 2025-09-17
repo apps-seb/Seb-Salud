@@ -388,33 +388,20 @@ html[data-theme="aurora"] [data-sidebar-theme="light"] #sidebar .nav-link.active
 
 /* --- FIN ESTILOS AURORA BOREAL --- */
 
-        /* ========================================================= */
-/* ===     CORRECCIÓN PARA EL PRELOADER EN TEMAS NUEVOS    === */
-/* ========================================================= */
-
-/* 1. Reseteamos el loader a un fondo sólido y sin efectos de cristal/blur */
-[data-theme="liquid-glass"] #loader,
-[data-theme="aurora"] #loader {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-}
-
-/* 2. Forzamos un fondo blanco sólido para el tema Liquid Glass */
-[data-theme="liquid-glass"] #loader {
-    background-color: #ffffff !important;
-}
-
-/* 3. Forzamos un fondo oscuro sólido para Aurora, coincidiendo con el cielo del tema */
-[data-theme="aurora"] #loader {
-    background-color: #03040B !important;
-}
-
+        /* ================================================================= */
+/* ===   CORRECCIÓN DEFINITIVA PARA CENTRADO Y FONDO DEL PRELOADER === */
+/* ================================================================= */
 /*
- 4. Solución al problema de centrado en Aurora:
-    Debido al 'overflow:hidden' en el body, forzamos al loader
-    a usar explícitamente toda la altura y anchura del viewport (pantalla).
-    Las clases de Flexbox que ya tiene se encargarán de centrar el contenido.
+   Esta única regla soluciona el problema de centrado para AMBOS temas.
+   Fuerza al loader a ocupar el 100% del viewport (pantalla), dándole
+   a Flexbox un contenedor estable para centrar el contenido,
+   sin importar los estilos complejos que tenga el <body>.
+
+   Al no modificar 'background-color' ni 'backdrop-filter' aquí,
+   permitimos que el preloader herede y conserve correctamente el
+   fondo de cristal o de aurora definido en cada tema.
 */
+html[data-theme="liquid-glass"] #loader,
 html[data-theme="aurora"] #loader {
     width: 100vw;
     height: 100vh;
@@ -3119,6 +3106,7 @@ localStorage.setItem('userTheme', profileData.theme);
 </script>
 </body>
 </html>
+
 
 
 
