@@ -1470,55 +1470,6 @@ function updateUIVisibilityByRole() {
     document.querySelector(`#sidebar-theme-selector input[value="${companyProfile.sidebarTheme || "dark"}"]`).checked = true;
     document.querySelector(`#bottom-nav-theme-selector input[value="${companyProfile.bottomNavTheme || "dark"}"]`).checked = true;
     
-    // --- LÓGICA PARA LA INTERACCIÓN CON EL UPLOADER DEL LOGO ---
-const logoInput = document.getElementById('company-logo-input');
-const logoPreview = document.getElementById('logo-preview');
-const logoPlaceholder = document.getElementById('logo-placeholder-icon');
-const removeLogoBtn = document.getElementById('remove-logo-btn');
-
-// Listener para cuando el usuario SELECCIONA un archivo.
-if (logoInput) {
-    logoInput.addEventListener('change', (e) => {
-        const file = e.target.files[0]; // Obtenemos el primer archivo seleccionado.
-        if (file) {
-            // Guardamos el archivo en nuestra variable global para subirlo después.
-            selectedLogoFile = file;
-            // Si el usuario elige un archivo nuevo, significa que no quiere borrar el logo.
-            logoWasRemoved = false; 
-            
-            // Usamos FileReader para crear una previsualización instantánea.
-            // Esto lee el archivo desde la computadora del usuario y lo muestra en la página
-            // SIN haberlo subido todavía al servidor.
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                logoPreview.src = event.target.result; // El resultado es la imagen en formato Base64.
-                // Actualizamos la UI para mostrar la imagen y ocultar el placeholder.
-                logoPreview.classList.remove('hidden');
-                logoPlaceholder.classList.add('hidden');
-                removeLogoBtn.classList.remove('hidden');
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-}
-
-// Listener para el botón de QUITAR el logo.
-if(removeLogoBtn) {
-    removeLogoBtn.addEventListener('click', () => {
-        // Activamos nuestra bandera para saber que hay que borrar el logo al guardar.
-        logoWasRemoved = true;
-        // Limpiamos la variable del archivo por si había uno seleccionado.
-        selectedLogoFile = null;
-        logoInput.value = ''; // Reseteamos el input de archivo.
-
-        // Revertimos la UI a su estado inicial.
-        logoPreview.src = '';
-        logoPreview.classList.add('hidden');
-        logoPlaceholder.classList.remove('hidden');
-        removeLogoBtn.classList.add('hidden');
-        showToast('Logo listo para ser eliminado al guardar.', 'success');
-    });
-}
     function renderFlujoCajaSection(){const e=new Date,t=new Date(e.getFullYear(),e.getMonth(),1);document.getElementById("report-start-date").value=t.toISOString().split("T")[0],document.getElementById("report-end-date").value=e.toISOString().split("T")[0];const a=getAllTransactions(),n=a.filter(t=>{const a=new Date(t.date);return a.getMonth()===e.getMonth()&&a.getFullYear()===e.getFullYear()}),o=n.filter(e=>"ingreso"===e.type).reduce((e,t)=>e+t.amount,0),s=n.filter(e=>"egreso"===e.type).reduce((e,t)=>e+t.amount,0);document.getElementById("cashflow-income").textContent=formatCurrency(o),document.getElementById("cashflow-expenses").textContent=formatCurrency(s),document.getElementById("cashflow-profit").textContent=formatCurrency(o-s),renderTransactionsTable(a)}
     function getAllTransactions(){const e=[];return affiliates.forEach(t=>{if("Activo"===t.status){const a=getAffiliateCommissionBase(t);e.push({id:`auto-i-${t.id}`,type:"ingreso",concept:`Pago afiliado: ${t.name}`,amount:a,date:t.startDate});const n=getAdvisorCommissionForAffiliate(t);if(0<n){const o=advisors.find(e=>e.id===t.advisorId);e.push({id:`auto-e-${t.id}`,type:"egreso",concept:`Comisión ${o?.name||"N/A"} (Afiliado: ${t.name})`,amount:n,date:t.startDate})}}}),[...e,...manualTransactions].sort((e,t)=>new Date(t.date)-new Date(e.date))}
     function renderTransactionsTable(e){const t=document.getElementById("transactions-table-body");if(0===e.length){t.innerHTML='<tr><td colspan="3" class="text-center p-4 text-slate-500">No hay transacciones registradas.</td></tr>';return}t.innerHTML=e.map(e=>{const t="ingreso"===e.type;return`<tr class="border-b"><td class="p-3">${new Date(e.date).toLocaleDateString("es-CO")}</td><td class="p-3 text-slate-700">${e.concept}</td><td class="p-3 text-right font-semibold ${t?"text-emerald-600":"text-rose-600"}">${t?"+":"-"}${formatCurrency(e.amount)}</td></tr>`}).join("")}
@@ -2146,6 +2097,57 @@ function formatPhoneNumberForWhatsApp(phone) {
             });
         }
         // --- FIN LÓGICA DE FILTROS EN TIEMPO REAL ---
+
+        // CORTA Y ELIMINA ESTE BLOQUE COMPLETO DE DENTRO DE renderEmpresaSection
+    // --- LÓGICA PARA LA INTERACCIÓN CON EL UPLOADER DEL LOGO ---
+const logoInput = document.getElementById('company-logo-input');
+const logoPreview = document.getElementById('logo-preview');
+const logoPlaceholder = document.getElementById('logo-placeholder-icon');
+const removeLogoBtn = document.getElementById('remove-logo-btn');
+
+// Listener para cuando el usuario SELECCIONA un archivo.
+if (logoInput) {
+    logoInput.addEventListener('change', (e) => {
+        const file = e.target.files[0]; // Obtenemos el primer archivo seleccionado.
+        if (file) {
+            // Guardamos el archivo en nuestra variable global para subirlo después.
+            selectedLogoFile = file;
+            // Si el usuario elige un archivo nuevo, significa que no quiere borrar el logo.
+            logoWasRemoved = false; 
+            
+            // Usamos FileReader para crear una previsualización instantánea.
+            // Esto lee el archivo desde la computadora del usuario y lo muestra en la página
+            // SIN haberlo subido todavía al servidor.
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                logoPreview.src = event.target.result; // El resultado es la imagen en formato Base64.
+                // Actualizamos la UI para mostrar la imagen y ocultar el placeholder.
+                logoPreview.classList.remove('hidden');
+                logoPlaceholder.classList.add('hidden');
+                removeLogoBtn.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+// Listener para el botón de QUITAR el logo.
+if(removeLogoBtn) {
+    removeLogoBtn.addEventListener('click', () => {
+        // Activamos nuestra bandera para saber que hay que borrar el logo al guardar.
+        logoWasRemoved = true;
+        // Limpiamos la variable del archivo por si había uno seleccionado.
+        selectedLogoFile = null;
+        logoInput.value = ''; // Reseteamos el input de archivo.
+
+        // Revertimos la UI a su estado inicial.
+        logoPreview.src = '';
+        logoPreview.classList.add('hidden');
+        logoPlaceholder.classList.remove('hidden');
+        removeLogoBtn.classList.add('hidden');
+        showToast('Logo listo para ser eliminado al guardar.', 'success');
+    });
+}
 
         document.getElementById('invite-user-form').addEventListener('submit', handleInviteUser);
         const inviteRoleSelect = document.getElementById('invite-role');
@@ -2888,6 +2890,7 @@ async function imageToBase64(url) {
 </script>
 </body>
 </html>
+
 
 
 
