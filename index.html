@@ -2486,63 +2486,51 @@ if(removeLogoBtn) {
             }
         });
         
-        document.getElementById('company-profile-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const saveButton = e.target.querySelector('button[type="submit"]');
-            saveButton.disabled = true;
-            // --> Cambiamos el texto del botón para dar feedback de que algo está pasando.
-            saveButton.innerHTML = '<i data-lucide="loader-2" class="animate-spin w-5 h-5 mr-2"></i>Guardando...';
-            lucide.createIcons();
+        // PEGA ESTE BLOQUE COMPLETO EN LUGAR DE LOS DOS QUE BORRASTE
+document.getElementById('company-profile-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const saveButton = e.target.querySelector('button[type="submit"]');
+    saveButton.disabled = true;
+    saveButton.innerHTML = '<i data-lucide="loader-2" class="animate-spin w-5 h-5 mr-2"></i>Guardando...';
+    lucide.createIcons();
 
-            try {
-                const profileData = {
-                    name: document.getElementById('company-name').value,
-                    nit: document.getElementById('company-nit').value,
-                    address: document.getElementById('company-address').value,
-                    phone: document.getElementById('company-phone').value,
-                    email: document.getElementById('company-email').value,
-                    theme: document.querySelector('#theme-selector input[name="theme"]:checked').value,
-                    sidebarTheme: document.querySelector('#sidebar-theme-selector input[name="sidebar-theme"]:checked').value,
-                    bottomNavTheme: document.querySelector('#bottom-nav-theme-selector input[name="bottom-nav-theme"]:checked').value,
-                    // --> Añadimos esta línea. Mantiene la URL del logo que ya existe, para no borrarla sin querer.
-                    logoUrl: companyProfile.logoUrl || null,
-                };
-                localStorage.setItem('userTheme', profileData.theme);
-                
-                // --> Aquí empieza la nueva lógica para manejar el logo.
-                if (selectedLogoFile) {
-                    // --> Si la variable 'selectedLogoFile' contiene un archivo...
-                    showToast('Subiendo logo...', 'success');
-                    // --> Creamos la ruta en Firebase Storage: /logos/ID_DEL_USUARIO/company_logo.png
-                    const logoRef = ref(storage, `logos/${currentUser.uid}/company_logo.png`);
-                    // --> Subimos el archivo a esa ruta.
-                    await uploadBytes(logoRef, selectedLogoFile);
-                    // --> Obtenemos la URL de descarga pública de ese archivo.
-                    profileData.logoUrl = await getDownloadURL(logoRef); // --> Actualizamos el objeto 'profileData' con la nueva URL.
-                } else if (logoWasRemoved) {
-                    // --> Si no hay archivo nuevo, pero se hizo clic en "Quitar logo"...
-                    profileData.logoUrl = null; // --> Establecemos la URL como nula para que se borre de la base de datos.
-                }
+    try {
+        const profileData = {
+            name: document.getElementById('company-name').value,
+            nit: document.getElementById('company-nit').value,
+            address: document.getElementById('company-address').value,
+            phone: document.getElementById('company-phone').value,
+            email: document.getElementById('company-email').value,
+            theme: document.querySelector('#theme-selector input[name="theme"]:checked').value,
+            sidebarTheme: document.querySelector('#sidebar-theme-selector input[name="sidebar-theme"]:checked').value,
+            bottomNavTheme: document.querySelector('#bottom-nav-theme-selector input[name="bottom-nav-theme"]:checked').value,
+            logoUrl: companyProfile.logoUrl || null,
+        };
+        localStorage.setItem('userTheme', profileData.theme);
+        
+        if (selectedLogoFile) {
+            showToast('Subiendo logo...', 'success');
+            const logoRef = ref(storage, `logos/${currentUser.uid}/company_logo.png`);
+            await uploadBytes(logoRef, selectedLogoFile);
+            profileData.logoUrl = await getDownloadURL(logoRef);
+        } else if (logoWasRemoved) {
+            profileData.logoUrl = null;
+        }
 
-                const userDocRef = doc(db, `users/${adminUidForRole}`);
-                
-                await setDoc(userDocRef, {
-                    companyProfile: profileData // --> Ahora 'profileData' contiene la información actualizada del logo.
-                }, { merge: true });
-
-                showToast('Perfil de la empresa guardado con Éxito.', 'success');
-
-            } catch (error) {
-                console.error("Error al guardar el perfil de la empresa:", error);
-                showToast('Error al guardar los cambios. Intenta de nuevo.', 'error');
-            } finally {
-                saveButton.disabled = false;
-                saveButton.textContent = 'Guardar Cambios';
-                // --> Reseteamos nuestras variables "bandera" para la próxima vez que se use el formulario.
-                selectedLogoFile = null;
-                logoWasRemoved = false;
-            }
-        });
+        const userDocRef = doc(db, `users/${adminUidForRole}`);
+        await setDoc(userDocRef, { companyProfile: profileData }, { merge: true });
+        
+        showToast('Perfil de la empresa guardado con Éxito.', 'success');
+    } catch (error) {
+        console.error("Error al guardar el perfil de la empresa:", error);
+        showToast('Error al guardar los cambios. Intenta de nuevo.', 'error');
+    } finally {
+        saveButton.disabled = false;
+        saveButton.textContent = 'Guardar Cambios';
+        selectedLogoFile = null;
+        logoWasRemoved = false;
+    }
+});
 
         const userDocRef = doc(db, `users/${adminUidForRole}`);
         await setDoc(userDocRef, { companyProfile: profileData }, { merge: true });
@@ -2890,6 +2878,7 @@ async function imageToBase64(url) {
 </script>
 </body>
 </html>
+
 
 
 
