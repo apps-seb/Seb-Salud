@@ -2700,34 +2700,74 @@ document.getElementById('company-profile-form').addEventListener('submit', async
         });
     });
     
-    async function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, companyProfileData) {
+    // REEMPLAZA LA FUNCIÓN ENTERA CON ESTA VERSIÓN ASÍNCRONA
+async function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, companyProfileData) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     const primaryColorRGB = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim().split(' ').map(Number);
     const formatDate = (dateString) => dateString ? new Date(dateString + 'T00:00:00').toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
-
-    // --- 1. ENCABEZADO PROFESIONAL ---
-    let logoBase64 = null;
-    try {
-        const response = await fetch('logo.png');
-        if (response.ok) {
+    
+    // --- NUEVA FUNCIÓN AUXILIAR ---
+    // Esta pequeña función es crucial. Toma una URL de internet, descarga la imagen
+    // en segundo plano y la convierte a formato Base64, que es lo que jsPDF necesita
+    // para incrustar una imagen en el PDF. La hacemos robusta con un try-catch.
+    const imageToDataUrl = async (url) => {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) return null;
             const blob = await response.blob();
-            logoBase64 = await new Promise(resolve => {
+            return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
                 reader.readAsDataURL(blob);
             });
+        } catch (error) {
+            console.error("Error al cargar la imagen para el PDF:", error);
+            return null;
         }
-    } catch (e) { console.warn("logo.png no encontrado."); }
+    };
 
-    if (logoBase64) {
-        doc.addImage(logoBase64, 'PNG', 14, 15, 50, 15);
+    // --- 1. ENCABEZADO PROFESIONAL CON LÓGICA DE LOGO ---
+    // Primero, verificamos si existe una URL del logo en los datos de la empresa.
+    if (companyProfileData.logoUrl) {
+        // Si existe, llamamos a nuestra función auxiliar para obtener los datos de la imagen.
+        // Usamos 'await' para esperar a que la descarga y conversión terminen.
+        const logoBase64 = await imageToDataUrl(companyProfileData.logoUrl);
+        
+        // Si la conversión fue exitosa...
+        if (logoBase64) {
+             try {
+                 // Usamos doc.addImage para poner el logo en el PDF.
+                 // Parámetros: (datos, formato, pos-X, pos-Y, ancho, alto, ...)
+                 // Ajustamos el ancho a 40 y el alto a 15 para que no sea demasiado grande.
+                 doc.addImage(logoBase64, 'PNG', 14, 15, 40, 15, undefined, 'FAST'); 
+             } catch (e) {
+                console.error("Error de jsPDF al añadir imagen, usando texto de fallback", e);
+                // Fallback si el logo está corrupto
+                doc.setFontSize(20);
+                doc.setFont("helvetica", "bold");
+                doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
+                doc.text(companyProfileData.name || "Seb Salud", 14, 25);
+             }
+        } else {
+            // Fallback: Si la carga de la imagen falló, imprimimos el nombre de la empresa.
+            doc.setFontSize(20);
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
+            doc.text(companyProfileData.name || "Seb Salud", 14, 25);
+        }
     } else {
+        // Fallback: Si no hay una URL de logo, también imprimimos el nombre.
+        // Esto asegura que el PDF siempre tenga un encabezado.
         doc.setFontSize(20);
         doc.setFont("helvetica", "bold");
         doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
         doc.text(companyProfileData.name || "Seb Salud", 14, 25);
     }
+    
+    // --- El resto de la función para generar el PDF continúa desde aquí ---
+    // (No es necesario pegar el resto del código de la función, ya que es idéntico al de la respuesta anterior)
     
     doc.setFontSize(9);
     doc.setFont("helvetica", "normal");
@@ -2749,7 +2789,6 @@ document.getElementById('company-profile-form').addEventListener('submit', async
     doc.setDrawColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
     doc.line(14, 48, 196, 48);
 
-    // --- 2. DATOS DEL AFILIADO (Tabla detallada) ---
     doc.autoTable({
         startY: 55,
         theme: 'grid',
@@ -2768,7 +2807,6 @@ document.getElementById('company-profile-form').addEventListener('submit', async
 
     let finalY = doc.lastAutoTable.finalY + 8;
 
-    // --- 3. RESUMEN DE SERVICIO Y COSTOS (Sin cambios, ya era robusto) ---
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(40);
@@ -2805,14 +2843,12 @@ document.getElementById('company-profile-form').addEventListener('submit', async
     
     finalY = doc.lastAutoTable.finalY;
 
-    // --- 4. DETALLES ADMINISTRATIVOS (Comisión eliminada) ---
     const adminDetails = [
         ['Asesor Asignado:', advisorData.name || 'No asignado'],
         ['Fecha de Inicio de Cobertura:', formatDate(affiliateData.startDate)],
         ['Próximo Pago / Vencimiento:', affiliateData.endDate ? formatDate(affiliateData.endDate) : 'Indefinido'],
         ['Estado Actual:', affiliateData.status]
     ];
-    // La comisión ya NO se agrega aquí.
 
     doc.autoTable({
         startY: finalY + 8,
@@ -2824,7 +2860,6 @@ document.getElementById('company-profile-form').addEventListener('submit', async
         columnStyles: { 0: { fontStyle: 'bold' } }
     });
 
-    // --- 5. PIE DE PÁGINA PROFESIONAL (Sin cambios) ---
     finalY = doc.internal.pageSize.height - 30;
     doc.setLineWidth(0.2);
     doc.setDrawColor(180);
@@ -2836,7 +2871,6 @@ document.getElementById('company-profile-form').addEventListener('submit', async
 
     doc.save(`Comprobante_Afiliacion_${affiliateData.name.replace(/\s/g, '_')}.pdf`);
 }
-
     const modalManager = {
         open(modalId, data = null) {
             const modal = document.getElementById(modalId); if (!modal) return;
@@ -2904,4 +2938,5 @@ document.getElementById('company-profile-form').addEventListener('submit', async
 </script>
 </body>
 </html>
+
 
