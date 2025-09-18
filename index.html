@@ -1131,6 +1131,7 @@ button svg {
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const storage = getStorage(app); // <--- ESTA ES LA LÍNEA QUE FALTABA
 
     enableIndexedDbPersistence(db)
       .catch((err) => {
@@ -3273,4 +3274,5 @@ localStorage.setItem('userTheme', profileData.theme);
 </script>
 </body>
 </html>
+
 
