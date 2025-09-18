@@ -2829,30 +2829,36 @@ localStorage.setItem('userTheme', profileData.theme);
             }
         });
 
-        const setupThemePreview = (selectorId, applyFunction) => {
+        // =========================================================================
+// INICIO DE LA SOLUCIÓN
+// =========================================================================
+        const setupThemePreview = (selectorId, applyFunction) => {
             const selectorContainer = document.getElementById(selectorId);
             if (selectorContainer) {
                 selectorContainer.addEventListener('change', (e) => {
                     if (e.target.type === 'radio' && e.target.name) {
                         const selectedValue = e.target.value;
-                        
-                        // --- INICIO DE LA SOLUCIÓN ---
-                        // 1. Identificamos el contenedor principal que tiene el scroll.
-                        const mainContent = document.querySelector('main');
-                        if (!mainContent) return; // Salida segura si no se encuentra el main
+                        
+                        // 1. Identificamos el contenedor principal que tiene el scroll.
+                        // En tu layout, es la etiqueta <main>.
+                        const mainContent = document.querySelector('main');
+                        if (!mainContent) return; // Salida segura si no se encuentra el main
 
-                        // 2. Guardamos su posición de scroll actual.
-                        const scrollPosition = mainContent.scrollTop;
+                        // 2. Guardamos su posición de scroll vertical actual ANTES del cambio.
+                        const scrollPosition = mainContent.scrollTop;
 
-                        applyFunction(selectedValue); // Esta es la línea original que causa el repintado
+                        // 3. Aplicamos el tema. Esta es la línea original que causa el repintado y el salto.
+                        applyFunction(selectedValue);
 
-                        // 3. Inmediatamente después, restauramos la posición del scroll.
-                        mainContent.scrollTop = scrollPosition;
-                        // --- FIN DE LA SOLUCIÓN ---
+                        // 4. Inmediatamente después, restauramos la posición del scroll que guardamos.
+                        mainContent.scrollTop = scrollPosition;
                     }
                 });
             }
         };
+// =========================================================================
+// FIN DE LA SOLUCIÓN
+// =========================================================================
 
         setupThemePreview('theme-selector', applyTheme);
         setupThemePreview('sidebar-theme-selector', applySidebarTheme);
@@ -3148,4 +3154,5 @@ localStorage.setItem('userTheme', profileData.theme);
 </script>
 </body>
 </html>
+
 
