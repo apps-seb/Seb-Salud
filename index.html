@@ -675,10 +675,35 @@ button svg {
                     </section>
 
                     <section id="empresa" class="content-section">
-                        <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-3xl mx-auto">
-                            <h2 class="text-2xl font-bold text-slate-800 mb-6">Perfil de la Empresa</h2>
-                            <form id="company-profile-form" class="space-y-6">
-                                <div><label for="company-name" class="block text-sm font-medium text-slate-600">Nombre</label><input type="text" id="company-name" class="w-full mt-1 p-2 border rounded-lg" required></div>
+                        <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-3xl mx-auto">
+                            <h2 class="text-2xl font-bold text-slate-800 mb-6">Perfil de la Empresa</h2>
+
+                                <div class="mb-8 p-4 border-t border-b">
+                                    <label for="logo-upload-input" class="block text-lg font-medium text-slate-700 mb-4">Logo de la Empresa</label>
+                                    <div class="mt-2">
+                                        <label for="logo-upload-input" class="relative group cursor-pointer w-48 h-48 flex items-center justify-center rounded-full bg-slate-50 border-2 border-dashed border-slate-300 hover:border-primary-500 transition-colors duration-200 mx-auto">
+                                            <img id="logo-preview" src="" alt="Logo de la empresa" class="hidden w-full h-full object-cover rounded-full">
+
+                                            <div id="logo-placeholder" class="text-center text-slate-400">
+                                                <i data-lucide="image" class="w-16 h-16 mx-auto"></i>
+                                                <span class="text-sm font-medium mt-2 block">Subir Logo</span>
+                                            </div>
+
+                                            <div id="logo-upload-overlay" class="absolute inset-0 bg-black/70 rounded-full flex-col items-center justify-center text-white hidden">
+                                                <i data-lucide="loader-2" class="w-8 h-8 animate-spin"></i>
+                                                <span id="logo-upload-progress-text" class="text-sm font-bold mt-2">0%</span>
+                                            </div>
+
+                                            <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                                <i data-lucide="camera" class="w-8 h-8"></i>
+                                            </div>
+                                        </label>
+                                        <input type="file" id="logo-upload-input" class="sr-only" accept="image/png, image/jpeg">
+                                        <p class="text-center text-xs text-slate-500 mt-3">Recomendado: PNG o JPG, máx. 2MB.</p>
+                                    </div>
+                                </div>
+                                                            <form id="company-profile-form" class="space-y-6">
+                                <div><label for="company-name" class="block text-sm font-medium text-slate-600">Nombre</label><input type="text" id="company-name" class="w-full mt-1 p-2 border rounded-lg" required></div>
                                 <div><label for="company-nit" class="block text-sm font-medium text-slate-600">NIT / Documento</label><input type="text" id="company-nit" class="w-full mt-1 p-2 border rounded-lg" required></div>
                                 <div><label for="company-address" class="block text-sm font-medium text-slate-600">Dirección</label><input type="text" id="company-address" class="w-full mt-1 p-2 border rounded-lg"></div>
                                 <div><label for="company-phone" class="block text-sm font-medium text-slate-600">Tel&#233;fono</label><input type="tel" id="company-phone" class="w-full mt-1 p-2 border rounded-lg"></div>
@@ -1083,7 +1108,8 @@ button svg {
     import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, onSnapshot, query, where, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+    
     /* === INICIO DE LA SOLUCIÓN: APLICAR TEMA AL CARGAR LA PÁGINA === */
 (() => {
     const savedTheme = localStorage.getItem('userTheme') || 'bosque';
@@ -2380,6 +2406,23 @@ function formatPhoneNumberForWhatsApp(phone) {
             }
         });
         // --- FIN LÓGICA DEL BUSCADOR GLOBAL ---
+
+        // =======================================================
+        // === INICIO DEL CÓDIGO A AÑADIR: CONEXIÓN DEL UPLOADER ===
+        // =======================================================
+        const logoUploadInput = document.getElementById('logo-upload-input');
+        if (logoUploadInput) {
+            logoUploadInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    handleLogoUpload(file);
+                }
+                e.target.value = null;
+            });
+        }
+        // =======================================================
+        // =================== FIN DEL CÓDIGO AÑADIR =====================
+        // =======================================================
         
         // --- INICIO LÓGICA DE FILTROS EN TIEMPO REAL (SECCIÓN AFILIADOS) ---
         const searchAffiliateInput = document.getElementById('search-affiliate');
@@ -2755,12 +2798,12 @@ const profileData = {
     phone: document.getElementById('company-phone').value,
     email: document.getElementById('company-email').value,
     
-    // Aquí está la corrección:
-    // Usamos el operador de encadenamiento opcional (?.) para evitar el error si no hay nada seleccionado.
-    // Luego, usamos el operador OR (||) para asignar un valor por defecto ('default' o 'dark').
-    theme: document.querySelector('#theme-selector input[name="theme"]:checked')?.value || 'default',
-    sidebarTheme: document.querySelector('#sidebar-theme-selector input[name="sidebar-theme"]:checked')?.value || 'dark',
-    bottomNavTheme: document.querySelector('#bottom-nav-theme-selector input[name="bottom-nav-theme"]:checked')?.value || 'dark',
+    // LÍNEA AÑADIDA PARA PRESERVAR EL LOGO AL GUARDAR
+    logoUrl: companyProfile.logoUrl || null,
+    
+    theme: document.querySelector('#theme-selector input[name="theme"]:checked')?.value || 'default',
+    sidebarTheme: document.querySelector('#sidebar-theme-selector input[name="sidebar-theme"]:checked')?.value || 'dark',
+    bottomNavTheme: document.querySelector('#bottom-nav-theme-selector input[name="bottom-nav-theme"]:checked')?.value || 'dark',
 };
 
                 /* === INICIO DE LA SOLUCIÓN: GUARDAR TEMA EN NAVEGADOR === */
@@ -3041,8 +3084,127 @@ localStorage.setItem('userTheme', profileData.theme);
     doc.text("Gracias por confiar en nuestros servicios. Este documento es un comprobante de su afiliación y no representa una factura.", doc.internal.pageSize.width / 2, finalY + 8, { align: 'center' });
     doc.text(`Generado el ${new Date().toLocaleString('es-CO')} por ${companyProfileData.name}.`, doc.internal.pageSize.width / 2, finalY + 12, { align: 'center' });
 
-    doc.save(`Comprobante_Afiliacion_${affiliateData.name.replace(/\s/g, '_')}.pdf`);
+     doc.save(`Comprobante_Afiliacion_${affiliateData.name.replace(/\s/g, '_')}.pdf`);
 }
+
+
+    /* ==================================================================== */
+    /* === INICIO DEL CÓDIGO A AÑADIR: LÓGICA DE SUBIDA DE LOGO A FIREBASE === */
+    /* ==================================================================== */
+
+    /**
+     * Gestiona la selección, validación y subida de un archivo de logo a Firebase Storage.
+     * @param {File} file El archivo de imagen seleccionado por el usuario.
+     */
+    async function handleLogoUpload(file) {
+        if (!currentUser || !adminUidForRole) return;
+
+        const preview = document.getElementById('logo-preview');
+        const placeholder = document.getElementById('logo-placeholder');
+        const overlay = document.getElementById('logo-upload-overlay');
+        const progressText = document.getElementById('logo-upload-progress-text');
+        const input = document.getElementById('logo-upload-input');
+
+        // 1. Validación del archivo
+        const validTypes = ['image/jpeg', 'image/png'];
+        const maxSizeInMB = 2;
+        if (!validTypes.includes(file.type)) {
+            showToast('Formato de archivo no válido. Usa PNG o JPG.', 'error');
+            return;
+        }
+        if (file.size > maxSizeInMB * 1024 * 1024) {
+            showToast(`El archivo es muy pesado. Máximo ${maxSizeInMB}MB.`, 'error');
+            return;
+        }
+
+        // 2. Preparar UI para la subida
+        placeholder.classList.add('hidden');
+        preview.classList.remove('hidden');
+        preview.src = URL.createObjectURL(file); // Vista previa instantánea
+        overlay.style.display = 'flex';
+        progressText.textContent = '0%';
+        input.disabled = true;
+
+        // 3. Crear referencia y tarea de subida
+        const storagePath = `company_logos/${adminUidForRole}/logo_${Date.now()}.${file.name.split('.').pop()}`;
+        const storageRef = ref(storage, storagePath);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        // 4. Monitorear el progreso de la subida
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                progressText.textContent = `${Math.round(progress)}%`;
+            },
+            (error) => {
+                // 5. Manejo de errores
+                console.error("Error al subir el logo:", error);
+                showToast('Error al subir el logo. Intenta de nuevo.', 'error');
+                overlay.style.display = 'none';
+                input.disabled = false;
+                if (companyProfile.logoUrl) {
+                    preview.src = companyProfile.logoUrl;
+                } else {
+                    preview.classList.add('hidden');
+                    placeholder.classList.remove('hidden');
+                }
+            },
+            async () => {
+                // 6. Subida completada con éxito
+                try {
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+
+                    // 7. Guardar la URL en Firestore
+                    const userDocRef = doc(db, `users/${adminUidForRole}`);
+                    await setDoc(userDocRef, {
+                        companyProfile: { ...companyProfile, logoUrl: downloadURL }
+                    }, { merge: true });
+
+                    showToast('Logo actualizado con éxito.', 'success');
+                    progressText.textContent = '¡Listo!';
+                    setTimeout(() => {
+                        overlay.style.display = 'none';
+                        input.disabled = false;
+                    }, 1000);
+
+                } catch (error) {
+                    console.error("Error obteniendo URL o guardando en Firestore:", error);
+                    showToast('Error al finalizar la subida.', 'error');
+                    overlay.style.display = 'none';
+                    input.disabled = false;
+                }
+            }
+        );
+    }
+
+    // AHORA REEMPLAZA TU FUNCIÓN renderEmpresaSection ENTERA POR ESTA VERSIÓN MEJORADA
+    function renderEmpresaSection(){
+        if(!companyProfile.name) return;
+
+        const logoPreview = document.getElementById('logo-preview');
+        const logoPlaceholder = document.getElementById('logo-placeholder');
+        if (companyProfile.logoUrl) {
+            logoPreview.src = companyProfile.logoUrl;
+            logoPreview.classList.remove('hidden');
+            logoPlaceholder.classList.add('hidden');
+        } else {
+            logoPreview.classList.add('hidden');
+            logoPlaceholder.classList.remove('hidden');
+        }
+
+        document.getElementById("company-name").value=companyProfile.name;
+        document.getElementById("company-nit").value=companyProfile.nit;
+        document.getElementById("company-address").value=companyProfile.address;
+        document.getElementById("company-phone").value=companyProfile.phone;
+        document.getElementById("company-email").value=companyProfile.email;
+        document.querySelector(`#theme-selector input[value="${companyProfile.theme||"default"}"]`).checked=!0;
+        document.querySelector(`#sidebar-theme-selector input[value="${companyProfile.sidebarTheme||"dark"}"]`).checked=!0;
+        document.querySelector(`#bottom-nav-theme-selector input[value="${companyProfile.bottomNavTheme||"dark"}"]`).checked=!0
+    }
+
+    /* ==================================================================== */
+    /* ===================== FIN DEL BLOQUE A AÑADIR ====================== */
+    /* ==================================================================== */
 
     const modalManager = {
         open(modalId, data = null) {
@@ -3111,3 +3273,4 @@ localStorage.setItem('userTheme', profileData.theme);
 </script>
 </body>
 </html>
+
