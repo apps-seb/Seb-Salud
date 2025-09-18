@@ -654,13 +654,17 @@ button svg {
                 </div>
 
                 <div id="novedades-modal" class="absolute top-[68px] right-4 z-30 w-96 bg-white rounded-xl shadow-2xl border border-slate-200/50 flex flex-col origin-top-right transition-transform duration-200 ease-out transform scale-95 opacity-0 pointer-events-none">
-                    <div class="p-4 border-b flex justify-between items-center">
-                        <h3 class="font-semibold text-slate-800">Notificaciones</h3>
-                        <button id="mark-novedades-read" class="text-xs font-medium text-primary-600 hover:text-primary-700 disabled:opacity-50 disabled:cursor-not-allowed">Marcar todo como le&#237;do</button>
-                    </div>
-                    <div id="novedades-list" class="flex-1 overflow-y-auto max-h-96 p-2 space-y-1">
-                        </div>
-                </div>
+    <div class="p-4 border-b flex justify-between items-center">
+        <h3 class="font-semibold text-slate-800">Notificaciones</h3>
+        
+        <div class="flex items-center gap-3">
+            <button id="clear-all-novedades" class="text-xs font-medium text-slate-500 hover:text-red-600 disabled:opacity-50 disabled:cursor-not-allowed">Borrar todas</button>
+            <button id="mark-novedades-read" class="text-xs font-medium text-primary-600 hover:text-primary-700 disabled:opacity-50 disabled:cursor-not-allowed">Marcar todo como leído</button>
+        </div>
+    </div>
+    <div id="novedades-list" class="flex-1 overflow-y-auto max-h-96 p-2 space-y-1">
+        </div>
+</div>
 
                 <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8 mt-16">
                     <section id="dashboard" class="content-section active">
@@ -2867,8 +2871,41 @@ localStorage.setItem('userTheme', profileData.theme);
             await batch.commit();
             showToast('Notificaciones marcadas como leídas.');
         });
+
+        document.getElementById('clear-all-novedades').addEventListener('click', async () => {
+    // 1. Verificamos si hay notificaciones para borrar.
+    if (novedades.length === 0) {
+        showToast('No hay notificaciones para borrar.', 'error');
+        return;
+    }
+
+    // 2. Pedimos confirmación al usuario porque es una acción irreversible.
+    if (!confirm('¿Estás seguro de que quieres borrar TODAS las notificaciones? Esta acción no se puede deshacer.')) {
+        return;
+    }
+
+    // 3. Creamos un "batch write" para borrar todos los documentos en una sola operación.
+    const batch = writeBatch(db);
+    novedades.forEach(novedad => {
+        const docRef = doc(db, `users/${adminUidForRole}/novedades`, novedad.id);
+        batch.delete(docRef); // Usamos batch.delete() para eliminar el documento.
+    });
+
+    try {
+        // 4. Ejecutamos el borrado en la base de datos.
+        await batch.commit();
+        showToast('Todas las notificaciones han sido borradas.', 'success');
         
-        const calculatorForm = document.getElementById('calculator-form');
+        // 5. Opcional: Cerramos el modal después de borrar.
+        document.getElementById('novedades-modal').classList.add('scale-95', 'opacity-0', 'pointer-events-none');
+
+    } catch (error) {
+        console.error("Error al borrar las notificaciones:", error);
+        showToast('Ocurrió un error al borrar las notificaciones.', 'error');
+    }
+});
+        
+      const calculatorForm = document.getElementById('calculator-form');
         const calculateBtn = document.getElementById('calculate-btn');
         const newQuoteBtn = document.getElementById('new-quote-btn');
 
@@ -3111,3 +3148,4 @@ localStorage.setItem('userTheme', profileData.theme);
 </script>
 </body>
 </html>
+
