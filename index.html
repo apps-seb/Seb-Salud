@@ -2829,8 +2829,8 @@ localStorage.setItem('userTheme', profileData.theme);
             }
         });
 
-        // =========================================================================
-// INICIO DE LA SOLUCIÓN
+// =========================================================================
+// INICIO DE LA SOLUCIÓN DEFINITIVA
 // =========================================================================
         const setupThemePreview = (selectorId, applyFunction) => {
             const selectorContainer = document.getElementById(selectorId);
@@ -2839,27 +2839,26 @@ localStorage.setItem('userTheme', profileData.theme);
                     if (e.target.type === 'radio' && e.target.name) {
                         const selectedValue = e.target.value;
                         
-                        // 1. Identificamos el contenedor principal que tiene el scroll.
-                        // En tu layout, es la etiqueta <main>.
                         const mainContent = document.querySelector('main');
-                        if (!mainContent) return; // Salida segura si no se encuentra el main
+                        if (!mainContent) return;
 
-                        // 2. Guardamos su posición de scroll vertical actual ANTES del cambio.
                         const scrollPosition = mainContent.scrollTop;
 
-                        // 3. Aplicamos el tema. Esta es la línea original que causa el repintado y el salto.
                         applyFunction(selectedValue);
 
-                        // 4. Inmediatamente después, restauramos la posición del scroll que guardamos.
-                        mainContent.scrollTop = scrollPosition;
+                        // ¡AQUÍ ESTÁ EL CAMBIO CLAVE!
+                        // Usamos requestAnimationFrame para asegurar que la restauración
+                        // ocurra JUSTO después de que el navegador haya procesado los cambios de estilo.
+                        requestAnimationFrame(() => {
+                            mainContent.scrollTop = scrollPosition;
+                        });
                     }
                 });
             }
         };
 // =========================================================================
-// FIN DE LA SOLUCIÓN
+// FIN DE LA SOLUCIÓN DEFINITIVA
 // =========================================================================
-
         setupThemePreview('theme-selector', applyTheme);
         setupThemePreview('sidebar-theme-selector', applySidebarTheme);
         setupThemePreview('bottom-nav-theme-selector', applyBottomNavTheme);
@@ -3154,5 +3153,6 @@ localStorage.setItem('userTheme', profileData.theme);
 </script>
 </body>
 </html>
+
 
 
