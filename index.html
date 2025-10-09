@@ -829,13 +829,170 @@ button svg {
 
                 <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8 mt-16">
                     <section id="dashboard" class="content-section active">
-                        <h1 class="text-2xl font-bold text-slate-800 mb-6">Resumen General y Métricas Clave</h1>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-                            <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Ingresos del Mes</h3><p id="kpi-monthly-income" class="text-3xl font-bold text-slate-800 mt-2">$0</p></div><div class="bg-emerald-100 text-emerald-600 p-2 rounded-full"><i data-lucide="trending-up" class="h-6 w-6"></i></div></div>
-                            <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Admin. / Ganancia Neta (Mes)</h3><p id="kpi-net-profit" class="text-3xl font-bold text-slate-800 mt-2">$0</p></div><div class="bg-indigo-100 text-indigo-600 p-2 rounded-full"><i data-lucide="briefcase" class="h-6 w-6"></i></div></div>
-                            <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Nuevos Afiliados (Mes)</h3><p id="kpi-new-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div><div class="bg-sky-100 text-sky-600 p-2 rounded-full"><i data-lucide="user-plus" class="h-6 w-6"></i></div></div>
-                            <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Afiliados Activos</h3><p id="kpi-active-affiliates" class="text-3xl font-bold text-slate-800 mt-2">0</p></div><div class="bg-slate-100 text-slate-600 p-2 rounded-full"><i data-lucide="check-circle-2" class="h-6 w-6"></i></div></div>
-                            <div class="bg-white p-5 rounded-xl shadow-lg flex items-start justify-between"><div><h3 class="text-sm font-medium text-slate-500 uppercase">Cartera Vencida</h3><p id="kpi-overdue-payments" class="text-3xl font-bold text-rose-500 mt-2">$0</p></div><div class="bg-rose-100 text-rose-600 p-2 rounded-full"><i data-lucide="clock" class="h-6 w-6"></i></div></div>
+                        <div class="space-y-8">
+                            <div class="grid gap-6 xl:grid-cols-[2fr,3fr]">
+                                <article class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white shadow-2xl p-8">
+                                    <div class="absolute -top-16 -right-10 h-48 w-48 rounded-full bg-primary-500/30 blur-3xl"></div>
+                                    <div class="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black/20 to-transparent"></div>
+                                    <div class="relative flex flex-col gap-6">
+                                        <div>
+                                            <p class="text-xs uppercase tracking-[0.35em] text-white/50">Panel Ejecutivo</p>
+                                            <h1 class="text-3xl font-bold mt-3">Hola, <span id="dashboard-hero-name" class="text-primary-200">Equipo Seb Salud</span></h1>
+                                            <p id="dashboard-hero-subtitle" class="text-sm text-white/70 mt-2 max-w-xl">Monitorea el pulso de la operación y actúa con anticipación.</p>
+                                        </div>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div class="rounded-2xl border border-white/20 bg-white/10 backdrop-blur px-5 py-4">
+                                                <p class="text-xs font-medium uppercase tracking-wide text-white/60">Afiliados activos</p>
+                                                <p id="dashboard-hero-active" class="text-3xl font-semibold mt-2">0</p>
+                                            </div>
+                                            <div class="rounded-2xl border border-white/20 bg-white/10 backdrop-blur px-5 py-4">
+                                                <p class="text-xs font-medium uppercase tracking-wide text-white/60">Ingresos recurrentes proyectados</p>
+                                                <p id="dashboard-hero-projected" class="text-3xl font-semibold mt-2">$0</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                                <article class="bg-white/80 backdrop-blur rounded-3xl border border-white/60 shadow-xl p-6 flex flex-col justify-between">
+                                    <div class="flex items-center justify-between mb-6">
+                                        <div>
+                                            <p class="text-sm font-semibold text-slate-500 uppercase tracking-wide">Salud del negocio</p>
+                                            <h2 class="text-2xl font-bold text-slate-800 mt-1">Indicadores en tiempo real</h2>
+                                        </div>
+                                        <div class="h-12 w-12 rounded-full bg-primary-600/10 text-primary-600 flex items-center justify-center">
+                                            <i data-lucide="activity" class="h-6 w-6"></i>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div class="rounded-2xl border border-slate-200 p-4">
+                                            <p id="dashboard-net-label" class="text-xs font-medium text-slate-500 uppercase tracking-wide">Resultado neto mensual</p>
+                                            <p id="dashboard-net-cashflow" class="text-2xl font-semibold text-slate-800 mt-2">$0</p>
+                                            <p id="dashboard-net-description" class="text-xs text-slate-500 mt-3">Ingresos menos egresos para el periodo seleccionado.</p>
+                                        </div>
+                                        <div class="rounded-2xl border border-slate-200 p-4">
+                                            <p id="dashboard-expense-label" class="text-xs font-medium text-slate-500 uppercase tracking-wide">Egresos totales del mes</p>
+                                            <p id="dashboard-monthly-expenses" class="text-2xl font-semibold text-slate-800 mt-2">$0</p>
+                                            <p id="dashboard-expense-description" class="text-xs text-slate-500 mt-3">Incluye comisiones a asesores y egresos manuales.</p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-6 flex items-center justify-between text-sm">
+                                        <span class="text-slate-500">Crecimiento vs. mes anterior</span>
+                                        <span id="dashboard-growth-rate" class="font-semibold text-primary-600">0%</span>
+                                    </div>
+                                </article>
+                            </div>
+
+                            <div id="dashboard-kpi-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-6">
+                                <div class="group relative overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-xl p-6 flex flex-col gap-4 transition hover:-translate-y-0.5 hover:shadow-2xl" data-kpi="monthly-income">
+                                    <div class="flex items-center justify-between">
+                                        <span data-kpi-label="monthly-income" class="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">Ingresos del mes</span>
+                                        <span class="rounded-full bg-emerald-100 text-emerald-600 p-2">
+                                            <i data-lucide="trending-up" class="h-5 w-5"></i>
+                                        </span>
+                                    </div>
+                                    <p id="kpi-monthly-income" class="text-3xl font-bold text-slate-900">$0</p>
+                                    <p class="text-xs text-slate-500 leading-snug">Total de ingresos registrados en el periodo actual.</p>
+                                </div>
+                                <div class="group relative overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-xl p-6 flex flex-col gap-4 transition hover:-translate-y-0.5 hover:shadow-2xl" data-kpi="admin-profit" data-role="admin-only">
+                                    <div class="flex items-center justify-between">
+                                        <span data-kpi-label="admin-profit" class="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">Ganancia administrativa</span>
+                                        <span class="rounded-full bg-amber-100 text-amber-600 p-2">
+                                            <i data-lucide="diamond" class="h-5 w-5"></i>
+                                        </span>
+                                    </div>
+                                    <p id="kpi-admin-profit" class="text-3xl font-bold text-slate-900">$0</p>
+                                    <p class="text-xs text-slate-500 leading-snug">Tarifa administrativa mensual multiplicada por afiliados activos.</p>
+                                </div>
+                                <div class="group relative overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-xl p-6 flex flex-col gap-4 transition hover:-translate-y-0.5 hover:shadow-2xl" data-kpi="net-profit">
+                                    <div class="flex items-center justify-between">
+                                        <span data-kpi-label="net-profit" class="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">Resultado neto (mes)</span>
+                                        <span class="rounded-full bg-indigo-100 text-indigo-600 p-2">
+                                            <i data-lucide="briefcase" class="h-5 w-5"></i>
+                                        </span>
+                                    </div>
+                                    <p id="kpi-net-profit" class="text-3xl font-bold text-slate-900">$0</p>
+                                    <p class="text-xs text-slate-500 leading-snug">Saldo real después de comisiones y egresos.</p>
+                                </div>
+                                <div class="group relative overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-xl p-6 flex flex-col gap-4 transition hover:-translate-y-0.5 hover:shadow-2xl" data-kpi="new-affiliates">
+                                    <div class="flex items-center justify-between">
+                                        <span data-kpi-label="new-affiliates" class="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">Nuevos afiliados</span>
+                                        <span class="rounded-full bg-sky-100 text-sky-600 p-2">
+                                            <i data-lucide="user-plus" class="h-5 w-5"></i>
+                                        </span>
+                                    </div>
+                                    <p id="kpi-new-affiliates" class="text-3xl font-bold text-slate-900">0</p>
+                                    <p class="text-xs text-slate-500 leading-snug">Personas incorporadas durante el mes en curso.</p>
+                                </div>
+                                <div class="group relative overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-xl p-6 flex flex-col gap-4 transition hover:-translate-y-0.5 hover:shadow-2xl" data-kpi="active-affiliates">
+                                    <div class="flex items-center justify-between">
+                                        <span data-kpi-label="active-affiliates" class="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">Afiliados activos</span>
+                                        <span class="rounded-full bg-slate-100 text-slate-600 p-2">
+                                            <i data-lucide="shield-check" class="h-5 w-5"></i>
+                                        </span>
+                                    </div>
+                                    <p id="kpi-active-affiliates" class="text-3xl font-bold text-slate-900">0</p>
+                                    <p class="text-xs text-slate-500 leading-snug">Cartera vigente en seguimiento continuo.</p>
+                                </div>
+                                <div class="group relative overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-xl p-6 flex flex-col gap-4 transition hover:-translate-y-0.5 hover:shadow-2xl" data-kpi="overdue-payments" data-role="admin-only">
+                                    <div class="flex items-center justify-between">
+                                        <span data-kpi-label="overdue-payments" class="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">Cartera vencida</span>
+                                        <span class="rounded-full bg-rose-100 text-rose-600 p-2">
+                                            <i data-lucide="clock" class="h-5 w-5"></i>
+                                        </span>
+                                    </div>
+                                    <p id="kpi-overdue-payments" class="text-3xl font-bold text-rose-500">$0</p>
+                                    <p class="text-xs text-slate-500 leading-snug">Monto pendiente por recuperación y seguimiento.</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                                <article class="rounded-3xl bg-white border border-slate-200 shadow-xl p-6">
+                                    <div class="flex items-center justify-between mb-6">
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-slate-800">Indicadores operativos</h3>
+                                            <p class="text-sm text-slate-500">Seguimiento de la salud de la cartera y la captación.</p>
+                                        </div>
+                                        <span class="rounded-full bg-primary-600/10 text-primary-600 p-2">
+                                            <i data-lucide="pie-chart" class="h-5 w-5"></i>
+                                        </span>
+                                    </div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div class="rounded-2xl border border-slate-200 p-4">
+                                            <p class="text-sm font-semibold text-slate-500">Retención de afiliados</p>
+                                            <p id="dashboard-retention-rate" class="text-2xl font-bold text-slate-800 mt-2">0%</p>
+                                            <p class="text-xs text-slate-500 mt-2">Relación entre afiliados activos y cartera total.</p>
+                                        </div>
+                                        <div class="rounded-2xl border border-slate-200 p-4">
+                                            <p class="text-sm font-semibold text-slate-500">Ticket promedio mensual</p>
+                                            <p id="dashboard-average-ticket" class="text-2xl font-bold text-slate-800 mt-2">$0</p>
+                                            <p class="text-xs text-slate-500 mt-2">Valor medio recurrente por afiliado activo.</p>
+                                        </div>
+                                        <div class="rounded-2xl border border-slate-200 p-4">
+                                            <p class="text-sm font-semibold text-slate-500">Afiliados en mora</p>
+                                            <p class="text-2xl font-bold text-slate-800 mt-2" id="dashboard-overdue-count">0 afiliados</p>
+                                            <p class="text-xs text-slate-500 mt-2">Valor asociado: <span id="dashboard-overdue-value" class="font-semibold">$0</span></p>
+                                        </div>
+                                        <div class="rounded-2xl border border-slate-200 p-4">
+                                            <p class="text-sm font-semibold text-slate-500">Nuevos afiliados del mes</p>
+                                            <p id="dashboard-monthly-new" class="text-2xl font-bold text-slate-800 mt-2">0</p>
+                                            <p id="dashboard-monthly-new-delta" class="text-xs text-slate-500 mt-2">0 vs. mes anterior</p>
+                                        </div>
+                                    </div>
+                                </article>
+
+                                <article class="rounded-3xl bg-slate-900 text-white shadow-xl border border-slate-800 p-6 flex flex-col justify-between" data-role="admin-only">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="text-lg font-semibold">Mejor asesor del mes</h3>
+                                        <span class="rounded-full bg-white/10 text-primary-200 p-2">
+                                            <i data-lucide="award" class="h-5 w-5"></i>
+                                        </span>
+                                    </div>
+                                    <div class="mt-6 space-y-2">
+                                        <p id="dashboard-top-advisor" class="text-2xl font-bold">Sin datos</p>
+                                        <p class="text-sm text-white/70">Comisiones generadas: <span id="dashboard-top-advisor-commission" class="font-semibold text-primary-200">$0</span></p>
+                                    </div>
+                                    <p class="text-xs text-white/50 mt-6">Basado en las comisiones calculadas automáticamente durante el mes.</p>
+                                </article>
+                            </div>
                         </div>
                     </section>
 
@@ -1326,6 +1483,8 @@ button svg {
     const MAX_COMPANY_LOGO_SIZE = 1.5 * 1024 * 1024; // 1.5 MB
     const LOGO_CANVAS_MAX_SIZE = 512;
     const LOGO_COMPRESSION_QUALITY = 0.85;
+    const isDashboardDemoMode = window.location.hash.toLowerCase().includes('demo-dashboard');
+    let dashboardDemoInitialized = false;
 
     function getImageFormatFromDataURL(dataUrl) {
         if (typeof dataUrl !== 'string') return 'PNG';
@@ -1385,6 +1544,92 @@ button svg {
         const base64 = dataUrl.split(',')[1];
         if (!base64) return 0;
         return Math.ceil((base64.length * 3) / 4);
+    }
+
+    function pixelsToMillimeters(pixels, dpi = 96) {
+        if (!pixels || dpi <= 0) return 0;
+        return (pixels / dpi) * 25.4;
+    }
+
+    async function getImageDimensionsFromDataURL(dataUrl) {
+        if (!dataUrl) return null;
+        return new Promise((resolve, reject) => {
+            const image = new Image();
+            image.onload = () => {
+                resolve({ width: image.naturalWidth, height: image.naturalHeight });
+            };
+            image.onerror = (error) => reject(error);
+            image.src = dataUrl;
+        }).catch(error => {
+            console.error('No se pudieron obtener las dimensiones del logo:', error);
+            return null;
+        });
+    }
+
+    async function addLogoToPDF(doc, logoDataUrl, { x = 14, y = 12, maxWidthMm = 48, maxHeightMm = 24 } = {}) {
+        if (!logoDataUrl) return null;
+
+        const dimensions = await getImageDimensionsFromDataURL(logoDataUrl);
+        if (!dimensions || !dimensions.width || !dimensions.height) return null;
+
+        let renderWidthMm = pixelsToMillimeters(dimensions.width);
+        let renderHeightMm = pixelsToMillimeters(dimensions.height);
+
+        if (renderWidthMm <= 0 || renderHeightMm <= 0) return null;
+
+        const widthScale = maxWidthMm / renderWidthMm;
+        const heightScale = maxHeightMm / renderHeightMm;
+        const scale = Math.min(widthScale, heightScale, 1);
+
+        renderWidthMm *= scale;
+        renderHeightMm *= scale;
+
+        const logoFormat = getImageFormatFromDataURL(logoDataUrl);
+        doc.addImage(logoDataUrl, logoFormat, x, y, renderWidthMm, renderHeightMm);
+
+        return { width: renderWidthMm, height: renderHeightMm, x, y };
+    }
+
+    function updateTextContent(id, value) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value;
+        }
+    }
+
+    function setKpiLabel(key, text) {
+        const label = document.querySelector(`[data-kpi-label="${key}"]`);
+        if (label) {
+            label.textContent = text;
+        }
+    }
+
+    function updateGrowthIndicator(value) {
+        const growthElement = document.getElementById('dashboard-growth-rate');
+        if (!growthElement) return;
+        const formatted = `${value > 0 ? '+' : ''}${formatPercentage(value)}`;
+        growthElement.textContent = formatted;
+        growthElement.classList.toggle('text-emerald-600', value >= 0);
+        growthElement.classList.toggle('text-rose-500', value < 0);
+    }
+
+    function parseAppDate(value) {
+        if (!value) return null;
+        const date = new Date(value);
+        return isNaN(date) ? null : date;
+    }
+
+    function isAffiliateActiveAtDate(affiliate, referenceDate) {
+        if (!affiliate || !referenceDate) return false;
+        const startDate = parseAppDate(affiliate.startDate || affiliate.createdAt);
+        const endDate = parseAppDate(affiliate.endDate);
+        if (startDate && referenceDate < startDate) return false;
+        if (endDate && referenceDate > endDate) return false;
+        const status = (affiliate.status || '').toLowerCase();
+        if (['inactivo', 'cancelado', 'retirado'].includes(status)) {
+            return endDate ? referenceDate <= endDate : false;
+        }
+        return true;
     }
 
     function compressImageFile(file, maxSize = LOGO_CANVAS_MAX_SIZE, quality = LOGO_COMPRESSION_QUALITY) {
@@ -1510,6 +1755,9 @@ applyTheme(savedTheme);
             showView(authContainer);
             document.getElementById('login-view').style.display = 'block';
             document.getElementById('register-view').style.display = 'none';
+            if (isDashboardDemoMode) {
+                runDashboardDemoPreview();
+            }
         }
     });
     
@@ -1929,55 +2177,297 @@ function updateUIVisibilityByRole() {
     
     function renderAsesorDashboard() {
         if (!userRoleData.linkedAdvisorId) return;
+
+        destroyDashboardPerformanceChart();
+
         const relevantAffiliates = affiliates.filter(a => a.advisorId === userRoleData.linkedAdvisorId);
         const activeAffiliates = relevantAffiliates.filter(a => a.status === 'Activo');
-        const currentDate = new Date();
-        const currentMonth = currentDate.getMonth();
-        const currentYear = currentDate.getFullYear();
-        const monthlyIncome = activeAffiliates
-            .filter(aff => {
-                const createdAt = aff.createdAt;
-                return createdAt && createdAt.getMonth() === currentMonth && createdAt.getFullYear() === currentYear;
-            })
-            .reduce((sum, aff) => sum + getAffiliateCommissionBase(aff), 0);
-        const monthlyCommissions = activeAffiliates
-            .reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0);
         const totalAffiliates = relevantAffiliates.length;
-        const kpiIncome = document.getElementById('kpi-monthly-income');
-        const kpiCommission = document.getElementById('kpi-net-profit');
-        const kpiTotalAffiliates = document.getElementById('kpi-new-affiliates');
-        kpiIncome.parentElement.querySelector('h3').textContent = 'Ingresos Generados (Mes)';
-        kpiCommission.parentElement.querySelector('h3').textContent = 'Comisiones del Mes';
-        kpiTotalAffiliates.parentElement.querySelector('h3').textContent = 'Mis Afiliados (Total)';
-        kpiIncome.textContent = formatCurrency(monthlyIncome);
-        kpiCommission.textContent = formatCurrency(monthlyCommissions);
-        kpiTotalAffiliates.textContent = totalAffiliates;
-        document.getElementById('kpi-active-affiliates').closest('.bg-white').style.display = 'none';
-        document.getElementById('kpi-overdue-payments').closest('.bg-white').style.display = 'none';
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const startOfPreviousMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const endOfPreviousMonth = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
+
+        const monthlyNewAffiliates = relevantAffiliates.filter(aff => aff.createdAt && aff.createdAt >= startOfMonth && aff.createdAt <= now);
+        const previousMonthNewAffiliates = relevantAffiliates.filter(aff => aff.createdAt && aff.createdAt >= startOfPreviousMonth && aff.createdAt <= endOfPreviousMonth);
+
+        const recurringRevenue = activeAffiliates.reduce((sum, aff) => sum + getAffiliateCommissionBase(aff), 0);
+        const monthlyCommissions = activeAffiliates.reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0);
+        const growthRate = previousMonthNewAffiliates.length > 0
+            ? ((monthlyNewAffiliates.length - previousMonthNewAffiliates.length) / previousMonthNewAffiliates.length) * 100
+            : (monthlyNewAffiliates.length > 0 ? 100 : 0);
+        const retentionRate = totalAffiliates > 0 ? (activeAffiliates.length / totalAffiliates) * 100 : 0;
+        const averageTicket = activeAffiliates.length > 0 ? recurringRevenue / activeAffiliates.length : 0;
+        const overdueAffiliates = relevantAffiliates.filter(a => a.paymentStatus === 'En mora');
+        const overdueValue = overdueAffiliates.reduce((sum, aff) => sum + getAffiliateCommissionBase(aff), 0);
+        const overdueCount = overdueAffiliates.length;
+
+        setKpiLabel('monthly-income', 'Ingresos de mi cartera');
+        setKpiLabel('net-profit', 'Comisiones del mes');
+        setKpiLabel('new-affiliates', 'Afiliados nuevos');
+        setKpiLabel('active-affiliates', 'Afiliados activos');
+        setKpiLabel('overdue-payments', 'Cartera por recuperar');
+
+        updateTextContent('dashboard-hero-name', 'Equipo Comercial');
+        updateTextContent('dashboard-hero-subtitle', 'Seguimiento de tus afiliados y comisiones en tiempo real.');
+        updateTextContent('dashboard-hero-active', activeAffiliates.length);
+        updateTextContent('dashboard-hero-projected', formatCurrency(recurringRevenue));
+
+        updateTextContent('kpi-monthly-income', formatCurrency(recurringRevenue));
+        updateTextContent('kpi-net-profit', formatCurrency(monthlyCommissions));
+        updateTextContent('kpi-new-affiliates', monthlyNewAffiliates.length);
+        updateTextContent('kpi-active-affiliates', activeAffiliates.length);
+        updateTextContent('kpi-overdue-payments', formatCurrency(overdueValue));
+
+        updateTextContent('dashboard-net-label', 'Ingresos recurrentes estimados');
+        updateTextContent('dashboard-net-description', 'Basados en tu cartera activa actual.');
+        updateTextContent('dashboard-expense-label', 'Comisiones proyectadas');
+        updateTextContent('dashboard-expense-description', 'Valor aproximado de tus comisiones actuales.');
+        updateTextContent('dashboard-net-cashflow', formatCurrency(recurringRevenue));
+        updateTextContent('dashboard-monthly-expenses', formatCurrency(monthlyCommissions));
+
+        updateGrowthIndicator(growthRate);
+        updateTextContent('dashboard-retention-rate', formatPercentage(retentionRate));
+        updateTextContent('dashboard-average-ticket', formatCurrency(averageTicket));
+        updateTextContent('dashboard-overdue-count', `${overdueCount} afiliados`);
+        updateTextContent('dashboard-overdue-value', formatCurrency(overdueValue));
+        updateTextContent('dashboard-monthly-new', monthlyNewAffiliates.length);
+        const advisorDelta = monthlyNewAffiliates.length - previousMonthNewAffiliates.length;
+        updateTextContent('dashboard-monthly-new-delta', `${advisorDelta > 0 ? '+' : ''}${advisorDelta} vs. mes anterior`);
+
+        document.querySelectorAll('#dashboard [data-role="admin-only"]').forEach(el => el.classList.add('hidden'));
+        lucide.createIcons();
     }
 
     function renderDashboard() {
-        document.querySelectorAll('#dashboard .bg-white').forEach(card => card.style.display = 'flex');
+        const dashboardSection = document.getElementById('dashboard');
+        if (!dashboardSection) return;
+
         if (currentUserRole === 'asesor') {
             renderAsesorDashboard();
             return;
         }
-        const kpiIncome = document.getElementById('kpi-monthly-income');
-        const kpiNetProfit = document.getElementById('kpi-net-profit');
-        const kpiNewAffiliates = document.getElementById('kpi-new-affiliates');
-        kpiIncome.parentElement.querySelector('h3').textContent = 'Ingresos del Mes';
-        kpiNetProfit.parentElement.querySelector('h3').textContent = 'Admin. / Ganancia Neta (Mes)';
-        kpiNewAffiliates.parentElement.querySelector('h3').textContent = 'Nuevos Afiliados (Mes)';
-        const e=new Date,t=e.getMonth(),a=e.getFullYear();
-        const n=affiliates.filter(e=>"Activo"===e.status);
-        const o=n.reduce((e,t)=>e+getAffiliateCommissionBase(t),0);
-        const s=affiliates.filter(e=>{const n=e.createdAt;return n&&n.getMonth()===t&&n.getFullYear()===a}).length;
-        const i=n.length*(settings.ADMIN_FEE_PER_AFFILIATE||0);
-        document.getElementById("kpi-monthly-income").textContent=formatCurrency(o);
-        document.getElementById("kpi-new-affiliates").textContent=s;
-        document.getElementById("kpi-active-affiliates").textContent=n.length;
-        document.getElementById("kpi-net-profit").textContent=formatCurrency(i);
-        document.getElementById("kpi-overdue-payments").textContent = '$0';
+
+        document.querySelectorAll('#dashboard [data-role="admin-only"]').forEach(el => el.classList.remove('hidden'));
+
+        setKpiLabel('monthly-income', 'Ingresos del mes');
+        setKpiLabel('admin-profit', 'Ganancia administrativa');
+        setKpiLabel('net-profit', 'Resultado neto (mes)');
+        setKpiLabel('new-affiliates', 'Nuevos afiliados');
+        setKpiLabel('active-affiliates', 'Afiliados activos');
+        setKpiLabel('overdue-payments', 'Cartera vencida');
+
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const startOfPreviousMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const endOfPreviousMonth = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
+
+        const activeAffiliates = affiliates.filter(a => a.status === 'Activo');
+        const totalAffiliates = affiliates.length;
+        const monthlyNewAffiliates = affiliates.filter(aff => aff.createdAt && aff.createdAt >= startOfMonth && aff.createdAt <= now);
+        const previousMonthNewAffiliates = affiliates.filter(aff => aff.createdAt && aff.createdAt >= startOfPreviousMonth && aff.createdAt <= endOfPreviousMonth);
+
+        const transactions = getAllTransactions();
+        const filterTransactionsByPeriod = (collection, month, year) => collection.filter(item => {
+            const parsedDate = new Date(item.date);
+            return !isNaN(parsedDate) && parsedDate.getMonth() === month && parsedDate.getFullYear() === year;
+        });
+
+        const sumByType = (collection, type) => collection
+            .filter(item => item.type === type)
+            .reduce((sum, item) => sum + (item.amount || 0), 0);
+
+        const monthlyTransactions = filterTransactionsByPeriod(transactions, now.getMonth(), now.getFullYear());
+        const previousMonthTransactions = filterTransactionsByPeriod(transactions, startOfPreviousMonth.getMonth(), startOfPreviousMonth.getFullYear());
+
+        const monthlyIncome = sumByType(monthlyTransactions, 'ingreso');
+        const monthlyExpenses = sumByType(monthlyTransactions, 'egreso');
+        const netCashflow = monthlyIncome - monthlyExpenses;
+        const adminFee = settings?.ADMIN_FEE_PER_AFFILIATE ?? defaultSettings.ADMIN_FEE_PER_AFFILIATE;
+        const adminProfit = activeAffiliates.length * adminFee;
+
+        const previousIncome = sumByType(previousMonthTransactions, 'ingreso');
+        const previousExpenses = sumByType(previousMonthTransactions, 'egreso');
+        const previousNetCashflow = previousIncome - previousExpenses;
+        const growthRate = previousNetCashflow !== 0
+            ? ((netCashflow - previousNetCashflow) / Math.abs(previousNetCashflow)) * 100
+            : (netCashflow !== 0 ? 100 : 0);
+
+        const recurringRevenue = activeAffiliates.reduce((sum, aff) => sum + getAffiliateCommissionBase(aff), 0);
+        const retentionRate = totalAffiliates > 0 ? (activeAffiliates.length / totalAffiliates) * 100 : 0;
+        const averageTicket = activeAffiliates.length > 0 ? recurringRevenue / activeAffiliates.length : 0;
+        const overdueAffiliates = affiliates.filter(a => a.paymentStatus === 'En mora');
+        const overdueValue = overdueAffiliates.reduce((sum, aff) => sum + getAffiliateCommissionBase(aff), 0);
+        const overdueCount = overdueAffiliates.length;
+
+        const advisorPerformance = advisors.map(advisor => {
+            const advisorAffiliates = affiliates.filter(aff => aff.advisorId === advisor.id && aff.status === 'Activo');
+            const totalCommission = advisorAffiliates.reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0);
+            return {
+                advisor,
+                commission: totalCommission
+            };
+        }).filter(entry => entry.commission > 0)
+        .sort((a, b) => b.commission - a.commission);
+
+        const topAdvisorData = advisorPerformance[0] || null;
+
+        updateTextContent('dashboard-hero-name', companyProfile.name ? `Equipo ${companyProfile.name}` : 'Equipo Seb Salud');
+        updateTextContent('dashboard-hero-subtitle', 'Monitorea el pulso de la operación y actúa con anticipación.');
+        updateTextContent('dashboard-hero-active', activeAffiliates.length);
+        updateTextContent('dashboard-hero-projected', formatCurrency(recurringRevenue));
+
+        updateTextContent('kpi-monthly-income', formatCurrency(monthlyIncome));
+        updateTextContent('kpi-admin-profit', formatCurrency(adminProfit));
+        updateTextContent('kpi-net-profit', formatCurrency(netCashflow));
+        updateTextContent('kpi-new-affiliates', monthlyNewAffiliates.length);
+        updateTextContent('kpi-active-affiliates', activeAffiliates.length);
+        updateTextContent('kpi-overdue-payments', formatCurrency(overdueValue));
+
+        updateTextContent('dashboard-net-label', 'Resultado neto mensual');
+        updateTextContent('dashboard-net-description', 'Ingresos menos egresos para el periodo seleccionado.');
+        updateTextContent('dashboard-expense-label', 'Egresos totales del mes');
+        updateTextContent('dashboard-expense-description', 'Incluye comisiones a asesores y egresos manuales.');
+        updateTextContent('dashboard-net-cashflow', formatCurrency(netCashflow));
+        updateTextContent('dashboard-monthly-expenses', formatCurrency(monthlyExpenses));
+
+        updateGrowthIndicator(growthRate);
+        updateTextContent('dashboard-retention-rate', formatPercentage(retentionRate));
+        updateTextContent('dashboard-average-ticket', formatCurrency(averageTicket));
+        updateTextContent('dashboard-overdue-count', `${overdueCount} afiliados`);
+        updateTextContent('dashboard-overdue-value', formatCurrency(overdueValue));
+        updateTextContent('dashboard-monthly-new', monthlyNewAffiliates.length);
+        const newDelta = monthlyNewAffiliates.length - previousMonthNewAffiliates.length;
+        updateTextContent('dashboard-monthly-new-delta', `${newDelta > 0 ? '+' : ''}${newDelta} vs. mes anterior`);
+
+        if (topAdvisorData) {
+            updateTextContent('dashboard-top-advisor', topAdvisorData.advisor.name);
+            updateTextContent('dashboard-top-advisor-commission', formatCurrency(topAdvisorData.commission));
+        } else {
+            updateTextContent('dashboard-top-advisor', 'Sin datos');
+            updateTextContent('dashboard-top-advisor-commission', '$0');
+        }
+
+        lucide.createIcons();
+    }
+
+    function runDashboardDemoPreview() {
+        if (dashboardDemoInitialized) return;
+        dashboardDemoInitialized = true;
+
+        const now = new Date();
+        const monthOffsets = [5, 4, 3, 2, 1, 0];
+
+        currentUser = { email: 'demo@sebsalud.com' };
+        currentUserRole = 'admin';
+        adminUidForRole = 'demo-admin';
+        userRoleData = {};
+
+        companyProfile = {
+            ...defaultCompanyProfile,
+            name: 'Seb Salud Administración',
+            theme: 'bosque',
+            sidebarTheme: 'dark',
+            bottomNavTheme: 'dark'
+        };
+
+        settings = { ...defaultSettings };
+
+        advisors = [
+            { id: 'adv-1', name: 'Laura Gómez', commissionRate: 12 },
+            { id: 'adv-2', name: 'Miguel Rojas', commissionRate: 10 }
+        ];
+
+        healthPlans = [
+            { id: 'plan-premium', name: 'Plan Premium', price: 320000 },
+            { id: 'plan-empresarial', name: 'Plan Empresarial', price: 410000 }
+        ];
+
+        affiliates = [
+            {
+                id: 'aff-1',
+                name: 'Carlos Pérez',
+                status: 'Activo',
+                paymentStatus: 'Al día',
+                startDate: new Date(now.getFullYear(), now.getMonth() - 5, 4).toISOString(),
+                createdAt: new Date(now.getFullYear(), now.getMonth() - 5, 4),
+                advisorId: 'adv-1',
+                healthPlan: 'plan-premium'
+            },
+            {
+                id: 'aff-2',
+                name: 'Daniela Rodríguez',
+                status: 'Activo',
+                paymentStatus: 'Al día',
+                startDate: new Date(now.getFullYear(), now.getMonth() - 3, 11).toISOString(),
+                createdAt: new Date(now.getFullYear(), now.getMonth() - 3, 11),
+                advisorId: 'adv-2',
+                healthPlan: 'plan-empresarial'
+            },
+            {
+                id: 'aff-3',
+                name: 'María Fernanda',
+                status: 'Activo',
+                paymentStatus: 'En mora',
+                startDate: new Date(now.getFullYear(), now.getMonth() - 2, 6).toISOString(),
+                createdAt: new Date(now.getFullYear(), now.getMonth() - 2, 6),
+                advisorId: 'adv-1',
+                healthPlan: 'plan-empresarial'
+            },
+            {
+                id: 'aff-4',
+                name: 'Roberto Pineda',
+                status: 'Activo',
+                paymentStatus: 'Al día',
+                startDate: new Date(now.getFullYear(), now.getMonth() - 1, 14).toISOString(),
+                createdAt: new Date(now.getFullYear(), now.getMonth() - 1, 14),
+                advisorId: 'adv-2',
+                healthPlan: 'plan-premium'
+            }
+        ];
+
+        manualTransactions = monthOffsets.flatMap((offset) => {
+            const incomeDate = new Date(now.getFullYear(), now.getMonth() - offset, 12, 10, 30);
+            const expenseDate = new Date(now.getFullYear(), now.getMonth() - offset, 24, 14, 15);
+            return [
+                {
+                    id: `demo-income-${offset}`,
+                    type: 'ingreso',
+                    concept: 'Ingresos recurrentes',
+                    amount: 4800000 + offset * 140000,
+                    date: incomeDate.toISOString()
+                },
+                {
+                    id: `demo-expense-${offset}`,
+                    type: 'egreso',
+                    concept: 'Operación y comisiones',
+                    amount: 1950000 + offset * 90000,
+                    date: expenseDate.toISOString()
+                }
+            ];
+        });
+
+        novedades = [];
+        userRoles = [];
+
+        applyTheme(companyProfile.theme);
+        applySidebarTheme(companyProfile.sidebarTheme);
+        applyBottomNavTheme(companyProfile.bottomNavTheme);
+        updateSidebarBranding();
+
+        showView(appContainer);
+        updateUIVisibilityByRole();
+
+        const profileRole = document.getElementById('profile-modal-role');
+        if (profileRole) profileRole.textContent = 'Administrador';
+        const profileLicense = document.getElementById('profile-modal-license');
+        if (profileLicense) profileLicense.style.display = 'inline-block';
+        const profileName = document.getElementById('profile-modal-name');
+        if (profileName) profileName.textContent = currentUser.email;
+
+        renderSidebarUserInfo();
+        renderContent('dashboard');
+        renderDashboard();
     }
     
     function calculateContributions(income, contractType, arlLevel, selectedComponents) { if (!settings.SMMLV || !income || income <= 0) return null; const ibc = Math.max(0.4 * income, settings.SMMLV); let results = { ibc: ibc, grandTotal: 0, health: null, pension: null, arl: null, ccf: null }; const rates = settings.CONTRIBUTION_RATES; const arlRates = settings.ARL_RATES; if (selectedComponents.health) { results.health = { total: ibc * (rates.health / 100) }; if (contractType === 'independiente') { results.health.details = `Aporte total (${rates.health}%)`; } else { results.health.details = `Empleado (${rates.employee_health}%): ${formatCurrency(ibc * (rates.employee_health / 100))} | Empleador (${rates.employer_health}%): ${formatCurrency(ibc * (rates.employer_health / 100))}`; } results.grandTotal += results.health.total; } if (selectedComponents.pension) { results.pension = { total: ibc * (rates.pension / 100) }; if (contractType === 'independiente') { results.pension.details = `Aporte total (${rates.pension}%)`; } else { results.pension.details = `Empleado (${rates.employee_pension}%): ${formatCurrency(ibc * (rates.employee_pension / 100))} | Empleador (${rates.employer_pension}%): ${formatCurrency(ibc * (rates.employer_pension / 100))}`; } results.grandTotal += results.pension.total; } if (selectedComponents.arl) { results.arl = { total: ibc * (arlRates[arlLevel] / 100), details: `A cargo del contratante/empleador (${arlRates[arlLevel]}%)` }; results.grandTotal += results.arl.total; } if (selectedComponents.ccf) { const ccfRate = contractType === 'independiente' ? rates.independiente_ccf : rates.employer_ccf; results.ccf = { total: ibc * (ccfRate / 100), details: contractType === 'independiente' ? `Aporte voluntario (${ccfRate}%)` : `A cargo del empleador (${ccfRate}%)` }; results.grandTotal += results.ccf.total; } return results; }
@@ -2113,119 +2603,127 @@ function updateUIVisibilityByRole() {
     function renderFlujoCajaSection(){const e=new Date,t=new Date(e.getFullYear(),e.getMonth(),1);document.getElementById("report-start-date").value=t.toISOString().split("T")[0],document.getElementById("report-end-date").value=e.toISOString().split("T")[0];const a=getAllTransactions(),n=a.filter(t=>{const a=new Date(t.date);return a.getMonth()===e.getMonth()&&a.getFullYear()===e.getFullYear()}),o=n.filter(e=>"ingreso"===e.type).reduce((e,t)=>e+t.amount,0),s=n.filter(e=>"egreso"===e.type).reduce((e,t)=>e+t.amount,0);document.getElementById("cashflow-income").textContent=formatCurrency(o),document.getElementById("cashflow-expenses").textContent=formatCurrency(s),document.getElementById("cashflow-profit").textContent=formatCurrency(o-s),renderTransactionsTable(a)}
     function getAllTransactions(){const e=[];return affiliates.forEach(t=>{if("Activo"===t.status){const a=getAffiliateCommissionBase(t);e.push({id:`auto-i-${t.id}`,type:"ingreso",concept:`Pago afiliado: ${t.name}`,amount:a,date:t.startDate});const n=getAdvisorCommissionForAffiliate(t);if(0<n){const o=advisors.find(e=>e.id===t.advisorId);e.push({id:`auto-e-${t.id}`,type:"egreso",concept:`Comisión ${o?.name||"N/A"} (Afiliado: ${t.name})`,amount:n,date:t.startDate})}}}),[...e,...manualTransactions].sort((e,t)=>new Date(t.date)-new Date(e.date))}
     function renderTransactionsTable(e){const t=document.getElementById("transactions-table-body");if(0===e.length){t.innerHTML='<tr><td colspan="3" class="text-center p-4 text-slate-500">No hay transacciones registradas.</td></tr>';return}t.innerHTML=e.map(e=>{const t="ingreso"===e.type;return`<tr class="border-b"><td class="p-3">${new Date(e.date).toLocaleDateString("es-CO")}</td><td class="p-3 text-slate-700">${e.concept}</td><td class="p-3 text-right font-semibold ${t?"text-emerald-600":"text-rose-600"}">${t?"+":"-"}${formatCurrency(e.amount)}</td></tr>`}).join("")}
-    
-    function generatePDFReport() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        const primaryColorRGB = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim().split(' ').map(Number);
-        const startDate = new Date(document.getElementById('report-start-date').value + 'T00:00:00');
-        const endDate = new Date(document.getElementById('report-end-date').value + 'T23:59:59');
+    async function generatePDFReport() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-        if (isNaN(startDate) || isNaN(endDate)) {
-            return showToast("Por favor, selecciona un rango de fechas válido.", "error");
+    const primaryColorRGB = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim().split(' ').map(Number);
+    const startDate = new Date(document.getElementById('report-start-date').value + 'T00:00:00');
+    const endDate = new Date(document.getElementById('report-end-date').value + 'T23:59:59');
+
+    if (isNaN(startDate) || isNaN(endDate)) {
+        return showToast("Por favor, selecciona un rango de fechas válido.", "error");
+    }
+
+    const transactionsInPeriod = getAllTransactions().filter(t => {
+        const tDate = new Date(t.date);
+        return tDate >= startDate && tDate <= endDate;
+    });
+    const activeAffiliatesCount = affiliates.filter(a => a.status === 'Activo').length;
+
+    const totalIncome = transactionsInPeriod.filter(t => t.type === 'ingreso').reduce((sum, t) => sum + t.amount, 0);
+    const advisorCommissions = transactionsInPeriod.filter(t => t.type === 'egreso' && t.id.startsWith('auto-e-')).reduce((sum, t) => sum + t.amount, 0);
+    const manualExpenses = transactionsInPeriod.filter(t => t.type === 'egreso' && !t.id.startsWith('auto-e-')).reduce((sum, t) => sum + t.amount, 0);
+    const totalExpenses = advisorCommissions + manualExpenses;
+    const adminProfit = activeAffiliatesCount * (settings.ADMIN_FEE_PER_AFFILIATE || 0);
+    const netProfit = totalIncome - totalExpenses;
+
+    const commissionBreakdown = advisors.map(advisor => {
+        const totalCommissionForAdvisor = transactionsInPeriod
+            .filter(t => t.type === 'egreso' && t.id.startsWith('auto-e-') && t.concept.includes(advisor.name))
+            .reduce((sum, t) => sum + t.amount, 0);
+        return { name: advisor.name, commission: totalCommissionForAdvisor };
+    }).filter(item => item.commission > 0);
+
+    let textStartX = 14;
+    let headerPrimaryY = 22;
+    let headerSecondaryY = 30;
+    let headerBottomY = 34;
+
+    if (companyProfile.logo) {
+        const placement = await addLogoToPDF(doc, companyProfile.logo, { x: 14, y: 12, maxWidthMm: 48, maxHeightMm: 24 });
+        if (placement) {
+            textStartX = placement.x + placement.width + 8;
+            headerPrimaryY = Math.max(20, placement.y + 6);
+            headerSecondaryY = headerPrimaryY + 8;
+            headerBottomY = Math.max(headerBottomY, placement.y + placement.height);
         }
+    }
 
-        const transactionsInPeriod = getAllTransactions().filter(t => {
-            const tDate = new Date(t.date);
-            return tDate >= startDate && tDate <= endDate;
-        });
-        const activeAffiliatesCount = affiliates.filter(a => a.status === 'Activo').length;
-        
-        const totalIncome = transactionsInPeriod.filter(t => t.type === 'ingreso').reduce((sum, t) => sum + t.amount, 0);
-        const advisorCommissions = transactionsInPeriod.filter(t => t.type === 'egreso' && t.id.startsWith('auto-e-')).reduce((sum, t) => sum + t.amount, 0);
-        const manualExpenses = transactionsInPeriod.filter(t => t.type === 'egreso' && !t.id.startsWith('auto-e-')).reduce((sum, t) => sum + t.amount, 0);
-        const totalExpenses = advisorCommissions + manualExpenses;
-        const adminProfit = activeAffiliatesCount * (settings.ADMIN_FEE_PER_AFFILIATE || 0);
-        const netProfit = totalIncome - totalExpenses;
+    doc.setFontSize(18);
+    doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
+    doc.text(companyProfile.name || 'Reporte Financiero', textStartX, headerPrimaryY);
+    doc.setFontSize(11);
+    doc.setTextColor(100);
+    doc.text(`NIT: ${companyProfile.nit || 'N/A'}`, textStartX, headerSecondaryY);
+    doc.text(`Reporte Financiero Detallado`, doc.internal.pageSize.getWidth() - 14, headerPrimaryY, { align: 'right' });
+    doc.setFontSize(10);
+    doc.text(`Periodo: ${startDate.toLocaleDateString('es-CO')} - ${endDate.toLocaleDateString('es-CO')}`, doc.internal.pageSize.getWidth() - 14, headerSecondaryY, { align: 'right' });
 
-        const commissionBreakdown = advisors.map(advisor => {
-            const totalCommissionForAdvisor = transactionsInPeriod
-                .filter(t => t.type === 'egreso' && t.id.startsWith('auto-e-') && t.concept.includes(advisor.name))
-                .reduce((sum, t) => sum + t.amount, 0);
-            return { name: advisor.name, commission: totalCommissionForAdvisor };
-        }).filter(item => item.commission > 0);
+    let currentY = Math.max(headerBottomY + 14, headerSecondaryY + 14);
 
-        const hasLogo = Boolean(companyProfile.logo);
-        const textStartX = hasLogo ? 56 : 14;
-
-        if (hasLogo) {
-            const logoFormat = getImageFormatFromDataURL(companyProfile.logo);
-            doc.addImage(companyProfile.logo, logoFormat, 14, 12, 34, 18);
+    doc.autoTable({
+        startY: currentY,
+        head: [['Resumen Financiero', '']],
+        body: [
+            ['Ingresos Totales', formatCurrency(totalIncome)],
+            ['Egresos Totales', formatCurrency(totalExpenses)],
+            [{content: `   - Total Comisiones a Asesores`, styles: {cellPadding: {left: 8}}}, formatCurrency(advisorCommissions)],
+            [{content: `   - Otros Egresos Manuales`, styles: {cellPadding: {left: 8}}}, formatCurrency(manualExpenses)],
+            ['Ganancia por Administración (Afiliados Activos x Tarifa)', formatCurrency(adminProfit)],
+            [{content: 'Ganancia Neta (Saldo Real en Caja)', styles: {fontStyle: 'bold', fillColor: '#f0fdf4', textColor: '#15803d'}},
+             {content: formatCurrency(netProfit), styles: {fontStyle: 'bold', fillColor: '#f0fdf4', textColor: '#15803d'}}]
+        ],
+        theme: 'grid',
+        headStyles: { fillColor: primaryColorRGB, fontSize: 12, fontStyle: 'bold' },
+        styles: { fontSize: 10, cellPadding: 3 },
+        didParseCell: function (data) {
+            if (data.row.index >= 2 && data.row.index <= 3) {
+                data.cell.styles.fontSize = 9;
+                data.cell.styles.textColor = '#475569';
+            }
         }
+    });
 
-        doc.setFontSize(18);
-        doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
-        doc.text(companyProfile.name || 'Reporte Financiero', textStartX, hasLogo ? 20 : 22);
-        doc.setFontSize(11);
-        doc.setTextColor(100);
-        doc.text(`NIT: ${companyProfile.nit || 'N/A'}`, textStartX, hasLogo ? 28 : 30);
-        doc.text(`Reporte Financiero Detallado`, doc.internal.pageSize.getWidth() - 14, hasLogo ? 20 : 22, { align: 'right' });
-        doc.setFontSize(10);
-        doc.text(`Periodo: ${startDate.toLocaleDateString('es-CO')} - ${endDate.toLocaleDateString('es-CO')}`, doc.internal.pageSize.getWidth() - 14, hasLogo ? 28 : 30, { align: 'right' });
+    currentY = doc.lastAutoTable.finalY + 10;
 
-        let currentY = hasLogo ? 42 : 45;
-
+    if (commissionBreakdown.length > 0) {
         doc.autoTable({
             startY: currentY,
-            head: [['Resumen Financiero', '']],
-            body: [
-                ['Ingresos Totales', formatCurrency(totalIncome)],
-                ['Egresos Totales', formatCurrency(totalExpenses)],
-                [{content: `   - Total Comisiones a Asesores`, styles: {cellPadding: {left: 8}}}, formatCurrency(advisorCommissions)],
-                [{content: `   - Otros Egresos Manuales`, styles: {cellPadding: {left: 8}}}, formatCurrency(manualExpenses)],
-                ['Ganancia por Administración (Afiliados Activos x Tarifa)', formatCurrency(adminProfit)],
-                [{content: 'Ganancia Neta (Saldo Real en Caja)', styles: {fontStyle: 'bold', fillColor: '#f0fdf4', textColor: '#15803d'}},
-                 {content: formatCurrency(netProfit), styles: {fontStyle: 'bold', fillColor: '#f0fdf4', textColor: '#15803d'}}]
-            ],
-            theme: 'grid',
-            headStyles: { fillColor: primaryColorRGB, fontSize: 12, fontStyle: 'bold' },
-            didParseCell: function (data) {
-                if (data.row.index >= 2 && data.row.index <= 3) {
-                     data.cell.styles.fontSize = 9;
-                     data.cell.styles.textColor = '#475569';
-                }
-            }
+            head: [['Desglose de Comisiones por Asesor', 'Comisión Generada']],
+            body: commissionBreakdown.map(item => [item.name, formatCurrency(item.commission)]),
+            theme: 'striped',
+            headStyles: { fillColor: primaryColorRGB }
         });
         currentY = doc.lastAutoTable.finalY + 10;
-
-        if (commissionBreakdown.length > 0) {
-            doc.autoTable({
-                startY: currentY,
-                head: [['Desglose de Comisiones por Asesor', 'Comisión Generada']],
-                body: commissionBreakdown.map(item => [item.name, formatCurrency(item.commission)]),
-                theme: 'striped',
-                headStyles: { fillColor: primaryColorRGB }
-            });
-            currentY = doc.lastAutoTable.finalY + 10;
-        }
-        
-        doc.autoTable({
-            startY: currentY,
-            head: [['Historial Detallado de Transacciones', 'Fecha', 'Tipo', 'Monto']],
-            body: transactionsInPeriod.map(t => [
-                t.concept,
-                new Date(t.date).toLocaleDateString('es-CO'),
-                t.type === 'ingreso' ? 'Ingreso' : 'Egreso',
-                {content: formatCurrency(t.amount), styles: {halign: 'right'}}
-            ]),
-            theme: 'striped',
-            headStyles: { fillColor: [45, 55, 72] }
-        });
-
-        const pageCount = doc.internal.getNumberOfPages();
-        for(var i = 1; i <= pageCount; i++) {
-            doc.setPage(i);
-            doc.setFontSize(8);
-            doc.setTextColor(150);
-            doc.text('Página ' + String(i) + ' de ' + String(pageCount), doc.internal.pageSize.width - 14, doc.internal.pageSize.height - 6, {align: 'right'});
-            doc.text(`Generado el ${new Date().toLocaleString('es-CO')}`, 14, doc.internal.pageSize.height - 6);
-        }
-        
-        doc.save(`Reporte_Financiero_${startDate.toLocaleDateString('es-CO').replace(/\//g, "-")}.pdf`);
-        showToast("Generando reporte financiero detallado.", "success");
     }
-    
+
+    doc.autoTable({
+        startY: currentY,
+        head: [['Historial Detallado de Transacciones', 'Fecha', 'Tipo', 'Monto']],
+        body: transactionsInPeriod.map(t => [
+            t.concept,
+            new Date(t.date).toLocaleDateString('es-CO'),
+            t.type === 'ingreso' ? 'Ingreso' : 'Egreso',
+            {content: formatCurrency(t.amount), styles: {halign: 'right'}}
+        ]),
+        theme: 'striped',
+        headStyles: { fillColor: [45, 55, 72] }
+    });
+
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text('Página ' + String(i) + ' de ' + String(pageCount), doc.internal.pageSize.width - 14, doc.internal.pageSize.height - 6, { align: 'right' });
+        doc.text(`Generado el ${new Date().toLocaleString('es-CO')}`, 14, doc.internal.pageSize.height - 6);
+    }
+
+    doc.save(`Reporte_Financiero_${startDate.toLocaleDateString('es-CO').replace(/\//g, '-')}.pdf`);
+    showToast('Generando reporte financiero detallado.', 'success');
+}
+
     function updateNovedadesBadge(){
         const unreadCount = novedades.filter(n => n.read === false).length;
         const badge = document.getElementById("novedades-header-badge");
@@ -3322,47 +3820,59 @@ localStorage.setItem('userTheme', profileData.theme);
         });
     });
     
+
     async function generarReciboAfiliacionPDF(affiliateData, planData, advisorData, companyProfileData) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     const primaryColorRGB = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-600').trim().split(' ').map(Number);
     const formatDate = (dateString) => dateString ? new Date(dateString + 'T00:00:00').toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
 
-    // --- 1. ENCABEZADO PROFESIONAL ---
     const logoDataUrl = companyProfileData.logo || companyProfile.logo || null;
+    let textStartX = 14;
+    let headerPrimaryY = 26;
+    let headerBottomY = 32;
+
     if (logoDataUrl) {
-        const logoFormat = getImageFormatFromDataURL(logoDataUrl);
-        doc.addImage(logoDataUrl, logoFormat, 14, 15, 50, 15);
-    } else {
-        doc.setFontSize(20);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
-        doc.text(companyProfileData.name || "Seb Salud", 14, 25);
+        const placement = await addLogoToPDF(doc, logoDataUrl, { x: 14, y: 12, maxWidthMm: 52, maxHeightMm: 26 });
+        if (placement) {
+            textStartX = placement.x + placement.width + 8;
+            headerPrimaryY = Math.max(22, placement.y + 6);
+            headerBottomY = Math.max(headerBottomY, placement.y + placement.height);
+        }
     }
-    
+
+    doc.setFontSize(18);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
+    doc.text(companyProfileData.name || "Seb Salud", textStartX, headerPrimaryY);
+
+    const rightBlockBaseY = headerPrimaryY;
     doc.setFontSize(9);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(100);
-    doc.text(`NIT: ${companyProfileData.nit || 'N/D'}`, 196, 18, { align: 'right' });
-    doc.text(companyProfileData.address || '', 196, 23, { align: 'right' });
-    doc.text(`Tel: ${companyProfileData.phone || 'N/D'}`, 196, 28, { align: 'right' });
+    doc.text(`NIT: ${companyProfileData.nit || 'N/D'}`, 196, rightBlockBaseY, { align: 'right' });
+    doc.text(companyProfileData.address || '', 196, rightBlockBaseY + 5, { align: 'right' });
+    doc.text(`Tel: ${companyProfileData.phone || 'N/D'}`, 196, rightBlockBaseY + 10, { align: 'right' });
+
+    const titleY = Math.max(headerBottomY + 14, rightBlockBaseY + 20);
 
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(40);
-    doc.text("Comprobante de Afiliación", 14, 45);
-    
+    doc.text("Comprobante de Afiliación", 14, titleY);
+
     doc.setFontSize(10);
     doc.setFont("helvetica", "bold");
-    doc.text(`Recibo N°: ${affiliateData.id.slice(-7).toUpperCase()}`, 196, 45, { align: 'right' });
+    doc.text(`Recibo N°: ${affiliateData.id.slice(-7).toUpperCase()}`, 196, titleY, { align: 'right' });
 
     doc.setLineWidth(0.5);
     doc.setDrawColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
-    doc.line(14, 48, 196, 48);
+    doc.line(14, titleY + 4, 196, titleY + 4);
 
-    // --- 2. DATOS DEL AFILIADO (Tabla detallada) ---
+    const affiliateTableStartY = titleY + 9;
+
     doc.autoTable({
-        startY: 55,
+        startY: affiliateTableStartY,
         theme: 'grid',
         head: [['Datos del Afiliado', 'Información Registrada']],
         body: [
@@ -3379,7 +3889,6 @@ localStorage.setItem('userTheme', profileData.theme);
 
     let finalY = doc.lastAutoTable.finalY + 8;
 
-    // --- 3. RESUMEN DE SERVICIO Y COSTOS (Sin cambios, ya era robusto) ---
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(40);
@@ -3413,17 +3922,15 @@ localStorage.setItem('userTheme', profileData.theme);
         styles: { fontSize: 10, cellPadding: 2.5 },
         columnStyles: { 1: { halign: 'right' } }
     });
-    
+
     finalY = doc.lastAutoTable.finalY;
 
-    // --- 4. DETALLES ADMINISTRATIVOS (Comisión eliminada) ---
     const adminDetails = [
         ['Asesor Asignado:', advisorData.name || 'No asignado'],
         ['Fecha de Inicio de Cobertura:', formatDate(affiliateData.startDate)],
         ['Próximo Pago / Vencimiento:', affiliateData.endDate ? formatDate(affiliateData.endDate) : 'Indefinido'],
         ['Estado Actual:', affiliateData.status]
     ];
-    // La comisión ya NO se agrega aquí.
 
     doc.autoTable({
         startY: finalY + 8,
@@ -3435,7 +3942,6 @@ localStorage.setItem('userTheme', profileData.theme);
         columnStyles: { 0: { fontStyle: 'bold' } }
     });
 
-    // --- 5. PIE DE PÁGINA PROFESIONAL (Sin cambios) ---
     finalY = doc.internal.pageSize.height - 30;
     doc.setLineWidth(0.2);
     doc.setDrawColor(180);
@@ -3494,6 +4000,12 @@ localStorage.setItem('userTheme', profileData.theme);
     
     function showToast(message, type = 'success') { const toast = document.getElementById('toast'); if (!toast) return; toast.textContent = message; toast.className = `fixed top-5 right-5 z-[100] text-white py-2 px-4 rounded-lg shadow-xl transition-all duration-300 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`; toast.classList.remove('opacity-0', 'translate-y-2'); setTimeout(() => toast.classList.add('opacity-0', 'translate-y-2'), 3000); }
     function formatCurrency(value, minimumFractionDigits = 0) { return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits }).format(value || 0); }
+
+    function formatPercentage(value, fractionDigits = 1) {
+        const numeric = Number(value);
+        if (!Number.isFinite(numeric)) return '0%';
+        return `${numeric.toFixed(fractionDigits)}%`;
+    }
     function exportToCSV(headers, data, filename) { const csvRows = [headers.join(',')]; for (const row of data) { const values = headers.map(header => `"${('' + row[header]).replace(/"/g, '\\"')}"`); csvRows.push(values.join(',')); } const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); window.URL.revokeObjectURL(url); }
     function handleExportAffiliates() { const headers = ['Nombre', 'Documento', 'Email', 'Telefono', 'Direccion', 'Asesor', 'Estado', 'Fecha de Inicio', 'Plan de Salud', 'Fondo Pension', 'ARL', 'Caja Comp.']; const dataToExport = affiliates.map(aff => { const advisor = advisors.find(v => v.id === aff.advisorId); const plan = healthPlans.find(p=> p.id === aff.healthPlan); return { 'Nombre': aff.name, 'Documento': aff.documentId, 'Email': aff.email, 'Telefono': aff.phone, 'Direccion': aff.address, 'Asesor': advisor ? advisor.name : 'N/A', 'Estado': aff.status, 'Fecha de Inicio': aff.startDate, 'Plan de Salud': plan ? plan.name : 'N/A', 'Fondo Pension': aff.pensionPlan, 'ARL': aff.arlPlan, 'Caja Comp.': aff.ccfPlan }; }); exportToCSV(headers, dataToExport, 'afiliados_seb_salud.csv'); showToast('Exportando afiliados a CSV.'); }
     function handleExportAdvisors() { const headers = ['Nombre', 'Comision (%)', 'Total Afiliados', 'Comision Total Generada']; const dataToExport = advisors.map(advisor => { const advisorAffiliates = affiliates.filter(a => a.advisorId === advisor.id); const totalCommission = advisorAffiliates.reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0); return { 'Nombre': advisor.name, 'Comision (%)': advisor.commissionRate, 'Total Afiliados': advisorAffiliates.length, 'Comision Total Generada': totalCommission }; }); exportToCSV(headers, dataToExport, 'asesores_seb_salud.csv'); showToast('Exportando asesores a CSV.'); }
