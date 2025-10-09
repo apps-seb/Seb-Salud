@@ -26,6 +26,9 @@
             --color-primary-400: 165 180 252; --color-primary-500: 129 140 248; --color-primary-600: 79 70 229; --color-primary-700: 67 56 202;
             --auth-gradient-from: rgb(var(--color-primary-600));
             --auth-gradient-to: rgb(56 189 248);
+            --sidebar-collapsed-width: 5rem;
+            --sidebar-expanded-width: 16rem;
+            --sidebar-gap-desktop: 1.5rem;
         }
         [data-theme="bosque"] { --color-primary-400: 163 230 53; --color-primary-500: 132 204 22; --color-primary-600: 6 182 212; --color-primary-700: 8 145 178; --auth-gradient-from: #a3e635; --auth-gradient-to: #06b6d4;}
         [data-theme="atardecer"] { --color-primary-400: 253 224 71; --color-primary-500: 251 146 60; --color-primary-600: 249 115 22; --color-primary-700: 239 68 68; --auth-gradient-from: #fde047; --auth-gradient-to: #ef4444;}
@@ -54,7 +57,15 @@
         .hover\:text-primary-600:hover { color: rgb(var(--color-primary-600)); }
         .border-primary-600 { border-color: rgb(var(--color-primary-600)); }
         .ring-primary-600:focus { --tw-ring-color: rgb(var(--color-primary-600)); }
-        .sidebar { transition: transform 0.3s ease-in-out, background-color 0.3s, color 0.3s, width 0.3s ease; width: 16rem; }
+        .sidebar { transition: transform 0.3s ease-in-out, background-color 0.3s, color 0.3s, width 0.3s ease, box-shadow 0.3s ease;
+            width: var(--sidebar-expanded-width);
+        }
+        #sidebar {
+            background: rgba(15, 23, 42, 0.96);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 25px 45px rgba(15, 23, 42, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
         .sidebar-overlay { transition: opacity 0.3s ease-in-out; }
         .nav-link.active { background-color: rgb(var(--color-primary-600)); color: white; }
         .bottom-nav-link.active { color: rgb(var(--color-primary-400)); }
@@ -78,12 +89,27 @@
         /* --- ESTILOS DEL PANEL LATERAL --- */
         @media (min-width: 768px) {
             #sidebar {
-                width: 5rem;
+                left: var(--sidebar-gap-desktop);
+                width: var(--sidebar-collapsed-width);
+                border-radius: 1.5rem;
+                box-shadow: 0 30px 50px rgba(15, 23, 42, 0.25);
+                margin-left: 0;
+            }
+
+            body[data-sidebar-theme="light"] #sidebar {
+                background: rgba(255, 255, 255, 0.92);
+                border-color: rgba(148, 163, 184, 0.2);
+                box-shadow: 0 25px 60px rgba(15, 23, 42, 0.15);
+            }
+
+            body[data-sidebar-theme="dark"] #sidebar {
+                background: rgba(15, 23, 42, 0.96);
+                border-color: rgba(30, 41, 59, 0.55);
             }
 
             #sidebar:hover,
             #sidebar:focus-within {
-                width: 16rem;
+                width: var(--sidebar-expanded-width);
             }
 
             #sidebar .logo-wrapper,
@@ -98,15 +124,12 @@
                 justify-content: flex-start;
             }
 
-            #sidebar .logo-icon,
             #sidebar .nav-link i,
             #sidebar #logout-btn i {
                 margin-right: 0;
                 transition: margin-right 0.3s ease;
             }
 
-            #sidebar:hover .logo-icon,
-            #sidebar:focus-within .logo-icon,
             #sidebar:hover .nav-link i,
             #sidebar:focus-within .nav-link i {
                 margin-right: 0.75rem;
@@ -191,36 +214,36 @@
             }
 
             .main-content {
-                margin-left: 5rem;
+                margin-left: calc(var(--sidebar-gap-desktop) + var(--sidebar-collapsed-width));
             }
 
             .main-content header {
-                left: 5rem;
-                width: calc(100% - 5rem);
+                left: calc(var(--sidebar-gap-desktop) + var(--sidebar-collapsed-width));
+                width: calc(100% - (var(--sidebar-gap-desktop) + var(--sidebar-collapsed-width)));
             }
 
             #sidebar:hover ~ .main-content,
             #sidebar:focus-within ~ .main-content {
-                margin-left: 16rem;
+                margin-left: calc(var(--sidebar-gap-desktop) + var(--sidebar-expanded-width));
             }
 
             #sidebar:hover ~ .main-content header,
             #sidebar:focus-within ~ .main-content header {
-                left: 16rem;
-                width: calc(100% - 16rem);
+                left: calc(var(--sidebar-gap-desktop) + var(--sidebar-expanded-width));
+                width: calc(100% - (var(--sidebar-gap-desktop) + var(--sidebar-expanded-width)));
             }
         }
 
-        [data-sidebar-theme="dark"] #sidebar { background-color: #111827; color: #e5e7eb; border-right-color: #374151; }
+        [data-sidebar-theme="dark"] #sidebar { background-color: rgba(17, 24, 39, 0.96); color: #e5e7eb; border-color: rgba(55, 65, 81, 0.4); }
         [data-sidebar-theme="dark"] #sidebar .border-b, [data-sidebar-theme="dark"] #sidebar .border-t { border-bottom-color: #374151; border-top-color: #374151; }
         [data-sidebar-theme="dark"] #sidebar .nav-link:hover { background-color: #1f2937; }
         [data-sidebar-theme="dark"] #sidebar #user-email-display { background-color: #374151; }
         [data-sidebar-theme="dark"] #sidebar .text-slate-400 { color: #9ca3af; }
         [data-sidebar-theme="dark"] #sidebar #logout-btn { color: #fca5a5; }
         [data-sidebar-theme="dark"] #sidebar #logout-btn:hover { color: #f87171; }
-        
-        [data-sidebar-theme="light"] #sidebar { background-color: #ffffff; color: #334155; border-right: 1px solid #e2e8f0; }
-        [data-sidebar-theme="light"] #sidebar .border-b, [data-sidebar-theme="light"] #sidebar .border-t { border-color: #e2e8f0; }
+
+        [data-sidebar-theme="light"] #sidebar { background-color: rgba(255, 255, 255, 0.92); color: #334155; border: 1px solid rgba(148, 163, 184, 0.25); }
+        [data-sidebar-theme="light"] #sidebar .border-b, [data-sidebar-theme="light"] #sidebar .border-t { border-color: rgba(226, 232, 240, 0.65); }
         [data-sidebar-theme="light"] #sidebar .nav-link:hover { background-color: #f1f5f9; }
         [data-sidebar-theme="light"] #sidebar .nav-link.active { background-color: rgb(var(--color-primary-600)); color: white; }
         [data-sidebar-theme="light"] #sidebar .text-slate-200 { color: #334155; }
@@ -699,9 +722,12 @@ button svg {
             <div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-30 opacity-0 pointer-events-none md:hidden"></div>
 
           <aside id="sidebar" class="sidebar w-64 fixed top-0 bottom-0 left-0 transform -translate-x-full md:translate-x-0 md:top-4 md:bottom-4 z-40 flex flex-col md:rounded-3xl md:shadow-2xl md:overflow-hidden">
-        <div class="logo-wrapper flex items-center justify-center h-16 border-b flex-shrink-0 px-4">
-            <i data-lucide="shield-check" class="h-8 w-8 text-primary-500 logo-icon"></i>
-            <span class="logo-text sidebar-label text-xl font-bold whitespace-nowrap">Seb Salud</span>
+        <div class="logo-wrapper flex items-center justify-center gap-3 h-16 border-b flex-shrink-0 px-4">
+            <div class="logo-icon-wrapper flex items-center justify-center h-10 w-10 rounded-2xl bg-primary-600/10">
+                <img id="sidebar-logo-image" src="" alt="Logo de la empresa" class="logo-image h-full w-full object-cover rounded-2xl hidden">
+                <i data-lucide="shield-check" class="h-8 w-8 text-primary-500 logo-icon"></i>
+            </div>
+            <span id="sidebar-logo-text" class="logo-text sidebar-label text-xl font-bold whitespace-nowrap">Seb Salud</span>
         </div>
 
         <div class="flex-1 flex flex-col overflow-y-auto pb-16 md:pb-0">
@@ -817,6 +843,23 @@ button svg {
                         <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-3xl mx-auto">
                             <h2 class="text-2xl font-bold text-slate-800 mb-6">Perfil de la Empresa</h2>
                             <form id="company-profile-form" class="space-y-6">
+                                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                                    <div id="company-logo-display" class="relative h-20 w-20 rounded-2xl border border-dashed border-slate-300/60 bg-slate-50 flex items-center justify-center overflow-hidden shadow-sm">
+                                        <img id="company-logo-preview" src="" alt="Logo de la empresa" class="h-full w-full object-cover hidden">
+                                        <div id="company-logo-placeholder" class="flex flex-col items-center justify-center text-slate-400">
+                                            <i data-lucide="image" class="w-8 h-8"></i>
+                                            <span class="mt-1 text-[10px] uppercase tracking-wide font-medium">Logo</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <label for="company-logo" class="block text-sm font-medium text-slate-600">Logo de la Empresa</label>
+                                        <div class="mt-1 flex flex-col sm:flex-row sm:items-center gap-3">
+                                            <input type="file" id="company-logo" accept="image/png,image/jpeg,image/jpg,image/webp" class="w-full sm:w-auto text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-slate-200 file:text-sm file:font-semibold file:bg-white file:text-slate-700 hover:file:bg-slate-50">
+                                            <button type="button" id="remove-company-logo" class="text-sm text-rose-500 hover:text-rose-600 hidden">Quitar logo</button>
+                                        </div>
+                                        <p class="mt-2 text-xs text-slate-500">Formatos PNG o JPG de hasta 1.5&nbsp;MB. El logo aparecerá en tu panel y en los PDF generados.</p>
+                                    </div>
+                                </div>
                                 <div><label for="company-name" class="block text-sm font-medium text-slate-600">Nombre</label><input type="text" id="company-name" class="w-full mt-1 p-2 border rounded-lg" required></div>
                                 <div><label for="company-nit" class="block text-sm font-medium text-slate-600">NIT / Documento</label><input type="text" id="company-nit" class="w-full mt-1 p-2 border rounded-lg" required></div>
                                 <div><label for="company-address" class="block text-sm font-medium text-slate-600">Dirección</label><input type="text" id="company-address" class="w-full mt-1 p-2 border rounded-lg"></div>
@@ -1278,7 +1321,62 @@ button svg {
         ARL_RATES: { 1: 0.522, 2: 1.044, 3: 2.436, 4: 4.350, 5: 6.960 } 
     };
     
-    const defaultCompanyProfile = { name: 'Mi Empresa de Seguridad Social', nit: '900.123.456-7', address: 'Calle 123 # 45-67, Bogotá', phone: '3001234567', email: 'contacto@empresa.com', theme: 'spotify', sidebarTheme: 'dark', bottomNavTheme: 'dark' };
+    const defaultCompanyProfile = { name: 'Mi Empresa de Seguridad Social', nit: '900.123.456-7', address: 'Calle 123 # 45-67, Bogotá', phone: '3001234567', email: 'contacto@empresa.com', theme: 'spotify', sidebarTheme: 'dark', bottomNavTheme: 'dark', logo: null };
+
+    const MAX_COMPANY_LOGO_SIZE = 1.5 * 1024 * 1024; // 1.5 MB
+
+    function getImageFormatFromDataURL(dataUrl) {
+        if (typeof dataUrl !== 'string') return 'PNG';
+        const match = dataUrl.match(/^data:image\/(png|jpeg|jpg|webp)/i);
+        if (!match) return 'PNG';
+        const type = match[1].toLowerCase();
+        if (type === 'jpg') return 'JPEG';
+        return type === 'jpeg' ? 'JPEG' : type.toUpperCase();
+    }
+
+    function updateSidebarBranding() {
+        const logoImg = document.getElementById('sidebar-logo-image');
+        const logoIcon = document.querySelector('#sidebar .logo-icon');
+        const logoText = document.getElementById('sidebar-logo-text');
+
+        if (logoText) {
+            logoText.textContent = companyProfile.name || 'Seb Salud';
+        }
+
+        if (logoImg && logoIcon) {
+            if (companyProfile.logo) {
+                logoImg.src = companyProfile.logo;
+                logoImg.classList.remove('hidden');
+                logoIcon.classList.add('hidden');
+            } else {
+                logoImg.src = '';
+                logoImg.classList.add('hidden');
+                logoIcon.classList.remove('hidden');
+            }
+        }
+    }
+
+    function updateCompanyLogoUI(logoDataUrl) {
+        const preview = document.getElementById('company-logo-preview');
+        const placeholder = document.getElementById('company-logo-placeholder');
+        const removeBtn = document.getElementById('remove-company-logo');
+
+        if (preview && placeholder && removeBtn) {
+            if (logoDataUrl) {
+                preview.src = logoDataUrl;
+                preview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+                removeBtn.classList.remove('hidden');
+            } else {
+                preview.src = '';
+                preview.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+                removeBtn.classList.add('hidden');
+            }
+        }
+
+        updateSidebarBranding();
+    }
     
     // --- MANEJO DE VISTAS Y ESTADO DE CARGA ---
     const loader = document.getElementById('loader');
@@ -1311,15 +1409,19 @@ button svg {
                     const adminProfileSnap = await getDoc(adminProfileRef);
                     if (adminProfileSnap.exists()) {
                         // Llenamos la variable global 'companyProfile' con los datos.
-                        companyProfile = adminProfileSnap.data().companyProfile || defaultCompanyProfile;
+                        companyProfile = {
+                            ...defaultCompanyProfile,
+                            ...(adminProfileSnap.data().companyProfile || {})
+                        };
                     }
                 } catch (error) {
                     console.error("Error precargando el perfil de la empresa:", error);
                     // Si falla, usamos el perfil por defecto para que la app no se rompa.
-                    companyProfile = defaultCompanyProfile;
+                    companyProfile = { ...defaultCompanyProfile };
                 }
                 // --- FIN DE LA SOLUCIÓN ---
 
+                updateSidebarBranding();
                 await initializeAppForUser(); // Ahora esta función ya tendrá los datos listos.
                 showView(appContainer);
 
@@ -1407,8 +1509,12 @@ applyTheme(savedTheme);
         const unsubUser = onSnapshot(doc(db, basePath), (docSnap) => {
     if (docSnap.exists()) {
         const data = docSnap.data();
-        companyProfile = data.companyProfile || defaultCompanyProfile;
-        
+        companyProfile = {
+            ...defaultCompanyProfile,
+            ...(data.companyProfile || {})
+        };
+
+        updateCompanyLogoUI(companyProfile.logo || null);
         renderSidebarUserInfo(); // <--- AÑADE LA LLAMADA AQUÍ
 
                 settings = {
@@ -1426,6 +1532,7 @@ applyTheme(savedTheme);
                 applyTheme(companyProfile.theme);
                 applySidebarTheme(companyProfile.sidebarTheme);
                 applyBottomNavTheme(companyProfile.bottomNavTheme);
+                updateCompanyLogoUI(companyProfile.logo || null);
                 if (document.getElementById('empresa').classList.contains('active')) renderEmpresaSection();
                 if (document.getElementById('dashboard').classList.contains('active')) renderDashboard();
             }
@@ -1505,6 +1612,7 @@ applyTheme(savedTheme);
     async function deleteDataFromFirestore(collectionName, docId) { if (!currentUser) return; const docRef = doc(db, `users/${adminUidForRole}/${collectionName}/${docId}`); await deleteDoc(docRef); }
     
     async function initializeAppForUser() {
+    updateSidebarBranding();
     renderSidebarUserInfo();
     document.getElementById('profile-modal-name').textContent = currentUser.email;
         
@@ -1929,7 +2037,26 @@ function updateUIVisibilityByRole() {
         lucide.createIcons();
     }
 
-    function renderEmpresaSection(){if(!companyProfile.name) return;document.getElementById("company-name").value=companyProfile.name;document.getElementById("company-nit").value=companyProfile.nit;document.getElementById("company-address").value=companyProfile.address;document.getElementById("company-phone").value=companyProfile.phone;document.getElementById("company-email").value=companyProfile.email;document.querySelector(`#theme-selector input[value="${companyProfile.theme||"default"}"]`).checked=!0;document.querySelector(`#sidebar-theme-selector input[value="${companyProfile.sidebarTheme||"dark"}"]`).checked=!0;document.querySelector(`#bottom-nav-theme-selector input[value="${companyProfile.bottomNavTheme||"dark"}"]`).checked=!0}
+    function renderEmpresaSection() {
+        if (!companyProfile) return;
+
+        document.getElementById("company-name").value = companyProfile.name || '';
+        document.getElementById("company-nit").value = companyProfile.nit || '';
+        document.getElementById("company-address").value = companyProfile.address || '';
+        document.getElementById("company-phone").value = companyProfile.phone || '';
+        document.getElementById("company-email").value = companyProfile.email || '';
+
+        const themeInput = document.querySelector(`#theme-selector input[value="${companyProfile.theme || "default"}"]`);
+        if (themeInput) themeInput.checked = true;
+
+        const sidebarThemeInput = document.querySelector(`#sidebar-theme-selector input[value="${companyProfile.sidebarTheme || "dark"}"]`);
+        if (sidebarThemeInput) sidebarThemeInput.checked = true;
+
+        const bottomNavThemeInput = document.querySelector(`#bottom-nav-theme-selector input[value="${companyProfile.bottomNavTheme || "dark"}"]`);
+        if (bottomNavThemeInput) bottomNavThemeInput.checked = true;
+
+        updateCompanyLogoUI(companyProfile.logo || null);
+    }
     function renderFlujoCajaSection(){const e=new Date,t=new Date(e.getFullYear(),e.getMonth(),1);document.getElementById("report-start-date").value=t.toISOString().split("T")[0],document.getElementById("report-end-date").value=e.toISOString().split("T")[0];const a=getAllTransactions(),n=a.filter(t=>{const a=new Date(t.date);return a.getMonth()===e.getMonth()&&a.getFullYear()===e.getFullYear()}),o=n.filter(e=>"ingreso"===e.type).reduce((e,t)=>e+t.amount,0),s=n.filter(e=>"egreso"===e.type).reduce((e,t)=>e+t.amount,0);document.getElementById("cashflow-income").textContent=formatCurrency(o),document.getElementById("cashflow-expenses").textContent=formatCurrency(s),document.getElementById("cashflow-profit").textContent=formatCurrency(o-s),renderTransactionsTable(a)}
     function getAllTransactions(){const e=[];return affiliates.forEach(t=>{if("Activo"===t.status){const a=getAffiliateCommissionBase(t);e.push({id:`auto-i-${t.id}`,type:"ingreso",concept:`Pago afiliado: ${t.name}`,amount:a,date:t.startDate});const n=getAdvisorCommissionForAffiliate(t);if(0<n){const o=advisors.find(e=>e.id===t.advisorId);e.push({id:`auto-e-${t.id}`,type:"egreso",concept:`Comisión ${o?.name||"N/A"} (Afiliado: ${t.name})`,amount:n,date:t.startDate})}}}),[...e,...manualTransactions].sort((e,t)=>new Date(t.date)-new Date(e.date))}
     function renderTransactionsTable(e){const t=document.getElementById("transactions-table-body");if(0===e.length){t.innerHTML='<tr><td colspan="3" class="text-center p-4 text-slate-500">No hay transacciones registradas.</td></tr>';return}t.innerHTML=e.map(e=>{const t="ingreso"===e.type;return`<tr class="border-b"><td class="p-3">${new Date(e.date).toLocaleDateString("es-CO")}</td><td class="p-3 text-slate-700">${e.concept}</td><td class="p-3 text-right font-semibold ${t?"text-emerald-600":"text-rose-600"}">${t?"+":"-"}${formatCurrency(e.amount)}</td></tr>`}).join("")}
@@ -1966,17 +2093,25 @@ function updateUIVisibilityByRole() {
             return { name: advisor.name, commission: totalCommissionForAdvisor };
         }).filter(item => item.commission > 0);
 
+        const hasLogo = Boolean(companyProfile.logo);
+        const textStartX = hasLogo ? 56 : 14;
+
+        if (hasLogo) {
+            const logoFormat = getImageFormatFromDataURL(companyProfile.logo);
+            doc.addImage(companyProfile.logo, logoFormat, 14, 12, 34, 18);
+        }
+
         doc.setFontSize(18);
         doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
-        doc.text(companyProfile.name || 'Reporte Financiero', 14, 22);
+        doc.text(companyProfile.name || 'Reporte Financiero', textStartX, hasLogo ? 20 : 22);
         doc.setFontSize(11);
         doc.setTextColor(100);
-        doc.text(`NIT: ${companyProfile.nit || 'N/A'}`, 14, 30);
-        doc.text(`Reporte Financiero Detallado`, doc.internal.pageSize.getWidth() - 14, 22, { align: 'right' });
+        doc.text(`NIT: ${companyProfile.nit || 'N/A'}`, textStartX, hasLogo ? 28 : 30);
+        doc.text(`Reporte Financiero Detallado`, doc.internal.pageSize.getWidth() - 14, hasLogo ? 20 : 22, { align: 'right' });
         doc.setFontSize(10);
-        doc.text(`Periodo: ${startDate.toLocaleDateString('es-CO')} - ${endDate.toLocaleDateString('es-CO')}`, doc.internal.pageSize.getWidth() - 14, 30, { align: 'right' });
+        doc.text(`Periodo: ${startDate.toLocaleDateString('es-CO')} - ${endDate.toLocaleDateString('es-CO')}`, doc.internal.pageSize.getWidth() - 14, hasLogo ? 28 : 30, { align: 'right' });
 
-        let currentY = 45;
+        let currentY = hasLogo ? 42 : 45;
 
         doc.autoTable({
             startY: currentY,
@@ -2879,6 +3014,43 @@ function formatPhoneNumberForWhatsApp(phone) {
             }
         });
         
+        const companyLogoInput = document.getElementById('company-logo');
+        const removeCompanyLogoBtn = document.getElementById('remove-company-logo');
+
+        if (companyLogoInput) {
+            companyLogoInput.addEventListener('change', (event) => {
+                const file = event.target.files?.[0];
+                if (!file) return;
+
+                if (!file.type.startsWith('image/')) {
+                    showToast('Selecciona un archivo de imagen válido.', 'error');
+                    event.target.value = '';
+                    return;
+                }
+
+                if (file.size > MAX_COMPANY_LOGO_SIZE) {
+                    showToast('El logo debe pesar menos de 1.5 MB.', 'error');
+                    event.target.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (loadEvent) => {
+                    companyProfile.logo = loadEvent.target?.result || null;
+                    updateCompanyLogoUI(companyProfile.logo);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        if (removeCompanyLogoBtn) {
+            removeCompanyLogoBtn.addEventListener('click', () => {
+                companyProfile.logo = null;
+                updateCompanyLogoUI(null);
+                if (companyLogoInput) companyLogoInput.value = '';
+            });
+        }
+
         document.getElementById('company-profile-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const saveButton = e.target.querySelector('button[type="submit"]');
@@ -2893,13 +3065,14 @@ const profileData = {
     address: document.getElementById('company-address').value,
     phone: document.getElementById('company-phone').value,
     email: document.getElementById('company-email').value,
-    
+
     // Aquí está la corrección:
     // Usamos el operador de encadenamiento opcional (?.) para evitar el error si no hay nada seleccionado.
     // Luego, usamos el operador OR (||) para asignar un valor por defecto ('default' o 'dark').
     theme: document.querySelector('#theme-selector input[name="theme"]:checked')?.value || 'default',
     sidebarTheme: document.querySelector('#sidebar-theme-selector input[name="sidebar-theme"]:checked')?.value || 'dark',
     bottomNavTheme: document.querySelector('#bottom-nav-theme-selector input[name="bottom-nav-theme"]:checked')?.value || 'dark',
+    logo: companyProfile.logo || null
 };
 
                 /* === INICIO DE LA SOLUCIÓN: GUARDAR TEMA EN NAVEGADOR === */
@@ -2911,6 +3084,12 @@ localStorage.setItem('userTheme', profileData.theme);
                 await setDoc(userDocRef, {
                     companyProfile: profileData
                 }, { merge: true });
+
+                companyProfile = { ...companyProfile, ...profileData };
+                applyTheme(companyProfile.theme);
+                applySidebarTheme(companyProfile.sidebarTheme);
+                applyBottomNavTheme(companyProfile.bottomNavTheme);
+                updateCompanyLogoUI(companyProfile.logo || null);
 
                 showToast('Perfil de la empresa guardado con Éxito.', 'success');
 
@@ -3091,21 +3270,10 @@ localStorage.setItem('userTheme', profileData.theme);
     const formatDate = (dateString) => dateString ? new Date(dateString + 'T00:00:00').toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
 
     // --- 1. ENCABEZADO PROFESIONAL ---
-    let logoBase64 = null;
-    try {
-        const response = await fetch('logo.png');
-        if (response.ok) {
-            const blob = await response.blob();
-            logoBase64 = await new Promise(resolve => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result);
-                reader.readAsDataURL(blob);
-            });
-        }
-    } catch (e) { console.warn("logo.png no encontrado."); }
-
-    if (logoBase64) {
-        doc.addImage(logoBase64, 'PNG', 14, 15, 50, 15);
+    const logoDataUrl = companyProfileData.logo || companyProfile.logo || null;
+    if (logoDataUrl) {
+        const logoFormat = getImageFormatFromDataURL(logoDataUrl);
+        doc.addImage(logoDataUrl, logoFormat, 14, 15, 50, 15);
     } else {
         doc.setFontSize(20);
         doc.setFont("helvetica", "bold");
