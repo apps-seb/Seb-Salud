@@ -1324,6 +1324,8 @@ button svg {
     const defaultCompanyProfile = { name: 'Mi Empresa de Seguridad Social', nit: '900.123.456-7', address: 'Calle 123 # 45-67, Bogotá', phone: '3001234567', email: 'contacto@empresa.com', theme: 'spotify', sidebarTheme: 'dark', bottomNavTheme: 'dark', logo: null };
 
     const MAX_COMPANY_LOGO_SIZE = 1.5 * 1024 * 1024; // 1.5 MB
+    const LOGO_CANVAS_MAX_SIZE = 512;
+    const LOGO_COMPRESSION_QUALITY = 0.85;
 
     function getImageFormatFromDataURL(dataUrl) {
         if (typeof dataUrl !== 'string') return 'PNG';
@@ -1376,6 +1378,57 @@ button svg {
         }
 
         updateSidebarBranding();
+    }
+
+    function calculateBase64Size(dataUrl) {
+        if (typeof dataUrl !== 'string') return 0;
+        const base64 = dataUrl.split(',')[1];
+        if (!base64) return 0;
+        return Math.ceil((base64.length * 3) / 4);
+    }
+
+    function compressImageFile(file, maxSize = LOGO_CANVAS_MAX_SIZE, quality = LOGO_COMPRESSION_QUALITY) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onerror = () => reject(new Error('No se pudo leer el archivo del logo.'));
+            reader.onload = (event) => {
+                const image = new Image();
+                image.onerror = () => reject(new Error('No se pudo cargar la imagen seleccionada.'));
+                image.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    const scale = Math.min(maxSize / image.width, maxSize / image.height, 1);
+                    const targetWidth = Math.round(image.width * scale);
+                    const targetHeight = Math.round(image.height * scale);
+
+                    canvas.width = targetWidth;
+                    canvas.height = targetHeight;
+
+                    if (context) {
+                        context.clearRect(0, 0, targetWidth, targetHeight);
+                        context.imageSmoothingEnabled = true;
+                        context.imageSmoothingQuality = 'high';
+                        context.drawImage(image, 0, 0, targetWidth, targetHeight);
+                    }
+
+                    let outputType = file.type.includes('png') ? 'image/png'
+                        : file.type.includes('webp') ? 'image/webp'
+                        : 'image/jpeg';
+                    let dataUrl;
+
+                    try {
+                        dataUrl = canvas.toDataURL(outputType, outputType === 'image/png' ? undefined : quality);
+                    } catch (error) {
+                        outputType = 'image/png';
+                        dataUrl = canvas.toDataURL(outputType);
+                    }
+
+                    resolve({ dataUrl, outputType });
+                };
+                image.src = event.target?.result;
+            };
+            reader.readAsDataURL(file);
+        });
     }
     
     // --- MANEJO DE VISTAS Y ESTADO DE CARGA ---
@@ -3018,7 +3071,7 @@ function formatPhoneNumberForWhatsApp(phone) {
         const removeCompanyLogoBtn = document.getElementById('remove-company-logo');
 
         if (companyLogoInput) {
-            companyLogoInput.addEventListener('change', (event) => {
+            companyLogoInput.addEventListener('change', async (event) => {
                 const file = event.target.files?.[0];
                 if (!file) return;
 
@@ -3028,18 +3081,24 @@ function formatPhoneNumberForWhatsApp(phone) {
                     return;
                 }
 
-                if (file.size > MAX_COMPANY_LOGO_SIZE) {
-                    showToast('El logo debe pesar menos de 1.5 MB.', 'error');
-                    event.target.value = '';
-                    return;
-                }
+                try {
+                    const { dataUrl } = await compressImageFile(file);
+                    const optimizedSize = calculateBase64Size(dataUrl);
 
-                const reader = new FileReader();
-                reader.onload = (loadEvent) => {
-                    companyProfile.logo = loadEvent.target?.result || null;
+                    if (optimizedSize > MAX_COMPANY_LOGO_SIZE) {
+                        showToast('El logo optimizado sigue siendo demasiado pesado. Usa una imagen más ligera.', 'error');
+                        event.target.value = '';
+                        return;
+                    }
+
+                    companyProfile.logo = dataUrl;
                     updateCompanyLogoUI(companyProfile.logo);
-                };
-                reader.readAsDataURL(file);
+                    showToast('Logo cargado y optimizado correctamente.', 'success');
+                } catch (error) {
+                    console.error('Error procesando el logo:', error);
+                    showToast('No se pudo procesar el logo. Intenta con otra imagen.', 'error');
+                    event.target.value = '';
+                }
             });
         }
 
