@@ -261,7 +261,7 @@
         /* --- SOBREESCRITURAS DE TEMAS ESPECÍFICOS --- */
         [data-theme="apple"] body.bg-slate-50 { background-color: #000; color: #fff; }
         [data-theme="apple"] .bg-white, [data-theme="apple"] .bg-white\/80 { background-color: #1C1C1E !important; }
-        [data-theme="apple"] .text-slate-800, [data-theme="apple"] .text-slate-700 { color: #f9fafb !important; }
+        [data-theme="apple"] .text-slate-900, [data-theme="apple"] .text-slate-800, [data-theme="apple"] .text-slate-700 { color: #f9fafb !important; }
         [data-theme="apple"] .text-slate-600, [data-theme="apple"] .text-slate-500, [data-theme="apple"] .text-slate-400 { color: #9ca3af !important; }
         [data-theme="apple"] .border, [data-theme="apple"] .border-b, [data-theme="apple"] .border-t, [data-theme="apple"] .divide-slate-200 > :not([hidden]) ~ :not([hidden]) { border-color: #374151 !important; }
         [data-theme="apple"] .shadow-lg, [data-theme="apple"] .shadow-md, [data-theme="apple"] .shadow-sm { box-shadow: none; border: 1px solid #374151; }
@@ -280,7 +280,7 @@
         [data-theme="spotify"] body.bg-slate-50 { background-color: #121212; color: #FFFFFF; }
         [data-theme="spotify"] .bg-white, [data-theme="spotify"] .bg-white\/80 { background-color: #181818 !important; }
         [data-theme="spotify"] header { background-color: #181818/80 !important; border-bottom-color: #282828 !important; }
-        [data-theme="spotify"] .text-slate-800, [data-theme="spotify"] .text-slate-700 { color: #f9fafb !important; }
+        [data-theme="spotify"] .text-slate-900, [data-theme="spotify"] .text-slate-800, [data-theme="spotify"] .text-slate-700 { color: #f9fafb !important; }
         [data-theme="spotify"] .text-slate-600, [data-theme="spotify"] .text-slate-500, [data-theme="spotify"] .text-slate-400 { color: #b3b3b3 !important; }
         [data-theme="spotify"] .border, [data-theme="spotify"] .border-b, [data-theme="spotify"] .border-t, [data-theme="spotify"] .divide-slate-200 > :not([hidden]) ~ :not([hidden]) { border-color: #282828 !important; }
         [data-theme="spotify"] .shadow-lg, [data-theme="spotify"] .shadow-md, [data-theme="spotify"] .shadow-sm { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -2px rgba(0,0,0,0.4); }
@@ -351,6 +351,7 @@ html[data-theme="liquid-glass"] #header-search-results {
 }
 
 /* 4. Estilos para texto y colores */
+html[data-theme="liquid-glass"] .text-slate-900,
 html[data-theme="liquid-glass"] .text-slate-800,
 html[data-theme="liquid-glass"] .text-slate-700 {
     color: #f8fafc !important;
@@ -480,6 +481,7 @@ html[data-theme="aurora"] #header-search-results {
 }
 
 /* Textos */
+html[data-theme="aurora"] .text-slate-900,
 html[data-theme="aurora"] .text-slate-800,
 html[data-theme="aurora"] .text-slate-700 { color: #f8fafc !important; }
 html[data-theme="aurora"] .text-slate-600,
@@ -892,15 +894,15 @@ button svg {
                                     <p id="kpi-monthly-income" class="text-3xl font-bold text-slate-900">$0</p>
                                     <p class="text-xs text-slate-500 leading-snug">Total de ingresos registrados en el periodo actual.</p>
                                 </div>
-                                <div class="group relative overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-xl p-6 flex flex-col gap-4 transition hover:-translate-y-0.5 hover:shadow-2xl" data-kpi="admin-profit" data-role="admin-only">
+                                <div class="group relative overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-xl p-6 flex flex-col gap-4 transition hover:-translate-y-0.5 hover:shadow-2xl" data-kpi="admin-net-profit">
                                     <div class="flex items-center justify-between">
-                                        <span data-kpi-label="admin-profit" class="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">Ganancia administrativa</span>
+                                        <span data-kpi-label="admin-net-profit" class="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">Ganancia administrativa neta</span>
                                         <span class="rounded-full bg-amber-100 text-amber-600 p-2">
                                             <i data-lucide="diamond" class="h-5 w-5"></i>
                                         </span>
                                     </div>
-                                    <p id="kpi-admin-profit" class="text-3xl font-bold text-slate-900">$0</p>
-                                    <p class="text-xs text-slate-500 leading-snug">Tarifa administrativa mensual multiplicada por afiliados activos.</p>
+                                    <p id="kpi-admin-net-profit" class="text-3xl font-bold text-slate-900">$0</p>
+                                    <p class="text-xs text-slate-500 leading-snug">Tarifa administrativa menos comisiones para asesores.</p>
                                 </div>
                                 <div class="group relative overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-xl p-6 flex flex-col gap-4 transition hover:-translate-y-0.5 hover:shadow-2xl" data-kpi="net-profit">
                                     <div class="flex items-center justify-between">
@@ -2193,6 +2195,8 @@ function updateUIVisibilityByRole() {
 
         const recurringRevenue = activeAffiliates.reduce((sum, aff) => sum + getAffiliateCommissionBase(aff), 0);
         const monthlyCommissions = activeAffiliates.reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0);
+        const adminFee = settings?.ADMIN_FEE_PER_AFFILIATE ?? defaultSettings.ADMIN_FEE_PER_AFFILIATE;
+        const adminNetProfit = monthlyNewAffiliates.length * adminFee;
         const growthRate = previousMonthNewAffiliates.length > 0
             ? ((monthlyNewAffiliates.length - previousMonthNewAffiliates.length) / previousMonthNewAffiliates.length) * 100
             : (monthlyNewAffiliates.length > 0 ? 100 : 0);
@@ -2203,6 +2207,7 @@ function updateUIVisibilityByRole() {
         const overdueCount = overdueAffiliates.length;
 
         setKpiLabel('monthly-income', 'Ingresos de mi cartera');
+        setKpiLabel('admin-net-profit', 'Ganancia admin neta (mi cartera)');
         setKpiLabel('net-profit', 'Comisiones del mes');
         setKpiLabel('new-affiliates', 'Afiliados nuevos');
         setKpiLabel('active-affiliates', 'Afiliados activos');
@@ -2214,6 +2219,7 @@ function updateUIVisibilityByRole() {
         updateTextContent('dashboard-hero-projected', formatCurrency(recurringRevenue));
 
         updateTextContent('kpi-monthly-income', formatCurrency(recurringRevenue));
+        updateTextContent('kpi-admin-net-profit', formatCurrency(adminNetProfit));
         updateTextContent('kpi-net-profit', formatCurrency(monthlyCommissions));
         updateTextContent('kpi-new-affiliates', monthlyNewAffiliates.length);
         updateTextContent('kpi-active-affiliates', activeAffiliates.length);
@@ -2251,7 +2257,7 @@ function updateUIVisibilityByRole() {
         document.querySelectorAll('#dashboard [data-role="admin-only"]').forEach(el => el.classList.remove('hidden'));
 
         setKpiLabel('monthly-income', 'Ingresos del mes');
-        setKpiLabel('admin-profit', 'Ganancia administrativa');
+        setKpiLabel('admin-net-profit', 'Ganancia administrativa neta');
         setKpiLabel('net-profit', 'Resultado neto (mes)');
         setKpiLabel('new-affiliates', 'Nuevos afiliados');
         setKpiLabel('active-affiliates', 'Afiliados activos');
@@ -2284,7 +2290,7 @@ function updateUIVisibilityByRole() {
         const monthlyExpenses = sumByType(monthlyTransactions, 'egreso');
         const netCashflow = monthlyIncome - monthlyExpenses;
         const adminFee = settings?.ADMIN_FEE_PER_AFFILIATE ?? defaultSettings.ADMIN_FEE_PER_AFFILIATE;
-        const adminProfit = activeAffiliates.length * adminFee;
+        const adminNetProfit = monthlyNewAffiliates.length * adminFee;
 
         const previousIncome = sumByType(previousMonthTransactions, 'ingreso');
         const previousExpenses = sumByType(previousMonthTransactions, 'egreso');
@@ -2318,7 +2324,7 @@ function updateUIVisibilityByRole() {
         updateTextContent('dashboard-hero-projected', formatCurrency(recurringRevenue));
 
         updateTextContent('kpi-monthly-income', formatCurrency(monthlyIncome));
-        updateTextContent('kpi-admin-profit', formatCurrency(adminProfit));
+        updateTextContent('kpi-admin-net-profit', formatCurrency(adminNetProfit));
         updateTextContent('kpi-net-profit', formatCurrency(netCashflow));
         updateTextContent('kpi-new-affiliates', monthlyNewAffiliates.length);
         updateTextContent('kpi-active-affiliates', activeAffiliates.length);
@@ -2620,12 +2626,19 @@ function updateUIVisibilityByRole() {
         return tDate >= startDate && tDate <= endDate;
     });
     const activeAffiliatesCount = affiliates.filter(a => a.status === 'Activo').length;
+    const affiliatesInPeriod = affiliates.filter(aff => {
+        if (!aff.createdAt) return false;
+        const createdAt = aff.createdAt instanceof Date ? aff.createdAt : new Date(aff.createdAt);
+        return !isNaN(createdAt) && createdAt >= startDate && createdAt <= endDate;
+    });
 
     const totalIncome = transactionsInPeriod.filter(t => t.type === 'ingreso').reduce((sum, t) => sum + t.amount, 0);
     const advisorCommissions = transactionsInPeriod.filter(t => t.type === 'egreso' && t.id.startsWith('auto-e-')).reduce((sum, t) => sum + t.amount, 0);
     const manualExpenses = transactionsInPeriod.filter(t => t.type === 'egreso' && !t.id.startsWith('auto-e-')).reduce((sum, t) => sum + t.amount, 0);
     const totalExpenses = advisorCommissions + manualExpenses;
-    const adminProfit = activeAffiliatesCount * (settings.ADMIN_FEE_PER_AFFILIATE || 0);
+    const adminFee = settings?.ADMIN_FEE_PER_AFFILIATE ?? defaultSettings.ADMIN_FEE_PER_AFFILIATE;
+    const adminGrossProfit = activeAffiliatesCount * adminFee;
+    const adminNetProfit = affiliatesInPeriod.length * adminFee;
     const netProfit = totalIncome - totalExpenses;
 
     const commissionBreakdown = advisors.map(advisor => {
@@ -2670,7 +2683,8 @@ function updateUIVisibilityByRole() {
             ['Egresos Totales', formatCurrency(totalExpenses)],
             [{content: `   - Total Comisiones a Asesores`, styles: {cellPadding: {left: 8}}}, formatCurrency(advisorCommissions)],
             [{content: `   - Otros Egresos Manuales`, styles: {cellPadding: {left: 8}}}, formatCurrency(manualExpenses)],
-            ['Ganancia por Administración (Afiliados Activos x Tarifa)', formatCurrency(adminProfit)],
+            ['Ganancia por Administración (Afiliados Activos x Tarifa)', formatCurrency(adminGrossProfit)],
+            ['Ganancia Administrativa Neta', formatCurrency(adminNetProfit)],
             [{content: 'Ganancia Neta (Saldo Real en Caja)', styles: {fontStyle: 'bold', fillColor: '#f0fdf4', textColor: '#15803d'}},
              {content: formatCurrency(netProfit), styles: {fontStyle: 'bold', fillColor: '#f0fdf4', textColor: '#15803d'}}]
         ],
@@ -4027,5 +4041,4 @@ localStorage.setItem('userTheme', profileData.theme);
 </script>
 </body>
 </html>
-
 
