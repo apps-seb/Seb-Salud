@@ -1500,6 +1500,8 @@ button svg {
     const MAX_COMPANY_LOGO_SIZE = 1.5 * 1024 * 1024; // 1.5 MB
     const LOGO_CANVAS_MAX_SIZE = 512;
     const LOGO_COMPRESSION_QUALITY = 0.85;
+    const isDashboardDemoMode = window.location.hash.toLowerCase().includes('demo-dashboard');
+    let dashboardDemoInitialized = false;
 
     function getImageFormatFromDataURL(dataUrl) {
         if (typeof dataUrl !== 'string') return 'PNG';
@@ -1910,6 +1912,9 @@ applyTheme(savedTheme);
             showView(authContainer);
             document.getElementById('login-view').style.display = 'block';
             document.getElementById('register-view').style.display = 'none';
+            if (isDashboardDemoMode) {
+                runDashboardDemoPreview();
+            }
         }
     });
     
@@ -2502,6 +2507,125 @@ function updateUIVisibilityByRole() {
 
         updateDashboardPerformanceChart(buildFinancialTimeline(transactions));
         lucide.createIcons();
+    }
+
+    function runDashboardDemoPreview() {
+        if (dashboardDemoInitialized) return;
+        dashboardDemoInitialized = true;
+
+        const now = new Date();
+        const monthOffsets = [5, 4, 3, 2, 1, 0];
+
+        currentUser = { email: 'demo@sebsalud.com' };
+        currentUserRole = 'admin';
+        adminUidForRole = 'demo-admin';
+        userRoleData = {};
+
+        companyProfile = {
+            ...defaultCompanyProfile,
+            name: 'Seb Salud Administración',
+            theme: 'bosque',
+            sidebarTheme: 'dark',
+            bottomNavTheme: 'dark'
+        };
+
+        settings = { ...defaultSettings };
+
+        advisors = [
+            { id: 'adv-1', name: 'Laura Gómez', commissionRate: 12 },
+            { id: 'adv-2', name: 'Miguel Rojas', commissionRate: 10 }
+        ];
+
+        healthPlans = [
+            { id: 'plan-premium', name: 'Plan Premium', price: 320000 },
+            { id: 'plan-empresarial', name: 'Plan Empresarial', price: 410000 }
+        ];
+
+        affiliates = [
+            {
+                id: 'aff-1',
+                name: 'Carlos Pérez',
+                status: 'Activo',
+                paymentStatus: 'Al día',
+                startDate: new Date(now.getFullYear(), now.getMonth() - 5, 4).toISOString(),
+                createdAt: new Date(now.getFullYear(), now.getMonth() - 5, 4),
+                advisorId: 'adv-1',
+                healthPlan: 'plan-premium'
+            },
+            {
+                id: 'aff-2',
+                name: 'Daniela Rodríguez',
+                status: 'Activo',
+                paymentStatus: 'Al día',
+                startDate: new Date(now.getFullYear(), now.getMonth() - 3, 11).toISOString(),
+                createdAt: new Date(now.getFullYear(), now.getMonth() - 3, 11),
+                advisorId: 'adv-2',
+                healthPlan: 'plan-empresarial'
+            },
+            {
+                id: 'aff-3',
+                name: 'María Fernanda',
+                status: 'Activo',
+                paymentStatus: 'En mora',
+                startDate: new Date(now.getFullYear(), now.getMonth() - 2, 6).toISOString(),
+                createdAt: new Date(now.getFullYear(), now.getMonth() - 2, 6),
+                advisorId: 'adv-1',
+                healthPlan: 'plan-empresarial'
+            },
+            {
+                id: 'aff-4',
+                name: 'Roberto Pineda',
+                status: 'Activo',
+                paymentStatus: 'Al día',
+                startDate: new Date(now.getFullYear(), now.getMonth() - 1, 14).toISOString(),
+                createdAt: new Date(now.getFullYear(), now.getMonth() - 1, 14),
+                advisorId: 'adv-2',
+                healthPlan: 'plan-premium'
+            }
+        ];
+
+        manualTransactions = monthOffsets.flatMap((offset) => {
+            const incomeDate = new Date(now.getFullYear(), now.getMonth() - offset, 12, 10, 30);
+            const expenseDate = new Date(now.getFullYear(), now.getMonth() - offset, 24, 14, 15);
+            return [
+                {
+                    id: `demo-income-${offset}`,
+                    type: 'ingreso',
+                    concept: 'Ingresos recurrentes',
+                    amount: 4800000 + offset * 140000,
+                    date: incomeDate.toISOString()
+                },
+                {
+                    id: `demo-expense-${offset}`,
+                    type: 'egreso',
+                    concept: 'Operación y comisiones',
+                    amount: 1950000 + offset * 90000,
+                    date: expenseDate.toISOString()
+                }
+            ];
+        });
+
+        novedades = [];
+        userRoles = [];
+
+        applyTheme(companyProfile.theme);
+        applySidebarTheme(companyProfile.sidebarTheme);
+        applyBottomNavTheme(companyProfile.bottomNavTheme);
+        updateSidebarBranding();
+
+        showView(appContainer);
+        updateUIVisibilityByRole();
+
+        const profileRole = document.getElementById('profile-modal-role');
+        if (profileRole) profileRole.textContent = 'Administrador';
+        const profileLicense = document.getElementById('profile-modal-license');
+        if (profileLicense) profileLicense.style.display = 'inline-block';
+        const profileName = document.getElementById('profile-modal-name');
+        if (profileName) profileName.textContent = currentUser.email;
+
+        renderSidebarUserInfo();
+        renderContent('dashboard');
+        renderDashboard();
     }
     
     function calculateContributions(income, contractType, arlLevel, selectedComponents) { if (!settings.SMMLV || !income || income <= 0) return null; const ibc = Math.max(0.4 * income, settings.SMMLV); let results = { ibc: ibc, grandTotal: 0, health: null, pension: null, arl: null, ccf: null }; const rates = settings.CONTRIBUTION_RATES; const arlRates = settings.ARL_RATES; if (selectedComponents.health) { results.health = { total: ibc * (rates.health / 100) }; if (contractType === 'independiente') { results.health.details = `Aporte total (${rates.health}%)`; } else { results.health.details = `Empleado (${rates.employee_health}%): ${formatCurrency(ibc * (rates.employee_health / 100))} | Empleador (${rates.employer_health}%): ${formatCurrency(ibc * (rates.employer_health / 100))}`; } results.grandTotal += results.health.total; } if (selectedComponents.pension) { results.pension = { total: ibc * (rates.pension / 100) }; if (contractType === 'independiente') { results.pension.details = `Aporte total (${rates.pension}%)`; } else { results.pension.details = `Empleado (${rates.employee_pension}%): ${formatCurrency(ibc * (rates.employee_pension / 100))} | Empleador (${rates.employer_pension}%): ${formatCurrency(ibc * (rates.employer_pension / 100))}`; } results.grandTotal += results.pension.total; } if (selectedComponents.arl) { results.arl = { total: ibc * (arlRates[arlLevel] / 100), details: `A cargo del contratante/empleador (${arlRates[arlLevel]}%)` }; results.grandTotal += results.arl.total; } if (selectedComponents.ccf) { const ccfRate = contractType === 'independiente' ? rates.independiente_ccf : rates.employer_ccf; results.ccf = { total: ibc * (ccfRate / 100), details: contractType === 'independiente' ? `Aporte voluntario (${ccfRate}%)` : `A cargo del empleador (${ccfRate}%)` }; results.grandTotal += results.ccf.total; } return results; }
