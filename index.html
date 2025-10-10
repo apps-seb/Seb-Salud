@@ -60,6 +60,21 @@
         .sidebar { transition: transform 0.3s ease-in-out, background-color 0.3s, color 0.3s, width 0.3s ease, box-shadow 0.3s ease;
             width: var(--sidebar-expanded-width);
         }
+        #sidebar .nav-link i,
+        #sidebar .nav-link svg,
+        #sidebar #logout-btn i,
+        #sidebar #logout-btn svg {
+            width: 1.75rem !important;
+            height: 1.75rem !important;
+            stroke-width: 1.75 !important;
+        }
+        #sidebar .nav-link i,
+        #sidebar .nav-link svg {
+            padding: 0.35rem;
+            border-radius: 9999px;
+            background: rgba(148, 163, 184, 0.18);
+            color: inherit;
+        }
         #sidebar {
             background: rgba(15, 23, 42, 0.96);
             backdrop-filter: blur(16px);
@@ -69,6 +84,34 @@
         .sidebar-overlay { transition: opacity 0.3s ease-in-out; }
         .nav-link.active { background-color: rgb(var(--color-primary-600)); color: white; }
         .bottom-nav-link.active { color: rgb(var(--color-primary-400)); }
+        .bottom-nav {
+            bottom: 1.25rem;
+            left: 50%;
+            right: auto;
+            transform: translateX(-50%);
+            width: calc(100% - 2.5rem);
+            max-width: 420px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 1.75rem;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            box-shadow: 0 24px 45px rgba(15, 23, 42, 0.25);
+            backdrop-filter: blur(16px);
+            background-color: rgba(15, 23, 42, 0.92);
+        }
+        .bottom-nav-link {
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+        .bottom-nav-link i,
+        .bottom-nav-link svg {
+            width: 1.5rem !important;
+            height: 1.5rem !important;
+            stroke-width: 1.75 !important;
+        }
+        .bottom-nav-link span {
+            font-size: 0.7rem;
+            letter-spacing: 0.02em;
+        }
         .modal { transition: opacity 0.25s ease; }
         .modal-content { transition: transform 0.25s ease; }
         .content-section { display: none; }
@@ -125,18 +168,24 @@
             }
 
             #sidebar .nav-link i,
-            #sidebar #logout-btn i {
+            #sidebar .nav-link svg,
+            #sidebar #logout-btn i,
+            #sidebar #logout-btn svg {
                 margin-right: 0;
                 transition: margin-right 0.3s ease;
             }
 
             #sidebar:hover .nav-link i,
-            #sidebar:focus-within .nav-link i {
+            #sidebar:hover .nav-link svg,
+            #sidebar:focus-within .nav-link i,
+            #sidebar:focus-within .nav-link svg {
                 margin-right: 0.75rem;
             }
 
             #sidebar:hover #logout-btn i,
-            #sidebar:focus-within #logout-btn i {
+            #sidebar:hover #logout-btn svg,
+            #sidebar:focus-within #logout-btn i,
+            #sidebar:focus-within #logout-btn svg {
                 margin-right: 0.5rem;
             }
 
@@ -253,9 +302,19 @@
         [data-sidebar-theme="light"] #sidebar #logout-btn:hover { color: #be123c; }
 
         /* --- ESTILOS DEL MENU INFERIOR --- */
-        [data-bottom-nav-theme="dark"] .bottom-nav { background-color: #111827; color: #d1d5db; border-top-color: #374151; }
-        [data-bottom-nav-theme="light"] .bottom-nav { background-color: #ffffff; color: #374151; border-top: 1px solid #e5e7eb; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
-        [data-bottom-nav-theme="light"] .bottom-nav .bottom-nav-link { color: #6b7280; }
+        [data-bottom-nav-theme="dark"] .bottom-nav {
+            background: linear-gradient(140deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9));
+            color: #e2e8f0;
+            border-color: rgba(148, 163, 184, 0.35);
+            box-shadow: 0 26px 55px rgba(15, 23, 42, 0.45);
+        }
+        [data-bottom-nav-theme="light"] .bottom-nav {
+            background: linear-gradient(140deg, rgba(255, 255, 255, 0.95), rgba(241, 245, 249, 0.95));
+            color: #1f2937;
+            border-color: rgba(148, 163, 184, 0.45);
+            box-shadow: 0 22px 45px rgba(148, 163, 184, 0.35);
+        }
+        [data-bottom-nav-theme="light"] .bottom-nav .bottom-nav-link { color: #475569; }
         [data-bottom-nav-theme="light"] .bottom-nav .bottom-nav-link.active { color: rgb(var(--color-primary-600)); }
         
         /* --- SOBREESCRITURAS DE TEMAS ESPECÍFICOS --- */
@@ -268,7 +327,7 @@
         [data-theme="apple"] #sidebar { background-color: #000; color: #fff; border-right-color: #374151; }
         [data-theme="apple"] #sidebar .nav-link:hover { background-color: #1f2937; }
         [data-theme="apple"] #sidebar .nav-link.active { background-color: transparent !important; color: white !important; border: 1px solid white; }
-        [data-theme="apple"] .bottom-nav { background-color: #000 !important; color: #fff !important; border-top-color: #374151 !important; }
+        [data-theme="apple"] .bottom-nav { background-color: rgba(0, 0, 0, 0.92) !important; color: #fff !important; border-color: rgba(148, 163, 184, 0.35) !important; box-shadow: 0 28px 55px rgba(0, 0, 0, 0.55) !important; }
         [data-theme="apple"] input, [data-theme="apple"] select, [data-theme="apple"] textarea { background-color: #2C2C2E; color: white; border-color: #4b5563; }
         [data-theme="apple"] .bg-slate-50, [data-theme="apple"] .hover\:bg-slate-50:hover { background-color: #1f2937 !important; }
         [data-theme="apple"] ::-webkit-scrollbar-track { background: #111; }
@@ -286,7 +345,7 @@
         [data-theme="spotify"] .shadow-lg, [data-theme="spotify"] .shadow-md, [data-theme="spotify"] .shadow-sm { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -2px rgba(0,0,0,0.4); }
         [data-theme="spotify"] [data-sidebar-theme="dark"] #sidebar { background-color: #040404; border-right-color: #282828; }
         [data-theme="spotify"] [data-sidebar-theme="dark"] #sidebar .nav-link:hover { background-color: #181818; }
-        [data-theme="spotify"] [data-bottom-nav-theme="dark"] .bottom-nav { background-color: #040404 !important; border-top-color: #282828 !important; }
+        [data-theme="spotify"] [data-bottom-nav-theme="dark"] .bottom-nav { background: linear-gradient(140deg, rgba(4, 4, 4, 0.96), rgba(18, 18, 18, 0.92)) !important; border-color: rgba(46, 46, 46, 0.65) !important; box-shadow: 0 28px 55px rgba(0, 0, 0, 0.55) !important; }
         [data-theme="spotify"] input, [data-theme="spotify"] select, [data-theme="spotify"] textarea { background-color: #282828; color: white; border-color: #404040; }
         [data-theme="spotify"] .bg-slate-50, [data-theme="spotify"] .hover\:bg-slate-50:hover, [data-theme="spotify"] .bg-gray-50\/50 { background-color: #181818 !important; }
         [data-theme="spotify"] .bg-slate-800 { background-color: #282828; }
@@ -1408,7 +1467,7 @@ button svg {
         <div id="settings-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b sticky top-0 bg-white z-10"><h2 class="text-2xl font-bold">Configuraci&#243;n de Par&#225;metros</h2><button data-close-modal="settings-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="settings-form" class="p-6 space-y-6"><div><h3 class="font-semibold text-lg mb-2">Generales</h3><div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-medium">Salario M&#237;nimo (SMMLV)</label><input type="number" id="setting-smmlv" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Costo Admin. por Afiliado ($)</label><input type="number" id="setting-admin-fee" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes de Cotizaci&#243;n (%)</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="block text-sm font-medium">Salud Total</label><input type="number" step="0.1" id="setting-health" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Pensi&#243;n Total</label><input type="number" step="0.1" id="setting-pension" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Indep.</label><input type="number" step="0.1" id="setting-ccf-ind" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Empleador</label><input type="number" step="0.1" id="setting-ccf-emp" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes ARL (%)</h3><div class="grid grid-cols-2 md:grid-cols-5 gap-4"><div><label class="block text-sm font-medium">Riesgo 1</label><input type="number" step="0.001" id="setting-arl-1" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 2</label><input type="number" step="0.001" id="setting-arl-2" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 3</label><input type="number" step="0.001" id="setting-arl-3" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 4</label><input type="number" step="0.001" id="setting-arl-4" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 5</label><input type="number" step="0.001" id="setting-arl-5" class="w-full p-2 border rounded-lg"></div></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Cambios</button></div></form></div></div>
         <div id="transaction-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="transaction-modal-title" class="text-2xl font-bold"></h2><button data-close-modal="transaction-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="transaction-form" class="p-6"><input type="hidden" id="transaction-type"><div class="space-y-4"><div><label for="transaction-concept" class="block text-sm font-medium text-slate-600">Concepto</label><input type="text" id="transaction-concept" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-amount" class="block text-sm font-medium text-slate-600">Monto</label><input type="number" id="transaction-amount" min="0" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-date" class="block text-sm font-medium text-slate-600">Fecha</label><input type="date" id="transaction-date" class="w-full mt-1 p-2 border rounded-lg" required></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar</button></div></form></div></div>
         
-        <nav class="bottom-nav md:hidden fixed bottom-0 inset-x-0 flex justify-around p-2 border-t z-40">
+        <nav class="bottom-nav md:hidden fixed bottom-0 inset-x-0 flex justify-around p-2 z-40">
             <a href="#" data-target="dashboard" class="bottom-nav-link active flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="text-[10px] mt-1">Dashboard</span></a>
             <a href="#" data-target="afiliados" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="users" class="w-5 h-5"></i><span class="text-[10px] mt-1">Afiliados</span></a>
             <a href="#" data-target="asesores" data-role="admin" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="user-circle" class="w-5 h-5"></i><span class="text-[10px] mt-1">Asesores</span></a>
@@ -1637,6 +1696,42 @@ button svg {
             return Number.isNaN(parsed.getTime()) ? null : parsed;
         }
         return null;
+    }
+
+    function normalizeDateInput(value) {
+        if (!value) return null;
+
+        if (typeof value === 'string') {
+            const trimmed = value.trim();
+            if (!trimmed) return null;
+            if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+                return `${trimmed}T00:00:00`;
+            }
+            if (/^\d{4}-\d{2}-\d{2}T/.test(trimmed)) {
+                const parsedIso = new Date(trimmed);
+                if (!Number.isNaN(parsedIso.getTime())) {
+                    const year = parsedIso.getUTCFullYear();
+                    const month = String(parsedIso.getUTCMonth() + 1).padStart(2, '0');
+                    const day = String(parsedIso.getUTCDate()).padStart(2, '0');
+                    return `${year}-${month}-${day}T00:00:00`;
+                }
+            }
+        }
+
+        const parsed = parseAppDate(value);
+        if (!parsed) return null;
+        const year = parsed.getFullYear();
+        const month = String(parsed.getMonth() + 1).padStart(2, '0');
+        const day = String(parsed.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}T00:00:00`;
+    }
+
+    function getComparableDate(value) {
+        if (!value) return null;
+        const parsed = parseAppDate(value);
+        if (parsed) return parsed;
+        const fallback = new Date(value);
+        return Number.isNaN(fallback.getTime()) ? null : fallback;
     }
 
     function setupConditionalField(selectElement, containerElement, inputElement) {
@@ -2349,8 +2444,8 @@ function updateUIVisibilityByRole() {
 
         const transactions = getAllTransactions();
         const filterTransactionsByPeriod = (collection, month, year) => collection.filter(item => {
-            const parsedDate = new Date(item.date);
-            return !isNaN(parsedDate) && parsedDate.getMonth() === month && parsedDate.getFullYear() === year;
+            const parsedDate = getComparableDate(item.date);
+            return parsedDate && parsedDate.getMonth() === month && parsedDate.getFullYear() === year;
         });
 
         const sumByType = (collection, type) => collection
@@ -2688,26 +2783,65 @@ function updateUIVisibilityByRole() {
 
         updateCompanyLogoUI(companyProfile.logo || null);
     }
-    function renderFlujoCajaSection(){const e=new Date,t=new Date(e.getFullYear(),e.getMonth(),1);document.getElementById("report-start-date").value=t.toISOString().split("T")[0],document.getElementById("report-end-date").value=e.toISOString().split("T")[0];const a=getAllTransactions(),n=a.filter(t=>{const a=new Date(t.date);return a.getMonth()===e.getMonth()&&a.getFullYear()===e.getFullYear()}),o=n.filter(e=>"ingreso"===e.type).reduce((e,t)=>e+t.amount,0),s=n.filter(e=>"egreso"===e.type).reduce((e,t)=>e+t.amount,0);document.getElementById("cashflow-income").textContent=formatCurrency(o),document.getElementById("cashflow-expenses").textContent=formatCurrency(s),document.getElementById("cashflow-profit").textContent=formatCurrency(o-s),renderTransactionsTable(a)}
+    function renderFlujoCajaSection() {
+        const today = new Date();
+        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+        const reportStartInput = document.getElementById('report-start-date');
+        const reportEndInput = document.getElementById('report-end-date');
+        if (reportStartInput) {
+            reportStartInput.value = startOfMonth.toISOString().split('T')[0];
+        }
+        if (reportEndInput) {
+            reportEndInput.value = today.toISOString().split('T')[0];
+        }
+
+        const transactions = getAllTransactions();
+        const currentMonthTransactions = transactions.filter(item => {
+            const parsedDate = getComparableDate(item.date);
+            return parsedDate && parsedDate.getMonth() === today.getMonth() && parsedDate.getFullYear() === today.getFullYear();
+        });
+
+        const monthIncome = currentMonthTransactions
+            .filter(item => item.type === 'ingreso')
+            .reduce((sum, item) => sum + (item.amount || 0), 0);
+
+        const monthExpenses = currentMonthTransactions
+            .filter(item => item.type === 'egreso')
+            .reduce((sum, item) => sum + (item.amount || 0), 0);
+
+        document.getElementById('cashflow-income').textContent = formatCurrency(monthIncome);
+        document.getElementById('cashflow-expenses').textContent = formatCurrency(monthExpenses);
+        document.getElementById('cashflow-profit').textContent = formatCurrency(monthIncome - monthExpenses);
+
+        renderTransactionsTable(transactions);
+    }
     function getAllTransactions() {
         const transactions = [];
         affiliates.forEach(aff => {
             if (aff.status === 'Activo') {
                 const incomeAmount = getAffiliateCommissionBase(aff);
-                transactions.push({ id: `auto-i-${aff.id}`, type: 'ingreso', concept: `Pago afiliado: ${aff.name}`, amount: incomeAmount, date: aff.startDate });
+                const normalizedStartDate = normalizeDateInput(aff.startDate) || aff.startDate;
+                transactions.push({ id: `auto-i-${aff.id}`, type: 'ingreso', concept: `Pago afiliado: ${aff.name}`, amount: incomeAmount, date: normalizedStartDate });
                 const commissionAmount = getAdvisorCommissionForAffiliate(aff);
                 if (commissionAmount > 0 && aff.commissionPaid) {
                     const advisor = advisors.find(item => item.id === aff.advisorId);
-                    let commissionDate = aff.startDate;
-                    if (aff.commissionPaidAt) {
-                        const paidDate = aff.commissionPaidAt instanceof Date ? aff.commissionPaidAt : new Date(aff.commissionPaidAt);
-                        if (paidDate instanceof Date && Number.isFinite(paidDate.getTime())) commissionDate = paidDate.toISOString();
-                    }
-                    transactions.push({ id: `auto-e-${aff.id}`, type: 'egreso', concept: `Comisión ${advisor?.name || 'N/A'} (Afiliado: ${aff.name})`, amount: commissionAmount, date: commissionDate });
+                    const normalizedCommissionDate = normalizeDateInput(aff.commissionPaidAt) || normalizedStartDate;
+                    transactions.push({ id: `auto-e-${aff.id}`, type: 'egreso', concept: `Comisión ${advisor?.name || 'N/A'} (Afiliado: ${aff.name})`, amount: commissionAmount, date: normalizedCommissionDate });
                 }
             }
         });
-        return [...transactions, ...manualTransactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        const normalizedManualTransactions = manualTransactions.map(tx => ({
+            ...tx,
+            date: normalizeDateInput(tx.date) || tx.date
+        }));
+
+        return [...transactions, ...normalizedManualTransactions].sort((a, b) => {
+            const dateA = getComparableDate(a.date);
+            const dateB = getComparableDate(b.date);
+            return (dateB ? dateB.getTime() : 0) - (dateA ? dateA.getTime() : 0);
+        });
     }
 
     async function setAffiliateCommissionPaymentStatus(affiliateId, isPaid) {
@@ -2719,7 +2853,22 @@ function updateUIVisibilityByRole() {
         const payload = { id: affiliateId, commissionPaid: isPaid, commissionPaidAt: isPaid ? serverTimestamp() : null };
         await saveDataToFirestore('affiliates', payload);
     }
-    function renderTransactionsTable(e){const t=document.getElementById("transactions-table-body");if(0===e.length){t.innerHTML='<tr><td colspan="3" class="text-center p-4 text-slate-500">No hay transacciones registradas.</td></tr>';return}t.innerHTML=e.map(e=>{const t="ingreso"===e.type;return`<tr class="border-b"><td class="p-3">${new Date(e.date).toLocaleDateString("es-CO")}</td><td class="p-3 text-slate-700">${e.concept}</td><td class="p-3 text-right font-semibold ${t?"text-emerald-600":"text-rose-600"}">${t?"+":"-"}${formatCurrency(e.amount)}</td></tr>`}).join("")}
+    function renderTransactionsTable(collection) {
+        const tableBody = document.getElementById('transactions-table-body');
+        if (!tableBody) return;
+
+        if (collection.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="3" class="text-center p-4 text-slate-500">No hay transacciones registradas.</td></tr>';
+            return;
+        }
+
+        tableBody.innerHTML = collection.map(item => {
+            const isIncome = item.type === 'ingreso';
+            const parsedDate = getComparableDate(item.date);
+            const displayDate = parsedDate ? parsedDate.toLocaleDateString('es-CO') : '--/--/----';
+            return `<tr class="border-b"><td class="p-3">${displayDate}</td><td class="p-3 text-slate-700">${item.concept}</td><td class="p-3 text-right font-semibold ${isIncome ? 'text-emerald-600' : 'text-rose-600'}">${isIncome ? '+' : '-'}${formatCurrency(item.amount)}</td></tr>`;
+        }).join('');
+    }
     async function generatePDFReport() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -2733,8 +2882,8 @@ function updateUIVisibilityByRole() {
     }
 
     const transactionsInPeriod = getAllTransactions().filter(t => {
-        const tDate = new Date(t.date);
-        return tDate >= startDate && tDate <= endDate;
+        const tDate = getComparableDate(t.date);
+        return tDate && tDate >= startDate && tDate <= endDate;
     });
     const activeAffiliatesCount = affiliates.filter(a => a.status === 'Activo').length;
     const affiliatesInPeriod = affiliates.filter(aff => {
@@ -2828,7 +2977,10 @@ function updateUIVisibilityByRole() {
         head: [['Historial Detallado de Transacciones', 'Fecha', 'Tipo', 'Monto']],
         body: transactionsInPeriod.map(t => [
             t.concept,
-            new Date(t.date).toLocaleDateString('es-CO'),
+        (() => {
+            const printableDate = getComparableDate(t.date);
+            return printableDate ? printableDate.toLocaleDateString('es-CO') : '--/--/----';
+        })(),
             t.type === 'ingreso' ? 'Ingreso' : 'Egreso',
             {content: formatCurrency(t.amount), styles: {halign: 'right'}}
         ]),
@@ -3906,6 +4058,8 @@ localStorage.setItem('userTheme', profileData.theme);
                     date: form['transaction-date'].value,
                     type: transactionType,
                 };
+
+                transactionData.date = normalizeDateInput(transactionData.date) || transactionData.date;
 
                 if (!transactionData.concept || transactionData.amount <= 0 || !transactionData.date) {
                     showToast('Por favor, completa todos los campos correctamente.', 'error');
