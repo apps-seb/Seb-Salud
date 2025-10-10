@@ -60,20 +60,53 @@
         .sidebar { transition: transform 0.3s ease-in-out, background-color 0.3s, color 0.3s, width 0.3s ease, box-shadow 0.3s ease;
             width: var(--sidebar-expanded-width);
         }
-        #sidebar .nav-link i,
-        #sidebar .nav-link svg,
-        #sidebar #logout-btn i,
-        #sidebar #logout-btn svg {
-            width: 1.75rem !important;
-            height: 1.75rem !important;
-            stroke-width: 1.75 !important;
+        #sidebar .nav-link {
+            gap: 0.75rem;
+            border-radius: 1rem;
+            transition: background-color 0.2s ease, color 0.2s ease;
         }
-        #sidebar .nav-link i,
-        #sidebar .nav-link svg {
-            padding: 0.35rem;
-            border-radius: 9999px;
+        #sidebar .nav-link .nav-link-icon,
+        #sidebar #logout-btn .nav-link-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.75rem;
+            height: 2.75rem;
+            border-radius: 1rem;
             background: rgba(148, 163, 184, 0.18);
             color: inherit;
+            flex-shrink: 0;
+            transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        }
+        #sidebar .nav-link .nav-link-icon svg,
+        #sidebar #logout-btn .nav-link-icon svg {
+            width: 1.6rem !important;
+            height: 1.6rem !important;
+            stroke-width: 1.75 !important;
+        }
+        #sidebar .nav-link:hover .nav-link-icon,
+        #sidebar .nav-link:focus-visible .nav-link-icon {
+            background-color: rgba(var(--color-primary-600) / 0.18);
+            color: rgb(var(--color-primary-600));
+            transform: translateY(-1px);
+        }
+        #sidebar .nav-link.active .nav-link-icon {
+            background-color: rgba(255, 255, 255, 0.22);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+        #sidebar #logout-btn {
+            gap: 0.75rem;
+            border-radius: 1rem;
+        }
+        #sidebar #logout-btn .nav-link-icon {
+            background: rgba(248, 113, 113, 0.16);
+        }
+        #sidebar #logout-btn:hover .nav-link-icon,
+        #sidebar #logout-btn:focus-visible .nav-link-icon {
+            background: rgba(248, 113, 113, 0.28);
+            color: #f87171;
+            transform: translateY(-1px);
         }
         #sidebar {
             background: rgba(15, 23, 42, 0.96);
@@ -782,7 +815,10 @@ button svg {
         <div class="flex h-screen overflow-hidden">
             <div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-30 opacity-0 pointer-events-none md:hidden"></div>
 
-          <aside id="sidebar" class="sidebar w-64 fixed top-0 bottom-0 left-0 transform -translate-x-full md:translate-x-0 md:top-4 md:bottom-4 z-40 flex flex-col md:rounded-3xl md:shadow-2xl md:overflow-hidden">
+          <aside id="sidebar" class="sidebar w-64 fixed top-0 bottom-0 left-0 transform -translate-x-full md:translate-x-0 md:top-4 md:bottom-4 z-40 flex flex-col md:rounded-3xl md:shadow-2xl md:overflow-hidden relative">
+        <button id="sidebar-close" class="md:hidden absolute top-4 right-4 inline-flex items-center justify-center h-10 w-10 rounded-full bg-slate-900/60 text-slate-200 hover:text-white hover:bg-slate-900/80 transition">
+            <i data-lucide="x" class="h-6 w-6"></i>
+        </button>
         <div class="logo-wrapper flex items-center justify-center gap-3 h-16 border-b flex-shrink-0 px-4">
             <div class="logo-icon-wrapper flex items-center justify-center h-10 w-10 rounded-2xl bg-primary-600/10">
                 <img id="sidebar-logo-image" src="" alt="Logo de la empresa" class="logo-image h-full w-full object-cover rounded-2xl hidden">
@@ -793,23 +829,59 @@ button svg {
 
         <div class="flex-1 flex flex-col overflow-y-auto pb-16 md:pb-0">
             <nav id="sidebar-nav" class="px-4 py-6 space-y-2">
-                <a href="#" data-target="dashboard" class="nav-link active flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="sidebar-label">Dashboard</span></a>
-                <a href="#" data-target="empresa" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="building-2" class="w-5 h-5"></i><span class="sidebar-label">Perfil Empresa</span></a>
-                <a href="#" data-target="calendario" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="calendar-days" class="w-5 h-5"></i><span class="sidebar-label">Calendario</span></a>
-                <a href="#" data-target="flujo-caja" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="wallet" class="w-5 h-5"></i><span class="sidebar-label">Flujo de Caja</span></a>
-                <a href="#" data-target="afiliados" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="users" class="w-5 h-5"></i><span class="sidebar-label">Afiliados</span></a>
-                <a href="#" data-target="asesores" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="user-circle" class="w-5 h-5"></i><span class="sidebar-label">Asesores</span></a>
-                <a href="#" data-target="ranking-vendedores" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="award" class="w-5 h-5"></i><span class="sidebar-label">Ranking Vendedores</span></a>
-                <a href="#" data-target="planes" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="shield-plus" class="w-5 h-5"></i><span class="sidebar-label">Planes de Salud</span></a>
-                <a href="#" data-target="cotizador" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="calculator" class="w-5 h-5"></i><span class="sidebar-label">Cotizador</span></a>
-                <a href="#" data-target="gestion-roles" data-role="admin" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="users-2" class="w-5 h-5"></i><span class="sidebar-label">Gesti&#243;n de Roles</span></a>
-                <a href="#" data-target="perfil-afiliado" data-role="afiliado" class="nav-link flex items-center py-2.5 px-4 rounded-lg"><i data-lucide="user" class="w-5 h-5"></i><span class="sidebar-label">Mi Perfil</span></a>
+                <a href="#" data-target="dashboard" class="nav-link active flex items-center justify-center py-2.5 px-4">
+                    <span class="nav-link-icon"><i data-lucide="layout-dashboard" class="w-5 h-5"></i></span>
+                    <span class="sidebar-label">Dashboard</span>
+                </a>
+                <a href="#" data-target="empresa" data-role="admin" class="nav-link flex items-center justify-center py-2.5 px-4">
+                    <span class="nav-link-icon"><i data-lucide="building-2" class="w-5 h-5"></i></span>
+                    <span class="sidebar-label">Perfil Empresa</span>
+                </a>
+                <a href="#" data-target="calendario" data-role="admin" class="nav-link flex items-center justify-center py-2.5 px-4">
+                    <span class="nav-link-icon"><i data-lucide="calendar-days" class="w-5 h-5"></i></span>
+                    <span class="sidebar-label">Calendario</span>
+                </a>
+                <a href="#" data-target="flujo-caja" data-role="admin" class="nav-link flex items-center justify-center py-2.5 px-4">
+                    <span class="nav-link-icon"><i data-lucide="wallet" class="w-5 h-5"></i></span>
+                    <span class="sidebar-label">Flujo de Caja</span>
+                </a>
+                <a href="#" data-target="afiliados" class="nav-link flex items-center justify-center py-2.5 px-4">
+                    <span class="nav-link-icon"><i data-lucide="users" class="w-5 h-5"></i></span>
+                    <span class="sidebar-label">Afiliados</span>
+                </a>
+                <a href="#" data-target="asesores" data-role="admin" class="nav-link flex items-center justify-center py-2.5 px-4">
+                    <span class="nav-link-icon"><i data-lucide="user-circle" class="w-5 h-5"></i></span>
+                    <span class="sidebar-label">Asesores</span>
+                </a>
+                <a href="#" data-target="ranking-vendedores" data-role="admin" class="nav-link flex items-center justify-center py-2.5 px-4">
+                    <span class="nav-link-icon"><i data-lucide="award" class="w-5 h-5"></i></span>
+                    <span class="sidebar-label">Ranking Vendedores</span>
+                </a>
+                <a href="#" data-target="planes" data-role="admin" class="nav-link flex items-center justify-center py-2.5 px-4">
+                    <span class="nav-link-icon"><i data-lucide="shield-plus" class="w-5 h-5"></i></span>
+                    <span class="sidebar-label">Planes de Salud</span>
+                </a>
+                <a href="#" data-target="cotizador" class="nav-link flex items-center justify-center py-2.5 px-4">
+                    <span class="nav-link-icon"><i data-lucide="calculator" class="w-5 h-5"></i></span>
+                    <span class="sidebar-label">Cotizador</span>
+                </a>
+                <a href="#" data-target="gestion-roles" data-role="admin" class="nav-link flex items-center justify-center py-2.5 px-4">
+                    <span class="nav-link-icon"><i data-lucide="users-2" class="w-5 h-5"></i></span>
+                    <span class="sidebar-label">Gesti&#243;n de Roles</span>
+                </a>
+                <a href="#" data-target="perfil-afiliado" data-role="afiliado" class="nav-link flex items-center justify-center py-2.5 px-4">
+                    <span class="nav-link-icon"><i data-lucide="user" class="w-5 h-5"></i></span>
+                    <span class="sidebar-label">Mi Perfil</span>
+                </a>
             </nav>
 
             <div id="sidebar-user-info" class="px-4 py-4 border-t mt-auto flex-shrink-0">
                 <p class="sidebar-label text-xs text-slate-400 uppercase tracking-wider">Usuario Conectado</p>
                 <p id="user-email-display" class="sidebar-label font-mono rounded p-1 text-xs break-words mt-1"></p>
-                <button id="logout-btn" class="w-full mt-3 text-left text-sm flex items-center"><i data-lucide="log-out" class="w-4 h-4"></i><span class="sidebar-label">Cerrar Sesi&#243;n</span></button>
+                <button id="logout-btn" class="w-full mt-3 text-left text-sm flex items-center justify-center px-3 py-2">
+                    <span class="nav-link-icon"><i data-lucide="log-out" class="w-4 h-4"></i></span>
+                    <span class="sidebar-label">Cerrar Sesi&#243;n</span>
+                </button>
             </div>
         </div>
     </aside>
@@ -1812,6 +1884,60 @@ button svg {
     const loader = document.getElementById('loader');
     const authContainer = document.getElementById('auth-container');
     const appContainer = document.getElementById('app-container');
+    const sidebarElement = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+    const menuToggleButton = document.getElementById('menu-toggle');
+    const sidebarCloseButton = document.getElementById('sidebar-close');
+
+    const updateSidebarAriaState = (isOpen) => {
+        if (menuToggleButton) {
+            menuToggleButton.setAttribute('aria-expanded', String(isOpen));
+        }
+        if (sidebarElement) {
+            if (window.innerWidth < 768) {
+                sidebarElement.setAttribute('aria-hidden', String(!isOpen));
+            } else {
+                sidebarElement.removeAttribute('aria-hidden');
+            }
+        }
+    };
+
+    const closeSidebar = () => {
+        if (!sidebarElement || !sidebarOverlay) return;
+        sidebarElement.classList.add('-translate-x-full');
+        sidebarOverlay.classList.add('opacity-0', 'pointer-events-none');
+        updateSidebarAriaState(false);
+    };
+
+    const openSidebar = () => {
+        if (!sidebarElement || !sidebarOverlay) return;
+        sidebarElement.classList.remove('-translate-x-full');
+        sidebarOverlay.classList.remove('opacity-0', 'pointer-events-none');
+        updateSidebarAriaState(true);
+    };
+
+    const toggleSidebar = () => {
+        if (!sidebarElement || !sidebarOverlay) return;
+        if (sidebarElement.classList.contains('-translate-x-full')) {
+            openSidebar();
+        } else {
+            closeSidebar();
+        }
+    };
+
+    sidebarOverlay?.addEventListener('click', closeSidebar);
+    sidebarCloseButton?.addEventListener('click', closeSidebar);
+    updateSidebarAriaState(window.innerWidth >= 768 ? true : false);
+    window.addEventListener('resize', () => {
+        if (!sidebarElement) return;
+        if (window.innerWidth >= 768) {
+            sidebarElement.classList.remove('-translate-x-full');
+            sidebarOverlay?.classList.add('opacity-0', 'pointer-events-none');
+            updateSidebarAriaState(true);
+        } else {
+            updateSidebarAriaState(!sidebarElement.classList.contains('-translate-x-full'));
+        }
+    });
 
     const updateEpsOtherFieldVisibility = setupConditionalField(
         document.getElementById('eps-plan'),
@@ -3549,7 +3675,7 @@ function formatPhoneNumberForWhatsApp(phone) {
                 document.querySelectorAll(`[data-target="${targetId}"]`).forEach(l => l.classList.add('active')); 
                 const title = navLink.querySelector('span')?.textContent.trim() || navLink.textContent.trim().split('\n')[0].trim() || targetId; 
                 document.getElementById('header-title').textContent = title.charAt(0).toUpperCase() + title.slice(1); 
-                if (window.innerWidth < 768) { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('sidebar-overlay').classList.add('opacity-0', 'pointer-events-none'); } 
+                if (window.innerWidth < 768) { closeSidebar(); }
                 return; 
             } 
             
@@ -3560,10 +3686,10 @@ function formatPhoneNumberForWhatsApp(phone) {
                 case 'show-register': document.getElementById('login-view').style.display = 'none'; document.getElementById('register-view').style.display = 'block'; return; 
                 case 'show-login': document.getElementById('register-view').style.display = 'none'; document.getElementById('login-view').style.display = 'block'; return; 
                 case 'logout-btn': case 'profile-modal-logout-btn': signOut(auth); return; 
-                case 'menu-toggle': document.getElementById('sidebar').classList.toggle('-translate-x-full'); const overlay = document.getElementById('sidebar-overlay'); overlay.classList.toggle('opacity-0'); overlay.classList.toggle('pointer-events-none'); return; 
+                case 'menu-toggle': toggleSidebar(); return;
                 case 'profile-toggle-btn': document.getElementById('profile-modal').classList.toggle('scale-95'); document.getElementById('profile-modal').classList.toggle('opacity-0'); document.getElementById('profile-modal').classList.toggle('pointer-events-none'); return; 
                 case 'novedades-toggle-btn': document.getElementById('novedades-modal').classList.toggle('scale-95'); document.getElementById('novedades-modal').classList.toggle('opacity-0'); document.getElementById('novedades-modal').classList.toggle('pointer-events-none'); return;
-                case 'sidebar-overlay': document.getElementById('menu-toggle').click(); return; 
+                case 'sidebar-overlay': closeSidebar(); return;
                 case 'add-affiliate-btn': modalManager.open('affiliate-modal'); return; 
                 case 'add-advisor-btn': modalManager.open('advisor-modal'); return; 
                 case 'add-plan-btn': modalManager.open('plan-modal'); return; 
