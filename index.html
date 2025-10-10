@@ -2719,7 +2719,7 @@ function updateUIVisibilityByRole() {
         const payload = { id: affiliateId, commissionPaid: isPaid, commissionPaidAt: isPaid ? serverTimestamp() : null };
         await saveDataToFirestore('affiliates', payload);
     }
-    function renderTransactionsTable(e){const t=document.getElementById("transactions-table-body");if(0===e.length){t.innerHTML='<tr><td colspan="3" class="text-center p-4 text-slate-500">No hay transacciones registradas.</td></tr>';return}t.innerHTML=e.map(e=>{const t="ingreso"===e.type;return`<tr class="border-b"><td class="p-3">${new Date(e.date).toLocaleDateString("es-CO")}</td><td class="p-3 text-slate-700">${e.concept}</td><td class="p-3 text-right font-semibold ${t?"text-emerald-600":"text-rose-600"}">${t?"+":"-"}${formatCurrency(e.amount)}</td></tr>`}).join("")}
+    function renderTransactionsTable(e){const t=document.getElementById("transactions-table-body");if(0===e.length){t.innerHTML='<tr><td colspan="3" class="text-center p-4 text-slate-500">No hay transacciones registradas.</td></tr>';return}t.innerHTML=e.map(e=>{const t="ingreso"===e.type;const n=parseAppDate(e.date);const a=n?n.toLocaleDateString("es-CO"):"-";return`<tr class="border-b"><td class="p-3">${a}</td><td class="p-3 text-slate-700">${e.concept}</td><td class="p-3 text-right font-semibold ${t?"text-emerald-600":"text-rose-600"}">${t?"+":"-"}${formatCurrency(e.amount)}</td></tr>`}).join("")}
     async function generatePDFReport() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
