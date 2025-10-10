@@ -85,6 +85,11 @@
         .novedades-badge.hidden { transform: scale(0); }
         .health-plan-card { border: 2px solid #e2e8f0; transition: border-color 0.2s, box-shadow 0.2s; }
         .health-plan-card:has(input:checked) { border-color: rgb(var(--color-primary-600)); box-shadow: 0 0 0 2px rgb(var(--color-primary-600) / 0.5); }
+
+        .role-card-header { display: flex; flex-direction: column; gap: 0.5rem; }
+        .role-card-title, .role-card-subtitle { word-break: break-word; hyphens: auto; }
+        .role-card-title { line-height: 1.25; }
+        @media (max-width: 640px) { .role-card-title { font-size: 1.5rem; } }
         
         /* --- ESTILOS DEL PANEL LATERAL --- */
         @media (min-width: 768px) {
@@ -724,12 +729,17 @@ button svg {
             <div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-30 opacity-0 pointer-events-none md:hidden"></div>
 
           <aside id="sidebar" class="sidebar w-64 fixed top-0 bottom-0 left-0 transform -translate-x-full md:translate-x-0 md:top-4 md:bottom-4 z-40 flex flex-col md:rounded-3xl md:shadow-2xl md:overflow-hidden">
-        <div class="logo-wrapper flex items-center justify-center gap-3 h-16 border-b flex-shrink-0 px-4">
-            <div class="logo-icon-wrapper flex items-center justify-center h-10 w-10 rounded-2xl bg-primary-600/10">
-                <img id="sidebar-logo-image" src="" alt="Logo de la empresa" class="logo-image h-full w-full object-cover rounded-2xl hidden">
-                <i data-lucide="shield-check" class="h-8 w-8 text-primary-500 logo-icon"></i>
+        <div class="logo-wrapper flex items-center justify-between md:justify-center gap-3 h-16 border-b flex-shrink-0 px-4">
+            <div class="flex items-center gap-3">
+                <div class="logo-icon-wrapper flex items-center justify-center h-10 w-10 rounded-2xl bg-primary-600/10">
+                    <img id="sidebar-logo-image" src="" alt="Logo de la empresa" class="logo-image h-full w-full object-cover rounded-2xl hidden">
+                    <i data-lucide="shield-check" class="h-8 w-8 text-primary-500 logo-icon"></i>
+                </div>
+                <span id="sidebar-logo-text" class="logo-text sidebar-label text-xl font-bold whitespace-nowrap">Seb Salud</span>
             </div>
-            <span id="sidebar-logo-text" class="logo-text sidebar-label text-xl font-bold whitespace-nowrap">Seb Salud</span>
+            <button id="sidebar-close-btn" aria-label="Cerrar menú lateral" class="md:hidden p-2 text-slate-200 hover:text-white hover:bg-white/10 rounded-full transition-colors">
+                <i data-lucide="x" class="h-5 w-5"></i>
+            </button>
         </div>
 
         <div class="flex-1 flex flex-col overflow-y-auto pb-16 md:pb-0">
@@ -1255,8 +1265,10 @@ button svg {
                     <section id="gestion-roles" class="content-section">
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                             <div class="bg-white p-6 rounded-xl shadow-lg lg:col-span-1">
-                                <h2 class="text-2xl font-bold text-slate-800 mb-1">Invitar Usuario</h2>
-                                <p class="text-slate-500 mb-6">Crea una cuenta para un asesor o afiliado.</p>
+                                <div class="role-card-header mb-6">
+                                    <h2 class="role-card-title text-2xl font-bold text-slate-800">Invitar Usuario</h2>
+                                    <p class="role-card-subtitle text-slate-500">Crea una cuenta para un asesor o afiliado.</p>
+                                </div>
                                 <form id="invite-user-form" class="space-y-4">
                                     <div>
                                         <label for="invite-email" class="block text-sm font-medium text-slate-600">Email del Usuario</label>
@@ -1284,7 +1296,10 @@ button svg {
                                 </form>
                             </div>
                             <div class="bg-white p-6 rounded-xl shadow-lg lg:col-span-2">
-                                <h2 class="text-2xl font-bold text-slate-800 mb-6">Usuarios con Rol</h2>
+                                <div class="role-card-header mb-6">
+                                    <h2 class="role-card-title text-2xl font-bold text-slate-800">Usuarios con Rol</h2>
+                                    <p class="role-card-subtitle text-slate-500">Administra los accesos de afiliados y asesores sin perder visibilidad.</p>
+                                </div>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-sm">
                                         <thead class="bg-slate-50">
@@ -2719,7 +2734,7 @@ function updateUIVisibilityByRole() {
         const payload = { id: affiliateId, commissionPaid: isPaid, commissionPaidAt: isPaid ? serverTimestamp() : null };
         await saveDataToFirestore('affiliates', payload);
     }
-    function renderTransactionsTable(e){const t=document.getElementById("transactions-table-body");if(0===e.length){t.innerHTML='<tr><td colspan="3" class="text-center p-4 text-slate-500">No hay transacciones registradas.</td></tr>';return}t.innerHTML=e.map(e=>{const t="ingreso"===e.type;return`<tr class="border-b"><td class="p-3">${new Date(e.date).toLocaleDateString("es-CO")}</td><td class="p-3 text-slate-700">${e.concept}</td><td class="p-3 text-right font-semibold ${t?"text-emerald-600":"text-rose-600"}">${t?"+":"-"}${formatCurrency(e.amount)}</td></tr>`}).join("")}
+    function renderTransactionsTable(e){const t=document.getElementById("transactions-table-body");if(0===e.length){t.innerHTML='<tr><td colspan="3" class="text-center p-4 text-slate-500">No hay transacciones registradas.</td></tr>';return}t.innerHTML=e.map(e=>{const t="ingreso"===e.type;const n=parseAppDate(e.date);const a=n?n.toLocaleDateString("es-CO"):"-";return`<tr class="border-b"><td class="p-3">${a}</td><td class="p-3 text-slate-700">${e.concept}</td><td class="p-3 text-right font-semibold ${t?"text-emerald-600":"text-rose-600"}">${t?"+":"-"}${formatCurrency(e.amount)}</td></tr>`}).join("")}
     async function generatePDFReport() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -3253,6 +3268,27 @@ function formatPhoneNumberForWhatsApp(phone) {
         const searchToggleMobile = document.getElementById('search-toggle-mobile');
         const closeSearchMobile = document.getElementById('close-search-mobile');
         const headerActions = document.getElementById('header-actions');
+        const sidebarElement = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+        const setMobileSidebar = (open) => {
+            if (!sidebarElement || !sidebarOverlay || window.innerWidth >= 768) return;
+            if (open) {
+                sidebarElement.classList.remove('-translate-x-full');
+                sidebarOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                sidebarElement.classList.add('-translate-x-full');
+                sidebarOverlay.classList.add('opacity-0', 'pointer-events-none');
+            }
+        };
+
+        const closeMobileSidebar = () => setMobileSidebar(false);
+
+        const toggleMobileSidebar = () => {
+            if (!sidebarElement || window.innerWidth >= 768) return;
+            const isClosed = sidebarElement.classList.contains('-translate-x-full');
+            setMobileSidebar(isClosed);
+        };
         const toggleMobileSearch = (show) => {
             if (show) {
                 headerMainContent.classList.add('hidden');
@@ -3397,21 +3433,26 @@ function formatPhoneNumberForWhatsApp(phone) {
                 document.querySelectorAll(`[data-target="${targetId}"]`).forEach(l => l.classList.add('active')); 
                 const title = navLink.querySelector('span')?.textContent.trim() || navLink.textContent.trim().split('\n')[0].trim() || targetId; 
                 document.getElementById('header-title').textContent = title.charAt(0).toUpperCase() + title.slice(1); 
-                if (window.innerWidth < 768) { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('sidebar-overlay').classList.add('opacity-0', 'pointer-events-none'); } 
-                return; 
-            } 
-            
-            if (!button) return; 
-            const id = button.dataset.id; 
-            
-            switch (button.id) { 
+                closeMobileSidebar();
+                return;
+            }
+
+            if (target.id === 'sidebar-overlay') {
+                closeMobileSidebar();
+                return;
+            }
+
+            if (!button) return;
+            const id = button.dataset.id;
+
+            switch (button.id) {
                 case 'show-register': document.getElementById('login-view').style.display = 'none'; document.getElementById('register-view').style.display = 'block'; return; 
                 case 'show-login': document.getElementById('register-view').style.display = 'none'; document.getElementById('login-view').style.display = 'block'; return; 
                 case 'logout-btn': case 'profile-modal-logout-btn': signOut(auth); return; 
-                case 'menu-toggle': document.getElementById('sidebar').classList.toggle('-translate-x-full'); const overlay = document.getElementById('sidebar-overlay'); overlay.classList.toggle('opacity-0'); overlay.classList.toggle('pointer-events-none'); return; 
-                case 'profile-toggle-btn': document.getElementById('profile-modal').classList.toggle('scale-95'); document.getElementById('profile-modal').classList.toggle('opacity-0'); document.getElementById('profile-modal').classList.toggle('pointer-events-none'); return; 
+                case 'menu-toggle': toggleMobileSidebar(); return;
+                case 'profile-toggle-btn': document.getElementById('profile-modal').classList.toggle('scale-95'); document.getElementById('profile-modal').classList.toggle('opacity-0'); document.getElementById('profile-modal').classList.toggle('pointer-events-none'); return;
                 case 'novedades-toggle-btn': document.getElementById('novedades-modal').classList.toggle('scale-95'); document.getElementById('novedades-modal').classList.toggle('opacity-0'); document.getElementById('novedades-modal').classList.toggle('pointer-events-none'); return;
-                case 'sidebar-overlay': document.getElementById('menu-toggle').click(); return; 
+                case 'sidebar-close-btn': closeMobileSidebar(); return;
                 case 'add-affiliate-btn': modalManager.open('affiliate-modal'); return; 
                 case 'add-advisor-btn': modalManager.open('advisor-modal'); return; 
                 case 'add-plan-btn': modalManager.open('plan-modal'); return; 
