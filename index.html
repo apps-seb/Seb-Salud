@@ -1417,11 +1417,11 @@ button svg {
         </div>
     </div>
         
-        <div id="affiliate-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col transform scale-95"><div class="flex justify-between items-center p-5 border-b sticky top-0 bg-white z-10 flex-shrink-0"><h2 id="affiliate-modal-title" class="text-2xl font-bold">Nuevo Afiliado</h2><button data-close-modal="affiliate-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><div class="flex-grow overflow-y-auto"><form id="affiliate-form" class="p-6"><input type="hidden" id="affiliate-doc-id"><div class="space-y-10"><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">1. Informaci&#243;n Personal</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><input type="text" id="affiliate-name" placeholder="Nombre Completo" class="w-full px-4 py-2 border rounded-lg" required><input type="text" id="affiliate-id" placeholder="Documento" class="w-full px-4 py-2 border rounded-lg" required><input type="email" id="affiliate-email" placeholder="Correo Electr&#243;nico" class="w-full px-4 py-2 border rounded-lg" required><input type="tel" id="affiliate-phone" placeholder="Tel&#233;fono" class="w-full px-4 py-2 border rounded-lg"><input type="text" id="affiliate-address" placeholder="Direcci&#243;n" class="md:col-span-2 w-full px-4 py-2 border rounded-lg"></div></div><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">2. Plan de Salud Complementario / Prepagada</h3><div id="health-plan-selector" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"></div></div><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">3. Otras Afiliaciones</h3><div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"><div><label for="eps-plan" class="block text-sm font-medium text-slate-600 mb-1">EPS</label><select id="eps-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una EPS</option><option value="Asmet Salud">Asmet Salud</option><option value="EPS Sanitas">EPS Sanitas</option><option value="Nueva EPS">Nueva EPS</option><option value="EPS SURA">EPS SURA</option><option value="Salud Total">Salud Total</option><option value="Compensar EPS">Compensar EPS</option><option value="Coosalud">Coosalud</option><option value="Mutual Ser">Mutual Ser</option><option value="Famisanar">Famisanar</option><option value="Servicio Occidental de Salud (SOS)">Servicio Occidental de Salud (SOS)</option><option value="Capital Salud">Capital Salud</option><option value="Ecoopsos EPS">Ecoopsos EPS</option><option value="Savia Salud">Savia Salud</option><option value="Otra">Otra (especifique)</option></select></div><div id="eps-plan-other-container" class="hidden"><label for="eps-plan-other" class="block text-sm font-medium text-slate-600 mb-1">Nombre de la EPS</label><input type="text" id="eps-plan-other" class="w-full px-4 py-2 border rounded-lg" placeholder="Escriba el nombre de la EPS"></div><div><label for="pension-plan" class="block text-sm font-medium text-slate-600 mb-1">Fondo de Pensi&#243;n</label><select id="pension-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione un fondo</option><option value="Colpensiones">Colpensiones (P&#250;blico)</option><option value="Porvenir">Porvenir</option><option value="Protecci&#243;n">Protecci&#243;n</option><option value="Colfondos">Colfondos</option><option value="Skandia">Skandia</option><option value="Ninguna">Ninguna</option><option value="Otra">Otra (especifique)</option></select></div><div id="pension-plan-other-container" class="hidden"><label for="pension-plan-other" class="block text-sm font-medium text-slate-600 mb-1">Nombre del fondo de pensi&#243;n</label><input type="text" id="pension-plan-other" class="w-full px-4 py-2 border rounded-lg" placeholder="Escriba el nombre del fondo"></div><div><label for="arl-plan" class="block text-sm font-medium text-slate-600 mb-1">ARL</label><select id="arl-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una ARL</option><option value="ARL Sura">ARL Sura</option><option value="ARL Positiva">ARL Positiva</option><option value="ARL Colmena">ARL Colmena</option><option value="Seguros Bol&#237;var ARL">Seguros Bol&#237;var ARL</option><option value="AXA Colpatria ARL">AXA Colpatria ARL</option><option value="Ninguna">Ninguna</option><option value="Otra">Otra (especifique)</option></select></div><div id="arl-plan-other-container" class="hidden"><label for="arl-plan-other" class="block text-sm font-medium text-slate-600 mb-1">Nombre de la ARL</label><input type="text" id="arl-plan-other" class="w-full px-4 py-2 border rounded-lg" placeholder="Escriba el nombre de la ARL"></div><div id="arl-activity-container" class="md:col-span-2 hidden"><label for="arl-activity" class="block text-sm font-medium text-slate-600 mb-1">Actividad econ&#243;mica</label><div class="flex flex-col sm:flex-row gap-2"><input type="text" id="arl-activity" class="flex-1 px-4 py-2 border rounded-lg bg-white" placeholder="Seleccione una actividad econ&#243;mica" readonly><button type="button" id="open-arl-risk-modal" class="px-4 py-2 border border-primary-600 text-primary-600 rounded-lg font-semibold text-sm hover:bg-slate-100 transition-colors">Ver tabla de riesgos</button></div><p class="mt-2 text-xs text-slate-500">Haz clic en "Ver tabla de riesgos" para elegir la actividad econ&#243;mica y la clase de riesgo laboral.</p></div><div id="arl-risk-container" class="hidden"><label for="arl-risk-level" class="block text-sm font-medium text-slate-600 mb-1">Clase de riesgo laboral</label><input type="text" id="arl-risk-level" class="w-full px-4 py-2 border rounded-lg bg-white" placeholder="Seleccione una actividad" readonly></div><div><label for="ccf-plan" class="block text-sm font-medium text-slate-600 mb-1">Caja de Compensaci&#243;n</label><select id="ccf-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una caja</option><option value="Comfacauca">Comfacauca</option><option value="Comfamiliar del Cauca">Comfamiliar del Cauca</option><option value="Comfenalco Valle">Comfenalco Valle</option><option value="Comfandi">Comfandi (Valle)</option><option value="Comfamiliar Nari&#241;o">Comfamiliar Nari&#241;o</option><option value="Compensar">Compensar</option><option value="Colsubsidio">Colsubsidio</option><option value="Cafam">Cafam</option><option value="Comfama">Comfama (Antioquia)</option><option value="Ninguna">Ninguna</option><option value="Otra">Otra (especifique)</option></select></div><div id="ccf-plan-other-container" class="hidden"><label for="ccf-plan-other" class="block text-sm font-medium text-slate-600 mb-1">Nombre de la Caja</label><input type="text" id="ccf-plan-other" class="w-full px-4 py-2 border rounded-lg" placeholder="Escriba el nombre de la caja"></div></div></div><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">4. Detalles de Venta y Administrativos</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"><div><label for="advisor-select-list" class="block text-sm font-medium text-slate-600 mb-1">Asesor Asignado</label><select id="advisor-select-list" class="w-full px-4 py-2 border rounded-lg" required></select></div><div><label for="affiliate-start-date" class="block text-sm font-medium text-slate-600 mb-1">Fecha de Inicio</label><input type="date" id="affiliate-start-date" class="w-full px-4 py-2 border rounded-lg" required></div><div><label for="affiliate-end-date" class="block text-sm font-medium text-slate-600 mb-1">Fecha de Finalizaci&#243;n</label><input type="date" id="affiliate-end-date" class="w-full px-4 py-2 border rounded-lg"></div><div><label for="affiliate-status" class="block text-sm font-medium text-slate-600 mb-1">Estado del Afiliado</label><select id="affiliate-status" class="w-full px-4 py-2 border rounded-lg" required><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div></div><div class="mt-6"><label class="flex items-center space-x-2"><input type="checkbox" id="manual-override-checkbox" class="h-4 w-4 text-primary-600 rounded"><span>Usar costos y comisiones manuales</span></label></div><div id="manual-override-container" class="hidden mt-4 space-y-6 p-4 border rounded-lg bg-slate-50"><div><h4 class="text-md font-semibold text-slate-600 mb-3">Costos de Afiliaci&#243;n</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="text-sm font-medium">Salud ($)</label><input type="number" id="manual-cost-health" class="w-full p-2 border rounded-lg mt-1" placeholder="Ej: 95000"></div><div><label class="text-sm font-medium">Pensi&#243;n ($)</label><input type="number" id="manual-cost-pension" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div><div><label class="text-sm font-medium">ARL ($)</label><input type="number" id="manual-cost-arl" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div><div><label class="text-sm font-medium">Caja Comp. ($)</label><input type="number" id="manual-cost-ccf" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div></div></div><div class="pt-4 border-t"><h4 class="text-md font-semibold text-slate-600 mb-3">Comisiones</h4><div class="max-w-xs"><label class="text-sm font-medium">Comisi&#243;n Asesor ($)</label><input type="number" id="manual-commission" class="w-full p-2 border rounded-lg mt-1" placeholder="Ej: 20000"></div></div></div><div class="mt-6"><textarea id="affiliate-notes" placeholder="Notas adicionales..." class="w-full px-4 py-2 border rounded-lg h-24"></textarea></div></div></div><div class="pt-6 border-t mt-8 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-lg">Guardar Afiliado</button></div></form></div></div></div>
+        <div id="affiliate-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col transform scale-95"><div class="flex justify-between items-center p-5 border-b sticky top-0 bg-white z-10 flex-shrink-0"><h2 id="affiliate-modal-title" class="text-2xl font-bold">Nuevo Afiliado</h2><button data-close-modal="affiliate-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><div class="flex-grow overflow-y-auto"><form id="affiliate-form" class="p-6"><input type="hidden" id="affiliate-doc-id"><div class="space-y-10"><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">1. Informaci&#243;n Personal</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><input type="text" id="affiliate-name" placeholder="Nombre Completo" class="w-full px-4 py-2 border rounded-lg" required><input type="text" id="affiliate-id" placeholder="Documento" class="w-full px-4 py-2 border rounded-lg" required><input type="email" id="affiliate-email" placeholder="Correo Electr&#243;nico" class="w-full px-4 py-2 border rounded-lg" required><input type="tel" id="affiliate-phone" placeholder="Tel&#233;fono" class="w-full px-4 py-2 border rounded-lg"><input type="text" id="affiliate-address" placeholder="Direcci&#243;n" class="md:col-span-2 w-full px-4 py-2 border rounded-lg"></div></div><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">2. Plan de Salud Complementario / Prepagada</h3><div id="health-plan-selector" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"></div></div><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">3. Otras Afiliaciones</h3><div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"><div><label for="eps-plan" class="block text-sm font-medium text-slate-600 mb-1">EPS</label><select id="eps-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una EPS</option><option value="Asmet Salud">Asmet Salud</option><option value="EPS Sanitas">EPS Sanitas</option><option value="Nueva EPS">Nueva EPS</option><option value="EPS SURA">EPS SURA</option><option value="Salud Total">Salud Total</option><option value="Compensar EPS">Compensar EPS</option><option value="Coosalud">Coosalud</option><option value="Mutual Ser">Mutual Ser</option><option value="Famisanar">Famisanar</option><option value="Servicio Occidental de Salud (SOS)">Servicio Occidental de Salud (SOS)</option><option value="Capital Salud">Capital Salud</option><option value="Ecoopsos EPS">Ecoopsos EPS</option><option value="Savia Salud">Savia Salud</option><option value="Otra">Otra (especifique)</option></select></div><div id="eps-plan-other-container" class="hidden"><label for="eps-plan-other" class="block text-sm font-medium text-slate-600 mb-1">Nombre de la EPS</label><input type="text" id="eps-plan-other" class="w-full px-4 py-2 border rounded-lg" placeholder="Escriba el nombre de la EPS"></div><div><label for="pension-plan" class="block text-sm font-medium text-slate-600 mb-1">Fondo de Pensi&#243;n</label><select id="pension-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione un fondo</option><option value="Colpensiones">Colpensiones (P&#250;blico)</option><option value="Porvenir">Porvenir</option><option value="Protecci&#243;n">Protecci&#243;n</option><option value="Colfondos">Colfondos</option><option value="Skandia">Skandia</option><option value="Ninguna">Ninguna</option><option value="Otra">Otra (especifique)</option></select></div><div id="pension-plan-other-container" class="hidden"><label for="pension-plan-other" class="block text-sm font-medium text-slate-600 mb-1">Nombre del fondo de pensi&#243;n</label><input type="text" id="pension-plan-other" class="w-full px-4 py-2 border rounded-lg" placeholder="Escriba el nombre del fondo"></div><div><label for="arl-plan" class="block text-sm font-medium text-slate-600 mb-1">ARL</label><select id="arl-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una ARL</option><option value="ARL Sura">ARL Sura</option><option value="ARL Positiva">ARL Positiva</option><option value="ARL Colmena">ARL Colmena</option><option value="Seguros Bol&#237;var ARL">Seguros Bol&#237;var ARL</option><option value="AXA Colpatria ARL">AXA Colpatria ARL</option><option value="Ninguna">Ninguna</option><option value="Otra">Otra (especifique)</option></select></div><div id="arl-plan-other-container" class="hidden"><label for="arl-plan-other" class="block text-sm font-medium text-slate-600 mb-1">Nombre de la ARL</label><input type="text" id="arl-plan-other" class="w-full px-4 py-2 border rounded-lg" placeholder="Escriba el nombre de la ARL"></div><div id="arl-activity-container" class="md:col-span-2 hidden"><label for="arl-activity" class="block text-sm font-medium text-slate-600 mb-1">Actividad econ&#243;mica</label><div class="flex flex-col sm:flex-row gap-2"><input type="text" id="arl-activity" class="flex-1 px-4 py-2 border rounded-lg bg-white" placeholder="Seleccione una actividad econ&#243;mica" readonly><button type="button" id="open-arl-risk-modal" class="px-4 py-2 border border-primary-600 text-primary-600 rounded-lg font-semibold text-sm hover:bg-slate-100 transition-colors">Ver tabla de riesgos</button></div><p class="mt-2 text-xs text-slate-500">Haz clic en "Ver tabla de riesgos" para elegir la actividad econ&#243;mica y la clase de riesgo laboral.</p></div><div id="arl-risk-container" class="hidden"><label for="arl-risk-level" class="block text-sm font-medium text-slate-600 mb-1">Clase de riesgo laboral</label><input type="text" id="arl-risk-level" class="w-full px-4 py-2 border rounded-lg bg-white" placeholder="Seleccione una actividad" readonly></div><div><label for="ccf-plan" class="block text-sm font-medium text-slate-600 mb-1">Caja de Compensaci&#243;n</label><select id="ccf-plan" class="w-full px-4 py-2 border rounded-lg" required><option value="" disabled selected>Seleccione una caja</option><option value="Comfacauca">Comfacauca</option><option value="Comfamiliar del Cauca">Comfamiliar del Cauca</option><option value="Comfenalco Valle">Comfenalco Valle</option><option value="Comfandi">Comfandi (Valle)</option><option value="Comfamiliar Nari&#241;o">Comfamiliar Nari&#241;o</option><option value="Compensar">Compensar</option><option value="Colsubsidio">Colsubsidio</option><option value="Cafam">Cafam</option><option value="Comfama">Comfama (Antioquia)</option><option value="Ninguna">Ninguna</option><option value="Otra">Otra (especifique)</option></select></div><div id="ccf-plan-other-container" class="hidden"><label for="ccf-plan-other" class="block text-sm font-medium text-slate-600 mb-1">Nombre de la Caja</label><input type="text" id="ccf-plan-other" class="w-full px-4 py-2 border rounded-lg" placeholder="Escriba el nombre de la caja"></div></div></div><div><h3 class="text-lg font-semibold text-slate-700 border-b pb-2 mb-4">4. Detalles de Venta y Administrativos</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"><div><label for="advisor-select-list" class="block text-sm font-medium text-slate-600 mb-1">Asesor Asignado</label><select id="advisor-select-list" class="w-full px-4 py-2 border rounded-lg" required></select></div><div><label for="affiliate-start-date" class="block text-sm font-medium text-slate-600 mb-1">Fecha de Inicio</label><input type="date" id="affiliate-start-date" class="w-full px-4 py-2 border rounded-lg" required></div><div><label for="affiliate-end-date" class="block text-sm font-medium text-slate-600 mb-1">Fecha de Finalizaci&#243;n</label><input type="date" id="affiliate-end-date" class="w-full px-4 py-2 border rounded-lg"></div><div><label for="affiliate-status" class="block text-sm font-medium text-slate-600 mb-1">Estado del Afiliado</label><select id="affiliate-status" class="w-full px-4 py-2 border rounded-lg" required><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div></div><div class="mt-6"><label class="flex items-center space-x-2"><input type="checkbox" id="manual-override-checkbox" class="h-4 w-4 text-primary-600 rounded"><span>Usar costos y comisiones manuales</span></label></div><div id="manual-override-container" class="hidden mt-4 space-y-6 p-4 border rounded-lg bg-slate-50"><div><h4 class="text-md font-semibold text-slate-600 mb-3">Costos de Afiliaci&#243;n</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="text-sm font-medium">Salud ($)</label><input type="number" id="manual-cost-health" class="w-full p-2 border rounded-lg mt-1" placeholder="Ej: 95000"></div><div><label class="text-sm font-medium">Pensi&#243;n ($)</label><input type="number" id="manual-cost-pension" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div><div><label class="text-sm font-medium">ARL ($)</label><input type="number" id="manual-cost-arl" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div><div><label class="text-sm font-medium">Caja Comp. ($)</label><input type="number" id="manual-cost-ccf" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div></div></div><div class="pt-4 border-t"><h4 class="text-md font-semibold text-slate-600 mb-3">Comisión del Asesor</h4><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"><div><label class="text-sm font-medium" for="manual-total-affiliation-cost">Costo total afiliación ($)</label><input type="number" id="manual-total-affiliation-cost" name="manual-total-affiliation-cost" class="w-full p-2 border rounded-lg mt-1" placeholder="300000"></div><div><label class="text-sm font-medium" for="manual-admin-cost">Costo de administración ($)</label><input type="number" id="manual-admin-cost" name="manual-admin-cost" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div><div><label class="text-sm font-medium" for="manual-contribution-cost">Costo de aportes ($)</label><input type="number" id="manual-contribution-cost" name="manual-contribution-cost" class="w-full p-2 border rounded-lg mt-1" placeholder="0"></div><div><label class="text-sm font-medium" for="manual-commission-result">Comisión del asesor ($)</label><input type="number" id="manual-commission-result" name="manual-commission-result" class="w-full p-2 border rounded-lg mt-1 bg-slate-100" placeholder="0" readonly></div></div><input type="hidden" id="manual-commission" name="manual-commission"></div></div><div class="mt-6"><textarea id="affiliate-notes" placeholder="Notas adicionales..." class="w-full px-4 py-2 border rounded-lg h-24"></textarea></div></div></div><div class="pt-6 border-t mt-8 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-lg">Guardar Afiliado</button></div></form></div></div></div>
         <div id="plan-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="plan-modal-title" class="text-2xl font-bold">Nuevo Plan de Salud</h2><button data-close-modal="plan-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="plan-form" class="p-6"><input type="hidden" id="plan-doc-id"><div class="space-y-4"><div><label for="plan-name" class="block text-sm font-medium text-slate-600">Nombre del Plan</label><input type="text" id="plan-name" placeholder="Ej: Plan Integral" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="plan-price" class="block text-sm font-medium text-slate-600">Precio Mensual ($)</label><input type="number" id="plan-price" placeholder="Ej: 180000" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="plan-features" class="block text-sm font-medium text-slate-600">Caracter&#237;sticas (una por l&#237;nea)</label><textarea id="plan-features" placeholder="Acceso directo a 5 especialidades&#10;Atenci&#243;n domiciliaria" class="w-full mt-1 p-2 border rounded-lg h-32" required></textarea></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Plan</button></div></form></div></div>
         <div id="advisor-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="advisor-modal-title" class="text-2xl font-bold">Nuevo Asesor</h2><button data-close-modal="advisor-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="advisor-form" class="p-6"><input type="hidden" id="advisor-doc-id"><div class="space-y-4"><input type="text" id="advisor-name" placeholder="Nombre Completo" class="w-full px-4 py-2 border rounded-lg" required><input type="number" id="advisor-commission" placeholder="Comisi&#243;n (%)" min="0" max="100" class="w-full px-4 py-2 border rounded-lg" required></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Asesor</button></div></form></div></div>
         <div id="settings-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b sticky top-0 bg-white z-10"><h2 class="text-2xl font-bold">Configuraci&#243;n de Par&#225;metros</h2><button data-close-modal="settings-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="settings-form" class="p-6 space-y-6"><div><h3 class="font-semibold text-lg mb-2">Generales</h3><div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-medium">Salario M&#237;nimo (SMMLV)</label><input type="number" id="setting-smmlv" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Costo Admin. por Afiliado ($)</label><input type="number" id="setting-admin-fee" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes de Cotizaci&#243;n (%)</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="block text-sm font-medium">Salud Total</label><input type="number" step="0.1" id="setting-health" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Pensi&#243;n Total</label><input type="number" step="0.1" id="setting-pension" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Indep.</label><input type="number" step="0.1" id="setting-ccf-ind" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Empleador</label><input type="number" step="0.1" id="setting-ccf-emp" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes ARL (%)</h3><div class="grid grid-cols-2 md:grid-cols-5 gap-4"><div><label class="block text-sm font-medium">Riesgo 1</label><input type="number" step="0.001" id="setting-arl-1" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 2</label><input type="number" step="0.001" id="setting-arl-2" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 3</label><input type="number" step="0.001" id="setting-arl-3" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 4</label><input type="number" step="0.001" id="setting-arl-4" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 5</label><input type="number" step="0.001" id="setting-arl-5" class="w-full p-2 border rounded-lg"></div></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Cambios</button></div></form></div></div>
-        <div id="transaction-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="transaction-modal-title" class="text-2xl font-bold"></h2><button data-close-modal="transaction-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="transaction-form" class="p-6"><input type="hidden" id="transaction-type"><div class="space-y-4"><div><label for="transaction-concept" class="block text-sm font-medium text-slate-600">Concepto</label><input type="text" id="transaction-concept" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-amount" class="block text-sm font-medium text-slate-600">Monto</label><input type="number" id="transaction-amount" min="0" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-date" class="block text-sm font-medium text-slate-600">Fecha</label><input type="date" id="transaction-date" class="w-full mt-1 p-2 border rounded-lg" required></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar</button></div></form></div></div>
+        <div id="transaction-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="transaction-modal-title" class="text-2xl font-bold"></h2><button data-close-modal="transaction-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="transaction-form" class="p-6"><input type="hidden" id="transaction-type"><div class="space-y-4"><div><label for="transaction-concept" class="block text-sm font-medium text-slate-600">Concepto</label><input type="text" id="transaction-concept" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-amount" class="block text-sm font-medium text-slate-600">Monto</label><input type="number" id="transaction-amount" min="0" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-date" class="block text-sm font-medium text-slate-600">Fecha</label><input type="date" id="transaction-date" class="w-full mt-1 p-2 border rounded-lg" required></div><div id="transaction-advisor-container" class="hidden"><label for="transaction-advisor" class="block text-sm font-medium text-slate-600">Asignar asesor (opcional)</label><select id="transaction-advisor" class="w-full mt-1 p-2 border rounded-lg"><option value="">Sin asignar</option></select><p class="text-xs text-slate-500 mt-2">Los egresos asignados se descontar&aacute;n de las comisiones del asesor seleccionado.</p></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar</button></div></form></div></div>
         
         <nav class="bottom-nav md:hidden fixed bottom-0 inset-x-0 flex justify-around p-2 border-t z-40">
             <a href="#" data-target="dashboard" class="bottom-nav-link active flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="text-[10px] mt-1">Dashboard</span></a>
@@ -1726,6 +1726,27 @@ button svg {
             return Number.isNaN(parsed.getTime()) ? null : parsed;
         }
         return null;
+    }
+
+    function getAdvisorAssignedExpenses(advisorId, startDate = null, endDate = null) {
+        if (!advisorId) return [];
+
+        const normalizedStart = startDate instanceof Date ? startDate : parseAppDate(startDate);
+        const normalizedEnd = endDate instanceof Date ? endDate : parseAppDate(endDate);
+
+        return manualTransactions
+            .filter(tx => tx?.type === 'egreso' && tx.advisorId === advisorId)
+            .map(tx => {
+                const parsedDate = parseAppDate(tx.date);
+                return { ...tx, parsedDate };
+            })
+            .filter(tx => {
+                if (!tx.parsedDate) return false;
+                if (normalizedStart && tx.parsedDate < normalizedStart) return false;
+                if (normalizedEnd && tx.parsedDate > normalizedEnd) return false;
+                return true;
+            })
+            .sort((a, b) => b.parsedDate - a.parsedDate);
     }
 
     function setupConditionalField(selectElement, containerElement, inputElement) {
@@ -2058,6 +2079,12 @@ applyTheme(savedTheme);
             manualTransactions: (data) => {
                 manualTransactions = data;
                 if (document.getElementById('flujo-caja').classList.contains('active')) renderFlujoCajaSection();
+                if (currentUserRole === 'admin') {
+                    populateTransactionAdvisorOptions();
+                    if (document.getElementById('dashboard').classList.contains('active')) renderDashboard();
+                    renderAdvisorsSection();
+                    renderRankingSection();
+                }
             },
             novedades: (data) => {
                 novedades = data.sort((a,b) => (b.timestamp?.toDate() || 0) - (a.timestamp?.toDate() || 0));
@@ -2099,7 +2126,7 @@ applyTheme(savedTheme);
         }
         if (document.getElementById('afiliados').classList.contains('active')) renderAffiliatesList();
     }
-    function renderAllDependentOnAdvisors() { if(currentUserRole !== 'admin') return; populateAdvisorSelect(); renderAdvisorsSection(); renderRankingSection(); if (document.getElementById('afiliados').classList.contains('active')) renderAffiliatesList(); if (document.getElementById('calendario').classList.contains('active')) renderCalendarioSection(); }
+    function renderAllDependentOnAdvisors() { if(currentUserRole !== 'admin') return; populateAdvisorSelect(); populateTransactionAdvisorOptions(); renderAdvisorsSection(); renderRankingSection(); if (document.getElementById('afiliados').classList.contains('active')) renderAffiliatesList(); if (document.getElementById('calendario').classList.contains('active')) renderCalendarioSection(); }
     function renderAllDependentOnPlans() { if(currentUserRole === 'admin') renderPlansList(); if (document.getElementById('afiliados').classList.contains('active')) renderAffiliatesList(); if (currentUserRole === 'afiliado' && document.getElementById('perfil-afiliado').classList.contains('active')) renderPerfilAfiliadoSection(); }
     
     function unsubscribeAllListeners() { activeListeners.forEach(unsub => unsub()); activeListeners = []; }
@@ -2252,6 +2279,33 @@ function updateUIVisibilityByRole() {
     async function createNovedad(type, description) { if (!currentUser || currentUserRole !== 'admin') return; const novedad = { type, description, read: false, timestamp: serverTimestamp() }; const collectionRef = collection(db, `users/${adminUidForRole}/novedades`); await addDoc(collectionRef, novedad); }
     function getAffiliateCommissionBase(affiliate) { if (affiliate.manualCosts && Object.values(affiliate.manualCosts).some(cost => cost > 0)) { return Object.values(affiliate.manualCosts).reduce((sum, cost) => sum + (Number(cost) || 0), 0); } const plan = healthPlans.find(p => p.id === affiliate.healthPlan); return plan ? plan.price : 0; }
     function getAdvisorCommissionForAffiliate(affiliate) { if (affiliate.manualCommission && affiliate.manualCommission > 0) { return affiliate.manualCommission; } const advisor = advisors.find(v => v.id === affiliate.advisorId); if (!advisor) return 0; return getAffiliateCommissionBase(affiliate) * (advisor.commissionRate / 100); }
+    function calculateManualAdvisorCommission(totalCost, adminCost, contributionCost) {
+        const total = Number(totalCost) || 0;
+        const admin = Number(adminCost) || 0;
+        const contributions = Number(contributionCost) || 0;
+        const result = total - admin - contributions;
+        return Math.max(result, 0);
+    }
+
+    function updateManualCommissionDisplay(form) {
+        if (!form) return null;
+        const totalField = form['manual-total-affiliation-cost'];
+        const adminField = form['manual-admin-cost'];
+        const contributionsField = form['manual-contribution-cost'];
+        const resultField = form['manual-commission-result'];
+        const storageField = form['manual-commission'];
+        const hasValues = [totalField, adminField, contributionsField].some(field => field && field.value !== '');
+        const result = calculateManualAdvisorCommission(totalField?.value, adminField?.value, contributionsField?.value);
+        const sanitizedResult = Math.max(result, 0);
+        if (resultField) {
+            resultField.value = hasValues ? sanitizedResult : '';
+        }
+        if (storageField) {
+            storageField.value = hasValues ? sanitizedResult : '';
+        }
+        return hasValues ? sanitizedResult : null;
+    }
+
     
     function renderContent(targetId) { 
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active')); 
@@ -2346,6 +2400,9 @@ function updateUIVisibilityByRole() {
             return;
         }
         const statusStyles = { 'Activo': "bg-green-100 text-green-800", 'Pendiente': "bg-yellow-100 text-yellow-800", 'Inactivo': "bg-red-100 text-red-800", };
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
         container.innerHTML = advisors.map((advisor) => {
             const affs = affiliates.filter((a) => a.advisorId === advisor.id);
             const activeAffs = affs.filter((a) => a.status === "Activo");
@@ -2357,6 +2414,11 @@ function updateUIVisibilityByRole() {
                 else acc.pending += commissionValue;
                 return acc;
             }, { total: 0, paid: 0, pending: 0 });
+            const monthlyExpenses = getAdvisorAssignedExpenses(advisor.id, startOfMonth, endOfMonth);
+            const monthlyExpensesTotal = monthlyExpenses.reduce((sum, expense) => sum + (Number(expense.amount) || 0), 0);
+            const monthlyExpensesDisplay = monthlyExpensesTotal > 0 ? -monthlyExpensesTotal : 0;
+            const netMonthlyCommission = commissionTotals.total - monthlyExpensesTotal;
+            const netCommissionClass = netMonthlyCommission >= 0 ? 'text-green-600' : 'text-rose-600';
             const hasAffiliates = affs.length > 0;
             const breakdownHtml = hasAffiliates ? affs.map((aff) => {
                 const commission = getAdvisorCommissionForAffiliate(aff);
@@ -2371,18 +2433,29 @@ function updateUIVisibilityByRole() {
                 const paidDate = commissionPaid && aff.commissionPaidAt ? `<p class="text-[10px] text-slate-500">Pagada el ${formatDateShort(aff.commissionPaidAt)}</p>` : '';
                 return `<tr class="border-b border-slate-200 last:border-b-0 hover:bg-slate-100"><td class="p-2 font-medium text-slate-800">${aff.name}</td><td class="p-2"><span class="text-xs font-semibold px-2 py-0.5 rounded-full ${statusStyles[aff.status] || ""}">${aff.status}</span></td><td class="p-2 text-right font-mono text-green-700">${formatCurrency(commission)}</td><td class="p-2 text-right"><div class="flex flex-col items-end gap-1"><span class="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ${statusBadgeClass}"><i data-lucide="${statusIcon}" class="h-3 w-3"></i>${commissionStatusLabel}</span>${paidDate}<button class="toggle-commission-btn inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${actionClass}" data-id="${aff.id}" data-next-status="${nextStatus}"><i data-lucide="${actionIcon}" class="h-4 w-4"></i>${actionLabel}</button></div></td></tr>`;
             }).join("") : `<tr><td colspan="4" class="text-center p-4 text-slate-500">Este asesor no tiene afiliados.</td></tr>`;
+            const expensesListHtml = monthlyExpenses.length > 0
+                ? monthlyExpenses.map(expense => {
+                    const amount = Number(expense.amount) || 0;
+                    const expenseDate = expense.parsedDate || parseAppDate(expense.date);
+                    const dateLabel = expenseDate ? formatDateShort(expenseDate) : '';
+                    const dateTag = dateLabel ? `<span class="ml-1 text-xs text-slate-400">${dateLabel}</span>` : '';
+                    return `<li class="flex justify-between items-start gap-2"><span class="flex-1 text-slate-600">${expense.concept}${dateTag}</span><span class="font-semibold text-rose-600">-${formatCurrency(amount)}</span></li>`;
+                }).join("")
+                : '<li class="text-sm text-slate-500">Sin egresos asignados este mes.</li>';
             return `
             <div class="bg-white rounded-xl shadow-lg flex flex-col transition hover:shadow-2xl">
                 <div class="p-5 flex justify-between items-start">
-                    <div><h3 class="font-bold text-xl text-slate-800">${advisor.name}</h3><p class="text-sm text-primary-600 font-semibold">Comisión Base: ${advisor.commissionRate}%</p></div>
+                    <div><h3 class="font-bold text-xl text-slate-800">${advisor.name}</h3><p class="text-sm text-primary-600 font-semibold">Comisión Base: ${advisor.commissionRate}%</p><p class="text-xs text-slate-500 mt-1">Comisión total generada: ${formatCurrency(totalCommission, 0)}</p></div>
                     <div class="flex-shrink-0"><button class="edit-advisor-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${advisor.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button><button class="delete-advisor-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${advisor.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button></div>
                 </div>
-                <div class="p-5 grid grid-cols-2 md:grid-cols-4 gap-4 text-center border-y">
+                <div class="p-5 grid grid-cols-2 md:grid-cols-5 gap-4 text-center border-y">
                     <div><p class="text-3xl font-bold text-slate-700">${affs.length}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Afiliados</p></div>
                     <div><p class="text-xl font-bold text-emerald-600">${formatCurrency(commissionTotals.paid, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión Pagada (Mes)</p></div>
                     <div><p class="text-xl font-bold text-amber-600">${formatCurrency(commissionTotals.pending, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión Pendiente (Mes)</p></div>
-                    <div><p class="text-xl font-bold text-green-600">${formatCurrency(totalCommission, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión Total Generada</p></div>
+                    <div><p class="text-xl font-bold text-rose-600">${formatCurrency(monthlyExpensesDisplay, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Egresos Asignados (Mes)</p></div>
+                    <div><p class="text-xl font-bold ${netCommissionClass}">${formatCurrency(netMonthlyCommission, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión Neta (Mes)</p></div>
                 </div>
+                <div class="p-5 bg-rose-50 border-t border-rose-100"><h4 class="font-semibold text-slate-700 text-sm mb-3">Egresos asignados este mes</h4><ul class="space-y-2">${expensesListHtml}</ul></div>
                 <div id="advisor-stats-${advisor.id}" class="hidden">
                     <div class="p-4 bg-slate-50"><h4 class="font-semibold mb-3 text-slate-700 text-sm">Desglose de Afiliados</h4><div class="max-h-64 overflow-y-auto pr-1"><table class="w-full text-sm text-left"><thead class="text-xs text-slate-500 uppercase bg-slate-200 sticky top-0"><tr><th class="p-2 font-semibold">Afiliado</th><th class="p-2 font-semibold">Estado</th><th class="p-2 font-semibold text-right">Ganancia</th><th class="p-2 font-semibold text-right">Pago Comisión</th></tr></thead><tbody class="bg-white">${breakdownHtml}</tbody></table></div></div>
                 </div>
@@ -2394,6 +2467,7 @@ function updateUIVisibilityByRole() {
     function renderRankingSection(){const e=document.getElementById("ranking-list");if(!e)return;const t=advisors.map(e=>{const t=affiliates.filter(t=>t.advisorId===e.id).reduce((e,t)=>e+getAdvisorCommissionForAffiliate(t),0);return{...e,totalCommission:t}});if(t.sort((e,t)=>t.totalCommission-e.totalCommission),0===t.length){e.innerHTML='<div class="text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay asesores para mostrar en el ranking.</p></div>';return}const a=["bg-amber-400 text-amber-900","bg-slate-300 text-slate-800","bg-orange-400 text-orange-900"],n=['<i data-lucide="trophy" class="w-6 h-6 text-amber-500"></i>','<i data-lucide="award" class="w-6 h-6 text-slate-500"></i>','<i data-lucide="medal" class="w-6 h-6 text-orange-500"></i>'];e.innerHTML=t.map((e,t)=>{const o=t+1,s=3>=o?a[t]:"bg-slate-200 text-slate-700",i=3>=o?n[t]:`<span class="font-bold text-lg">${o}</span>`;return` <div class="bg-white rounded-xl shadow-lg p-4 flex items-center space-x-4 transition hover:shadow-xl hover:scale-[1.02]"> <div class="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${s}">${i}</div> <div class="flex-grow"> <h3 class="font-bold text-lg text-slate-800">${e.name}</h3> <p class="text-sm text-slate-500">Comisión Base: ${e.commissionRate}%</p> </div> <div class="text-right"> <p class="text-xl font-extrabold text-green-600">${formatCurrency(e.totalCommission)}</p> <p class="text-xs font-medium text-slate-500 uppercase">Comisión Total</p> </div> </div>`}).join("");}
     function renderPlansList(){const e=document.getElementById("plans-list");if(!e)return;if(0===healthPlans.length){e.innerHTML='<div class="col-span-full text-center py-10 bg-white rounded-lg shadow-md"><p class="text-slate-500">No hay planes de salud creados. ¡Añade el primero!</p></div>';return}e.innerHTML=healthPlans.map(e=>` <div class="bg-white rounded-xl shadow-lg flex flex-col"> <div class="p-5 flex-grow"> <div class="flex justify-between items-start"><h3 class="font-bold text-lg text-slate-800">${e.name}</h3><p class="text-xl font-extrabold text-primary-600">${formatCurrency(e.price)}</p></div> <ul class="text-sm text-slate-600 space-y-1 mt-4"> ${e.features.split("\n").map(e=>`<li class="flex items-start"><i data-lucide="check-circle-2" class="w-4 h-4 mr-2 text-green-500 mt-0.5 flex-shrink-0"></i><span>${e}</span></li>`).join("")} </ul> </div> <div class="border-t p-3 flex justify-end items-center bg-gray-50/50 rounded-b-xl"> <button class="edit-plan-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button> <button class="delete-plan-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${e.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button> </div> </div>`).join("");}
     function populateAdvisorSelect(){const e=document.getElementById("advisor-select-list");e&&(e.innerHTML='<option value="" disabled selected>Asignar Asesor</option>'+advisors.map(e=>`<option value="${e.id}">${e.name}</option>`).join(""))}
+    function populateTransactionAdvisorOptions(){const e=document.getElementById("transaction-advisor");if(!e)return; if(0===advisors.length){e.innerHTML='<option value="">No hay asesores disponibles</option>';e.disabled=true;return}e.innerHTML='<option value="">Sin asignar</option>'+advisors.map(e=>`<option value="${e.id}">${e.name}</option>`).join("");e.disabled=false}
     
     function renderAsesorDashboard() {
         if (!userRoleData.linkedAdvisorId) return;
@@ -2407,12 +2481,16 @@ function updateUIVisibilityByRole() {
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
         const startOfPreviousMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
         const endOfPreviousMonth = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
 
         const monthlyNewAffiliates = relevantAffiliates.filter(aff => aff.createdAt && aff.createdAt >= startOfMonth && aff.createdAt <= now);
         const previousMonthNewAffiliates = relevantAffiliates.filter(aff => aff.createdAt && aff.createdAt >= startOfPreviousMonth && aff.createdAt <= endOfPreviousMonth);
 
         const recurringRevenue = activeAffiliates.reduce((sum, aff) => sum + getAffiliateCommissionBase(aff), 0);
         const monthlyCommissions = activeAffiliates.reduce((sum, aff) => sum + getAdvisorCommissionForAffiliate(aff), 0);
+        const advisorExpensesThisMonth = getAdvisorAssignedExpenses(userRoleData.linkedAdvisorId, startOfMonth, endOfMonth);
+        const advisorExpensesTotal = advisorExpensesThisMonth.reduce((sum, tx) => sum + (Number(tx.amount) || 0), 0);
+        const netMonthlyCommissions = monthlyCommissions - advisorExpensesTotal;
         const adminFee = settings?.ADMIN_FEE_PER_AFFILIATE ?? defaultSettings.ADMIN_FEE_PER_AFFILIATE;
         const adminNetProfit = monthlyNewAffiliates.length * adminFee;
         const growthRate = previousMonthNewAffiliates.length > 0
@@ -2438,17 +2516,18 @@ function updateUIVisibilityByRole() {
 
         updateTextContent('kpi-monthly-income', formatCurrency(recurringRevenue));
         updateTextContent('kpi-admin-net-profit', formatCurrency(adminNetProfit));
-        updateTextContent('kpi-net-profit', formatCurrency(monthlyCommissions));
+        updateTextContent('kpi-net-profit', formatCurrency(netMonthlyCommissions));
         updateTextContent('kpi-new-affiliates', monthlyNewAffiliates.length);
         updateTextContent('kpi-active-affiliates', activeAffiliates.length);
         updateTextContent('kpi-overdue-payments', formatCurrency(overdueValue));
 
         updateTextContent('dashboard-net-label', 'Ingresos recurrentes estimados');
         updateTextContent('dashboard-net-description', 'Basados en tu cartera activa actual.');
-        updateTextContent('dashboard-expense-label', 'Comisiones proyectadas');
-        updateTextContent('dashboard-expense-description', 'Valor aproximado de tus comisiones actuales.');
+        updateTextContent('dashboard-expense-label', 'Comisiones netas del mes');
+        const advisorExpenseDescription = advisorExpensesTotal > 0 ? `Incluye egresos asignados por ${formatCurrency(advisorExpensesTotal)}.` : 'Sin egresos asignados este mes.';
+        updateTextContent('dashboard-expense-description', advisorExpenseDescription);
         updateTextContent('dashboard-net-cashflow', formatCurrency(recurringRevenue));
-        updateTextContent('dashboard-monthly-expenses', formatCurrency(monthlyCommissions));
+        updateTextContent('dashboard-monthly-expenses', formatCurrency(netMonthlyCommissions));
 
         updateGrowthIndicator(growthRate);
         updateTextContent('dashboard-retention-rate', formatPercentage(retentionRate));
@@ -2838,7 +2917,7 @@ function updateUIVisibilityByRole() {
         affiliates.forEach(aff => {
             if (aff.status === 'Activo') {
                 const incomeAmount = getAffiliateCommissionBase(aff);
-                transactions.push({ id: `auto-i-${aff.id}`, type: 'ingreso', concept: `Pago afiliado: ${aff.name}`, amount: incomeAmount, date: aff.startDate });
+                transactions.push({ id: `auto-i-${aff.id}`, type: 'ingreso', concept: `Pago afiliado: ${aff.name}`, amount: incomeAmount, date: aff.startDate, advisorId: aff.advisorId });
                 const commissionAmount = getAdvisorCommissionForAffiliate(aff);
                 if (commissionAmount > 0 && aff.commissionPaid) {
                     const advisor = advisors.find(item => item.id === aff.advisorId);
@@ -2847,11 +2926,16 @@ function updateUIVisibilityByRole() {
                         const paidDate = aff.commissionPaidAt instanceof Date ? aff.commissionPaidAt : new Date(aff.commissionPaidAt);
                         if (paidDate instanceof Date && Number.isFinite(paidDate.getTime())) commissionDate = paidDate.toISOString();
                     }
-                    transactions.push({ id: `auto-e-${aff.id}`, type: 'egreso', concept: `Comisión ${advisor?.name || 'N/A'} (Afiliado: ${aff.name})`, amount: commissionAmount, date: commissionDate });
+                    transactions.push({ id: `auto-e-${aff.id}`, type: 'egreso', concept: `Comisión ${advisor?.name || 'N/A'} (Afiliado: ${aff.name})`, amount: commissionAmount, date: commissionDate, advisorId: aff.advisorId });
                 }
             }
         });
-        return [...transactions, ...manualTransactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+        const manualClones = manualTransactions.map(tx => ({ ...tx }));
+        return [...transactions, ...manualClones].sort((a, b) => {
+            const dateA = parseAppDate(a.date) || new Date(0);
+            const dateB = parseAppDate(b.date) || new Date(0);
+            return dateB - dateA;
+        });
     }
 
     async function setAffiliateCommissionPaymentStatus(affiliateId, isPaid) {
@@ -2863,7 +2947,7 @@ function updateUIVisibilityByRole() {
         const payload = { id: affiliateId, commissionPaid: isPaid, commissionPaidAt: isPaid ? serverTimestamp() : null };
         await saveDataToFirestore('affiliates', payload);
     }
-    function renderTransactionsTable(e){const t=document.getElementById("transactions-table-body");if(0===e.length){t.innerHTML='<tr><td colspan="3" class="text-center p-4 text-slate-500">No hay transacciones registradas.</td></tr>';return}t.innerHTML=e.map(e=>{const t="ingreso"===e.type;const n=parseAppDate(e.date);const a=n?n.toLocaleDateString("es-CO"):"-";return`<tr class="border-b"><td class="p-3">${a}</td><td class="p-3 text-slate-700">${e.concept}</td><td class="p-3 text-right font-semibold ${t?"text-emerald-600":"text-rose-600"}">${t?"+":"-"}${formatCurrency(e.amount)}</td></tr>`}).join("")}
+    function renderTransactionsTable(e){const t=document.getElementById("transactions-table-body");if(0===e.length){t.innerHTML='<tr><td colspan="3" class="text-center p-4 text-slate-500">No hay transacciones registradas.</td></tr>';return}t.innerHTML=e.map(e=>{const t="ingreso"===e.type;const n=parseAppDate(e.date);const a=n?n.toLocaleDateString("es-CO"):"-";const r=e.advisorId?advisors.find(t=>t.id===e.advisorId):null;const o=r?`${e.concept} · Asesor: ${r.name}`:e.concept;return`<tr class="border-b"><td class="p-3">${a}</td><td class="p-3 text-slate-700">${o}</td><td class="p-3 text-right font-semibold ${t?"text-emerald-600":"text-rose-600"}">${t?"+":"-"}${formatCurrency(e.amount)}</td></tr>`}).join("")}
     async function generatePDFReport() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -2896,12 +2980,24 @@ function updateUIVisibilityByRole() {
     const adminNetProfit = affiliatesInPeriod.length * adminFee;
     const netProfit = totalIncome - totalExpenses;
 
+    const advisorCommissionMap = {};
+    const advisorExpenseMap = {};
+    transactionsInPeriod.forEach(t => {
+        if (t.type !== 'egreso') return;
+        const amount = Number(t.amount) || 0;
+        if (t.id?.startsWith('auto-e-') && t.advisorId) {
+            advisorCommissionMap[t.advisorId] = (advisorCommissionMap[t.advisorId] || 0) + amount;
+        } else if (t.advisorId) {
+            advisorExpenseMap[t.advisorId] = (advisorExpenseMap[t.advisorId] || 0) + amount;
+        }
+    });
     const commissionBreakdown = advisors.map(advisor => {
-        const totalCommissionForAdvisor = transactionsInPeriod
-            .filter(t => t.type === 'egreso' && t.id.startsWith('auto-e-') && t.concept.includes(advisor.name))
-            .reduce((sum, t) => sum + t.amount, 0);
-        return { name: advisor.name, commission: totalCommissionForAdvisor };
-    }).filter(item => item.commission > 0);
+        const gross = advisorCommissionMap[advisor.id] || 0;
+        const expenses = advisorExpenseMap[advisor.id] || 0;
+        const net = gross - expenses;
+        if (gross <= 0 && expenses <= 0) return null;
+        return { name: advisor.name, gross, expenses, net };
+    }).filter(Boolean);
 
     let textStartX = 14;
     let headerPrimaryY = 22;
@@ -2959,8 +3055,13 @@ function updateUIVisibilityByRole() {
     if (commissionBreakdown.length > 0) {
         doc.autoTable({
             startY: currentY,
-            head: [['Desglose de Comisiones por Asesor', 'Comisión Generada']],
-            body: commissionBreakdown.map(item => [item.name, formatCurrency(item.commission)]),
+            head: [['Asesor', 'Comisión generada', 'Egresos asignados', 'Comisión neta']],
+            body: commissionBreakdown.map(item => [
+                item.name,
+                formatCurrency(item.gross),
+                formatCurrency(item.expenses),
+                formatCurrency(item.net)
+            ]),
             theme: 'striped',
             headStyles: { fillColor: primaryColorRGB }
         });
@@ -3634,7 +3735,7 @@ function formatPhoneNumberForWhatsApp(phone) {
                       showToast('Registros de rol eliminados.', 'success');
                  }
             }
-            else if (button.id === 'sell-plan-btn') { if (!lastQuoteResult) { showToast('Por favor, realiza una cotización primero.', 'error'); return; } modalManager.open('affiliate-modal'); setTimeout(() => { const form = document.getElementById('affiliate-form'); if (!form) return; form['manual-override-checkbox'].checked = true; document.getElementById('manual-override-container').classList.remove('hidden'); form['manual-cost-health'].value = lastQuoteResult.health ? Math.round(lastQuoteResult.health.total) : ''; form['manual-cost-pension'].value = lastQuoteResult.pension ? Math.round(lastQuoteResult.pension.total) : ''; form['manual-cost-arl'].value = lastQuoteResult.arl ? Math.round(lastQuoteResult.arl.total) : ''; form['manual-cost-ccf'].value = lastQuoteResult.ccf ? Math.round(lastQuoteResult.ccf.total) : ''; const incomeValue = Number(document.getElementById('income').value); form['affiliate-notes'].value = `Cotización inicial basada en un ingreso mensual de ${formatCurrency(incomeValue)}. IBC: ${formatCurrency(lastQuoteResult.ibc)}.`; showToast('Datos de cotización precargados.'); }, 100); } 
+            else if (button.id === 'sell-plan-btn') { if (!lastQuoteResult) { showToast('Por favor, realiza una cotización primero.', 'error'); return; } modalManager.open('affiliate-modal'); setTimeout(() => { const form = document.getElementById('affiliate-form'); if (!form) return; form['manual-override-checkbox'].checked = true; document.getElementById('manual-override-container').classList.remove('hidden'); form['manual-cost-health'].value = lastQuoteResult.health ? Math.round(lastQuoteResult.health.total) : ''; form['manual-cost-pension'].value = lastQuoteResult.pension ? Math.round(lastQuoteResult.pension.total) : ''; form['manual-cost-arl'].value = lastQuoteResult.arl ? Math.round(lastQuoteResult.arl.total) : ''; form['manual-cost-ccf'].value = lastQuoteResult.ccf ? Math.round(lastQuoteResult.ccf.total) : ''; const adminFee = settings?.ADMIN_FEE_PER_AFFILIATE || 0; if (form['manual-admin-cost']) { form['manual-admin-cost'].value = adminFee ? Math.round(adminFee) : ''; } if (form['manual-contribution-cost']) { const contributionSum = ['manual-cost-health', 'manual-cost-pension', 'manual-cost-arl', 'manual-cost-ccf'].reduce((sum, field) => sum + (Number(form[field].value) || 0), 0); form['manual-contribution-cost'].value = contributionSum ? Math.round(contributionSum) : ''; } if (form['manual-total-affiliation-cost'] && !form['manual-total-affiliation-cost'].value) { form['manual-total-affiliation-cost'].value = '300000'; } updateManualCommissionDisplay(form); const incomeValue = Number(document.getElementById('income').value); form['affiliate-notes'].value = `Cotización inicial basada en un ingreso mensual de ${formatCurrency(incomeValue)}. IBC: ${formatCurrency(lastQuoteResult.ibc)}.`; showToast('Datos de cotización precargados.'); }, 100); } 
         });
         
         // --- Lógica de desglose para la vista de Calendario ---
@@ -3725,6 +3826,8 @@ function formatPhoneNumberForWhatsApp(phone) {
                 manualCosts: null,
                 manualCommission: null
             };
+            affiliateData.manualCommissionBreakdown = null;
+            affiliateData.manualCommission = null;
             if (manualOverride) {
                 affiliateData.manualCosts = {
                     health: Number(form['manual-cost-health'].value) || 0,
@@ -3732,7 +3835,17 @@ function formatPhoneNumberForWhatsApp(phone) {
                     arl: Number(form['manual-cost-arl'].value) || 0,
                     ccf: Number(form['manual-cost-ccf'].value) || 0
                 };
-                affiliateData.manualCommission = Number(form['manual-commission'].value) || null;
+                const totalCostField = form['manual-total-affiliation-cost'];
+                const adminCostField = form['manual-admin-cost'];
+                const contributionsField = form['manual-contribution-cost'];
+                const breakdownHasValues = [totalCostField, adminCostField, contributionsField].some(field => field && field.value !== '');
+                affiliateData.manualCommissionBreakdown = breakdownHasValues ? {
+                    totalCost: Number(totalCostField?.value) || 0,
+                    adminCost: Number(adminCostField?.value) || 0,
+                    contributionCost: Number(contributionsField?.value) || 0
+                } : null;
+                const commissionResult = updateManualCommissionDisplay(form);
+                affiliateData.manualCommission = commissionResult ?? null;
             }
             const existingId = form['affiliate-doc-id'].value;
 
@@ -3858,8 +3971,26 @@ function formatPhoneNumberForWhatsApp(phone) {
                 const manualContainer = document.getElementById('manual-override-container');
                 const isChecked = e.target.checked;
                 manualContainer.classList.toggle('hidden', !isChecked);
+                const form = e.target.closest('form');
+                if (isChecked && form) {
+                    const totalField = form['manual-total-affiliation-cost'];
+                    if (totalField && !totalField.value) {
+                        totalField.value = '300000';
+                    }
+                    updateManualCommissionDisplay(form);
+                }
             }
         });
+        const affiliateFormElement = document.getElementById('affiliate-form');
+        if (affiliateFormElement) {
+            ['manual-total-affiliation-cost', 'manual-admin-cost', 'manual-contribution-cost'].forEach((id) => {
+                const input = affiliateFormElement.querySelector(`#${id}`);
+                if (input) {
+                    input.addEventListener('input', () => updateManualCommissionDisplay(affiliateFormElement));
+                }
+            });
+            updateManualCommissionDisplay(affiliateFormElement);
+        }
         
         
         document.getElementById('plan-form').addEventListener('submit', async (e) => {
@@ -4097,6 +4228,13 @@ localStorage.setItem('userTheme', profileData.theme);
                     type: transactionType,
                 };
 
+                if (transactionType === 'egreso') {
+                    const advisorField = form['transaction-advisor'];
+                    if (advisorField && advisorField.value) {
+                        transactionData.advisorId = advisorField.value;
+                    }
+                }
+
                 if (!transactionData.concept || transactionData.amount <= 0 || !transactionData.date) {
                     showToast('Por favor, completa todos los campos correctamente.', 'error');
                     saveButton.disabled = false;
@@ -4332,12 +4470,17 @@ localStorage.setItem('userTheme', profileData.theme);
         serviceTotal = planData.price || 0;
     }
 
+    const manualBreakdown = affiliateData.manualCommissionBreakdown || null;
+    const totalMonthlyToPay = (manualBreakdown && manualBreakdown.totalCost !== undefined && manualBreakdown.totalCost !== null)
+        ? (Number(manualBreakdown.totalCost) || 0)
+        : serviceTotal;
+
     doc.autoTable({
         startY: finalY + 3,
         theme: 'striped',
         head: [['Concepto de Pago Mensual', 'Valor']],
         body: serviceBody,
-        foot: [['TOTAL MENSUAL A PAGAR', formatCurrency(serviceTotal)]],
+        foot: [['TOTAL MENSUAL A PAGAR', formatCurrency(totalMonthlyToPay)]],
         headStyles: { fillColor: [67, 56, 202], fontStyle: 'bold', textColor: [255, 255, 255] },
         footStyles: { fillColor: [67, 56, 202], fontStyle: 'bold', textColor: [255, 255, 255], fontSize: 11 },
         styles: { fontSize: 10, cellPadding: 2.5 },
@@ -4513,7 +4656,7 @@ localStorage.setItem('userTheme', profileData.theme);
                 form['affiliate-end-date'].value = data?.endDate || '';
                 form['affiliate-status'].value = data?.status || 'Pendiente';
                 form['affiliate-notes'].value = data?.notes || '';
-const manualContainer = form.querySelector('#manual-override-container'); form['manual-override-checkbox'].checked = !!(data?.manualCosts || data?.manualCommission); manualContainer.classList.toggle('hidden', !form['manual-override-checkbox'].checked); form['manual-cost-health'].value = data?.manualCosts?.health || ''; form['manual-cost-pension'].value = data?.manualCosts?.pension || ''; form['manual-cost-arl'].value = data?.manualCosts?.arl || ''; form['manual-cost-ccf'].value = data?.manualCosts?.ccf || ''; form['manual-commission'].value = data?.manualCommission || '';
+const manualContainer = form.querySelector('#manual-override-container'); form['manual-override-checkbox'].checked = !!(data?.manualCosts || data?.manualCommission); manualContainer.classList.toggle('hidden', !form['manual-override-checkbox'].checked); form['manual-cost-health'].value = data?.manualCosts?.health || ''; form['manual-cost-pension'].value = data?.manualCosts?.pension || ''; form['manual-cost-arl'].value = data?.manualCosts?.arl || ''; form['manual-cost-ccf'].value = data?.manualCosts?.ccf || ''; const commissionBreakdown = data?.manualCommissionBreakdown || null; if (form['manual-total-affiliation-cost']) { form['manual-total-affiliation-cost'].value = commissionBreakdown?.totalCost ?? ''; } if (form['manual-admin-cost']) { form['manual-admin-cost'].value = commissionBreakdown?.adminCost ?? ''; } if (form['manual-contribution-cost']) { form['manual-contribution-cost'].value = commissionBreakdown?.contributionCost ?? ''; } if (commissionBreakdown) { updateManualCommissionDisplay(form); } else { if (form['manual-commission-result']) { form['manual-commission-result'].value = data?.manualCommission || ''; } if (form['manual-commission']) { form['manual-commission'].value = data?.manualCommission || ''; } }
             } else if (modalId === 'advisor-modal') { form['advisor-doc-id'].value = data?.id || ''; form['advisor-name'].value = data?.name || ''; form['advisor-commission'].value = data?.commissionRate || ''; } 
             else if (modalId === 'plan-modal') { form['plan-doc-id'].value = data?.id || ''; form['plan-name'].value = data?.name || ''; form['plan-price'].value = data?.price || ''; form['plan-features'].value = data?.features || ''; } 
             else if (modalId === 'settings-modal') { 
@@ -4529,7 +4672,21 @@ const manualContainer = form.querySelector('#manual-override-container'); form['
                     form[`setting-arl-${i}`].value = s.ARL_RATES?.[i] ?? ds.ARL_RATES[i]; 
                 } 
             } 
-            else if (modalId === 'transaction-modal') { document.getElementById('transaction-type').value = data.type; document.getElementById('transaction-date').value = new Date().toISOString().split('T')[0]; }
+            else if (modalId === 'transaction-modal') {
+                const typeField = document.getElementById('transaction-type');
+                const dateField = document.getElementById('transaction-date');
+                if (typeField) typeField.value = data.type;
+                if (dateField) dateField.value = new Date().toISOString().split('T')[0];
+                populateTransactionAdvisorOptions();
+                const advisorContainer = document.getElementById('transaction-advisor-container');
+                const advisorSelect = document.getElementById('transaction-advisor');
+                const shouldShowAdvisor = data.type === 'egreso';
+                if (advisorContainer) advisorContainer.classList.toggle('hidden', !shouldShowAdvisor);
+                if (advisorSelect) {
+                    advisorSelect.value = '';
+                    advisorSelect.disabled = shouldShowAdvisor && advisors.length === 0;
+                }
+            }
             modal.classList.remove('opacity-0', 'pointer-events-none');
             modal.querySelector('.modal-content').classList.remove('scale-95');
             lucide.createIcons();
