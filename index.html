@@ -1522,6 +1522,35 @@ button svg {
         </nav>
     </div>
 
+        <div id="renew-affiliate-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50">
+            <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-full overflow-y-auto transform scale-95">
+                <div class="flex justify-between items-center p-6 border-b">
+                    <h2 id="renew-affiliate-modal-title" class="text-2xl font-bold">Renovar Afiliado</h2>
+                    <button data-close-modal="renew-affiliate-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+                </div>
+                <form id="renew-affiliate-form" class="p-6">
+                    <input type="hidden" id="renew-affiliate-id">
+                    <div class="space-y-4">
+                        <div>
+                            <label for="renew-start-date" class="block text-sm font-medium text-slate-600">Nueva Fecha de Inicio</label>
+                            <input type="date" id="renew-start-date" class="w-full mt-1 p-2 border rounded-lg" required>
+                        </div>
+                        <div>
+                            <label for="renew-end-date" class="block text-sm font-medium text-slate-600">Nueva Fecha de Finalización</label>
+                            <input type="date" id="renew-end-date" class="w-full mt-1 p-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label for="renew-commission" class="block text-sm font-medium text-slate-600">Nueva Comisión para el Asesor ($)</label>
+                            <input type="number" id="renew-commission" class="w-full mt-1 p-2 border rounded-lg" placeholder="Dejar en blanco para usar la comisión por defecto">
+                        </div>
+                    </div>
+                    <div class="pt-6 border-t mt-6 flex justify-end">
+                        <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
 <script type="module">
     // =================================================================
     // INICIO DE LA SOLUCIÓN: IMPORTACIONES DE FIREBASE
@@ -1818,14 +1847,14 @@ button svg {
         return null;
     }
 
-    function getAdvisorAssignedExpenses(advisorId, startDate = null, endDate = null) {
+    function getAdvisorAssignedTransactions(advisorId, startDate = null, endDate = null) {
         if (!advisorId) return [];
 
         const normalizedStart = startDate instanceof Date ? startDate : parseAppDate(startDate);
         const normalizedEnd = endDate instanceof Date ? endDate : parseAppDate(endDate);
 
         return manualTransactions
-            .filter(tx => tx?.type === 'egreso' && tx.advisorId === advisorId)
+            .filter(tx => tx.advisorId === advisorId && (tx.type === 'egreso' || tx.type === 'ingreso'))
             .map(tx => {
                 const parsedDate = parseAppDate(tx.date);
                 return { ...tx, parsedDate };
@@ -2475,6 +2504,9 @@ function updateUIVisibilityByRole() {
         const commissionActionButton = `<button class="toggle-commission-btn inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${commissionActionClass}" data-id="${aff.id}" data-next-status="${nextCommissionStatus}"><i data-lucide="${commissionActionIcon}" class="h-4 w-4"></i>${commissionActionLabel}</button>`;
         const actionsHtml = `
             <div>
+                <button class="renew-affiliate-btn text-slate-500 hover:text-green-600 p-2 rounded-full" data-id="${aff.id}" title="Renovar para el Siguiente Mes">
+                    <i data-lucide="calendar-plus" class="h-5 w-5 pointer-events-none"></i>
+                </button>
                 <button class="download-receipt-btn text-slate-500 hover:text-blue-600 p-2 rounded-full" data-id="${aff.id}" title="Descargar Recibo">
                     <i data-lucide="file-down" class="h-5 w-5 pointer-events-none"></i>
                 </button>
@@ -2510,10 +2542,13 @@ function updateUIVisibilityByRole() {
                 else acc.pending += commissionValue;
                 return acc;
             }, { total: 0, paid: 0, pending: 0 });
-            const monthlyExpenses = getAdvisorAssignedExpenses(advisor.id, startOfMonth, endOfMonth);
-            const monthlyExpensesTotal = monthlyExpenses.reduce((sum, expense) => sum + (Number(expense.amount) || 0), 0);
+
+            const monthlyTransactions = getAdvisorAssignedTransactions(advisor.id, startOfMonth, endOfMonth);
+            const monthlyExpensesTotal = monthlyTransactions.filter(tx => tx.type === 'egreso').reduce((sum, expense) => sum + (Number(expense.amount) || 0), 0);
+            const monthlyIncomeTotal = monthlyTransactions.filter(tx => tx.type === 'ingreso').reduce((sum, income) => sum + (Number(income.amount) || 0), 0);
+
             const monthlyExpensesDisplay = monthlyExpensesTotal > 0 ? -monthlyExpensesTotal : 0;
-            const netMonthlyCommission = commissionTotals.total - monthlyExpensesTotal;
+            const netMonthlyCommission = commissionTotals.total + monthlyIncomeTotal - monthlyExpensesTotal;
             const netCommissionClass = netMonthlyCommission >= 0 ? 'text-green-600' : 'text-rose-600';
             const hasAffiliates = affs.length > 0;
             const breakdownHtml = hasAffiliates ? affs.map((aff) => {
@@ -2529,29 +2564,33 @@ function updateUIVisibilityByRole() {
                 const paidDate = commissionPaid && aff.commissionPaidAt ? `<p class="text-[10px] text-slate-500">Pagada el ${formatDateShort(aff.commissionPaidAt)}</p>` : '';
                 return `<tr class="border-b border-slate-200 last:border-b-0 hover:bg-slate-100"><td class="p-2 font-medium text-slate-800">${aff.name}</td><td class="p-2"><span class="text-xs font-semibold px-2 py-0.5 rounded-full ${statusStyles[aff.status] || ""}">${aff.status}</span></td><td class="p-2 text-right font-mono text-green-700">${formatCurrency(commission)}</td><td class="p-2 text-right"><div class="flex flex-col items-end gap-1"><span class="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ${statusBadgeClass}"><i data-lucide="${statusIcon}" class="h-3 w-3"></i>${commissionStatusLabel}</span>${paidDate}<button class="toggle-commission-btn inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${actionClass}" data-id="${aff.id}" data-next-status="${nextStatus}"><i data-lucide="${actionIcon}" class="h-4 w-4"></i>${actionLabel}</button></div></td></tr>`;
             }).join("") : `<tr><td colspan="4" class="text-center p-4 text-slate-500">Este asesor no tiene afiliados.</td></tr>`;
-            const expensesListHtml = monthlyExpenses.length > 0
-                ? monthlyExpenses.map(expense => {
-                    const amount = Number(expense.amount) || 0;
-                    const expenseDate = expense.parsedDate || parseAppDate(expense.date);
-                    const dateLabel = expenseDate ? formatDateShort(expenseDate) : '';
-                    const dateTag = dateLabel ? `<span class="ml-1 text-xs text-slate-400">${dateLabel}</span>` : '';
-                    return `<li class="flex justify-between items-start gap-2"><span class="flex-1 text-slate-600">${expense.concept}${dateTag}</span><span class="font-semibold text-rose-600">-${formatCurrency(amount)}</span></li>`;
+            const transactionsListHtml = monthlyTransactions.length > 0
+                ? monthlyTransactions.map(tx => {
+                    const amount = Number(tx.amount) || 0;
+                    const txDate = tx.parsedDate || parseAppDate(tx.date);
+                    const dateLabel = txDate ? formatDateShort(txDate) : '';
+                    const dateTag = dateLabel ? `<span class="ml-1 text-xs text-white/70">${dateLabel}</span>` : '';
+                    const isIncome = tx.type === 'ingreso';
+                    const amountClass = 'text-white';
+                    const prefix = isIncome ? '+' : '-';
+                    return `<li class="flex justify-between items-start gap-2"><span class="flex-1">${tx.concept}${dateTag}</span><span class="font-mono font-semibold ${amountClass}">${prefix}${formatCurrency(amount)}</span></li>`;
                 }).join("")
-                : '<li class="text-sm text-slate-500">Sin egresos asignados este mes.</li>';
+                : '<li class="text-sm text-white/80">Sin transacciones asignadas este mes.</li>';
             return `
             <div class="bg-white rounded-xl shadow-lg flex flex-col transition hover:shadow-2xl">
                 <div class="p-5 flex justify-between items-start">
                     <div><h3 class="font-bold text-xl text-slate-800">${advisor.name}</h3><p class="text-sm text-primary-600 font-semibold">Comisión Base: ${advisor.commissionRate}%</p><p class="text-xs text-slate-500 mt-1">Comisión total generada: ${formatCurrency(totalCommission, 0)}</p></div>
                     <div class="flex-shrink-0"><button class="edit-advisor-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${advisor.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button><button class="delete-advisor-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${advisor.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button></div>
                 </div>
-                <div class="p-5 grid grid-cols-2 md:grid-cols-5 gap-4 text-center border-y">
+                <div class="p-5 grid grid-cols-2 md:grid-cols-6 gap-4 text-center border-y">
                     <div><p class="text-3xl font-bold text-slate-700">${affs.length}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Afiliados</p></div>
                     <div><p class="text-xl font-bold text-emerald-600">${formatCurrency(commissionTotals.paid, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión Pagada (Mes)</p></div>
                     <div><p class="text-xl font-bold text-amber-600">${formatCurrency(commissionTotals.pending, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión Pendiente (Mes)</p></div>
+                    <div><p class="text-xl font-bold text-sky-600">${formatCurrency(monthlyIncomeTotal, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Ingresos Asignados (Mes)</p></div>
                     <div><p class="text-xl font-bold text-rose-600">${formatCurrency(monthlyExpensesDisplay, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Egresos Asignados (Mes)</p></div>
                     <div><p class="text-xl font-bold ${netCommissionClass}">${formatCurrency(netMonthlyCommission, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión Neta (Mes)</p></div>
                 </div>
-                <div class="p-5 bg-rose-50 border-t border-rose-100"><h4 class="font-semibold text-slate-700 text-sm mb-3">Egresos asignados este mes</h4><ul class="space-y-2">${expensesListHtml}</ul></div>
+                <div class="p-5 bg-green-600 text-white"><h4 class="font-semibold text-sm mb-3">Transacciones asignadas este mes</h4><ul class="space-y-2 text-sm">${transactionsListHtml}</ul></div>
                 <div id="advisor-stats-${advisor.id}" class="hidden">
                     <div class="p-4 bg-slate-50"><h4 class="font-semibold mb-3 text-slate-700 text-sm">Desglose de Afiliados</h4><div class="max-h-64 overflow-y-auto pr-1"><table class="w-full text-sm text-left"><thead class="text-xs text-slate-500 uppercase bg-slate-200 sticky top-0"><tr><th class="p-2 font-semibold">Afiliado</th><th class="p-2 font-semibold">Estado</th><th class="p-2 font-semibold text-right">Ganancia</th><th class="p-2 font-semibold text-right">Pago Comisión</th></tr></thead><tbody class="bg-white">${breakdownHtml}</tbody></table></div></div>
                 </div>
@@ -3018,16 +3057,38 @@ function updateUIVisibilityByRole() {
             return;
         }
 
-        container.innerHTML = monthlyClosures.map(closure => `
-            <div class="bg-slate-50 border rounded-lg p-4">
+        container.innerHTML = monthlyClosures.map(closure => {
+            const commissionsByAdvisor = (closure.transactions || [])
+                .filter(t => t.type === 'egreso' && t.id.startsWith('auto-e-') && t.advisorId)
+                .reduce((acc, t) => {
+                    const advisorName = advisors.find(a => a.id === t.advisorId)?.name || 'Desconocido';
+                    acc[advisorName] = (acc[advisorName] || 0) + t.amount;
+                    return acc;
+                }, {});
+
+            const commissionsHtml = Object.keys(commissionsByAdvisor).length > 0
+                ? '<ul class="text-xs list-disc list-inside pl-2 mt-1 text-slate-600">' +
+                  Object.entries(commissionsByAdvisor).map(([name, amount]) => `<li>${name}: ${formatCurrency(amount)}</li>`).join('') +
+                  '</ul>'
+                : '';
+
+            return `
+            <div class="bg-slate-50 border rounded-lg p-4 flex flex-col">
                 <h4 class="font-bold text-slate-800">${closure.monthName} ${closure.year}</h4>
-                <div class="mt-2 space-y-1 text-sm">
+                <div class="mt-2 space-y-1 text-sm flex-grow">
                     <p class="flex justify-between"><span>Ingresos:</span> <span class="font-semibold text-green-600">${formatCurrency(closure.totalIncome)}</span></p>
                     <p class="flex justify-between"><span>Egresos:</span> <span class="font-semibold text-red-600">${formatCurrency(closure.totalExpenses)}</span></p>
-                    <p class="flex justify-between border-t pt-1 mt-1"><span>Balance:</span> <span class="font-bold text-blue-600">${formatCurrency(closure.netProfit)}</span></p>
+                    <p class="flex justify-between"><span>Ganancia Admin:</span> <span class="font-semibold">${formatCurrency(closure.adminProfit)}</span></p>
+                    <div class="pt-1 mt-1">
+                        <p class="font-semibold text-xs text-slate-500">Comisiones:</p>
+                        ${commissionsHtml || '<p class="text-xs text-slate-500 pl-2">- Ninguna</p>'}
+                    </div>
+                </div>
+                <div class="border-t mt-2 pt-2">
+                     <p class="flex justify-between text-sm"><span>Balance Final:</span> <span class="font-bold text-lg text-blue-600">${formatCurrency(closure.netProfit)}</span></p>
                 </div>
             </div>
-        `).join('');
+        `}).join('');
     }
 
     function getAllTransactions() {
@@ -3854,6 +3915,13 @@ function formatPhoneNumberForWhatsApp(phone) {
                      generarReciboAfiliacionPDF(affiliateToPrint, planToPrint, advisorForPrint, companyProfile);
                 }, 300);
             }
+            else if (button.matches('.renew-affiliate-btn')) {
+                const affiliateId = button.dataset.id;
+                const affiliateToRenew = affiliates.find(a => a.id === affiliateId);
+                if (!affiliateToRenew) return showToast('Afiliado no encontrado.', 'error');
+
+                modalManager.open('renew-affiliate-modal', affiliateToRenew);
+            }
             else if (button.matches('.delete-role-btn')) {
                  const roleToDelete = userRoles.find(r => r.id === id);
                  if (confirm(`¿Estás seguro de eliminar al usuario ${roleToDelete.email}? Esta acción no se puede deshacer y su cuenta será eliminada permanentemente.`)) {
@@ -3882,10 +3950,38 @@ function formatPhoneNumberForWhatsApp(phone) {
                 const expenses = monthlyTransactions.filter(t => t.type === 'egreso').reduce((sum, t) => sum + t.amount, 0);
                 const profit = income - expenses;
 
+                const adminFee = settings?.ADMIN_FEE_PER_AFFILIATE ?? defaultSettings.ADMIN_FEE_PER_AFFILIATE;
+                const newAffiliatesThisMonth = affiliates.filter(aff => {
+                    const createdAt = aff.createdAt;
+                    return createdAt && createdAt.getMonth() === now.getMonth() && createdAt.getFullYear() === now.getFullYear();
+                });
+                const adminProfit = newAffiliatesThisMonth.length * adminFee;
+
+                const commissionsByAdvisor = monthlyTransactions
+                    .filter(t => t.type === 'egreso' && t.id.startsWith('auto-e-') && t.advisorId)
+                    .reduce((acc, t) => {
+                        const advisor = advisors.find(a => a.id === t.advisorId);
+                        const advisorName = advisor ? advisor.name : 'Desconocido';
+                        acc[advisorName] = (acc[advisorName] || 0) + t.amount;
+                        return acc;
+                    }, {});
+
+                let commissionsHtml = Object.keys(commissionsByAdvisor).length > 0
+                    ? '<p class="font-semibold text-slate-700 mt-3">Desglose de Comisiones por Asesor:</p><ul class="text-sm list-disc list-inside pl-2 text-slate-600">' +
+                      Object.entries(commissionsByAdvisor).map(([name, amount]) => `<li>${name}: ${formatCurrency(amount)}</li>`).join('') +
+                      '</ul>'
+                    : '<p class="text-sm text-slate-500 mt-3">No se pagaron comisiones a asesores este mes.</p>';
+
                 document.getElementById('close-month-summary').innerHTML = `
-                    <p><strong>Ingresos Totales:</strong> ${formatCurrency(income)}</p>
-                    <p><strong>Egresos Totales:</strong> ${formatCurrency(expenses)}</p>
-                    <p><strong>Balance del Mes:</strong> ${formatCurrency(profit)}</p>
+                    <div class="space-y-1 text-base">
+                        <p class="flex justify-between"><span>Ingresos Totales:</span> <span class="font-semibold text-green-600">${formatCurrency(income)}</span></p>
+                        <p class="flex justify-between"><span>Egresos Totales:</span> <span class="font-semibold text-red-600">${formatCurrency(expenses)}</span></p>
+                        <p class="flex justify-between border-t pt-1 mt-1"><span>Balance del Mes:</span> <span class="font-bold text-blue-600">${formatCurrency(profit)}</span></p>
+                    </div>
+                    <div class="border-t mt-3 pt-3">
+                        <p class="flex justify-between"><span>Ganancia por Administración:</span> <span class="font-semibold">${formatCurrency(adminProfit)}</span></p>
+                        ${commissionsHtml}
+                    </div>
                 `;
                 modalManager.open('close-month-modal');
             }
@@ -3926,6 +4022,9 @@ function formatPhoneNumberForWhatsApp(phone) {
                     return createdAt && createdAt.getMonth() === month && createdAt.getFullYear() === year;
                 });
 
+                const adminFee = settings?.ADMIN_FEE_PER_AFFILIATE ?? defaultSettings.ADMIN_FEE_PER_AFFILIATE;
+                const adminProfit = newAffiliatesThisMonth.length * adminFee;
+
                 const closureData = {
                     id: closureId,
                     year: year,
@@ -3937,6 +4036,7 @@ function formatPhoneNumberForWhatsApp(phone) {
                     netProfit: totalIncome - totalExpenses,
                     commissionExpenses,
                     manualExpenses,
+                    adminProfit: adminProfit,
                     newAffiliatesCount: newAffiliatesThisMonth.length,
                     activeAffiliatesCount: affiliates.filter(a => a.status === 'Activo').length,
                     transactions: monthlyTransactions
@@ -3995,6 +4095,37 @@ function formatPhoneNumberForWhatsApp(phone) {
             });
         }
         
+        document.getElementById('renew-affiliate-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const affiliateId = form['renew-affiliate-id'].value;
+            const affiliateToRenew = affiliates.find(a => a.id === affiliateId);
+            if (!affiliateToRenew) return showToast('Afiliado no encontrado.', 'error');
+
+            const newAffiliateData = { ...affiliateToRenew };
+            delete newAffiliateData.id;
+
+            newAffiliateData.startDate = form['renew-start-date'].value;
+            newAffiliateData.endDate = form['renew-end-date'].value;
+
+            const newCommission = form['renew-commission'].value;
+            if (newCommission) {
+                newAffiliateData.manualCommission = Number(newCommission);
+            }
+
+            newAffiliateData.status = 'Activo';
+            newAffiliateData.commissionPaid = false;
+            newAffiliateData.commissionPaidAt = null;
+            newAffiliateData.createdAt = serverTimestamp();
+
+            const docRef = doc(collection(db, `users/${adminUidForRole}/affiliates`));
+            newAffiliateData.id = docRef.id;
+
+            await saveDataToFirestore('affiliates', newAffiliateData);
+            showToast('Afiliado renovado y nuevo registro creado.', 'success');
+            modalManager.close('renew-affiliate-modal');
+        });
+
         document.getElementById('login-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { await signInWithEmailAndPassword(auth, e.target['login-email'].value, e.target['login-password'].value); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('register-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { const userCredential = await createUserWithEmailAndPassword(auth, e.target['register-email'].value, e.target['register-password'].value); await setupNewUserDocument(userCredential.user); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('license-form').addEventListener('submit', e => { e.preventDefault(); handleLicenseActivation(); });
@@ -4911,12 +5042,28 @@ const manualContainer = form.querySelector('#manual-override-container'); form['
                 populateTransactionAdvisorOptions();
                 const advisorContainer = document.getElementById('transaction-advisor-container');
                 const advisorSelect = document.getElementById('transaction-advisor');
-                const shouldShowAdvisor = data.type === 'egreso';
-                if (advisorContainer) advisorContainer.classList.toggle('hidden', !shouldShowAdvisor);
+                const shouldShowAdvisor = data.type === 'egreso' || data.type === 'ingreso';
+                if (advisorContainer) {
+                    advisorContainer.classList.toggle('hidden', !shouldShowAdvisor);
+                    const description = advisorContainer.querySelector('p');
+                    if (description) {
+                        if (data.type === 'egreso') {
+                            description.textContent = 'Los egresos asignados se descontarán de las comisiones del asesor seleccionado.';
+                        } else if (data.type === 'ingreso') {
+                            description.textContent = 'Los ingresos asignados se añadirán a las comisiones del asesor seleccionado.';
+                        }
+                    }
+                }
                 if (advisorSelect) {
                     advisorSelect.value = '';
-                    advisorSelect.disabled = shouldShowAdvisor && advisors.length === 0;
+                    advisorSelect.disabled = !shouldShowAdvisor || advisors.length === 0;
                 }
+            } else if (modalId === 'renew-affiliate-modal' && data) {
+                form['renew-affiliate-id'].value = data.id || '';
+                const newStartDate = new Date();
+                newStartDate.setMonth(newStartDate.getMonth() + 1);
+                newStartDate.setDate(1);
+                form['renew-start-date'].value = newStartDate.toISOString().split('T')[0];
             }
             modal.classList.remove('opacity-0', 'pointer-events-none');
             modal.querySelector('.modal-content').classList.remove('scale-95');
