@@ -2504,7 +2504,7 @@ function updateUIVisibilityByRole() {
         const commissionActionButton = `<button class="toggle-commission-btn inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${commissionActionClass}" data-id="${aff.id}" data-next-status="${nextCommissionStatus}"><i data-lucide="${commissionActionIcon}" class="h-4 w-4"></i>${commissionActionLabel}</button>`;
         const actionsHtml = `
             <div>
-                <button class="renew-affiliate-btn text-slate-500 hover:text-green-600 p-2 rounded-full" data-id="${aff.id}" title="Renovar para el Siguiente Mes">
+                <button class="renew-affiliate-btn bg-green-500 hover:bg-green-600 text-white p-2 rounded-full" data-id="${aff.id}" title="Renovar para el Siguiente Mes">
                     <i data-lucide="calendar-plus" class="h-5 w-5 pointer-events-none"></i>
                 </button>
                 <button class="download-receipt-btn text-slate-500 hover:text-blue-600 p-2 rounded-full" data-id="${aff.id}" title="Descargar Recibo">
@@ -2582,12 +2582,10 @@ function updateUIVisibilityByRole() {
                     <div><h3 class="font-bold text-xl text-slate-800">${advisor.name}</h3><p class="text-sm text-primary-600 font-semibold">Comisión Base: ${advisor.commissionRate}%</p><p class="text-xs text-slate-500 mt-1">Comisión total generada: ${formatCurrency(totalCommission, 0)}</p></div>
                     <div class="flex-shrink-0"><button class="edit-advisor-btn text-slate-500 hover:text-primary-600 p-2 rounded-full" data-id="${advisor.id}"><i data-lucide="pencil" class="h-5 w-5 pointer-events-none"></i></button><button class="delete-advisor-btn text-slate-500 hover:text-red-600 p-2 rounded-full" data-id="${advisor.id}"><i data-lucide="trash-2" class="h-5 w-5 pointer-events-none"></i></button></div>
                 </div>
-                <div class="p-5 grid grid-cols-2 md:grid-cols-6 gap-4 text-center border-y">
+                <div class="p-5 grid grid-cols-2 md:grid-cols-4 gap-4 text-center border-y">
                     <div><p class="text-3xl font-bold text-slate-700">${affs.length}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Afiliados</p></div>
                     <div><p class="text-xl font-bold text-emerald-600">${formatCurrency(commissionTotals.paid, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión Pagada (Mes)</p></div>
                     <div><p class="text-xl font-bold text-amber-600">${formatCurrency(commissionTotals.pending, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión Pendiente (Mes)</p></div>
-                    <div><p class="text-xl font-bold text-sky-600">${formatCurrency(monthlyIncomeTotal, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Ingresos Asignados (Mes)</p></div>
-                    <div><p class="text-xl font-bold text-rose-600">${formatCurrency(monthlyExpensesDisplay, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Egresos Asignados (Mes)</p></div>
                     <div><p class="text-xl font-bold ${netCommissionClass}">${formatCurrency(netMonthlyCommission, 0)}</p><p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Comisión Neta (Mes)</p></div>
                 </div>
                 <div class="p-5 bg-green-600 text-white"><h4 class="font-semibold text-sm mb-3">Transacciones asignadas este mes</h4><ul class="space-y-2 text-sm">${transactionsListHtml}</ul></div>
@@ -4590,7 +4588,7 @@ localStorage.setItem('userTheme', profileData.theme);
                     type: transactionType,
                 };
 
-                if (transactionType === 'egreso') {
+                if (transactionType === 'egreso' || transactionType === 'ingreso') {
                     const advisorField = form['transaction-advisor'];
                     if (advisorField && advisorField.value) {
                         transactionData.advisorId = advisorField.value;
