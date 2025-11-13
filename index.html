@@ -1522,6 +1522,35 @@ button svg {
         </nav>
     </div>
 
+        <div id="renew-affiliate-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50">
+            <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-full overflow-y-auto transform scale-95">
+                <div class="flex justify-between items-center p-6 border-b">
+                    <h2 id="renew-affiliate-modal-title" class="text-2xl font-bold">Renovar Afiliado</h2>
+                    <button data-close-modal="renew-affiliate-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+                </div>
+                <form id="renew-affiliate-form" class="p-6">
+                    <input type="hidden" id="renew-affiliate-id">
+                    <div class="space-y-4">
+                        <div>
+                            <label for="renew-start-date" class="block text-sm font-medium text-slate-600">Nueva Fecha de Inicio</label>
+                            <input type="date" id="renew-start-date" class="w-full mt-1 p-2 border rounded-lg" required>
+                        </div>
+                        <div>
+                            <label for="renew-end-date" class="block text-sm font-medium text-slate-600">Nueva Fecha de Finalización</label>
+                            <input type="date" id="renew-end-date" class="w-full mt-1 p-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label for="renew-commission" class="block text-sm font-medium text-slate-600">Nueva Comisión para el Asesor ($)</label>
+                            <input type="number" id="renew-commission" class="w-full mt-1 p-2 border rounded-lg" placeholder="Dejar en blanco para usar la comisión por defecto">
+                        </div>
+                    </div>
+                    <div class="pt-6 border-t mt-6 flex justify-end">
+                        <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
 <script type="module">
     // =================================================================
     // INICIO DE LA SOLUCIÓN: IMPORTACIONES DE FIREBASE
@@ -2542,9 +2571,9 @@ function updateUIVisibilityByRole() {
                     const dateLabel = txDate ? formatDateShort(txDate) : '';
                     const dateTag = dateLabel ? `<span class="ml-1 text-xs text-white/70">${dateLabel}</span>` : '';
                     const isIncome = tx.type === 'ingreso';
-                    const amountClass = isIncome ? 'text-emerald-300' : 'text-rose-300';
+                    const amountClass = 'text-white';
                     const prefix = isIncome ? '+' : '-';
-                    return `<li class="flex justify-between items-start gap-2"><span class="flex-1">${tx.concept}${dateTag}</span><span class="font-semibold ${amountClass}">${prefix}${formatCurrency(amount)}</span></li>`;
+                    return `<li class="flex justify-between items-start gap-2"><span class="flex-1">${tx.concept}${dateTag}</span><span class="font-mono font-semibold ${amountClass}">${prefix}${formatCurrency(amount)}</span></li>`;
                 }).join("")
                 : '<li class="text-sm text-white/80">Sin transacciones asignadas este mes.</li>';
             return `
@@ -3891,27 +3920,7 @@ function formatPhoneNumberForWhatsApp(phone) {
                 const affiliateToRenew = affiliates.find(a => a.id === affiliateId);
                 if (!affiliateToRenew) return showToast('Afiliado no encontrado.', 'error');
 
-                if (confirm(`¿Estás seguro de renovar la afiliación de ${affiliateToRenew.name} para el próximo mes? Se creará un nuevo registro duplicado con fechas actualizadas.`)) {
-                    const newAffiliateData = { ...affiliateToRenew };
-                    delete newAffiliateData.id; // Eliminar el id para que Firestore genere uno nuevo
-
-                    const newStartDate = new Date();
-                    newStartDate.setMonth(newStartDate.getMonth() + 1);
-                    newStartDate.setDate(1);
-
-                    newAffiliateData.startDate = newStartDate.toISOString().split('T')[0];
-                    newAffiliateData.endDate = '';
-                    newAffiliateData.status = 'Activo';
-                    newAffiliateData.commissionPaid = false;
-                    newAffiliateData.commissionPaidAt = null;
-                    newAffiliateData.createdAt = serverTimestamp();
-
-                    const docRef = doc(collection(db, `users/${adminUidForRole}/affiliates`));
-                    newAffiliateData.id = docRef.id;
-
-                    await saveDataToFirestore('affiliates', newAffiliateData);
-                    showToast('Afiliado renovado y nuevo registro creado para el próximo mes.', 'success');
-                }
+                modalManager.open('renew-affiliate-modal', affiliateToRenew);
             }
             else if (button.matches('.delete-role-btn')) {
                  const roleToDelete = userRoles.find(r => r.id === id);
@@ -4086,6 +4095,37 @@ function formatPhoneNumberForWhatsApp(phone) {
             });
         }
         
+        document.getElementById('renew-affiliate-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const affiliateId = form['renew-affiliate-id'].value;
+            const affiliateToRenew = affiliates.find(a => a.id === affiliateId);
+            if (!affiliateToRenew) return showToast('Afiliado no encontrado.', 'error');
+
+            const newAffiliateData = { ...affiliateToRenew };
+            delete newAffiliateData.id;
+
+            newAffiliateData.startDate = form['renew-start-date'].value;
+            newAffiliateData.endDate = form['renew-end-date'].value;
+
+            const newCommission = form['renew-commission'].value;
+            if (newCommission) {
+                newAffiliateData.manualCommission = Number(newCommission);
+            }
+
+            newAffiliateData.status = 'Activo';
+            newAffiliateData.commissionPaid = false;
+            newAffiliateData.commissionPaidAt = null;
+            newAffiliateData.createdAt = serverTimestamp();
+
+            const docRef = doc(collection(db, `users/${adminUidForRole}/affiliates`));
+            newAffiliateData.id = docRef.id;
+
+            await saveDataToFirestore('affiliates', newAffiliateData);
+            showToast('Afiliado renovado y nuevo registro creado.', 'success');
+            modalManager.close('renew-affiliate-modal');
+        });
+
         document.getElementById('login-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { await signInWithEmailAndPassword(auth, e.target['login-email'].value, e.target['login-password'].value); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('register-form').addEventListener('submit', async (e) => { e.preventDefault(); showView(loader); try { const userCredential = await createUserWithEmailAndPassword(auth, e.target['register-email'].value, e.target['register-password'].value); await setupNewUserDocument(userCredential.user); } catch (error) { showToast(getFirebaseAuthErrorMessage(error), 'error'); showView(authContainer); } });
         document.getElementById('license-form').addEventListener('submit', e => { e.preventDefault(); handleLicenseActivation(); });
@@ -5018,6 +5058,12 @@ const manualContainer = form.querySelector('#manual-override-container'); form['
                     advisorSelect.value = '';
                     advisorSelect.disabled = !shouldShowAdvisor || advisors.length === 0;
                 }
+            } else if (modalId === 'renew-affiliate-modal' && data) {
+                form['renew-affiliate-id'].value = data.id || '';
+                const newStartDate = new Date();
+                newStartDate.setMonth(newStartDate.getMonth() + 1);
+                newStartDate.setDate(1);
+                form['renew-start-date'].value = newStartDate.toISOString().split('T')[0];
             }
             modal.classList.remove('opacity-0', 'pointer-events-none');
             modal.querySelector('.modal-content').classList.remove('scale-95');
