@@ -1170,7 +1170,77 @@ button svg {
                         </div>
                     </section>
 
-                    <section id="flujo-caja" class="content-section"><div class="bg-white p-6 rounded-xl shadow-lg mb-8"><div class="flex flex-col md:flex-row justify-between md:items-center gap-4"><div><h2 class="text-2xl font-bold text-slate-800">Flujo de Caja</h2><p class="text-slate-500">Gesti&#243;n de ingresos, egresos y reportes financieros.</p></div><div class="flex items-center gap-4"><button id="add-expense-btn" class="w-full md:w-auto bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap"><i data-lucide="minus" class="w-5 h-5 mr-2"></i>Nuevo Egreso</button><button id="add-income-btn" class="w-full md:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i>Nuevo Ingreso</button></div></div></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8"><div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg"><div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center"><div class="bg-emerald-50 text-emerald-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Ingresos (Mes)</h3><p id="cashflow-income" class="text-3xl font-bold mt-1">$0</p></div><div class="bg-rose-50 text-rose-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Egresos (Mes)</h3><p id="cashflow-expenses" class="text-3xl font-bold mt-1">$0</p></div><div class="bg-sky-50 text-sky-800 p-4 rounded-lg"><h3 class="text-sm font-semibold uppercase">Balance (Mes)</h3><p id="cashflow-profit" class="text-3xl font-bold mt-1">$0</p></div></div></div><div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg"><div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b pb-4 mb-4"><div><h3 class="text-lg font-semibold text-slate-700">Historial de Transacciones</h3></div><div class="flex flex-col sm:flex-row gap-4 items-center"><input type="date" id="report-start-date" class="w-full p-2 border rounded-lg"><span class="text-slate-500">a</span><input type="date" id="report-end-date" class="w-full p-2 border rounded-lg"><button id="generate-report-btn" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="file-text" class="w-5 h-5 mr-2"></i>Generar PDF</button></div></div><div class="max-h-96 overflow-y-auto"><table class="w-full text-sm"><thead class="sticky top-0 bg-slate-100"><tr class="text-left"><th class="p-2 text-xs font-semibold text-slate-600 uppercase">Fecha</th><th class="p-2 text-xs font-semibold text-slate-600 uppercase">Concepto</th><th class="p-2 text-right text-xs font-semibold text-slate-600 uppercase">Monto</th></tr></thead><tbody id="transactions-table-body"></tbody></table></div></div></div></section>
+                    <section id="flujo-caja" class="content-section">
+                        <div class="bg-white p-6 rounded-xl shadow-lg mb-8">
+                            <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                                <div>
+                                    <h2 class="text-2xl font-bold text-slate-800">Flujo de Caja</h2>
+                                    <p class="text-slate-500">Gesti&#243;n de ingresos, egresos y reportes financieros.</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <button id="add-expense-btn" class="w-full md:w-auto bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap">
+                                        <i data-lucide="minus" class="w-5 h-5 mr-2"></i>Nuevo Egreso
+                                    </button>
+                                    <button id="add-income-btn" class="w-full md:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap">
+                                        <i data-lucide="plus" class="w-5 h-5 mr-2"></i>Nuevo Ingreso
+                                    </button>
+                                    <button id="close-month-btn" class="w-full md:w-auto bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap">
+                                        <i data-lucide="archive" class="w-5 h-5 mr-2"></i>Cerrar Mes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center">
+                                    <div class="bg-emerald-50 text-emerald-800 p-4 rounded-lg">
+                                        <h3 class="text-sm font-semibold uppercase">Ingresos (Mes)</h3>
+                                        <p id="cashflow-income" class="text-3xl font-bold mt-1">$0</p>
+                                    </div>
+                                    <div class="bg-rose-50 text-rose-800 p-4 rounded-lg">
+                                        <h3 class="text-sm font-semibold uppercase">Egresos (Mes)</h3>
+                                        <p id="cashflow-expenses" class="text-3xl font-bold mt-1">$0</p>
+                                    </div>
+                                    <div class="bg-sky-50 text-sky-800 p-4 rounded-lg">
+                                        <h3 class="text-sm font-semibold uppercase">Balance (Mes)</h3>
+                                        <p id="cashflow-profit" class="text-3xl font-bold mt-1">$0</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg">
+                                <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b pb-4 mb-4">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-slate-700">Historial de Transacciones</h3>
+                                    </div>
+                                    <div class="flex flex-col sm:flex-row gap-4 items-center">
+                                        <input type="date" id="report-start-date" class="w-full p-2 border rounded-lg">
+                                        <span class="text-slate-500">a</span>
+                                        <input type="date" id="report-end-date" class="w-full p-2 border rounded-lg">
+                                        <button id="generate-report-btn" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <i data-lucide="file-text" class="w-5 h-5 mr-2"></i>Generar PDF
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="max-h-96 overflow-y-auto">
+                                    <table class="w-full text-sm">
+                                        <thead class="sticky top-0 bg-slate-100">
+                                            <tr class="text-left">
+                                                <th class="p-2 text-xs font-semibold text-slate-600 uppercase">Fecha</th>
+                                                <th class="p-2 text-xs font-semibold text-slate-600 uppercase">Concepto</th>
+                                                <th class="p-2 text-right text-xs font-semibold text-slate-600 uppercase">Monto</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="transactions-table-body"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg">
+                                <h3 class="text-lg font-semibold text-slate-700 mb-4">Historial de Cierres Mensuales</h3>
+                                <div id="monthly-closures-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                     <section id="afiliados" class="content-section"><div class="bg-white p-4 rounded-xl shadow-lg mb-6"><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end"><div class="md:col-span-2"><label for="search-affiliate" class="text-sm font-medium text-slate-600">Buscar Afiliado</label><div class="relative mt-1"><input type="text" id="search-affiliate" placeholder="Nombre o documento..." class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg placeholder-slate-400"><i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i></div></div><div><label for="filter-affiliate-status" class="text-sm font-medium text-slate-600">Estado</label><select id="filter-affiliate-status" class="w-full mt-1 py-2 px-3 border border-slate-300 rounded-lg"><option value="all">Todos</option><option value="Activo">Activo</option><option value="Pendiente">Pendiente</option><option value="Inactivo">Inactivo</option></select></div><div><label for="filter-affiliate-payment-status" class="text-sm font-medium text-slate-600">Estado de Pago</label><select id="filter-affiliate-payment-status" class="w-full mt-1 py-2 px-3 border border-slate-300 rounded-lg"><option value="all">Todos</option><option value="Al d&#237;a">Al d&#237;a</option><option value="En mora">En mora</option></select></div></div></div><div class="flex justify-between items-center mb-6 gap-4 flex-wrap"><div class="flex items-center gap-2"><span class="text-sm font-medium text-slate-600 mr-2">Vista:</span><button id="view-as-cards-btn" class="p-2 rounded-lg" title="Ver como tarjetas"><i data-lucide="layout-grid" class="h-5 w-5 pointer-events-none"></i></button><button id="view-as-table-btn" class="p-2 rounded-lg" title="Ver como tabla"><i data-lucide="table-2" class="h-5 w-5 pointer-events-none"></i></button></div><div class="flex items-center gap-4"><button id="export-affiliates-btn" class="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center whitespace-nowrap"><i data-lucide="download" class="w-5 h-5 mr-2 text-green-600"></i>Exportar a CSV</button><button id="add-affiliate-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Afiliado</button></div></div><div id="affiliates-card-container" class="grid grid-cols-1 xl:grid-cols-2 gap-6"></div><div id="affiliates-table-container" style="display: none;" class="bg-white rounded-xl shadow-lg overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50"><tr class="text-left"><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Afiliado</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Plan / Asesor</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Contacto</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase">Estado</th><th class="p-3 text-xs font-semibold text-slate-600 uppercase text-center">Acciones</th></tr></thead><tbody id="affiliates-table-body" class="divide-y divide-slate-200"></tbody></table></div></section>
                     <section id="asesores" class="content-section"><div class="flex justify-end items-center mb-6 gap-4"><button id="export-advisors-btn" class="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center whitespace-nowrap"><i data-lucide="download" class="w-5 h-5 mr-2 text-green-600"></i>Exportar a CSV</button><button id="add-advisor-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-md flex items-center justify-center whitespace-nowrap"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Nuevo Asesor</button></div><div id="advisors-container" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6"></div></section>
                     <section id="ranking-vendedores" class="content-section"><div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-2"><h2 class="text-2xl font-bold text-slate-800">Ranking de Vendedores</h2><p class="text-sm text-slate-500">Top vendedores por comisiones totales generadas.</p></div><div id="ranking-list" class="space-y-4"></div></section>
@@ -1423,6 +1493,26 @@ button svg {
         <div id="settings-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b sticky top-0 bg-white z-10"><h2 class="text-2xl font-bold">Configuraci&#243;n de Par&#225;metros</h2><button data-close-modal="settings-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="settings-form" class="p-6 space-y-6"><div><h3 class="font-semibold text-lg mb-2">Generales</h3><div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-medium">Salario M&#237;nimo (SMMLV)</label><input type="number" id="setting-smmlv" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Costo Admin. por Afiliado ($)</label><input type="number" id="setting-admin-fee" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes de Cotizaci&#243;n (%)</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="block text-sm font-medium">Salud Total</label><input type="number" step="0.1" id="setting-health" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Pensi&#243;n Total</label><input type="number" step="0.1" id="setting-pension" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Indep.</label><input type="number" step="0.1" id="setting-ccf-ind" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Empleador</label><input type="number" step="0.1" id="setting-ccf-emp" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes ARL (%)</h3><div class="grid grid-cols-2 md:grid-cols-5 gap-4"><div><label class="block text-sm font-medium">Riesgo 1</label><input type="number" step="0.001" id="setting-arl-1" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 2</label><input type="number" step="0.001" id="setting-arl-2" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 3</label><input type="number" step="0.001" id="setting-arl-3" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 4</label><input type="number" step="0.001" id="setting-arl-4" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 5</label><input type="number" step="0.001" id="setting-arl-5" class="w-full p-2 border rounded-lg"></div></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Cambios</button></div></form></div></div>
         <div id="transaction-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="transaction-modal-title" class="text-2xl font-bold"></h2><button data-close-modal="transaction-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="transaction-form" class="p-6"><input type="hidden" id="transaction-type"><div class="space-y-4"><div><label for="transaction-concept" class="block text-sm font-medium text-slate-600">Concepto</label><input type="text" id="transaction-concept" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-amount" class="block text-sm font-medium text-slate-600">Monto</label><input type="number" id="transaction-amount" min="0" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-date" class="block text-sm font-medium text-slate-600">Fecha</label><input type="date" id="transaction-date" class="w-full mt-1 p-2 border rounded-lg" required></div><div id="transaction-advisor-container" class="hidden"><label for="transaction-advisor" class="block text-sm font-medium text-slate-600">Asignar asesor (opcional)</label><select id="transaction-advisor" class="w-full mt-1 p-2 border rounded-lg"><option value="">Sin asignar</option></select><p class="text-xs text-slate-500 mt-2">Los egresos asignados se descontar&aacute;n de las comisiones del asesor seleccionado.</p></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar</button></div></form></div></div>
         
+        <div id="close-month-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50">
+            <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-full overflow-y-auto transform scale-95">
+                <div class="flex justify-between items-center p-6 border-b">
+                    <h2 id="close-month-modal-title" class="text-2xl font-bold">Confirmar Cierre de Mes</h2>
+                    <button data-close-modal="close-month-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-600 mb-4">Estás a punto de cerrar las operaciones financieras para el mes de <strong id="close-month-name"></strong>. Esta acción es irreversible y guardará un registro permanente de los siguientes datos:</p>
+                    <div id="close-month-summary" class="space-y-2 text-sm">
+                        </div>
+                    <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
+                        <p><strong>Importante:</strong> Una vez cerrado, no podrás modificar las transacciones de este mes. El sistema se reiniciará para el próximo período contable.</p>
+                    </div>
+                </div>
+                <div class="pt-6 border-t mt-6 flex justify-end p-6">
+                    <button id="confirm-close-month-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">Confirmar y Cerrar Mes</button>
+                </div>
+            </div>
+        </div>
+        
         <nav class="bottom-nav md:hidden fixed bottom-0 inset-x-0 flex justify-around p-2 border-t z-40">
             <a href="#" data-target="dashboard" class="bottom-nav-link active flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="text-[10px] mt-1">Dashboard</span></a>
             <a href="#" data-target="afiliados" class="bottom-nav-link flex flex-col items-center justify-center text-center w-full p-1"><i data-lucide="users" class="w-5 h-5"></i><span class="text-[10px] mt-1">Afiliados</span></a>
@@ -1479,7 +1569,7 @@ button svg {
     let userRoleData = {}; // Guardará datos del rol, como el ID vinculado
 
     // --- ESTADO GLOBAL Y CONFIGURACIÓN ---
-    let affiliates = [], advisors = [], manualTransactions = [], novedades = [], healthPlans = [], userRoles = [];
+    let affiliates = [], advisors = [], manualTransactions = [], novedades = [], healthPlans = [], userRoles = [], monthlyClosures = [];
     const arlRiskActivities = [
         { activity: 'Actividades financieras y de seguros', risk: 'Clase I' },
         { activity: 'Servicios profesionales, científicos y técnicos', risk: 'Clase I' },
@@ -2094,6 +2184,12 @@ applyTheme(savedTheme);
             roles: (data) => {
                 userRoles = data;
                 if(document.getElementById('gestion-roles').classList.contains('active')) renderGestionRolesSection();
+            },
+            monthlyClosures: (data) => {
+                monthlyClosures = data.sort((a, b) => b.year - a.year || b.month - a.month);
+                if (document.getElementById('flujo-caja').classList.contains('active')) {
+                    renderMonthlyClosures();
+                }
             }
         };
 
@@ -2911,25 +3007,61 @@ function updateUIVisibilityByRole() {
 
         updateCompanyLogoUI(companyProfile.logo || null);
     }
-    function renderFlujoCajaSection(){const e=new Date,t=new Date(e.getFullYear(),e.getMonth(),1);document.getElementById("report-start-date").value=t.toISOString().split("T")[0],document.getElementById("report-end-date").value=e.toISOString().split("T")[0];const a=getAllTransactions(),n=a.filter(t=>{const a=new Date(t.date);return a.getMonth()===e.getMonth()&&a.getFullYear()===e.getFullYear()}),o=n.filter(e=>"ingreso"===e.type).reduce((e,t)=>e+t.amount,0),s=n.filter(e=>"egreso"===e.type).reduce((e,t)=>e+t.amount,0);document.getElementById("cashflow-income").textContent=formatCurrency(o),document.getElementById("cashflow-expenses").textContent=formatCurrency(s),document.getElementById("cashflow-profit").textContent=formatCurrency(o-s),renderTransactionsTable(a)}
+    function renderFlujoCajaSection(){const e=new Date,t=new Date(e.getFullYear(),e.getMonth(),1);document.getElementById("report-start-date").value=t.toISOString().split("T")[0],document.getElementById("report-end-date").value=e.toISOString().split("T")[0];const a=getAllTransactions(),n=a.filter(t=>{const a=new Date(t.date);return a.getMonth()===e.getMonth()&&a.getFullYear()===e.getFullYear()}),o=n.filter(e=>"ingreso"===e.type).reduce((e,t)=>e+t.amount,0),s=n.filter(e=>"egreso"===e.type).reduce((e,t)=>e+t.amount,0);document.getElementById("cashflow-income").textContent=formatCurrency(o),document.getElementById("cashflow-expenses").textContent=formatCurrency(s),document.getElementById("cashflow-profit").textContent=formatCurrency(o-s),renderTransactionsTable(a);renderMonthlyClosures();}
+    
+    function renderMonthlyClosures() {
+        const container = document.getElementById('monthly-closures-container');
+        if (!container) return;
+
+        if (monthlyClosures.length === 0) {
+            container.innerHTML = '<p class="text-slate-500 text-center col-span-full">No hay cierres de mes registrados.</p>';
+            return;
+        }
+
+        container.innerHTML = monthlyClosures.map(closure => `
+            <div class="bg-slate-50 border rounded-lg p-4">
+                <h4 class="font-bold text-slate-800">${closure.monthName} ${closure.year}</h4>
+                <div class="mt-2 space-y-1 text-sm">
+                    <p class="flex justify-between"><span>Ingresos:</span> <span class="font-semibold text-green-600">${formatCurrency(closure.totalIncome)}</span></p>
+                    <p class="flex justify-between"><span>Egresos:</span> <span class="font-semibold text-red-600">${formatCurrency(closure.totalExpenses)}</span></p>
+                    <p class="flex justify-between border-t pt-1 mt-1"><span>Balance:</span> <span class="font-bold text-blue-600">${formatCurrency(closure.netProfit)}</span></p>
+                </div>
+            </div>
+        `).join('');
+    }
+
     function getAllTransactions() {
+        let lastClosureDate = null;
+        if (monthlyClosures && monthlyClosures.length > 0) {
+            const lastClosure = monthlyClosures[0];
+            lastClosureDate = new Date(lastClosure.year, lastClosure.month, 0, 23, 59, 59, 999);
+        }
+
         const transactions = [];
         affiliates.forEach(aff => {
             if (aff.status === 'Activo') {
-                const incomeAmount = getAffiliateCommissionBase(aff);
-                transactions.push({ id: `auto-i-${aff.id}`, type: 'ingreso', concept: `Pago afiliado: ${aff.name}`, amount: incomeAmount, date: aff.startDate, advisorId: aff.advisorId });
+                const incomeDate = parseAppDate(aff.startDate);
+                if (!lastClosureDate || (incomeDate && incomeDate > lastClosureDate)) {
+                    const incomeAmount = getAffiliateCommissionBase(aff);
+                    transactions.push({ id: `auto-i-${aff.id}`, type: 'ingreso', concept: `Pago afiliado: ${aff.name}`, amount: incomeAmount, date: aff.startDate, advisorId: aff.advisorId });
+                }
+
                 const commissionAmount = getAdvisorCommissionForAffiliate(aff);
                 if (commissionAmount > 0 && aff.commissionPaid) {
-                    const advisor = advisors.find(item => item.id === aff.advisorId);
-                    let commissionDate = aff.startDate;
-                    if (aff.commissionPaidAt) {
-                        const paidDate = aff.commissionPaidAt instanceof Date ? aff.commissionPaidAt : new Date(aff.commissionPaidAt);
-                        if (paidDate instanceof Date && Number.isFinite(paidDate.getTime())) commissionDate = paidDate.toISOString();
+                    const commissionDate = parseAppDate(aff.commissionPaidAt) || parseAppDate(aff.startDate);
+                    if (!lastClosureDate || (commissionDate && commissionDate > lastClosureDate)) {
+                        const advisor = advisors.find(item => item.id === aff.advisorId);
+                        let commissionDateString = aff.startDate;
+                        if (aff.commissionPaidAt) {
+                            const paidDate = aff.commissionPaidAt instanceof Date ? aff.commissionPaidAt : new Date(aff.commissionPaidAt);
+                            if (paidDate instanceof Date && Number.isFinite(paidDate.getTime())) commissionDateString = paidDate.toISOString();
+                        }
+                        transactions.push({ id: `auto-e-${aff.id}`, type: 'egreso', concept: `Comisión ${advisor?.name || 'N/A'} (Afiliado: ${aff.name})`, amount: commissionAmount, date: commissionDateString, advisorId: aff.advisorId });
                     }
-                    transactions.push({ id: `auto-e-${aff.id}`, type: 'egreso', concept: `Comisión ${advisor?.name || 'N/A'} (Afiliado: ${aff.name})`, amount: commissionAmount, date: commissionDate, advisorId: aff.advisorId });
                 }
             }
         });
+
         const manualClones = manualTransactions.map(tx => ({ ...tx }));
         return [...transactions, ...manualClones].sort((a, b) => {
             const dateA = parseAppDate(a.date) || new Date(0);
@@ -3735,7 +3867,106 @@ function formatPhoneNumberForWhatsApp(phone) {
                       showToast('Registros de rol eliminados.', 'success');
                  }
             }
-            else if (button.id === 'sell-plan-btn') { if (!lastQuoteResult) { showToast('Por favor, realiza una cotización primero.', 'error'); return; } modalManager.open('affiliate-modal'); setTimeout(() => { const form = document.getElementById('affiliate-form'); if (!form) return; form['manual-override-checkbox'].checked = true; document.getElementById('manual-override-container').classList.remove('hidden'); form['manual-cost-health'].value = lastQuoteResult.health ? Math.round(lastQuoteResult.health.total) : ''; form['manual-cost-pension'].value = lastQuoteResult.pension ? Math.round(lastQuoteResult.pension.total) : ''; form['manual-cost-arl'].value = lastQuoteResult.arl ? Math.round(lastQuoteResult.arl.total) : ''; form['manual-cost-ccf'].value = lastQuoteResult.ccf ? Math.round(lastQuoteResult.ccf.total) : ''; const adminFee = settings?.ADMIN_FEE_PER_AFFILIATE || 0; if (form['manual-admin-cost']) { form['manual-admin-cost'].value = adminFee ? Math.round(adminFee) : ''; } if (form['manual-contribution-cost']) { const contributionSum = ['manual-cost-health', 'manual-cost-pension', 'manual-cost-arl', 'manual-cost-ccf'].reduce((sum, field) => sum + (Number(form[field].value) || 0), 0); form['manual-contribution-cost'].value = contributionSum ? Math.round(contributionSum) : ''; } if (form['manual-total-affiliation-cost'] && !form['manual-total-affiliation-cost'].value) { form['manual-total-affiliation-cost'].value = '300000'; } updateManualCommissionDisplay(form); const incomeValue = Number(document.getElementById('income').value); form['affiliate-notes'].value = `Cotización inicial basada en un ingreso mensual de ${formatCurrency(incomeValue)}. IBC: ${formatCurrency(lastQuoteResult.ibc)}.`; showToast('Datos de cotización precargados.'); }, 100); } 
+            else if (button.id === 'sell-plan-btn') { if (!lastQuoteResult) { showToast('Por favor, realiza una cotización primero.', 'error'); return; } modalManager.open('affiliate-modal'); setTimeout(() => { const form = document.getElementById('affiliate-form'); if (!form) return; form['manual-override-checkbox'].checked = true; document.getElementById('manual-override-container').classList.remove('hidden'); form['manual-cost-health'].value = lastQuoteResult.health ? Math.round(lastQuoteResult.health.total) : ''; form['manual-cost-pension'].value = lastQuoteResult.pension ? Math.round(lastQuoteResult.pension.total) : ''; form['manual-cost-arl'].value = lastQuoteResult.arl ? Math.round(lastQuoteResult.arl.total) : ''; form['manual-cost-ccf'].value = lastQuoteResult.ccf ? Math.round(lastQuoteResult.ccf.total) : ''; const adminFee = settings?.ADMIN_FEE_PER_AFFILIATE || 0; if (form['manual-admin-cost']) { form['manual-admin-cost'].value = adminFee ? Math.round(adminFee) : ''; } if (form['manual-contribution-cost']) { const contributionSum = ['manual-cost-health', 'manual-cost-pension', 'manual-cost-arl', 'manual-cost-ccf'].reduce((sum, field) => sum + (Number(form[field].value) || 0), 0); form['manual-contribution-cost'].value = contributionSum ? Math.round(contributionSum) : ''; } if (form['manual-total-affiliation-cost'] && !form['manual-total-affiliation-cost'].value) { form['manual-total-affiliation-cost'].value = '300000'; } updateManualCommissionDisplay(form); const incomeValue = Number(document.getElementById('income').value); form['affiliate-notes'].value = `Cotización inicial basada en un ingreso mensual de ${formatCurrency(incomeValue)}. IBC: ${formatCurrency(lastQuoteResult.ibc)}.`; showToast('Datos de cotización precargados.'); }, 100); }
+            else if (button.id === 'close-month-btn') {
+                const now = new Date();
+                const monthName = now.toLocaleString('es-CO', { month: 'long' });
+                document.getElementById('close-month-name').textContent = monthName;
+
+                const monthlyTransactions = getAllTransactions().filter(t => {
+                    const tDate = new Date(t.date);
+                    return tDate.getMonth() === now.getMonth() && tDate.getFullYear() === now.getFullYear();
+                });
+
+                const income = monthlyTransactions.filter(t => t.type === 'ingreso').reduce((sum, t) => sum + t.amount, 0);
+                const expenses = monthlyTransactions.filter(t => t.type === 'egreso').reduce((sum, t) => sum + t.amount, 0);
+                const profit = income - expenses;
+
+                document.getElementById('close-month-summary').innerHTML = `
+                    <p><strong>Ingresos Totales:</strong> ${formatCurrency(income)}</p>
+                    <p><strong>Egresos Totales:</strong> ${formatCurrency(expenses)}</p>
+                    <p><strong>Balance del Mes:</strong> ${formatCurrency(profit)}</p>
+                `;
+                modalManager.open('close-month-modal');
+            }
+        });
+
+        document.getElementById('confirm-close-month-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('confirm-close-month-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i> Cerrando...';
+            lucide.createIcons();
+
+            try {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = now.getMonth(); // 0-11
+                const monthName = now.toLocaleString('es-CO', { month: 'long' });
+                const closureId = `${year}-${String(month + 1).padStart(2, '0')}`;
+
+                const closureDocRef = doc(db, `users/${adminUidForRole}/monthlyClosures`, closureId);
+                const closureDocSnap = await getDoc(closureDocRef);
+                if (closureDocSnap.exists()) {
+                    showToast(`El mes de ${monthName} ya fue cerrado.`, 'error');
+                    return;
+                }
+
+                const monthlyTransactions = getAllTransactions().filter(t => {
+                    const tDate = new Date(t.date);
+                    return tDate.getMonth() === month && tDate.getFullYear() === year;
+                });
+
+                const totalIncome = monthlyTransactions.filter(t => t.type === 'ingreso').reduce((sum, t) => sum + t.amount, 0);
+                const totalExpenses = monthlyTransactions.filter(t => t.type === 'egreso').reduce((sum, t) => sum + t.amount, 0);
+                const commissionExpenses = monthlyTransactions.filter(t => t.type === 'egreso' && t.id.startsWith('auto-e-')).reduce((sum, t) => sum + t.amount, 0);
+                const manualExpenses = totalExpenses - commissionExpenses;
+
+                const newAffiliatesThisMonth = affiliates.filter(aff => {
+                    const createdAt = aff.createdAt;
+                    return createdAt && createdAt.getMonth() === month && createdAt.getFullYear() === year;
+                });
+
+                const closureData = {
+                    id: closureId,
+                    year: year,
+                    month: month + 1,
+                    monthName: monthName,
+                    closedAt: serverTimestamp(),
+                    totalIncome,
+                    totalExpenses,
+                    netProfit: totalIncome - totalExpenses,
+                    commissionExpenses,
+                    manualExpenses,
+                    newAffiliatesCount: newAffiliatesThisMonth.length,
+                    activeAffiliatesCount: affiliates.filter(a => a.status === 'Activo').length,
+                    transactions: monthlyTransactions
+                };
+
+                const batch = writeBatch(db);
+                batch.set(closureDocRef, closureData);
+
+                const manualTransactionsToDelete = manualTransactions.filter(tx => {
+                    const txDate = new Date(tx.date);
+                    return txDate.getMonth() === month && txDate.getFullYear() === year;
+                });
+
+                manualTransactionsToDelete.forEach(tx => {
+                    const txDocRef = doc(db, `users/${adminUidForRole}/manualTransactions`, tx.id);
+                    batch.delete(txDocRef);
+                });
+
+                await batch.commit();
+
+                showToast(`Cierre del mes de ${monthName} realizado con éxito.`, 'success');
+                modalManager.close('close-month-modal');
+
+            } catch (error) {
+                console.error("Error al cerrar el mes:", error);
+                showToast('Ocurrió un error al intentar cerrar el mes.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Confirmar y Cerrar Mes';
+            }
         });
         
         // --- Lógica de desglose para la vista de Calendario ---
