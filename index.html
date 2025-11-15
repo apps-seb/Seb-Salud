@@ -1177,15 +1177,15 @@ button svg {
                                     <h2 class="text-2xl font-bold text-slate-800">Flujo de Caja</h2>
                                     <p class="text-slate-500">Gesti&#243;n de ingresos, egresos y reportes financieros.</p>
                                 </div>
-                                <div class="flex items-center gap-4">
-                                    <button id="add-expense-btn" class="w-full md:w-auto bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap">
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full md:w-auto">
+                                    <button id="add-expense-btn" class="w-full bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap">
                                         <i data-lucide="minus" class="w-5 h-5 mr-2"></i>Nuevo Egreso
                                     </button>
-                                    <button id="add-income-btn" class="w-full md:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap">
+                                    <button id="add-income-btn" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap">
                                         <i data-lucide="plus" class="w-5 h-5 mr-2"></i>Nuevo Ingreso
                                     </button>
-                                    <button id="close-month-btn" class="w-full md:w-auto bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap">
-                                        <i data-lucide="archive" class="w-5 h-5 mr-2"></i>Cerrar Mes
+                                    <button id="open-closure-modal-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center whitespace-nowrap">
+                                        <i data-lucide="archive" class="w-5 h-5 mr-2"></i>Cerrar Caja
                                     </button>
                                 </div>
                             </div>
@@ -1493,22 +1493,44 @@ button svg {
         <div id="settings-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b sticky top-0 bg-white z-10"><h2 class="text-2xl font-bold">Configuraci&#243;n de Par&#225;metros</h2><button data-close-modal="settings-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="settings-form" class="p-6 space-y-6"><div><h3 class="font-semibold text-lg mb-2">Generales</h3><div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-medium">Salario M&#237;nimo (SMMLV)</label><input type="number" id="setting-smmlv" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Costo Admin. por Afiliado ($)</label><input type="number" id="setting-admin-fee" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes de Cotizaci&#243;n (%)</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div><label class="block text-sm font-medium">Salud Total</label><input type="number" step="0.1" id="setting-health" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Pensi&#243;n Total</label><input type="number" step="0.1" id="setting-pension" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Indep.</label><input type="number" step="0.1" id="setting-ccf-ind" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Caja Comp. Empleador</label><input type="number" step="0.1" id="setting-ccf-emp" class="w-full p-2 border rounded-lg"></div></div></div><div><h3 class="font-semibold text-lg mb-2">Porcentajes ARL (%)</h3><div class="grid grid-cols-2 md:grid-cols-5 gap-4"><div><label class="block text-sm font-medium">Riesgo 1</label><input type="number" step="0.001" id="setting-arl-1" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 2</label><input type="number" step="0.001" id="setting-arl-2" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 3</label><input type="number" step="0.001" id="setting-arl-3" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 4</label><input type="number" step="0.001" id="setting-arl-4" class="w-full p-2 border rounded-lg"></div><div><label class="block text-sm font-medium">Riesgo 5</label><input type="number" step="0.001" id="setting-arl-5" class="w-full p-2 border rounded-lg"></div></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar Cambios</button></div></form></div></div>
         <div id="transaction-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50"><div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95"><div class="flex justify-between items-center p-6 border-b"><h2 id="transaction-modal-title" class="text-2xl font-bold"></h2><button data-close-modal="transaction-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div><form id="transaction-form" class="p-6"><input type="hidden" id="transaction-type"><div class="space-y-4"><div><label for="transaction-concept" class="block text-sm font-medium text-slate-600">Concepto</label><input type="text" id="transaction-concept" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-amount" class="block text-sm font-medium text-slate-600">Monto</label><input type="number" id="transaction-amount" min="0" class="w-full mt-1 p-2 border rounded-lg" required></div><div><label for="transaction-date" class="block text-sm font-medium text-slate-600">Fecha</label><input type="date" id="transaction-date" class="w-full mt-1 p-2 border rounded-lg" required></div><div id="transaction-advisor-container" class="hidden"><label for="transaction-advisor" class="block text-sm font-medium text-slate-600">Asignar asesor (opcional)</label><select id="transaction-advisor" class="w-full mt-1 p-2 border rounded-lg"><option value="">Sin asignar</option></select><p class="text-xs text-slate-500 mt-2">Los egresos asignados se descontar&aacute;n de las comisiones del asesor seleccionado.</p></div></div><div class="pt-6 border-t mt-6 flex justify-end"><button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Guardar</button></div></form></div></div>
         
-        <div id="close-month-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50">
-            <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-full overflow-y-auto transform scale-95">
+        <div id="date-range-closure-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50">
+            <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md max-h-full overflow-y-auto transform scale-95">
                 <div class="flex justify-between items-center p-6 border-b">
-                    <h2 id="close-month-modal-title" class="text-2xl font-bold">Confirmar Cierre de Mes</h2>
-                    <button data-close-modal="close-month-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+                    <h2 class="text-2xl font-bold">Seleccionar Período de Cierre</h2>
+                    <button data-close-modal="date-range-closure-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
                 </div>
-                <div class="p-6">
-                    <p class="text-slate-600 mb-4">Estás a punto de cerrar las operaciones financieras para el mes de <strong id="close-month-name"></strong>. Esta acción es irreversible y guardará un registro permanente de los siguientes datos:</p>
-                    <div id="close-month-summary" class="space-y-2 text-sm">
-                        </div>
-                    <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
-                        <p><strong>Importante:</strong> Una vez cerrado, no podrás modificar las transacciones de este mes. El sistema se reiniciará para el próximo período contable.</p>
+                <div class="p-6 space-y-4">
+                    <div>
+                        <label for="closure-start-date" class="block text-sm font-medium text-slate-600">Fecha de Inicio</label>
+                        <input type="date" id="closure-start-date" class="w-full mt-1 p-2 border rounded-lg" required>
+                    </div>
+                    <div>
+                        <label for="closure-end-date" class="block text-sm font-medium text-slate-600">Fecha de Fin</label>
+                        <input type="date" id="closure-end-date" class="w-full mt-1 p-2 border rounded-lg" required>
                     </div>
                 </div>
                 <div class="pt-6 border-t mt-6 flex justify-end p-6">
-                    <button id="confirm-close-month-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">Confirmar y Cerrar Mes</button>
+                    <button id="continue-closure-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-6 rounded-lg">Continuar</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="close-month-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50">
+            <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-full overflow-y-auto transform scale-95">
+                <div class="flex justify-between items-center p-6 border-b">
+                    <h2 id="close-month-modal-title" class="text-2xl font-bold">Confirmar Cierre</h2>
+                    <button data-close-modal="close-month-modal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-600 mb-4">Estás a punto de cerrar las operaciones para el período <strong id="close-period-display"></strong>. Esta acción es irreversible y guardará un registro permanente de los siguientes datos:</p>
+                    <div id="close-month-summary" class="space-y-2 text-sm">
+                        </div>
+                    <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
+                        <p><strong>Importante:</strong> Una vez cerrado, no podrás modificar las transacciones de este período. Las comisiones de los asesores incluidas en este cierre se marcarán como pagadas.</p>
+                    </div>
+                </div>
+                <div class="pt-6 border-t mt-6 flex justify-end p-6">
+                    <button id="confirm-close-month-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">Confirmar y Cerrar Período</button>
                 </div>
             </div>
         </div>
@@ -1680,6 +1702,7 @@ button svg {
     let lastQuoteResult = null;
     let lastCreatedAffiliate = null;
     let activeListeners = [];
+    let currentClosurePeriod = null;
 
     const defaultSettings = { 
         SMMLV: 1423500, 
@@ -3934,6 +3957,58 @@ function formatPhoneNumberForWhatsApp(phone) {
                  }
             }
             else if (button.id === 'sell-plan-btn') { if (!lastQuoteResult) { showToast('Por favor, realiza una cotización primero.', 'error'); return; } modalManager.open('affiliate-modal'); setTimeout(() => { const form = document.getElementById('affiliate-form'); if (!form) return; form['manual-override-checkbox'].checked = true; document.getElementById('manual-override-container').classList.remove('hidden'); form['manual-cost-health'].value = lastQuoteResult.health ? Math.round(lastQuoteResult.health.total) : ''; form['manual-cost-pension'].value = lastQuoteResult.pension ? Math.round(lastQuoteResult.pension.total) : ''; form['manual-cost-arl'].value = lastQuoteResult.arl ? Math.round(lastQuoteResult.arl.total) : ''; form['manual-cost-ccf'].value = lastQuoteResult.ccf ? Math.round(lastQuoteResult.ccf.total) : ''; const adminFee = settings?.ADMIN_FEE_PER_AFFILIATE || 0; if (form['manual-admin-cost']) { form['manual-admin-cost'].value = adminFee ? Math.round(adminFee) : ''; } if (form['manual-contribution-cost']) { const contributionSum = ['manual-cost-health', 'manual-cost-pension', 'manual-cost-arl', 'manual-cost-ccf'].reduce((sum, field) => sum + (Number(form[field].value) || 0), 0); form['manual-contribution-cost'].value = contributionSum ? Math.round(contributionSum) : ''; } if (form['manual-total-affiliation-cost'] && !form['manual-total-affiliation-cost'].value) { form['manual-total-affiliation-cost'].value = '300000'; } updateManualCommissionDisplay(form); const incomeValue = Number(document.getElementById('income').value); form['affiliate-notes'].value = `Cotización inicial basada en un ingreso mensual de ${formatCurrency(incomeValue)}. IBC: ${formatCurrency(lastQuoteResult.ibc)}.`; showToast('Datos de cotización precargados.'); }, 100); }
+            else if (button.id === 'open-closure-modal-btn') {
+                document.getElementById('closure-start-date').value = '';
+                document.getElementById('closure-end-date').value = '';
+                modalManager.open('date-range-closure-modal');
+            }
+            else if (button.id === 'continue-closure-btn') {
+                const startDate = document.getElementById('closure-start-date').value;
+                const endDate = document.getElementById('closure-end-date').value;
+
+                if (!startDate || !endDate) {
+                    return showToast('Por favor, selecciona una fecha de inicio y de fin.', 'error');
+                }
+
+                const start = new Date(startDate + 'T00:00:00');
+                const end = new Date(endDate + 'T23:59:59');
+
+                if (start > end) {
+                    return showToast('La fecha de inicio no puede ser posterior a la fecha de fin.', 'error');
+                }
+
+                currentClosurePeriod = { start, end };
+
+                const transactionsInPeriod = getAllTransactions().filter(t => {
+                    const tDate = parseAppDate(t.date);
+                    return tDate >= start && tDate <= end;
+                });
+
+                const income = transactionsInPeriod.filter(t => t.type === 'ingreso').reduce((sum, t) => sum + t.amount, 0);
+                const expenses = transactionsInPeriod.filter(t => t.type === 'egreso').reduce((sum, t) => sum + t.amount, 0);
+                const profit = income - expenses;
+
+                const commissionsToPay = transactionsInPeriod.filter(t => t.type === 'egreso' && t.id.startsWith('auto-e-'));
+
+                let commissionsHtml = commissionsToPay.length > 0
+                    ? '<p class="font-semibold text-slate-700 mt-3">Comisiones a liquidar en este cierre:</p><ul class="text-sm list-disc list-inside pl-2 text-slate-600">' +
+                      commissionsToPay.map(t => `<li>${t.concept}: ${formatCurrency(t.amount)}</li>`).join('') +
+                      '</ul>'
+                    : '<p class="text-sm text-slate-500 mt-3">No hay comisiones automáticas para liquidar en este período.</p>';
+
+                document.getElementById('close-period-display').textContent = `${start.toLocaleDateString('es-CO')} al ${end.toLocaleDateString('es-CO')}`;
+                document.getElementById('close-month-summary').innerHTML = `
+                    <div class="space-y-1 text-base">
+                        <p class="flex justify-between"><span>Ingresos Totales:</span> <span class="font-semibold text-green-600">${formatCurrency(income)}</span></p>
+                        <p class="flex justify-between"><span>Egresos Totales:</span> <span class="font-semibold text-red-600">${formatCurrency(expenses)}</span></p>
+                        <p class="flex justify-between border-t pt-1 mt-1"><span>Balance del Período:</span> <span class="font-bold text-blue-600">${formatCurrency(profit)}</span></p>
+                    </div>
+                    ${commissionsHtml}
+                `;
+
+                modalManager.close('date-range-closure-modal');
+                modalManager.open('close-month-modal');
+            }
             else if (button.id === 'close-month-btn') {
                 const now = new Date();
                 const monthName = now.toLocaleString('es-CO', { month: 'long' });
@@ -3992,60 +4067,63 @@ function formatPhoneNumberForWhatsApp(phone) {
             lucide.createIcons();
 
             try {
-                const now = new Date();
-                const year = now.getFullYear();
-                const month = now.getMonth(); // 0-11
-                const monthName = now.toLocaleString('es-CO', { month: 'long' });
-                const closureId = `${year}-${String(month + 1).padStart(2, '0')}`;
+                if (!currentClosurePeriod) {
+                    throw new Error("No se ha definido un período de cierre.");
+                }
+
+                const { start, end } = currentClosurePeriod;
+                const closureId = `period-${start.getTime()}-${end.getTime()}`;
 
                 const closureDocRef = doc(db, `users/${adminUidForRole}/monthlyClosures`, closureId);
                 const closureDocSnap = await getDoc(closureDocRef);
                 if (closureDocSnap.exists()) {
-                    showToast(`El mes de ${monthName} ya fue cerrado.`, 'error');
+                    showToast(`Este período ya ha sido cerrado.`, 'error');
                     return;
                 }
 
-                const monthlyTransactions = getAllTransactions().filter(t => {
-                    const tDate = new Date(t.date);
-                    return tDate.getMonth() === month && tDate.getFullYear() === year;
+                const transactionsInPeriod = getAllTransactions().filter(t => {
+                    const tDate = parseAppDate(t.date);
+                    return tDate >= start && tDate <= end;
                 });
 
-                const totalIncome = monthlyTransactions.filter(t => t.type === 'ingreso').reduce((sum, t) => sum + t.amount, 0);
-                const totalExpenses = monthlyTransactions.filter(t => t.type === 'egreso').reduce((sum, t) => sum + t.amount, 0);
-                const commissionExpenses = monthlyTransactions.filter(t => t.type === 'egreso' && t.id.startsWith('auto-e-')).reduce((sum, t) => sum + t.amount, 0);
-                const manualExpenses = totalExpenses - commissionExpenses;
+                const totalIncome = transactionsInPeriod.filter(t => t.type === 'ingreso').reduce((sum, t) => sum + t.amount, 0);
+                const totalExpenses = transactionsInPeriod.filter(t => t.type === 'egreso').reduce((sum, t) => sum + t.amount, 0);
 
-                const newAffiliatesThisMonth = affiliates.filter(aff => {
-                    const createdAt = aff.createdAt;
-                    return createdAt && createdAt.getMonth() === month && createdAt.getFullYear() === year;
-                });
-
-                const adminFee = settings?.ADMIN_FEE_PER_AFFILIATE ?? defaultSettings.ADMIN_FEE_PER_AFFILIATE;
-                const adminProfit = newAffiliatesThisMonth.length * adminFee;
+                const commissionHistory = transactionsInPeriod
+                    .filter(t => t.id.startsWith('auto-e-'))
+                    .map(t => {
+                        const affiliate = affiliates.find(a => a.id === t.id.replace('auto-e-', ''));
+                        return {
+                            affiliateId: affiliate?.id,
+                            affiliateName: affiliate?.name,
+                            advisorId: t.advisorId,
+                            advisorName: advisors.find(a => a.id === t.advisorId)?.name || 'N/A',
+                            commissionAmount: t.amount,
+                            paid: true,
+                            paidAt: end
+                        };
+                    });
 
                 const closureData = {
                     id: closureId,
-                    year: year,
-                    month: month + 1,
-                    monthName: monthName,
+                    isPeriodClosure: true,
+                    startDate: start,
+                    endDate: end,
+                    monthName: `Período del ${start.toLocaleDateString('es-CO')} al ${end.toLocaleDateString('es-CO')}`,
                     closedAt: serverTimestamp(),
                     totalIncome,
                     totalExpenses,
                     netProfit: totalIncome - totalExpenses,
-                    commissionExpenses,
-                    manualExpenses,
-                    adminProfit: adminProfit,
-                    newAffiliatesCount: newAffiliatesThisMonth.length,
-                    activeAffiliatesCount: affiliates.filter(a => a.status === 'Activo').length,
-                    transactions: monthlyTransactions
+                    transactions: transactionsInPeriod,
+                    commissionHistory: commissionHistory
                 };
 
                 const batch = writeBatch(db);
                 batch.set(closureDocRef, closureData);
 
                 const manualTransactionsToDelete = manualTransactions.filter(tx => {
-                    const txDate = new Date(tx.date);
-                    return txDate.getMonth() === month && txDate.getFullYear() === year;
+                    const txDate = parseAppDate(tx.date);
+                    return txDate >= start && txDate <= end;
                 });
 
                 manualTransactionsToDelete.forEach(tx => {
@@ -4053,17 +4131,29 @@ function formatPhoneNumberForWhatsApp(phone) {
                     batch.delete(txDocRef);
                 });
 
+                const commissionsToMarkAsPaid = transactionsInPeriod.filter(t => t.id.startsWith('auto-e-'));
+
+                commissionsToMarkAsPaid.forEach(commission => {
+                    const affiliateId = commission.id.replace('auto-e-', '');
+                    const affRef = doc(db, `users/${adminUidForRole}/affiliates`, affiliateId);
+                    batch.update(affRef, {
+                        commissionPaid: true,
+                        commissionPaidAt: serverTimestamp()
+                    });
+                });
+
                 await batch.commit();
 
-                showToast(`Cierre del mes de ${monthName} realizado con éxito.`, 'success');
+                showToast(`Cierre del período realizado con éxito.`, 'success');
                 modalManager.close('close-month-modal');
+                currentClosurePeriod = null;
 
             } catch (error) {
-                console.error("Error al cerrar el mes:", error);
-                showToast('Ocurrió un error al intentar cerrar el mes.', 'error');
+                console.error("Error al cerrar el período:", error);
+                showToast('Ocurrió un error al intentar cerrar el período.', 'error');
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'Confirmar y Cerrar Mes';
+                btn.textContent = 'Confirmar y Cerrar Período';
             }
         });
         
